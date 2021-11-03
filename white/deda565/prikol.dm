@@ -22,7 +22,7 @@ GLOBAL_VAR_INIT(nasheed_playing, FALSE)
 	var/static/earrape_time = 0
 	var/nasheed_list = list('sound/misc/nasheed.ogg', 'sound/misc/nasheed2.ogg')
 
-obj/item/melee/execution_sword/attack_self(mob/living/user)
+/obj/item/melee/execution_sword/attack_self(mob/living/user)
 	if(faction_chosen == TRUE && execution_faction)
 		to_chat(user, "<span class='notice'>Ты уже поклялся в верности [execution_faction]!</span>")
 		return

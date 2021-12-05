@@ -248,7 +248,7 @@
 			priority_announce("Коды ядерной авторизации для самоуничтожения станции были запрошены [usr]. Подтверждение или отклонение данного запроса возможно в скором времени.", "Запрос кодов ядерной авторизации", SSstation.announcer.get_rand_report_sound())
 			playsound(src, 'sound/machines/terminal_prompt.ogg', 50, FALSE)
 			COOLDOWN_START(src, important_action_cooldown, IMPORTANT_ACTION_COOLDOWN)
-		if("callSobr")
+		if("callOmon")
 			if (!authenticated_as_non_silicon_captain(usr))
 				return
 			if (!COOLDOWN_FINISHED(src, important_action_cooldown))
@@ -260,11 +260,11 @@
 			var/input = trim(html_encode(params["reason"]), MAX_MESSAGE_LEN)
 			bank_account.adjust_money(-250)
 			to_chat(usr, span_notice("Запрос отправлен. Со счёта карго было списано 250 кредитов."))
-			usr.log_message("has requested SOBR team from CentCom with reason \"[input]\"", LOG_SAY)
-			priority_announce("Отряд СОБРа был вызван [usr].", "Экстренный запрос",'sound/ai/announcer/alert.ogg')
+			usr.log_message("has requested OMON team from CentCom with reason \"[input]\"", LOG_SAY)
+			priority_announce("Отряд ОМОНа был вызван [usr].", "Экстренный запрос")
 			playsound(src, 'sound/machines/terminal_prompt.ogg', 50, FALSE)
 			COOLDOWN_START(src, important_action_cooldown, IMPORTANT_ACTION_COOLDOWN)
-			sobr_ert_request(input, usr)
+			omon_ert_request(input, usr)
 		if("callJanitors")
 			if (!authenticated_as_non_silicon_captain(usr))
 				return
@@ -278,7 +278,7 @@
 			bank_account.adjust_money(-500)
 			to_chat(usr, span_notice("Запрос отправлен. Со счёта карго было списано 500 кредитов."))
 			usr.log_message("has requested the janitor team from CentCom with reason \"[input]\"", LOG_SAY)
-			priority_announce("Отряд уборщиков был вызван [usr].", "Экстренный запрос",'sound/ai/announcer/alert.ogg')//А надо ли оно?
+			priority_announce("Отряд уборщиков был вызван [usr].", "Экстренный запрос")//А надо ли оно? net
 			playsound(src, 'sound/machines/terminal_prompt.ogg', 50, FALSE)
 			COOLDOWN_START(src, important_action_cooldown, IMPORTANT_ACTION_COOLDOWN)
 			janitor_ert_request(input, usr)
@@ -295,7 +295,7 @@
 			bank_account.adjust_money(-750)
 			to_chat(usr, span_notice("Запрос отправлен. Со счёта карго было списано 750 кредитов."))
 			usr.log_message("has requested the engineer team from CentCom with reason \"[input]\"", LOG_SAY)
-			priority_announce("[prob(15) ? "Экстренный отряд таджиков был вызван ":"Ремонтная бригада была вызвана "][usr].", "Экстренный запрос",'sound/ai/announcer/alert.ogg')//tajik = funny
+			priority_announce("[prob(15) ? "Экстренный отряд таджиков был вызван ":"Ремонтная бригада была вызвана "][usr].", "Экстренный запрос")//tajik = funny
 			playsound(src, 'sound/machines/terminal_prompt.ogg', 50, FALSE)
 			COOLDOWN_START(src, important_action_cooldown, IMPORTANT_ACTION_COOLDOWN)
 			engineer_ert_request(input, usr)

@@ -145,8 +145,8 @@
 #define ui_ai_take_picture "SOUTH:6,WEST+12"
 #define ui_ai_view_images "SOUTH:6,WEST+13"
 #define ui_ai_sensor "SOUTH:6,WEST+14"
-#define ui_ai_multicam "SOUTH+1:6,WEST+13"
-#define ui_ai_add_multicam "SOUTH+1:6,WEST+14"
+#define ui_ai_multicam "SOUTH:6,WEST+15"
+#define ui_ai_add_multicam "SOUTH:6,WEST+16"
 
 // pAI
 #define ui_pai_software "SOUTH:6,WEST"
@@ -172,6 +172,7 @@
 #define ui_ghost_mafia "SOUTH: 6, CENTER+2:24"
 #define ui_ghost_language_menu "SOUTH: 22,CENTER+3:8"
 #define ui_ghost_pai "SOUTH: 6, CENTER+3:8"
+#define ui_ghost_ctf "SOUTH: 6, CENTER+4:8"
 
 //Blobbernauts
 #define ui_blobbernaut_overmind_health "EAST-1:28,CENTER+0:19"

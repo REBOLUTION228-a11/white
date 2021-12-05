@@ -167,7 +167,7 @@
 					permitted = FALSE
 
 				if(!permitted)
-					to_chat(M, span_warning("Должность или раса не позволяют мне иметь [G.display_name]!"))
+					to_chat(M, span_warning("Не удалость пронести <b>[G.display_name]</b> на станцию!"))
 					continue
 
 				if(G.slot)
@@ -249,6 +249,8 @@
 		var/datum/bank_account/bank_account = new(H.real_name, src, H.dna.species.payday_modifier)
 		if(!latejoin)
 			bank_account.payday(STARTING_PAYCHECKS, TRUE)
+		else
+			bank_account.payday(1, TRUE)
 		H.account_id = bank_account.account_id
 
 	//Equip the rest of the gear
@@ -264,7 +266,10 @@
 	H.dna.species.after_equip_job(src, H, visualsOnly)
 
 	if(latejoin && SSjob.forced_name)
-		H.fully_replace_character_name(H.real_name, "[SSjob.forced_name] \Roman[SSjob.forced_num]")
+		if(SSjob.forced_name == "KEY")
+			H.fully_replace_character_name(H.real_name, "[H.key]")
+		else
+			H.fully_replace_character_name(H.real_name, "[SSjob.forced_name] \Roman[SSjob.forced_num]")
 		SSjob.forced_num++
 
 	if(!visualsOnly && announce)

@@ -119,7 +119,8 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/centcom_podlauncher, /*Open a window to launch a Supplypod and configure it or it's contents*/
 	/client/proc/huesoslist,
 	/client/proc/battle_royale,
-	/client/proc/load_circuit
+	/client/proc/load_circuit,
+	/client/proc/change_lobby_music
 	))
 GLOBAL_PROTECT(admin_verbs_fun)
 GLOBAL_LIST_INIT(admin_verbs_spawn, list(/datum/admins/proc/spawn_atom, /datum/admins/proc/podspawn_atom,
@@ -781,7 +782,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 	holder.deactivate()
 
-	to_chat(src, span_interface("You are now a normal player."))
+	to_chat(src, span_interface("Ты больше не пидор."))
 	log_admin("[src] deadminned themselves.")
 	message_admins("[src] deadminned themselves.")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Deadmin")
@@ -813,7 +814,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if (!holder)
 		return //This can happen if an admin attempts to vv themself into somebody elses's deadmin datum by getting ref via brute force
 
-	to_chat(src, span_interface("You are now an admin.") , confidential = TRUE)
+	to_chat(src, span_interface("Ты пидор.") , confidential = TRUE)
 	message_admins("[src] re-adminned themselves.")
 	log_admin("[src] re-adminned themselves.")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Readmin")

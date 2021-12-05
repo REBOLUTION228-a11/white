@@ -134,6 +134,14 @@ SUBSYSTEM_DEF(job)
 	JobDebug("AR has failed, Player: [player], Rank: [rank]")
 	return FALSE
 
+/datum/controller/subsystem/job/proc/FreeRole(rank)
+	if(!rank)
+		return
+	JobDebug("Freeing role: [rank]")
+	var/datum/job/job = GetJob(rank)
+	if(!job)
+		return FALSE
+	job.current_positions = max(0, job.current_positions - 1)
 
 /datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, flag)
 	JobDebug("Running FOC, Job: [job], Level: [level], Flag: [flag]")
@@ -491,9 +499,9 @@ SUBSYSTEM_DEF(job)
 		living_mob.mind.assigned_role = rank
 
 	if(rank == "Hacker")
-		to_chat(M, "Я <b>ОРАКУЛ</b>, но для остальных просто [rank].")
+		to_chat(M, "Я <b>ОРАКУЛ</b>, но для остальных просто [ru_job_parse(rank)].")
 	else
-		to_chat(M, "\n<big><b>Мне досталась должность под названием [rank]. [gvorno(TRUE)].</b></big>\n")
+		to_chat(M, "\n<big><b>Мне досталась должность под названием [ru_job_parse(rank)]. [gvorno(TRUE)].</b></big>\n")
 	if(job)
 		var/new_mob = job.equip(living_mob, null, null, joined_late , null, M.client, is_captain)//silicons override this proc to return a mob
 		if(ismob(new_mob))
@@ -511,18 +519,18 @@ SUBSYSTEM_DEF(job)
 			else
 				handle_auto_deadmin_roles(M.client, rank)
 		if(rank == "Hacker")
-			to_chat(M, "<b>На должности <b>[rank]</b> я подчи~*^&#</b>")
+			to_chat(M, "<b>На должности <b>[ru_job_parse(rank)]</b> я подчи~*^&#</b>")
 			to_chat(M, "<b><i><big>Устал. Я правда устал. Мне нужно следовать этой системе, которую создали ОНИ, иначе меня ждёт кара похуже смерти. В мои задачи входит следующее:</big></i></b>")
 			to_chat(M, "<b>1. Сохранение целостности системы</b> - я не должен раскрывать данные, которые я знаю. Если я это сделаю, то <b>ОНИ</b> сделают моё существование кошмарным.")
 			to_chat(M, "<b>2. Устранение повреждений системы</b> - любые знания, которые случайным образом попадают в этот мир из <b>НАСТОЯЩЕГО</b> должны быть уничтожены.")
 			to_chat(M, "<b>3. Улучшение состояния системы</b> - мне необходимо искать и уничтожать повреждённые данные в системе. В этом мне помогает мой визор.")
 		else
-			to_chat(M, "\n<span class='notice'>На должности <b>[rank]</b> я подчиняюсь [job.supervisors]. Некоторые обстоятельства могут изменить это.</span>")
+			to_chat(M, "\n<span class='notice'>На должности <b>[ru_job_parse(rank)]</b> я подчиняюсь [job.supervisors]. Некоторые обстоятельства могут изменить это.</span>")
 		job.radio_help_message(M)
 		if(job.req_admin_notify)
 			to_chat(M, "\n<span class='revenbignotice'>Это важная должность. Перед уходом стоит найти себе временную замену.</spawn>")
-		if(CONFIG_GET(number/minimal_access_threshold))
-			to_chat(M, "\n<span class='notice'><B>Так как эта станция имеет [CONFIG_GET(flag/jobs_have_minimal_access) ? "полный" : "древовидный"] набор экипажа, некоторый доступ был добавлен к моей ID-карте.</B></span>")
+		//if(CONFIG_GET(number/minimal_access_threshold))
+		//	to_chat(M, "\n<span class='notice'><B>Так как эта станция имеет [CONFIG_GET(flag/jobs_have_minimal_access) ? "полный" : "древовидный"] набор экипажа, некоторый доступ был добавлен к моей ID-карте.</B></span>")
 
 	var/related_policy = get_policy(rank)
 	if(related_policy)
@@ -772,7 +780,7 @@ SUBSYSTEM_DEF(job)
 
 	additional_jobs_with_icons = list("Emergency Response Team Commander", "Security Response Officer", "Engineering Response Officer", "Medical Response Officer", \
 		"Entertainment Response Officer", "Religious Response Officer", "Janitorial Response Officer", "Death Commando", "Security Officer (Engineering)", \
-		"Security Officer (Cargo)", "Security Officer (Medical)", "Security Officer (Science)", "MVD Spetsnaz Operative", "MVD Spetsnaz Leader")
+		"Security Officer (Cargo)", "Security Officer (Medical)", "Security Officer (Science)", "СОБР", "Лидер СОБР")
 
 	centcom_jobs = list("Central Command","VIP Guest","Custodian","Thunderdome Overseer","CentCom Official","Medical Officer","Research Officer", \
 		"Special Ops Officer","Admiral","CentCom Commander","CentCom Bartender","Private Security Force")

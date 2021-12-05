@@ -285,7 +285,7 @@
 /obj/item/clothing/head/helmet/space/hardsuit/hostile_environment
 	name = "H.E.C.K. helmet"
 	desc = "Hostile Environiment Cross-Kinetic Helmet: A helmet designed to withstand the wide variety of hazards from Lavaland. It wasn't enough for its last owner."
-	icon_state = "hardsuit0-heck"
+	icon_state = "hostile_env"
 	inhand_icon_state = "hostile_env"
 	hardsuit_type = "heck"
 	w_class = WEIGHT_CLASS_NORMAL
@@ -630,7 +630,7 @@
 	. = ..()
 	spirits = list()
 	START_PROCESSING(SSobj, src)
-	AddElement(/datum/element/point_of_interest)
+	SSpoints_of_interest.make_point_of_interest(src)
 	AddComponent(/datum/component/butchering, 150, 90)
 
 /obj/item/melee/ghost_sword/Destroy()

@@ -16,13 +16,14 @@
 	icon_state = "omon-2"
 	inhand_icon_state = "g_suit"
 
-/obj/item/clothing/under/rank/sobr
+/obj/item/clothing/under/rank/omon/telnajka
 	name = "тельняшка"
-	desc = "ВДВ С НЕБА ПРИВЕТ."
+	desc = "Типичная нательная рубашка с окраской в виде чередующихся белых и синих полос."
 	worn_icon = 'white/valtos/icons/clothing/mob/uniform.dmi'
 	icon = 'white/valtos/icons/clothing/uniforms.dmi'
 	icon_state = "telnyashka"
 	inhand_icon_state = "telnyashka"
+	can_adjust = FALSE
 
 /obj/item/clothing/suit/armor/riot/omon
 	name = "omon riot suit"

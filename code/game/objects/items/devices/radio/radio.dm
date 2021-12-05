@@ -43,6 +43,7 @@
 	var/syndie = FALSE  // If true, hears all well-known channels automatically, and can say/hear on the Syndicate channel.
 	var/list/channels = list()  // Map from name (see communications.dm) to on/off. First entry is current department (:h)
 	var/list/secure_radio_connections
+	var/radiosound = 'white/valtos/sounds/radio/common.ogg'
 
 /obj/item/radio/suicide_act(mob/living/user)
 	user.visible_message(span_suicide("[user] starts bouncing [src] off [user.ru_ego()] head! It looks like [user.p_theyre()] trying to commit suicide!"))
@@ -324,11 +325,13 @@
 
 	// allow checks: are we listening on that frequency?
 	if (freq == frequency)
+		playsound(get_turf(src), radiosound, rand(5, 10))
 		return TRUE
 	for(var/ch_name in channels)
 		if(channels[ch_name] & FREQ_LISTENING)
 			//the GLOB.radiochannels list is located in communications.dm
 			if(GLOB.radiochannels[ch_name] == text2num(freq) || syndie)
+				playsound(get_turf(src), radiosound, rand(5, 10))
 				return TRUE
 	return FALSE
 

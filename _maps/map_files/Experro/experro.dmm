@@ -2954,7 +2954,7 @@
 /area/partyhard/indoors)
 "mY" = (
 /obj/structure/rack/cataclysmdda/metal/alt,
-/obj/item/clothing/suit/armor/opvest/spetsnaz,
+/obj/item/clothing/suit/armor/opvest/sobr,
 /obj/item/clothing/suit/armor/bulletproof{
 	pixel_x = 3;
 	pixel_y = -3
@@ -3944,7 +3944,7 @@
 /area/partyhard/outdoors)
 "rx" = (
 /obj/structure/closet,
-/obj/item/clothing/suit/armor/opvest/spetsnaz,
+/obj/item/clothing/suit/armor/opvest/sobr,
 /obj/item/clothing/glasses/night,
 /obj/item/radio/off,
 /turf/open/floor/plasteel/tile,
@@ -4361,13 +4361,6 @@
 /obj/item/ammo_box/magazine/asval,
 /obj/item/ammo_box/magazine/asval,
 /obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/ak74m,
 /obj/item/ammo_box/magazine/ak74m,
 /obj/item/ammo_box/magazine/ak74m,
 /obj/item/ammo_box/magazine/ak74m,
@@ -4376,13 +4369,6 @@
 /obj/item/ammo_casing/a40mm/vog25,
 /obj/item/ammo_casing/a40mm/vog25,
 /obj/item/ammo_casing/a40mm/vog25,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/asval,
-/obj/item/ammo_box/magazine/ak74m,
-/obj/item/ammo_box/magazine/ak74m,
-/obj/item/ammo_box/magazine/m75,
-/obj/item/ammo_box/magazine/m75,
 /turf/open/floor/plasteel/tile,
 /area/partyhard/indoors)
 "tv" = (
@@ -4398,7 +4384,7 @@
 /area/partyhard/indoors)
 "tB" = (
 /obj/structure/closet,
-/obj/item/clothing/suit/armor/opvest/spetsnaz,
+/obj/item/clothing/suit/armor/opvest/sobr,
 /obj/item/gun/ballistic/automatic/ak74m/gp25,
 /obj/item/radio/off,
 /turf/open/floor/plasteel/tile,
@@ -5674,12 +5660,6 @@
 	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/partyhard/indoors)
-"yK" = (
-/obj/structure/table/wood/cataclysmdda/sci,
-/obj/item/gun/ballistic/automatic/gyropistol,
-/obj/item/ammo_box/magazine/m75,
-/turf/open/floor/plasteel/tile,
-/area/partyhard/indoors)
 "yL" = (
 /obj/structure/railing{
 	dir = 8
@@ -5792,7 +5772,7 @@
 /area/partyhard/indoors)
 "zl" = (
 /obj/structure/table/wood/cataclysmdda/sci,
-/obj/item/clothing/suit/armor/opvest/spetsnaz,
+/obj/item/clothing/suit/armor/opvest/sobr,
 /obj/item/grenade/c4,
 /turf/open/floor/plasteel/tile,
 /area/partyhard/indoors)
@@ -11312,7 +11292,6 @@
 /obj/item/clothing/under/suit/blacktwopiece,
 /obj/item/clothing/neck/stripedgreenscarf/grey,
 /obj/item/clothing/neck/tie/red,
-/obj/item/clothing/head/beret/highlander,
 /obj/item/clothing/head/collectable/petehat,
 /obj/item/clothing/head/fedora{
 	icon_state = "curator"
@@ -120502,7 +120481,7 @@ cX
 ov
 ov
 ov
-yK
+cZ
 jl
 jl
 jl

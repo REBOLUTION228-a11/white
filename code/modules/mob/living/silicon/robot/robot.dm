@@ -133,7 +133,6 @@
 
 	robot_modules_background = new()
 	robot_modules_background.icon_state = "block"
-	robot_modules_background.layer = HUD_LAYER	//Objects that appear on screen are on layer ABOVE_HUD_LAYER, UI should be just below it.
 	robot_modules_background.plane = HUD_PLANE
 
 	inv1 = new /atom/movable/screen/robot/module1()
@@ -440,11 +439,10 @@
 		if(lamp_enabled || lamp_doom)
 			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.cyborg_base_icon]"]_l"
 			eye_lights.color = lamp_doom? COLOR_RED : lamp_color
-			eye_lights.plane = 19 //glowy eyes
+			eye_lights.plane = ABOVE_GAME_PLANE //glowy eyes
 		else
 			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.cyborg_base_icon]"]_e[ratvar ? "_r" : ""]"
 			eye_lights.color = COLOR_WHITE
-			eye_lights.plane = -1
 		eye_lights.icon = icon
 		add_overlay(eye_lights)
 

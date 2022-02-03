@@ -17,7 +17,7 @@
 	var/textb = copytext(HTMLstring, 6, 8)
 	return rgb(255 - hex2num(textr), 255 - hex2num(textg), 255 - hex2num(textb))
 
-/proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
+/proc/get_angle(atom/movable/start,atom/movable/end)//For beams.
 	if(!start || !end)
 		return 0
 	var/dy
@@ -146,7 +146,7 @@ Turf and target are separate in case you want to teleport some distance from a t
  *
  * Uses the ultra-fast [Bresenham Line-Drawing Algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm).
  */
-/proc/getline(atom/M,atom/N)
+/proc/get_line(atom/M,atom/N)
 	var/px=M.x		//starting x
 	var/py=M.y
 	var/line[] = list(locate(px,py,M.z))
@@ -157,7 +157,7 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/sdx = SIGN(dx)	//Sign of x distance (+ or -)
 	var/sdy = SIGN(dy)
 	var/x=dxabs>>1	//Counters for steps taken, setting to distance/2
-	var/y=dyabs>>1	//Bit-shifting makes me l33t.  It also makes getline() unnessecarrily fast.
+	var/y=dyabs>>1	//Bit-shifting makes me l33t.  It also makes get_line() unnessecarrily fast.
 	var/j			//Generic integer for counting
 	if(dxabs>=dyabs)	//x distance is greater than y
 		for(j=0;j<dxabs;j++)//It'll take dxabs steps to get there
@@ -727,6 +727,8 @@ Turf and target are separate in case you want to teleport some distance from a t
 		return "Грузчик"
 	else if (job == "Shaft Miner")
 		return "Шахтёр"
+	else if (job == "Hunter")
+		return "Охотник"
 	else if (job == "Exploration Crew")
 		return "Рейнджер"
 	else if (job == "Trader")
@@ -760,6 +762,46 @@ Turf and target are separate in case you want to teleport some distance from a t
 	else
 		return job
 
+/proc/jumpsuit_to_ru_conversion(jumpsuit)
+	switch(jumpsuit)
+		if("Jumpsuit")
+			return "Комбез"
+		if("Jumpskirt")
+			return "Юбкомбез"
+		else
+			return jumpsuit
+
+/proc/backpack_to_ru_conversion(backpack)
+	switch(backpack)
+		if("Grey Backpack")
+			return "Серый рюкзак"
+		if("Grey Satchel")
+			return "Серая сумка"
+		if("Grey Duffel Bag")
+			return "Серый вещмешок"
+		if("Leather Satchel")
+			return "Кожаная сумка"
+		if("Department Backpack")
+			return "Рюкзак отдела"
+		if("Department Satchel")
+			return "Сумка отдела"
+		if("Department Duffel Bag")
+			return "Вещмешок отдела"
+		else
+			return backpack
+
+/proc/uplink_to_ru_conversion(uplink)
+	switch(uplink)
+		if("PDA")
+			return "ПДА"
+		if("Radio")
+			return "Наушник"
+		if("Pen")
+			return "Ручка"
+		if("Implant")
+			return "Имплант"
+		else
+			return uplink
 
 /*
 
@@ -922,19 +964,24 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 		else
 			return "white"
 
-/proc/params2turf(scr_loc, turf/origin, client/C)
-	if(!scr_loc)
+/proc/parse_caught_click_modifiers(list/modifiers, turf/origin, client/viewing_client)
+	if(!modifiers)
 		return null
-	var/tX = splittext(scr_loc, ",")
-	var/tY = splittext(tX[2], ":")
-	var/tZ = origin.z
-	tY = tY[1]
-	tX = splittext(tX[1], ":")
-	tX = tX[1]
-	var/list/actual_view = getviewsize(C ? C.view : world.view)
-	tX = clamp(origin.x + text2num(tX) - round(actual_view[1] / 2) - 1, 1, world.maxx)
-	tY = clamp(origin.y + text2num(tY) - round(actual_view[2] / 2) - 1, 1, world.maxy)
-	return locate(tX, tY, tZ)
+	var/screen_loc = splittext(LAZYACCESS(modifiers, SCREEN_LOC), ",")
+	var/list/actual_view = getviewsize(viewing_client ? viewing_client.view : world.view)
+	var/click_turf_x = splittext(screen_loc[1], ":")
+	var/click_turf_y = splittext(screen_loc[2], ":")
+	var/click_turf_z = origin.z
+
+	var/click_turf_px = text2num(click_turf_x[2])
+	var/click_turf_py = text2num(click_turf_y[2])
+	click_turf_x = origin.x + text2num(click_turf_x[1]) - round(actual_view[1] / 2) - 1
+	click_turf_y = origin.y + text2num(click_turf_y[1]) - round(actual_view[2] / 2) - 1
+
+	var/turf/click_turf = locate(clamp(click_turf_x, 1, world.maxx), clamp(click_turf_y, 1, world.maxy), click_turf_z)
+	LAZYSET(modifiers, ICON_X, "[(click_turf_px - click_turf.pixel_x) + ((click_turf_x - click_turf.x) * world.icon_size)]")
+	LAZYSET(modifiers, ICON_Y, "[(click_turf_py - click_turf.pixel_y) + ((click_turf_y - click_turf.y) * world.icon_size)]")
+	return click_turf
 
 /proc/screen_loc2turf(text, turf/origin, client/C)
 	if(!text)
@@ -1244,8 +1291,8 @@ rough example of the "cone" made by the 3 dirs checked
 	else if(random)
 		chosen = pick(matches) || null
 	else
-		chosen = tgui_input_list(usr, "Select a type", "Pick Type", sortList(matches))
-		//chosen = input("Select a type", "Pick Type", matches[1]) as null|anything in sortList(matches)
+		chosen = tgui_input_list(usr, "Select a type", "Pick Type", sort_list(matches))
+		//chosen = input("Select a type", "Pick Type", matches[1]) as null|anything in sort_list(matches)
 	if(!chosen)
 		return
 	chosen = matches[chosen]
@@ -1341,6 +1388,31 @@ GLOBAL_REAL_VAR(list/stack_trace_storage)
 			. = "гигантского"
 		else
 			. = ""
+
+/proc/weightclass2icon(w_class, user, actually_readable = FALSE)
+	var/translation
+	switch(w_class)
+		if(WEIGHT_CLASS_TINY)
+			w_class = "tiny"
+			translation = "крошечный"
+		if(WEIGHT_CLASS_SMALL)
+			w_class = "small"
+			translation = "маленький"
+		if(WEIGHT_CLASS_NORMAL)
+			w_class = "normal"
+			translation = "средний"
+		if(WEIGHT_CLASS_BULKY)
+			w_class = "bulky"
+			translation = "громоздкий"
+		if(WEIGHT_CLASS_HUGE)
+			w_class = "huge"
+			translation = "огромный"
+		if(WEIGHT_CLASS_GIGANTIC)
+			w_class = "gigantic"
+			translation = "гигантский"
+	if(actually_readable)
+		return "[icon2html(EMOJI_SET, user, w_class)] [translation]."
+	return icon2html(EMOJI_SET, user, w_class)
 
 GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 
@@ -1495,11 +1567,11 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	if(length(list_or_datum))
 		list_or_datum[var_name] = var_value
 		return
-	var/datum/D = list_or_datum
+	var/datum/datum = list_or_datum
 	if(IsAdminAdvancedProcCall())
-		D.vv_edit_var(var_name, var_value)	//same result generally, unless badmemes
+		datum.vv_edit_var(var_name, var_value) //same result generally, unless badmemes
 	else
-		D.vars[var_name] = var_value
+		datum.vars[var_name] = var_value
 
 #define	TRAIT_CALLBACK_ADD(target, trait, source) CALLBACK(GLOBAL_PROC, /proc/___TraitAdd, ##target, ##trait, ##source)
 #define	TRAIT_CALLBACK_REMOVE(target, trait, source) CALLBACK(GLOBAL_PROC, /proc/___TraitRemove, ##target, ##trait, ##source)
@@ -1661,3 +1733,22 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 		if(-INFINITY to 0, 11 to INFINITY)
 			CRASH("Can't turn invalid directions!")
 	return turn(input_dir, 180)
+
+/proc/get_distant_turf(turf/T, direction, distance)
+	if(!T || !direction || !distance)
+		return
+
+	var/dest_x = T.x
+	var/dest_y = T.y
+	var/dest_z = T.z
+
+	if(direction & NORTH)
+		dest_y = min(world.maxy, dest_y + distance)
+	if(direction & SOUTH)
+		dest_y = max(0, dest_y - distance)
+	if(direction & EAST)
+		dest_x = min(world.maxy, dest_x + distance)
+	if(direction & WEST)
+		dest_x = max(0, dest_x - distance)
+
+	return locate(dest_x,dest_y, dest_z)

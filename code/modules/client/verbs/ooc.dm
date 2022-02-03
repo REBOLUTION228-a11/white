@@ -1,6 +1,7 @@
 GLOBAL_VAR_INIT(OOC_COLOR, null)//If this is null, use the CSS for OOC. Otherwise, use a custom colour.
 GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД ЕБУТ", "оникс" = "говно", "опух" = "говнище", "валтос" = "мяу"))
+GLOBAL_LIST_INIT(alko_list, list("zarri", "maxsc", "nfogmann", "sanecman", "sranklin"))
 
 /client/verb/ooc(msg as text)
 	set name = "OOC" //Gave this shit a shorter name so you only have to time out "ooc" rather than "ooc message" to use it --NeoFite
@@ -31,6 +32,7 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 		return
 
 	msg = copytext_char(sanitize(msg), 1, MAX_MESSAGE_LEN)
+
 	var/raw_msg = msg
 
 	if(!msg)
@@ -41,7 +43,11 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 
 	msg = emoji_parse(msg)
 
-	if(SSticker.HasRoundStarted() && (msg[1] in list(".",";",":","#") || findtext_char(msg, "say", 1, 5)))
+	if(ckey in GLOB.alko_list)
+		msg = slur(msg)
+
+
+	if(SSticker.HasRoundStarted() && (msg[1] in list(".",";",":","#") || findtext_char(msg, "Сказать", 1, 5)))
 		if(tgui_alert(usr, "Похоже \"[raw_msg]\" выглядит как внутриигровое сообщение, написать его в OOC?", "Для OOC?", list("Да", "Нет")) != "Да")
 			return
 
@@ -49,7 +55,7 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 		if(handle_spam_prevention(msg,MUTE_OOC))
 			return
 		if(findtext(msg, "byond://"))
-			to_chat(src, "<B> >Привет, ты что, охуел?</B>")
+			to_chat(src, "<B>Привет, ты что, охуел?</B>")
 			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
 			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]")
 			qdel(src)
@@ -88,12 +94,12 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 					if(check_rights_for(src, R_ADMIN))
 						to_chat(C, "<span class='adminooc'>[CONFIG_GET(flag/allow_admin_ooccolor) && prefs.ooccolor ? "<font color=[prefs.ooccolor]>" :"" ]<span class='prefix'>[tagmsg]:</span> <EM>[keyname][holder.fakekey ? "/([holder.fakekey])" : ""]:</EM> <span class='message linkify'>[msg]</span></span></font>")
 					else
-						to_chat(C, span_adminobserverooc("<span class='prefix'>[tagmsg]:</span> <EM>[keyname][holder.fakekey ? "/([holder.fakekey])" : ""]:</EM> <span class='message linkify'>[msg]</span>"))
+						to_chat(C, span_adminobserverooc(span_prefix("[tagmsg]:</span> <EM>[keyname][holder.fakekey ? "/([holder.fakekey])" : ""]:</EM> <span class='message linkify'>[msg]")))
 				else
 					if(GLOB.OOC_COLOR)
 						to_chat(C, "<font color='[GLOB.OOC_COLOR]'><b><span class='prefix'>[tagmsg]:</span> <EM>[holder.fakekey ? holder.fakekey : key]:</EM> <span class='message linkify'>[msg]</span></b></font>")
 					else
-						to_chat(C, span_ooc("<span class='prefix'>[tagmsg]:</span> <EM>[holder.fakekey ? holder.fakekey : key]:</EM> <span class='message linkify'>[msg]</span>"))
+						to_chat(C, span_ooc(span_prefix("[tagmsg]:</span> <EM>[holder.fakekey ? holder.fakekey : key]:</EM> <span class='message linkify'>[msg]")))
 
 			else if(!(key in C.prefs.ignoring))
 				if(check_donations(ckey) >= 100)
@@ -101,11 +107,11 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 				else if(GLOB.OOC_COLOR)
 					to_chat(C, "<font color='[GLOB.OOC_COLOR]'><b><span class='prefix'>[tagmsg]:</span> <EM>[keyname]:</EM> <span class='message linkify'>[msg]</span></b></font>")
 				else
-					to_chat(C, span_ooc("<span class='prefix'>[tagmsg]:</span> <EM>[keyname]:</EM> <span class='message linkify'>[msg]</span>"))
+					to_chat(C, span_ooc(span_prefix("[tagmsg]:</span> <EM>[keyname]:</EM> <span class='message linkify'>[msg]")))
 	if(isnewplayer(mob))
-		webhook_send_lobby(key, msg)
+		webhook_send_lobby(key, raw_msg)
 	else
-		webhook_send_ooc(key, msg)
+		webhook_send_ooc(key, raw_msg)
 
 /proc/toggle_ooc(toggle = null)
 	if(toggle != null) //if we're specifically en/disabling ooc
@@ -115,7 +121,7 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 			return
 	else //otherwise just toggle it
 		GLOB.ooc_allowed = !GLOB.ooc_allowed
-	message_admins(span_bold("OOC [GLOB.ooc_allowed ? "включен" : "выключен"]."))
+	to_chat(world, "<B>Чат ООС был глобально [GLOB.ooc_allowed ? "включен" : "отключен"]!</B>")
 
 /proc/toggle_dooc(toggle = null)
 	if(toggle != null)
@@ -291,7 +297,7 @@ GLOBAL_LIST_INIT(retard_words, list("подливит" = "МЕНЯ В ЗАД Е�
 		return
 
 	// Sort the list
-	players = sortList(players)
+	players = sort_list(players)
 
 	// Request the player to ignore
 	var/selection = input("Please, select a player!", "Ignore", null, null) as null|anything in players

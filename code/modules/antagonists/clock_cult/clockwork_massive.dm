@@ -122,10 +122,13 @@ GLOBAL_LIST_INIT(clockwork_portals, list())
 /obj/structure/destructible/clockwork/massive/celestial_gateway/proc/announce_gateway()
 	activated = TRUE
 	for(var/datum/mind/M in GLOB.player_list)
-		if(!is_servant_of_ratvar(M.current))
-			SEND_SOUND(M.current, 'white/valtos/sounds/ratalarm.ogg')
+		var/mob/living/motherlov = M?.current
+		if(!motherlov)
+			continue
+		if(!is_servant_of_ratvar(motherlov))
+			SEND_SOUND(motherlov, 'white/valtos/sounds/ratalarm.ogg')
 		else
-			SEND_SOUND(M.current, 'sound/magic/clockwork/invoke_general.ogg')
+			SEND_SOUND(motherlov, 'sound/magic/clockwork/invoke_general.ogg')
 	set_security_level(SEC_LEVEL_DELTA)
 	mass_recall(TRUE)
 	var/grace_time = GLOB.narsie_breaching ? 0 : 1800
@@ -156,7 +159,7 @@ GLOBAL_LIST_INIT(clockwork_portals, list())
 	priority_announce("Вблизи станции обнаружены пространственно-временные аномалии. Источник определен как временный \
 		импульс энергии, исходящий от J1523-215. Все члены экипажа должны войти в [text2ratvar("приготов#тесь %ре%ь")]\
 		и уничтожить [text2ratvar("Я бы хотел увидеть, как ты попробуешь")], который был определен как источник \
-		импульса, чтобы предотвратить массовое повреждение собственности Нанотрейзен.", "Аномальная тревога", ANNOUNCER_SPANOMALIES)
+		импульса, чтобы предотвратить массовое повреждение собственности NanoTrasen.", "Аномальная тревога", ANNOUNCER_SPANOMALIES)
 	var/list/pick_turfs = list()
 	for(var/turf/open/floor/T in world)
 		if(is_station_level(T.z))
@@ -229,7 +232,6 @@ GLOBAL_VAR(cult_ratvar)
 	appearance_flags = LONG_GLIDE
 	density = FALSE
 	gender = MALE
-	layer = MASSIVE_OBJ_LAYER
 	light_color = COLOR_RED
 	light_power = 0.7
 	light_range = 15

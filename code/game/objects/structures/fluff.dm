@@ -37,7 +37,7 @@
 
 /obj/structure/fluff/empty_sleeper/nanotrasen
 	name = "сломанная камера гиперсна"
-	desc = "Камера гиперсна Нанотрейсена - похоже она сломана. \
+	desc = "Камера гиперсна NanoTrasen - похоже она сломана. \
 		Это болты с неполной резьбой, легко демонтируются гаечным ключом."
 	icon_state = "sleeper-o"
 
@@ -249,8 +249,8 @@
 	icon_state = "clockgolem_dead"
 
 /obj/structure/fluff/hedge
-	name = "hedge"
-	desc = "A large bushy hedge."
+	name = "живая изгородь"
+	desc = "Огромная."
 	icon = 'icons/obj/smooth_structures/hedge.dmi'
 	icon_state = "hedge-0"
 	base_icon_state = "hedge"
@@ -264,9 +264,9 @@
 
 /obj/structure/fluff/hedge/attacked_by(obj/item/I, mob/living/user)
 	if(opacity && HAS_TRAIT(user, TRAIT_BONSAI) && I.get_sharpness())
-		to_chat(user,span_notice("You start trimming <b>[src.name]</b>."))
+		to_chat(user,span_notice("Начинаю стричь <b>[src.name]</b>."))
 		if(do_after(user, 3 SECONDS,target=src))
-			to_chat(user,span_notice("You finish trimming <b>[src.name]</b>."))
+			to_chat(user,span_notice("Стригу <b>[src.name]</b>."))
 			opacity = FALSE
 	else
 		return ..()

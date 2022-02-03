@@ -1,7 +1,7 @@
 //Baseline portable generator. Has all the default handling. Not intended to be used on it's own (since it generates unlimited power).
 /obj/machinery/power/port_gen
-	name = "portable generator"
-	desc = "A portable generator for emergency backup power."
+	name = "портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания."
 	icon = 'icons/obj/power.dmi'
 	icon_state = "portgen0_0"
 	density = TRUE
@@ -9,7 +9,7 @@
 	use_power = NO_POWER_USE
 
 	var/active = FALSE
-	var/power_gen = 5000
+	var/power_gen = 10000
 	var/power_output = 1
 	var/consumption = 0
 	var/base_icon = "portgen0"
@@ -78,7 +78,8 @@
 // P.A.C.M.A.N //
 /////////////////
 /obj/machinery/power/port_gen/pacman
-	name = "\improper P.A.C.M.A.N.-type portable generator"
+	name = "П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на плазме."
 	circuit = /obj/item/circuitboard/machine/pacman
 	var/sheets = 0
 	var/max_sheets = 100
@@ -275,24 +276,26 @@
 				. = TRUE
 
 /obj/machinery/power/port_gen/pacman/super
-	name = "\improper S.U.P.E.R.P.A.C.M.A.N.-type portable generator"
+	name = "С.У.П.Е.Р.П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на уране."
 	icon_state = "portgen1_0"
 	base_icon = "portgen1"
 	circuit = /obj/item/circuitboard/machine/pacman/super
 	sheet_path = /obj/item/stack/sheet/mineral/uranium
-	power_gen = 15000
+	power_gen = 20000
 	time_per_sheet = 85
 
 /obj/machinery/power/port_gen/pacman/super/overheat()
 	explosion(src.loc, 3, 3, 3, -1)
 
 /obj/machinery/power/port_gen/pacman/mrs
-	name = "\improper M.R.S.P.A.C.M.A.N.-type portable generator"
+	name = "М.И.С.И.С.П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на алмазах."
 	base_icon = "portgen2"
 	icon_state = "portgen2_0"
 	circuit = /obj/item/circuitboard/machine/pacman/mrs
 	sheet_path = /obj/item/stack/sheet/mineral/diamond
-	power_gen = 40000
+	power_gen = 60000
 	time_per_sheet = 80
 
 /obj/machinery/power/port_gen/pacman/mrs/overheat()

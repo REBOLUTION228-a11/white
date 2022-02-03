@@ -35,15 +35,15 @@
 		var/verb
 		switch(CEILING(MAX_LIVING_HEALTH / throwforce, 1)) //throws to crit a human
 			if(1 to 3)
-				verb = "superb"
+				verb = "идеальное"
 			if(4 to 6)
-				verb = "great"
+				verb = "великолепное"
 			if(7 to 9)
-				verb = "good"
+				verb = "крутое"
 			if(10 to 12)
-				verb = "fairly decent"
+				verb = "обычное"
 			if(13 to 15)
-				verb = "mediocre"
+				verb = "плохое"
 		if(!verb)
 			return
 		. += span_notice("Они могут работать как [verb] метательное оружие.")
@@ -159,6 +159,16 @@
 	icon_state = "tile-wood_tile"
 	turf_type = /turf/open/floor/wood/tile
 	merge_type = /obj/item/stack/tile/wood/tile
+
+//Bamboo
+/obj/item/stack/tile/bamboo
+	name = "bamboo mat pieces"
+	singular_name = "bamboo mat piece"
+	desc = "A piece of a bamboo mat with a decorative trim."
+	icon_state = "tile_bamboo"
+	turf_type = /turf/open/floor/bamboo
+	merge_type = /obj/item/stack/tile/bamboo
+	resistance_flags = FLAMMABLE
 
 //Basalt
 /obj/item/stack/tile/basalt
@@ -355,7 +365,7 @@
 
 //Circuit
 /obj/item/stack/tile/circuit
-	name = "синий circuit tile"
+	name = "синяя электронная плитка"
 	singular_name = "синий circuit tile"
 	desc = "A blue circuit tile."
 	icon_state = "tile_bcircuit"
@@ -364,7 +374,7 @@
 	merge_type = /obj/item/stack/tile/circuit
 
 /obj/item/stack/tile/circuit/green
-	name = "зелёный circuit tile"
+	name = "зелёная электронная плитка"
 	singular_name = "зелёный circuit tile"
 	desc = "A green circuit tile."
 	icon_state = "tile_gcircuit"
@@ -377,8 +387,8 @@
 	merge_type = /obj/item/stack/tile/circuit/green/anim
 
 /obj/item/stack/tile/circuit/red
-	name = "красный circuit tile"
-	singular_name = "красный circuit tile"
+	name = "красная электронная плитка"
+	singular_name = "красная электронная плитка"
 	desc = "Красная плитка схем."
 	icon_state = "tile_rcircuit"
 	inhand_icon_state = "tile-rcircuit"
@@ -481,3 +491,42 @@
 	icon_state = "tile_eightiesred"
 	turf_type = /turf/open/floor/eighties/red
 	merge_type = /obj/item/stack/tile/eighties/red
+
+/obj/item/stack/tile/catwalk_tile
+	name = "помостовый пол"
+	singular_name = "помостовый пол"
+	desc = "Сквозь него можно смотреть на другой пол. Чудесно."
+	icon_state = "catwalk_floor"
+	inhand_icon_state = "tile-catwalk"
+	turf_type = /turf/open/floor/plasteel/catwalk_floor
+	merge_type = /obj/item/stack/tile/catwalk_tile
+
+/obj/item/stack/tile/catwalk_tile/fifty
+	amount = 50
+
+// Glass floors
+/obj/item/stack/tile/glass
+	name = "стеклянный пол"
+	singular_name = "стеклянный пол"
+	desc = "Какой мудак это придумал?"
+	icon_state = "tile_glass"
+	turf_type = /turf/open/floor/glass
+	inhand_icon_state = "tile-glass"
+	merge_type = /obj/item/stack/tile/glass
+	mats_per_unit = list(/datum/material/glass = MINERAL_MATERIAL_AMOUNT * 0.25) // 4 tiles per sheet
+
+/obj/item/stack/tile/glass/fifty
+	amount = 50
+
+/obj/item/stack/tile/rglass
+	name = "армированный стеклянный пол"
+	singular_name = "армированный стеклянный пол"
+	desc = "Вот это уже другое дело!"
+	icon_state = "tile_rglass"
+	inhand_icon_state = "tile-rglass"
+	turf_type = /turf/open/floor/glass/reinforced
+	merge_type = /obj/item/stack/tile/rglass
+	mats_per_unit = list(/datum/material/iron = MINERAL_MATERIAL_AMOUNT * 0.125, /datum/material/glass = MINERAL_MATERIAL_AMOUNT * 0.25) // 4 tiles per sheet
+
+/obj/item/stack/tile/rglass/fifty
+	amount = 50

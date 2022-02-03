@@ -303,7 +303,7 @@
 		if((a_incidence_s < 90 && a_incidence_s < 90 - P.ricochet_incidence_leeway) || (a_incidence_s > 270 && a_incidence_s -270 > P.ricochet_incidence_leeway))
 			return FALSE
 	var/new_angle_s = SIMPLIFY_DEGREES(face_angle + incidence_s)
-	P.setAngle(new_angle_s)
+	P.set_angle(new_angle_s)
 	return TRUE
 
 /// Whether the mover object can avoid being blocked by this atom, while arriving from (or leaving through) the border_dir.
@@ -613,8 +613,8 @@
 		var/list/materials_list = list()
 		for(var/i in custom_materials)
 			var/datum/material/M = i
-			materials_list += "[M.skloname]"
-		. += span_small("Вероятно, этот предмет создан из <u>[english_list(materials_list)]</u>.")
+			materials_list += "<font color='[M.color]'>[M.skloname]</font>"
+		. += span_small("Этот предмет создан из <u>[english_list(materials_list)]</u>.")
 	if(reagents)
 		. += "<hr>"
 		if(reagents.flags & TRANSPARENT)
@@ -1270,7 +1270,7 @@
 						if(!valid_id)
 							to_chat(usr, span_warning("A reagent with that ID doesn't exist!"))
 				if("Choose from a list")
-					chosen_id = input(usr, "Choose a reagent to add.", "Choose a reagent.") as null|anything in sortList(subtypesof(/datum/reagent), /proc/cmp_typepaths_asc)
+					chosen_id = input(usr, "Choose a reagent to add.", "Choose a reagent.") as null|anything in sort_list(subtypesof(/datum/reagent), /proc/cmp_typepaths_asc)
 				if("I'm feeling lucky")
 					chosen_id = pick(subtypesof(/datum/reagent))
 			if(chosen_id)
@@ -1663,7 +1663,8 @@
 	var/postfix = "[sobject][saddition][hp]"
 
 	var/message = "has [what_done] [starget][postfix]"
-	user.log_message(message, LOG_ATTACK, color="red")
+	if(user)
+		user.log_message(message, LOG_ATTACK, color="red")
 
 	if(user != target)
 		var/reverse_message = "has been [what_done] by [ssource][postfix]"
@@ -1706,9 +1707,9 @@
 
 /atom/proc/add_filter(name,priority,list/params)
 	LAZYINITLIST(filter_data)
-	var/list/p = params.Copy()
-	p["priority"] = priority
-	filter_data[name] = p
+	var/list/copied_parameters = params.Copy()
+	copied_parameters["priority"] = priority
+	filter_data[name] = copied_parameters
 	update_filters()
 
 /atom/proc/update_filters()
@@ -1766,8 +1767,8 @@
 	filter_data = null
 	filters = null
 
-/atom/proc/intercept_zImpact(atom/movable/AM, levels = 1)
-	. |= SEND_SIGNAL(src, COMSIG_ATOM_INTERCEPT_Z_FALL, AM, levels)
+/atom/proc/intercept_zImpact(list/falling_movables, levels = 1)
+	. |= SEND_SIGNAL(src, COMSIG_ATOM_INTERCEPT_Z_FALL, falling_movables, levels)
 
 /// Sets the custom materials for an item.
 /atom/proc/set_custom_materials(list/materials, multiplier = 1)

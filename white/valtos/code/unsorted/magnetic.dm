@@ -41,7 +41,7 @@
 	luminosity = 0
 	if(magpower > 1)
 		luminosity = 1
-		SSvis_overlays.add_vis_overlay(src, icon, "magnetic_concentrator_overlay", EMISSIVE_LAYER, ABOVE_LIGHTING_PLANE, dir, alpha)
+		SSvis_overlays.add_vis_overlay(src, icon, "magnetic_concentrator_overlay", plane = ABOVE_LIGHTING_PLANE, dir = src.dir, alpha = src.alpha)
 
 /obj/machinery/magnetic_concentrator/bullet_act(obj/projectile/Proj)
 	if(Proj.flag != BULLET)
@@ -249,7 +249,7 @@
 				if(SOUTH)
 					target = locate(x,1,z)
 					point = locate(x,y - (catch_power + 1),z)
-			for(var/T in getline(get_step(point, dir), target))
+			for(var/T in get_line(get_step(point, dir), target))
 				var/turf/tile = T
 				if(isclosedturf(tile))
 					Beam(tile, icon_state = "nzcrentrs_power", time = 5 SECONDS)

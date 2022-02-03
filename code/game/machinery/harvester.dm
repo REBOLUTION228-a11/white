@@ -1,6 +1,6 @@
 /obj/machinery/harvester
-	name = "organ harvester"
-	desc = "An advanced machine used for harvesting organs and limbs from the deceased."
+	name = "Авто-Потрошитель МК II"
+	desc = "Извлекает из тела ВСЁ лишнее, включая органы, конечности и голову."
 	density = TRUE
 	icon = 'icons/obj/machines/harvester.dmi'
 	icon_state = "harvester"
@@ -68,15 +68,15 @@
 			var/obj/item/I = A
 			if(!(HAS_TRAIT(I, TRAIT_NODROP)))
 				say("Subject may not have abiotic items on.")
-				playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+				playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 				return
 	if(!(C.mob_biotypes & MOB_ORGANIC))
 		say("Subject is not organic.")
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 		return
 	if(!allow_living && !(C.stat == DEAD || HAS_TRAIT(C, TRAIT_FAKEDEATH)))     //I mean, the machines scanners arent advanced enough to tell you're alive
 		say("Subject is still alive.")
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 		return
 	return TRUE
 

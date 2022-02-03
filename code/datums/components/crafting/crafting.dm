@@ -40,6 +40,7 @@
 					CAT_SANDWICH,
 					CAT_SOUP,
 					CAT_SPAGHETTI,
+					CAT_MOTH,
 				),
 				CAT_DRINK = CAT_NONE,
 				CAT_CLOTHING = CAT_NONE,
@@ -116,10 +117,9 @@
 		return
 
 	for(var/atom/movable/AM in range(radius_range, a))
-		if((AM.flags_1 & HOLOGRAM_1)  || (blacklist && (AM.type in blacklist)))
+		if((AM.flags_1 & HOLOGRAM_1) || (blacklist && (AM.type in blacklist)))
 			continue
 		. += AM
-
 
 /datum/component/personal_crafting/proc/get_surroundings(atom/a, list/blacklist=null)
 	. = list()
@@ -146,8 +146,6 @@
 				.["other"][item.type] += 1
 		else if (ismachinery(object))
 			LAZYADDASSOCLIST(.["machinery"], object.type, object)
-
-
 
 /// Returns a boolean on whether the tool requirements of the input recipe are satisfied by the input source and surroundings.
 /datum/component/personal_crafting/proc/check_tools(atom/source, datum/crafting_recipe/recipe, list/surroundings)
@@ -199,26 +197,25 @@
 			if(R.one_per_turf)
 				for(var/content in get_turf(a))
 					if(istype(content, R.result))
-						return ", object already present."
+						return ", уже создано."
 			//If we're a mob we'll try a do_after; non mobs will instead instantly construct the item
 			if(ismob(a) && !do_after(a, R.time, target = a))
 				return "."
 			contents = get_surroundings(a,R.blacklist)
 			if(!check_contents(a, R, contents))
-				return ", missing component."
+				return ", не хватает компонента."
 			if(!check_tools(a, R, contents))
-				return ", missing tool."
+				return ", нет инструмента."
 			var/list/parts = del_reqs(R, a)
 			var/atom/movable/I = new R.result (get_turf(a.loc))
 			I.CheckParts(parts, R)
 			if(send_feedback)
 				SSblackbox.record_feedback("tally", "object_crafted", 1, I.type)
 			return I //Send the item back to whatever called this proc so it can handle whatever it wants to do with the new item
-		return ", missing tool."
-	return ", missing component."
+		return ", нет инструмента."
+	return ", не хватает компонента."
 
 /*Del reqs works like this:
-
 	Loop over reqs var of the recipe
 	Set var amt to the value current cycle req is pointing to, its amount of type we need to delete
 	Get var/surroundings list of things accessable to crafting by get_environment()
@@ -232,12 +229,9 @@
 			If no put all of the stack in the deletion list, substract its amount from amt and keep searching
 			While doing above stuff check deletion list if it already has such stack type, if yes try to merge them instead of adding new one
 		If its anything else just locate() in in the list in a while loop, each find --s the amt var and puts the found stuff in deletion loop
-
 	Then do a loop over parts var of the recipe
 		Do similar stuff to what we have done above, but now in deletion list, until the parts conditions are satisfied keep taking from the deletion list and putting it into parts list for return
-
 	After its done loop over deletion list and delete all the shit that wasn't taken by parts loop
-
 	del_reqs return the list of parts resulting object will receive as argument of CheckParts proc, on the atom level it will add them all to the contents, on all other levels it calls ..() and does whatever is needed afterwards but from contents list already
 */
 
@@ -434,19 +428,20 @@
 	switch(action)
 		if("make")
 			var/mob/user = usr
-			var/datum/crafting_recipe/TR = locate(params["recipe"]) in GLOB.crafting_recipes
+			var/datum/crafting_recipe/crafting_recipe = locate(params["recipe"]) in GLOB.crafting_recipes
 			busy = TRUE
 			ui_interact(user)
-			var/atom/movable/result = construct_item(user, TR)
+			var/atom/movable/result = construct_item(user, crafting_recipe)
 			if(!istext(result)) //We made an item and didn't get a fail message
 				if(ismob(user) && isitem(result)) //In case the user is actually possessing a non mob like a machine
 					user.put_in_hands(result)
 				else
 					result.forceMove(user.drop_location())
-				to_chat(user, span_notice("[TR.name] constructed."))
-				TR.on_craft_completion(user, result)
+				to_chat(user, span_notice("[crafting_recipe.name] создано."))
+				user.investigate_log("[key_name(user)] crafted [crafting_recipe]", INVESTIGATE_CRAFTING)
+				crafting_recipe.on_craft_completion(user, result)
 			else
-				to_chat(user, span_warning("Construction failed[result]"))
+				to_chat(user, span_warning("Создание провалено[result]"))
 			busy = FALSE
 		if("toggle_recipes")
 			display_craftable_only = !display_craftable_only

@@ -150,8 +150,8 @@
 	///Cooldown between using smoke
 	var/smoke_cooldown = 10 SECONDS
 
-	///Bool for if the mech is currently phasing
-	var/phasing = FALSE
+	///check for phasing, if it is set to text (to describe how it is phasing: "flying", "phasing") it will let the mech walk through walls.
+	var/phasing = ""
 	///Power we use every time we phaze through something
 	var/phasing_energy_drain = 200
 	///icon_state for flick() when phazing
@@ -251,12 +251,20 @@
 
 
 /obj/vehicle/sealed/mecha/update_icon_state()
+	icon_state = get_mecha_occupancy_state()
+	return ..()
+
+//override this proc if you need to split up mecha control between multiple people (see savannah_ivanov.dm)
+/obj/vehicle/sealed/mecha/auto_assign_occupant_flags(mob/M)
+	if(driver_amount() < max_drivers)
+		add_control_flags(M, FULL_MECHA_CONTROL)
+
+/obj/vehicle/sealed/mecha/proc/get_mecha_occupancy_state()
 	if((mecha_flags & SILICON_PILOT) && silicon_icon_state)
-		icon_state = silicon_icon_state
-	else if(LAZYLEN(occupants))
-		icon_state = initial(icon_state)
-	else
-		icon_state = initial(icon_state)+ "-open"
+		return silicon_icon_state
+	if(LAZYLEN(occupants))
+		return initial(icon_state)
+	return "[initial(icon_state)]-open"
 
 /obj/vehicle/sealed/mecha/CanPassThrough(atom/blocker, movement_dir, blocker_opinion)
 	if(!phasing || get_charge() <= phasing_energy_drain || throwing)
@@ -514,7 +522,7 @@
 	SIGNAL_HANDLER
 	if(!isturf(target) && !isturf(target.loc)) // Prevents inventory from being drilled
 		return
-	if(completely_disabled || is_currently_ejecting)
+	if(completely_disabled || is_currently_ejecting || (mecha_flags & CANNOT_INTERACT))
 		return
 	var/list/mouse_control = params2list(params)
 	if(isAI(user) == !mouse_control["middle"])//BASICALLY if a human uses MMB, or an AI doesn't, then do nothing.
@@ -538,9 +546,14 @@
 		target = pick(view(3,target))
 	var/mob/living/livinguser = user
 	if(selected)
+		if(!(livinguser in return_controllers_with_flag(VEHICLE_CONTROL_EQUIPMENT)))
+			to_chat(livinguser, span_warning("Неправильное место для взаимодействия с оборудованием!"))
+			return
 		if(!Adjacent(target) && (selected.range & MECHA_RANGED))
 			if(HAS_TRAIT(livinguser, TRAIT_PACIFISM) && selected.harmful)
 				to_chat(livinguser, span_warning("Не хочу вредить живым существам!"))
+				return
+			if(SEND_SIGNAL(src, COMSIG_MECHA_EQUIPMENT_CLICK, livinguser, target) & COMPONENT_CANCEL_EQUIPMENT_CLICK)
 				return
 			INVOKE_ASYNC(selected, /obj/item/mecha_parts/mecha_equipment.proc/action, user, target, params)
 			return
@@ -548,9 +561,18 @@
 			if(isliving(target) && selected.harmful && HAS_TRAIT(livinguser, TRAIT_PACIFISM))
 				to_chat(livinguser, span_warning("Не хочу вредить живым существам!"))
 				return
+			if(SEND_SIGNAL(src, COMSIG_MECHA_EQUIPMENT_CLICK, livinguser, target) & COMPONENT_CANCEL_EQUIPMENT_CLICK)
+				return
 			INVOKE_ASYNC(selected, /obj/item/mecha_parts/mecha_equipment.proc/action, user, target, params)
 			return
-	if(TIMER_COOLDOWN_CHECK(src, COOLDOWN_MECHA_MELEE_ATTACK) || !Adjacent(target))
+	if(!(livinguser in return_controllers_with_flag(VEHICLE_CONTROL_MELEE)))
+		to_chat(livinguser, span_warning("Неправильное место для взаимодействия с оборудованием!"))
+		return
+	var/on_cooldown = TIMER_COOLDOWN_CHECK(src, COOLDOWN_MECHA_MELEE_ATTACK)
+	var/adjacent = Adjacent(target)
+	if(SEND_SIGNAL(src, COMSIG_MECHA_MELEE_CLICK, livinguser, target, on_cooldown, adjacent) & COMPONENT_CANCEL_MELEE_CLICK)
+		return
+	if(on_cooldown || !adjacent)
 		return
 	if(internal_damage & MECHA_INT_CONTROL_LOST)
 		target = pick(oview(1,src))
@@ -600,9 +622,10 @@
 	return FALSE
 
 /obj/vehicle/sealed/mecha/relaymove(mob/living/user, direction)
-	if(canmove)
-		vehicle_move(direction)
-	return TRUE
+	. = TRUE
+	if(!canmove || !(user in return_drivers()))
+		return
+	vehicle_move(direction)
 
 /obj/vehicle/sealed/mecha/vehicle_move(direction, forcerotate = FALSE)
 	if(!COOLDOWN_FINISHED(src, cooldown_vehicle_move))
@@ -671,7 +694,7 @@
 	if(dir != direction && !strafe || forcerotate || keyheld)
 		if(dir != direction && !(mecha_flags & QUIET_TURNS) && !step_silent)
 			playsound(src,turnsound,40,TRUE)
-		setDir(direction)
+		set_dir_mecha(direction)
 		return TRUE
 
 	set_glide_size(DELAY_TO_GLIDE_SIZE(movedelay))
@@ -680,14 +703,14 @@
 	if(phasing)
 		use_power(phasing_energy_drain)
 	if(strafe)
-		setDir(olddir)
+		set_dir_mecha(olddir)
 
 
 /obj/vehicle/sealed/mecha/Bump(atom/obstacle)
 	. = ..()
 	if(phasing) //Theres only one cause for phasing canpass fails
 		addtimer(VARSET_CALLBACK(src, movedelay, TRUE), movedelay*3)
-		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Фазирование заблокировано силовым полем, движение дальше невозможно!</span>")
+		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Движение заблокировано, [phasing] дальше невозможно!</span>")
 		spark_system.start()
 		return
 	if(.) //mech was thrown/door/whatever
@@ -800,7 +823,7 @@
 				to_chat(user, span_warning("Не обнаружено ИИ в набортном компьютере [name]."))
 				return
 			if(ai_pilots.len > 1) //Input box for multiple AIs, but if there's only one we'll default to them.
-				AI = input(user,"Какой ИИ должен управлять?", "Выбор ИИ") as null|anything in sortList(ai_pilots)
+				AI = input(user,"Какой ИИ должен управлять?", "Выбор ИИ") as null|anything in sort_list(ai_pilots)
 			else
 				AI = ai_pilots[1]
 			if(!AI)
@@ -930,11 +953,11 @@
 
 /obj/vehicle/sealed/mecha/generate_actions()
 	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/mech_eject)
-	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/mech_toggle_internals)
-	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/mech_cycle_equip)
-	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/mech_toggle_lights)
-	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/mech_view_stats)
-	initialize_passenger_action_type(/datum/action/vehicle/sealed/mecha/strafe)
+	initialize_controller_action_type(/datum/action/vehicle/sealed/mecha/mech_toggle_internals, VEHICLE_CONTROL_SETTINGS)
+	initialize_controller_action_type(/datum/action/vehicle/sealed/mecha/mech_cycle_equip, VEHICLE_CONTROL_EQUIPMENT)
+	initialize_controller_action_type(/datum/action/vehicle/sealed/mecha/mech_toggle_lights, VEHICLE_CONTROL_SETTINGS)
+	initialize_controller_action_type(/datum/action/vehicle/sealed/mecha/mech_view_stats, VEHICLE_CONTROL_SETTINGS)
+	initialize_controller_action_type(/datum/action/vehicle/sealed/mecha/strafe, VEHICLE_CONTROL_DRIVE)
 
 /obj/vehicle/sealed/mecha/proc/moved_inside(mob/living/newoccupant)
 	if(!(newoccupant?.client))
@@ -946,7 +969,7 @@
 	newoccupant.update_mouse_pointer()
 	add_fingerprint(newoccupant)
 	log_message("[newoccupant] moved in as pilot.", LOG_MECHA)
-	setDir(dir_in)
+	set_dir_mecha(dir_in)
 	playsound(src, 'sound/machines/windowdoor.ogg', 50, TRUE)
 	if(!internal_damage)
 		SEND_SOUND(newoccupant, sound('sound/mecha/nominal.ogg',volume=50))
@@ -991,7 +1014,7 @@
 	B.reset_perspective(src)
 	B.remote_control = src
 	B.update_mouse_pointer()
-	setDir(dir_in)
+	set_dir_mecha(dir_in)
 	log_message("[M] moved in as pilot.", LOG_MECHA)
 	if(!internal_damage)
 		SEND_SOUND(M, sound('sound/mecha/nominal.ogg',volume=50))
@@ -1058,7 +1081,7 @@
 			remove_occupant(ejector)
 		mmi.set_mecha(null)
 		mmi.update_icon()
-	setDir(dir_in)
+	set_dir_mecha(dir_in)
 	return ..()
 
 
@@ -1221,3 +1244,9 @@
 	for(var/occupant in occupants)
 		remove_action_type_from_mob(/datum/action/vehicle/sealed/mecha/mech_toggle_lights, occupant)
 	return COMPONENT_BLOCK_LIGHT_EATER
+
+/// Sets the direction of the mecha and all of its occcupents, required for FOV. Alternatively one could make a recursive contents registration and register topmost direction changes in the fov component
+/obj/vehicle/sealed/mecha/proc/set_dir_mecha(new_dir)
+	setDir(new_dir)
+	for(var/mob/living/occupant as anything in occupants)
+		occupant.setDir(new_dir)

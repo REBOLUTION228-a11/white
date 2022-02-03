@@ -652,7 +652,7 @@
 	cut_overlay(MA)
 
 /mob/living/carbon/human/resist_restraints()
-	if(wear_suit?.breakouttime)
+	if(wear_suit?.breakoutchance)
 		changeNext_move(CLICK_CD_BREAKOUT)
 		last_special = world.time + CLICK_CD_BREAKOUT
 		cuff_resist(wear_suit)
@@ -794,7 +794,7 @@
 			var/name = initial(mut.name)
 			options[dna.check_mutation(mut) ? "[name] (Remove)" : "[name] (Add)"] = mut
 
-		var/result = input(usr, "Choose mutation to add/remove","Mutation Mod") as null|anything in sortList(options)
+		var/result = input(usr, "Choose mutation to add/remove","Mutation Mod") as null|anything in sort_list(options)
 		if(result)
 			if(result == "Clear")
 				dna.remove_all_mutations()
@@ -814,7 +814,7 @@
 			var/qname = initial(T.name)
 			options[has_quirk(T) ? "[qname] (Remove)" : "[qname] (Add)"] = T
 
-		var/result = input(usr, "Choose quirk to add/remove","Quirk Mod") as null|anything in sortList(options)
+		var/result = input(usr, "Choose quirk to add/remove","Quirk Mod") as null|anything in sort_list(options)
 		if(result)
 			if(result == "Clear")
 				for(var/datum/quirk/q in roundstart_quirks)
@@ -986,6 +986,9 @@
 
 /mob/living/carbon/human/adjust_nutrition(change) //Honestly FUCK the oldcoders for putting nutrition on /mob someone else can move it up because holy hell I'd have to fix SO many typechecks
 	if(HAS_TRAIT(src, TRAIT_NOHUNGER))
+		return FALSE
+	if((NOBLOOD in dna.species.species_traits))
+		nutrition = NUTRITION_LEVEL_START_MAX
 		return FALSE
 	return ..()
 

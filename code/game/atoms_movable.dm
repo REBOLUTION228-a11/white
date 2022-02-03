@@ -6,7 +6,6 @@
 	///how many times a this movable had movement procs called on it since Moved() was last called
 	var/move_stacks = 0
 	var/last_move = null
-	var/last_move_time = 0
 	var/anchored = FALSE
 	var/move_resist = MOVE_RESIST_DEFAULT
 	var/move_force = MOVE_FORCE_DEFAULT
@@ -58,10 +57,9 @@
 	var/grab_state = 0
 	var/throwforce = 0
 	var/datum/component/orbiter/orbiting
-	var/can_be_z_moved = TRUE
 
-	var/zfalling = FALSE
-
+	///is the mob currently ascending or descending through z levels?
+	var/currently_z_moving
 	/// Either FALSE, [EMISSIVE_BLOCK_GENERIC], or [EMISSIVE_BLOCK_UNIQUE]
 	var/blocks_emissive = FALSE
 	///Internal holder for emissive blocker object, do not use directly use blocks_emissive
@@ -88,9 +86,9 @@
 	. = ..()
 	switch(blocks_emissive)
 		if(EMISSIVE_BLOCK_GENERIC)
-			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, EMISSIVE_BLOCKER_LAYER, EMISSIVE_BLOCKER_PLANE)
+			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, plane = EMISSIVE_PLANE)
+			gen_emissive_blocker.color = GLOB.em_block_color
 			gen_emissive_blocker.dir = dir
-			gen_emissive_blocker.alpha = alpha
 			gen_emissive_blocker.appearance_flags |= appearance_flags
 			add_overlay(list(gen_emissive_blocker))
 		if(EMISSIVE_BLOCK_UNIQUE)
@@ -157,10 +155,8 @@
 	if(!blocks_emissive)
 		return
 	else if (blocks_emissive == EMISSIVE_BLOCK_GENERIC)
-		var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, EMISSIVE_BLOCKER_LAYER, EMISSIVE_BLOCKER_PLANE)
+		var/mutable_appearance/gen_emissive_blocker = emissive_blocker(icon, icon_state, alpha = src.alpha, appearance_flags = src.appearance_flags)
 		gen_emissive_blocker.dir = dir
-		gen_emissive_blocker.alpha = alpha
-		gen_emissive_blocker.appearance_flags |= appearance_flags
 		return gen_emissive_blocker
 	else if(blocks_emissive == EMISSIVE_BLOCK_UNIQUE)
 		if(!em_block && !QDELETED(src))
@@ -170,49 +166,111 @@
 
 /atom/movable/update_overlays()
 	. = ..()
-	. += update_emissive_block()
+	var/emissive_block = update_emissive_block()
+	if(emissive_block)
+		. += emissive_block
 
-/atom/movable/proc/can_zFall(turf/source, levels = 1, turf/target, direction)
-	if(!direction)
-		direction = DOWN
-	if(!source)
-		source = get_turf(src)
-		if(!source)
-			return FALSE
-	if(!target)
-		target = get_step_multiz(source, direction)
-		if(!target)
-			return FALSE
-	return !(movement_type & FLYING) && has_gravity(source) && !throwing
-
-/atom/movable/proc/onZImpact(turf/T, levels)
-	var/atom/highest = T
-	for(var/i in T.contents)
-		var/atom/A = i
-		if(!A.density)
+/atom/movable/proc/onZImpact(turf/impacted_turf, levels, message = TRUE)
+	if(message)
+		visible_message(span_danger("[src] падает на [impacted_turf]!"))
+	var/atom/highest = impacted_turf
+	for(var/atom/hurt_atom as anything in impacted_turf.contents)
+		if(!hurt_atom.density)
 			continue
-		if(isobj(A) || ismob(A))
-			if(A.layer > highest.layer)
-				highest = A
+		if(isobj(hurt_atom) || ismob(hurt_atom))
+			if(hurt_atom.layer > highest.layer)
+				highest = hurt_atom
 	INVOKE_ASYNC(src, .proc/SpinAnimation, 5, 2)
 	return TRUE
 
-//For physical constraints to travelling up/down.
-/atom/movable/proc/can_zTravel(turf/destination, direction)
-	var/turf/T = get_turf(src)
-	if(!T)
-		return FALSE
+/*
+ * The core multi-z movement proc. Used to move a movable through z levels.
+ * If target is null, it'll be determined by the can_z_move proc, which can potentially return null if
+ * conditions aren't met (see z_move_flags defines in __DEFINES/movement.dm for info) or if dir isn't set.
+ * Bear in mind you don't need to set both target and dir when calling this proc, but at least one or two.
+ * This will set the currently_z_moving to CURRENTLY_Z_MOVING_GENERIC if unset, and then clear it after
+ * Forcemove().
+ *
+ *
+ * Args:
+ * * dir: the direction to go, UP or DOWN, only relevant if target is null.
+ * * target: The target turf to move the src to. Set by can_z_move() if null.
+ * * z_move_flags: bitflags used for various checks in both this proc and can_z_move(). See __DEFINES/movement.dm.
+ */
+/atom/movable/proc/zMove(dir, turf/target, z_move_flags = ZMOVE_FLIGHT_FLAGS)
+	if(!target)
+		target = can_z_move(dir, get_turf(src), null, z_move_flags)
+		if(!target)
+			set_currently_z_moving(FALSE, TRUE)
+			return FALSE
+
+	var/list/moving_movs = get_z_move_affected(z_move_flags)
+
+	for(var/atom/movable/movable as anything in moving_movs)
+		movable.currently_z_moving = currently_z_moving || CURRENTLY_Z_MOVING_GENERIC
+		movable.forceMove(target)
+		movable.set_currently_z_moving(FALSE, TRUE)
+	// This is run after ALL movables have been moved, so pulls don't get broken unless they are actually out of range.
+	if(z_move_flags & ZMOVE_CHECK_PULLS)
+		for(var/atom/movable/moved_mov as anything in moving_movs)
+			if(z_move_flags & ZMOVE_CHECK_PULLEDBY && moved_mov.pulledby && (moved_mov.z != moved_mov.pulledby.z || get_dist(moved_mov, moved_mov.pulledby) > 1))
+				moved_mov.pulledby.stop_pulling()
+			if(z_move_flags & ZMOVE_CHECK_PULLING)
+				moved_mov.check_pulling(TRUE)
+	return TRUE
+
+/// Returns a list of movables that should also be affected when src moves through zlevels, and src.
+/atom/movable/proc/get_z_move_affected(z_move_flags)
+	. = list(src)
+	if(buckled_mobs)
+		. |= buckled_mobs
+	if(!(z_move_flags & ZMOVE_INCLUDE_PULLED))
+		return
+	for(var/mob/living/buckled as anything in buckled_mobs)
+		if(buckled.pulling)
+			. |= buckled.pulling
+	if(pulling)
+		. |= pulling
+
+/**
+ * Checks if the destination turf is elegible for z movement from the start turf to a given direction and returns it if so.
+ * Args:
+ * * direction: the direction to go, UP or DOWN, only relevant if target is null.
+ * * start: Each destination has a starting point on the other end. This is it. Most of the times the location of the source.
+ * * z_move_flags: bitflags used for various checks. See __DEFINES/movement.dm.
+ * * rider: A living mob in control of the movable. Only non-null when a mob is riding a vehicle through z-levels.
+ */
+/atom/movable/proc/can_z_move(direction, turf/start, turf/destination, z_move_flags = ZMOVE_FLIGHT_FLAGS, mob/living/rider)
+	if(!start)
+		start = get_turf(src)
+		if(!start)
+			return FALSE
 	if(!direction)
 		if(!destination)
 			return FALSE
-		direction = get_dir(T, destination)
+		direction = get_dir_multiz(start, destination)
 	if(direction != UP && direction != DOWN)
 		return FALSE
 	if(!destination)
-		destination = get_step_multiz(src, direction)
+		destination = get_step_multiz(start, direction)
 		if(!destination)
+			if(z_move_flags & ZMOVE_FEEDBACK)
+				to_chat(rider || src, span_warning("There's nowhere to go in that direction!"))
 			return FALSE
-	return T.zPassOut(src, direction, destination) && destination.zPassIn(src, direction, T)
+	if(z_move_flags & ZMOVE_FALL_CHECKS && (throwing || (movement_type & (FLYING|FLOATING)) || !has_gravity(start)))
+		return FALSE
+	if(z_move_flags & ZMOVE_CAN_FLY_CHECKS && !(movement_type & (FLYING|FLOATING)) && has_gravity(start))
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			if(rider)
+				to_chat(rider, span_notice("[src] is is not capable of flight."))
+			else
+				to_chat(src, span_notice("You are not Superman."))
+		return FALSE
+	if(!(z_move_flags & ZMOVE_IGNORE_OBSTACLES) && !(start.zPassOut(src, direction, destination) && destination.zPassIn(src, direction, start)))
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			to_chat(rider || src, span_warning("You couldn't move there!"))
+		return FALSE
+	return destination //used by some child types checks and zMove()
 
 
 /atom/movable/vv_edit_var(var_name, var_value)
@@ -342,23 +400,23 @@
 	var/mob/living/L = A
 	set_pull_offsets(L, grab_state)
 
-/atom/movable/proc/check_pulling()
+/**
+ * Checks if the pulling and pulledby should be stopped because they're out of reach.
+ * If z_allowed is TRUE, the z level of the pulling will be ignored.This is to allow things to be dragged up and down stairs.
+ */
+/atom/movable/proc/check_pulling(only_pulling = FALSE, z_allowed = FALSE)
 	if(pulling)
-		var/atom/movable/pullee = pulling
-		if(pullee && get_dist(src, pullee) > 1)
+		if(get_dist(src, pulling) > 1 || (z != pulling.z && !z_allowed))
+			stop_pulling()
+		else if(!isturf(loc))
+			stop_pulling()
+		else if(pulling && !isturf(pulling.loc) && pulling.loc != loc) //to be removed once all code that changes an object's loc uses forceMove().
+			log_game("DEBUG:[src]'s pull on [pulling] wasn't broken despite [pulling] being in [pulling.loc]. Pull stopped manually.")
+			stop_pulling()
+		else if(pulling.anchored || pulling.move_resist > move_force)
 			stop_pulling()
 			return
-		if(!isturf(loc))
-			stop_pulling()
-			return
-		if(pullee && !isturf(pullee.loc) && pullee.loc != loc) //to be removed once all code that changes an object's loc uses forceMove().
-			log_game("DEBUG:[src]'s pull on [pullee] wasn't broken despite [pullee] being in [pullee.loc]. Pull stopped manually.")
-			stop_pulling()
-			return
-		if(pulling.anchored || pulling.move_resist > move_force)
-			stop_pulling()
-			return
-	if(pulledby && moving_diagonally != FIRST_DIAG_STEP && get_dist(src, pulledby) > 1) //separated from our puller and not in the middle of a diagonal move.
+	if(!only_pulling && pulledby && moving_diagonally != FIRST_DIAG_STEP && (get_dist(src, pulledby) > 1 || z != pulledby.z)) //separated from our puller and not in the middle of a diagonal move.
 		pulledby.stop_pulling()
 
 
@@ -462,9 +520,9 @@
 
 /atom/movable/Move(atom/newloc, direct, glide_size_override = 0)
 	var/atom/movable/pullee = pulling
-	var/turf/T = loc
+	var/turf/current_turf = loc
 	if(!moving_from_pull)
-		check_pulling()
+		check_pulling(z_allowed = TRUE)
 	if(!loc || !newloc)
 		return FALSE
 	var/atom/oldloc = loc
@@ -523,28 +581,34 @@
 			if(moving_diagonally == SECOND_DIAG_STEP)
 				if(!. && set_dir_on_move)
 					setDir(first_step_dir)
-
 				else if (!inertia_moving)
 					inertia_next_move = world.time + inertia_move_delay
 					newtonian_move(direct)
-				setDir(get_dir(get_step(oldloc, turn(first_step_dir, 180)), loc))
 			moving_diagonally = 0
 			return
 
 	if(!loc || (loc == oldloc && oldloc != newloc))
 		last_move = 0
+		set_currently_z_moving(FALSE, TRUE)
 		return
 
 	if(. && pulling && pulling == pullee && pulling != moving_from_pull) //we were pulling a thing and didn't lose it during our move.
 		if(pulling.anchored)
 			stop_pulling()
 		else
-			var/pull_dir = get_dir(src, pulling)
 			//puller and pullee more than one tile away or in diagonal position and whatever the pullee is pulling isn't already moving from a pull as it'll most likely result in an infinite loop a la ouroborus.
-			if(!pulling.pulling?.moving_from_pull && (get_dist(src, pulling) > 1 || (moving_diagonally != SECOND_DIAG_STEP && ((pull_dir - 1) & pull_dir))))
-				pulling.moving_from_pull = src
-				pulling.Move(T, get_dir(pulling, T), glide_size) //the pullee tries to reach our previous position
-				pulling.moving_from_pull = null
+			if(!pulling.pulling?.moving_from_pull)
+				var/pull_dir = get_dir(pulling, src)
+				var/target_turf = current_turf
+
+				// Pulling things down/up stairs. zMove() has flags for check_pulling and stop_pulling calls.
+				// You may wonder why we're not just forcemoving the pulling movable and regrabbing it.
+				// The answer is simple. forcemoving and regrabbing is ugly and breaks conga lines.
+				if(pulling.z != z)
+					target_turf = get_step(pulling, get_dir(pulling, current_turf))
+
+				if(target_turf != current_turf || (moving_diagonally != SECOND_DIAG_STEP && ISDIAGONALDIR(pull_dir)) || get_dist(src, pulling) > 1)
+					pulling.move_from_pull(src, target_turf, glide_size)
 			check_pulling()
 
 
@@ -557,7 +621,20 @@
 	if(set_dir_on_move)
 		setDir(direct)
 	if(. && has_buckled_mobs() && !handle_buckled_mob_movement(loc, direct, glide_size_override)) //movement failed due to buckled mob(s)
-		return FALSE
+		. = FALSE
+
+	if(currently_z_moving)
+		if(. && loc == newloc)
+			var/turf/pitfall = get_turf(src)
+			pitfall.zFall(src, falling_from_move = TRUE)
+		else
+			set_currently_z_moving(FALSE, TRUE)
+
+/// Called when src is being moved to a target turf because another movable (puller) is moving around.
+/atom/movable/proc/move_from_pull(atom/movable/puller, turf/target_turf, glide_size_override)
+	moving_from_pull = puller
+	Move(target_turf, get_dir(src, target_turf), glide_size_override)
+	moving_from_pull = null
 
 //Called after a successful Move(). By this point, we've already moved
 /atom/movable/proc/Moved(atom/old_loc, movement_dir, forced = FALSE, list/old_locs)
@@ -698,6 +775,15 @@
 	anchored = anchorvalue
 	SEND_SIGNAL(src, COMSIG_MOVABLE_SET_ANCHORED, anchorvalue)
 
+/// Sets the currently_z_moving variable to a new value. Used to allow some zMovement sources to have precedence over others.
+/atom/movable/proc/set_currently_z_moving(new_z_moving_value, forced = FALSE)
+	if(forced)
+		currently_z_moving = new_z_moving_value
+		return TRUE
+	var/old_z_moving_value = currently_z_moving
+	currently_z_moving = max(currently_z_moving, new_z_moving_value)
+	return currently_z_moving > old_z_moving_value
+
 /atom/movable/proc/forceMove(atom/destination)
 	. = FALSE
 	if(destination)
@@ -713,7 +799,8 @@
 	move_stacks++
 	var/atom/oldloc = loc
 	if(destination)
-		if(pulledby)
+		///zMove already handles whether a pull from another movable should be broken.
+		if(pulledby && !currently_z_moving)
 			pulledby.stop_pulling()
 		var/same_loc = oldloc == destination
 		var/area/old_area = get_area(oldloc)
@@ -829,7 +916,7 @@
 	if(QDELETED(src))
 		CRASH("Qdeleted thing being thrown around. Thing: [src], thrower: [thrower], target: [target]")
 
-	if (!target || speed <= 0)
+	if (!target || !istype(target) || speed <= 0)
 		return
 
 	if(SEND_SIGNAL(src, COMSIG_MOVABLE_PRE_THROW, args) & COMPONENT_CANCEL_THROW)
@@ -912,7 +999,7 @@
 /atom/movable/proc/handle_buckled_mob_movement(newloc, direct, glide_size_override)
 	for(var/m in buckled_mobs)
 		var/mob/living/buckled_mob = m
-		if(!buckled_mob.Move(newloc, direct, glide_size_override))
+		if(buckled_mob.loc != newloc && !buckled_mob.Move(newloc, direct, glide_size_override))
 			forceMove(buckled_mob.loc)
 			last_move = buckled_mob.last_move
 			inertia_dir = last_move
@@ -979,7 +1066,7 @@
 	return
 
 
-/atom/movable/proc/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect)
+/atom/movable/proc/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect, fov_effect = TRUE)
 	if(!no_effect && (visual_effect_icon || used_item))
 		do_item_attack_animation(A, visual_effect_icon, used_item)
 
@@ -1003,48 +1090,13 @@
 		pixel_x_diff = -8
 		turn_dir = -1
 
+	if(fov_effect)
+		play_fov_effect(A, 5, "attack")
+
 	var/matrix/initial_transform = matrix(transform)
 	var/matrix/rotated_transform = transform.Turn(15 * turn_dir)
 	animate(src, pixel_x = pixel_x + pixel_x_diff, pixel_y = pixel_y + pixel_y_diff, transform=rotated_transform, time = 1, easing=BACK_EASING|EASE_IN, flags = ANIMATION_PARALLEL)
 	animate(pixel_x = pixel_x - pixel_x_diff, pixel_y = pixel_y - pixel_y_diff, transform=initial_transform, time = 2, easing=SINE_EASING, flags = ANIMATION_PARALLEL)
-
-/atom/movable/proc/do_item_attack_animation(atom/A, visual_effect_icon, obj/item/used_item)
-	var/image/I
-	if(visual_effect_icon)
-		I = image('icons/effects/effects.dmi', A, visual_effect_icon, A.layer + 0.1)
-	else if(used_item)
-		I = image(icon = used_item, loc = A, layer = A.layer + 0.1)
-		I.plane = GAME_PLANE
-
-		// Scale the icon.
-		I.transform *= 0.4
-		// The icon should not rotate.
-		I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
-
-		// Set the direction of the icon animation.
-		var/direction = get_dir(src, A)
-		if(direction & NORTH)
-			I.pixel_y = -12
-		else if(direction & SOUTH)
-			I.pixel_y = 12
-
-		if(direction & EAST)
-			I.pixel_x = -14
-		else if(direction & WEST)
-			I.pixel_x = 14
-
-		if(!direction) // Attacked self?!
-			I.pixel_z = 16
-
-	if(!I)
-		return
-
-	flick_overlay(I, GLOB.clients, 10)
-
-	// And animate the attack!
-	animate(I, alpha = 175, transform = matrix() * 0.75, pixel_x = 0, pixel_y = 0, pixel_z = 0, time = 3)
-	animate(time = 1)
-	animate(alpha = 0, time = 3, easing = CIRCULAR_EASING|EASE_OUT)
 
 /atom/movable/vv_get_dropdown()
 	. = ..()
@@ -1223,38 +1275,6 @@
 		to_chat(usr, span_notice("Deadchat now control [src]."))
 		log_admin("[key_name(usr)] has added deadchat control to [src]")
 		message_admins(span_notice("[key_name(usr)] has added deadchat control to [src]"))
-
-/obj/item/proc/do_pickup_animation(atom/target)
-	set waitfor = FALSE
-	if(!istype(loc, /turf))
-		return
-	var/image/I = image(icon = src, loc = loc, layer = layer + 0.1)
-	I.plane = GAME_PLANE
-	I.transform *= 0.75
-	I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
-	var/turf/T = get_turf(src)
-	var/direction
-	var/to_x = target.base_pixel_x
-	var/to_y = target.base_pixel_y
-
-	if(!QDELETED(T) && !QDELETED(target))
-		direction = get_dir(T, target)
-	if(direction & NORTH)
-		to_y += 32
-	else if(direction & SOUTH)
-		to_y -= 32
-	if(direction & EAST)
-		to_x += 32
-	else if(direction & WEST)
-		to_x -= 32
-	if(!direction)
-		to_y += 16
-	flick_overlay(I, GLOB.clients, 6)
-	var/matrix/M = new
-	M.Turn(pick(-30, 30))
-	animate(I, alpha = 175, pixel_x = to_x, pixel_y = to_y, time = 3, transform = M, easing = CUBIC_EASING)
-	sleep(1)
-	animate(I, alpha = 0, transform = matrix(), time = 1)
 
 /**
 * A wrapper for setDir that should only be able to fail by living mobs.

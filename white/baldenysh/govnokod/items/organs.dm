@@ -38,9 +38,6 @@
 /obj/item/organ/snus_mycosis/proc/feed(delta_time)
 	if(nutrition_leeching_factor <= 0)
 		return 0
-	if(owner.pooition > nutrition_leeching_factor * delta_time * 5)
-		owner.pooition -= nutrition_leeching_factor * delta_time * 5
-		return nutrition_leeching_factor * delta_time
 	if(owner.nutrition > nutrition_leeching_factor * delta_time)
 		owner.nutrition -= nutrition_leeching_factor * delta_time
 		return nutrition_leeching_factor * delta_time

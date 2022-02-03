@@ -266,22 +266,33 @@
 	W.update_icon()
 
 /datum/outfit/centcom/commander
-	name = "Комамндующий ЦентКома"
+	name = "Командующий ЦК"
 
-	uniform = /obj/item/clothing/under/rank/centcom/commander
-	suit = /obj/item/clothing/suit/armor/bulletproof
+	suit = /obj/item/clothing/suit/toggle/armor/vest/centcom_formal
 	shoes = /obj/item/clothing/shoes/combat/swat
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
 	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/eyepatch
+	glasses = /obj/item/clothing/glasses/sunglasses 
 	mask = /obj/item/clothing/mask/cigarette/cigar/cohiba
-	head = /obj/item/clothing/head/centhat
-	belt = /obj/item/gun/ballistic/revolver/mateba
+	head = /obj/item/clothing/head/centom_cap
+	belt = /obj/item/gun/ballistic/automatic/pistol/deagle
 	r_pocket = /obj/item/lighter
-	l_pocket = /obj/item/ammo_box/a357
+	l_pocket = /obj/item/ammo_box/magazine/m50
 	back = /obj/item/storage/backpack/satchel/leather
 	id = /obj/item/card/id/advanced/centcom
 	id_trim = /datum/id_trim/centcom/commander
+	backpack_contents = list(/obj/item/storage/box/survival/engineer=1,\
+							/obj/item/ammo_box/magazine/m50=2,\
+							/obj/item/stamp/centcom=1,\
+							/obj/item/clipboard=1)
+
+
+/datum/outfit/centcom/commander/pre_equip(mob/living/carbon/human/H)
+	..()
+	if(H.jumpsuit_style == PREF_SUIT)
+		uniform = /obj/item/clothing/under/rank/centcom/commander
+	else
+		uniform = /obj/item/clothing/under/rank/centcom/centcom_skirt
 
 /datum/outfit/centcom/commander/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
 	if(visualsOnly)

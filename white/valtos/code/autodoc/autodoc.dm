@@ -5,36 +5,9 @@
 	. /= length(L)
 	LAZYCLEARLIST(L)
 
-GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
-	/datum/surgery_step/incise,
-	/datum/surgery_step/clamp_bleeders,
-	/datum/surgery_step/close,
-	/datum/surgery_step/saw,
-	/datum/surgery_step/sever_limb,
-	/datum/surgery_step/heal,
-	/datum/surgery_step/extract_implant,
-	/datum/surgery_step/remove_fat,
-	/datum/surgery_step/drill,
-	/datum/surgery_step/retract_skin,
-	/datum/surgery_step/fix_eyes,
-	/datum/surgery_step/pacify,
-	/datum/surgery_step/thread_veins,
-	/datum/surgery_step/splice_nerves,
-	/datum/surgery_step/ground_nerves,
-	/datum/surgery_step/muscled_veins,
-	/datum/surgery_step/reinforce_ligaments,
-	/datum/surgery_step/reshape_ligaments,
-	/datum/surgery_step/mechanic_open,
-	/datum/surgery_step/mechanic_unwrench,
-	/datum/surgery_step/prepare_electronics,
-	/datum/surgery_step/mechanic_wrench,
-	/datum/surgery_step/open_hatch,
-	/datum/surgery_step/mechanic_close
-)))
-
 /obj/machinery/autodoc
 	name = "Авто-Док МК IX"
-	desc = "Полностью стационарная автоматическа хирургия! Для всей семьи!"
+	desc = "Автоматический хирургически комплекс специализированный на восстановительных и модернизирующих операциях."
 	circuit = /obj/item/circuitboard/machine/autodoc
 	icon = 'white/valtos/icons/64x64_autodoc.dmi'
 	icon_state = "autodoc_base"
@@ -60,6 +33,7 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 	. = ..()
 	if(occupant)
 		. += "<hr><span class='notice'>Вижу <b>[occupant]</b> внутри.</span>"
+		. += "<hr><span class='notice'><b>ПКМ</b> для экстренного извлечения.</span>"
 	. += "<hr><span class='notice'><b>Ctrl-Клик</b>, чтобы открыть внутреннее хранилище.</span>"
 
 /obj/machinery/autodoc/CanPass(atom/movable/mover, border_dir)
@@ -101,7 +75,18 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 			speed_mult = 0.1
 
 /obj/machinery/autodoc/CtrlClick(mob/user)
-	playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+	playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
+
+/obj/machinery/autodoc/attack_hand_secondary(mob/user, list/modifiers)
+	. = ..()
+	playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
+	active_surgery.complete()
+	active_surgery = null
+	active_step = null
+	in_use = FALSE
+	if(!state_open)
+		open_machine()
+	update_icon()
 
 /obj/machinery/autodoc/ui_act(action, list/params)
 	if(..())
@@ -157,11 +142,11 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 	var/mob/living/carbon/patient
 	if(in_use)
 		say("Авто-Док уже используется!")
-		playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+		playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 		return
 	if(!target_surgery || !target_zone)
 		say("Неверные настройки!")
-		playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+		playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 		if(!state_open)
 			open_machine()
 		return
@@ -173,30 +158,30 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 		break
 	if(!patient)
 		say("Не обнаружен пациент!")
-		playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+		playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 		if(!state_open)
 			open_machine()
 		return
 	var/obj/item/bodypart/affecting = patient.get_bodypart(check_zone(target_zone))
 	if(affecting)
 		if(!target_surgery.requires_bodypart)
-			playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+			playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 			if(!state_open)
 				open_machine()
 			return
 		if(target_surgery.requires_bodypart_type && affecting.status != target_surgery.requires_bodypart_type)
 			say("Авто-Док не умеет работать с этой частью тела!")
-			playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+			playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 			if(!state_open)
 				open_machine()
 			return
 		if(target_surgery.requires_real_bodypart && affecting.is_pseudopart)
-			playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+			playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 			if(!state_open)
 				open_machine()
 			return
 	else if(patient && target_surgery.requires_bodypart) //mob with no limb in surgery zone when we need a limb
-		playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+		playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 		if(!state_open)
 			open_machine()
 		return
@@ -205,7 +190,7 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 		var/datum/surgery_step/SS = new surgery_type
 		if(!SS.autodoc_check(target_zone, src, FALSE, patient))
 			qdel(SS)
-			playsound(src, 'sound/machines/buzz-two.ogg', 50, FALSE)
+			playsound(src, 'white/valtos/sounds/error2.ogg', 50, FALSE)
 			if(!state_open)
 				open_machine()
 			return
@@ -337,7 +322,7 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 
 
 /obj/item/circuitboard/machine/autodoc
-	name = "микросхема (Авто-Док МК IX)"
+	name = "Плата Авто-Дока МК IX"
 	build_path = /obj/machinery/autodoc
 	req_components = list(
 							/obj/item/stock_parts/capacitor = 5,
@@ -350,17 +335,20 @@ GLOBAL_LIST_INIT(autodoc_supported_surgery_steps, typecacheof(list(
 							/obj/item/stack/sheet/glass = 15)
 
 /datum/design/board/autodoc
-	name = "Оборудование (Авто-Док МК IX)"
-	desc = "Allows for the construction of circuit boards used to build a Авто-Док МК IX."
+	name = "Авто-Док МК IX"
+	desc = "Автоматический хирургически комплекс специализированный на восстановительных и модернизирующих операциях."
 	id = "autodoc"
+	build_type = PROTOLATHE | MECHFAB
+	construction_time = 40
 	build_path = /obj/item/circuitboard/machine/autodoc
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE | DEPARTMENTAL_FLAG_MEDICAL
 	category = list ("Медицинское оборудование")
+	sub_category = list("Автохирургия")
 
 /datum/techweb_node/autodoc
 	id = "autodoc"
-	display_name = "Complex Anatomical Automation"
-	description = "Advanced automation and complex anatomical knowhow combined to make advanced surgical things!"
+	display_name = "Авто-Док МК IX"
+	description = "Автоматический хирургически комплекс специализированный на восстановительных и модернизирующих операциях."
 	prereq_ids = list("exp_surgery", "bio_process", "adv_datatheory", "adv_engi", "high_efficiency")
 	design_ids = list("autodoc")
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 15000)

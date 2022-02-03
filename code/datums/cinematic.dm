@@ -22,7 +22,6 @@
 	icon = 'icons/effects/station_explosion.dmi'
 	icon_state = "station_intact"
 	plane = SPLASHSCREEN_PLANE
-	layer = SPLASHSCREEN_LAYER
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	screen_loc = "BOTTOM,LEFT+50%"
 	appearance_flags = APPEARANCE_UI | TILE_BOUND
@@ -135,7 +134,7 @@
 	flick("intro_nuke",screen)
 	sleep(35)
 	flick("station_explode_fade_red",screen)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "summary_nukewin"
 
@@ -145,10 +144,21 @@
 /datum/cinematic/nuke_miss/content()
 	flick("intro_nuke",screen)
 	sleep(35)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	flick("station_intact_fade_red",screen)
 	screen.icon_state = "summary_nukefail"
+
+/datum/cinematic/ruiners_win
+	id = CINEMATIC_RUINERS_WIN
+
+/datum/cinematic/ruiners_win/content()
+	flick("station_planet",screen)
+	sleep(35)
+	flick("station_crash",screen)
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
+	special()
+	screen.icon_state = "station_planet"
 
 //Also used for blob
 /datum/cinematic/nuke_selfdestruct
@@ -158,7 +168,7 @@
 	flick("intro_nuke",screen)
 	sleep(35)
 	flick("station_explode_fade_red", screen)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "summary_selfdes"
 
@@ -168,7 +178,7 @@
 /datum/cinematic/nuke_selfdestruct_miss/content()
 	flick("intro_nuke",screen)
 	sleep(35)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "station_intact"
 
@@ -179,7 +189,7 @@
 	flick("intro_malf",screen)
 	sleep(76)
 	flick("station_explode_fade_red",screen)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "summary_malf"
 
@@ -206,7 +216,7 @@
 	flick("intro_nuke",screen)
 	sleep(35)
 	flick("station_explode_fade_red",screen)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "summary_cult"
 
@@ -218,7 +228,7 @@
 	sleep(20)
 	cinematic_sound(sound('sound/creatures/narsie_rises.ogg'))
 	sleep(60)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	sleep(10)
 	cinematic_sound(sound('sound/magic/demon_dies.ogg'))
 	sleep(30)
@@ -231,7 +241,7 @@
 	flick("intro_nuke",screen)
 	sleep(35)
 	flick("station_explode_fade_red",screen)
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 	screen.icon_state = "summary_totala"
 
@@ -262,7 +272,7 @@
 	cleanup_time = 0
 
 /datum/cinematic/nuke_far/content()
-	cinematic_sound(sound('sound/effects/explosion_distant.ogg'))
+	cinematic_sound(sound('white/valtos/sounds/nuclearexplosion.ogg'))
 	special()
 
 /datum/cinematic/clownop

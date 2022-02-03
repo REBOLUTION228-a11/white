@@ -9,7 +9,6 @@
 /atom/movable/screen
 	name = ""
 	icon = 'icons/hud/screen_gen.dmi'
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 	animate_movement = SLIDE_STEPS
 	speech_span = SPAN_ROBOT
@@ -57,7 +56,6 @@
 	maptext_width = 480
 
 /atom/movable/screen/swap_hand
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 	name = "сменить руки"
 
@@ -130,7 +128,6 @@
 	var/icon_full
 	/// The overlay when hovering over with an item in your hand
 	var/image/object_overlay
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 
 /atom/movable/screen/inventory/Click(location, control, params)
@@ -245,7 +242,6 @@
 
 /atom/movable/screen/close
 	name = "закрыть"
-	layer = ABOVE_HUD_LAYER
 	plane = ABOVE_HUD_PLANE
 	icon_state = "backpack_close"
 
@@ -262,7 +258,6 @@
 	name = "бросить"
 	icon = 'icons/hud/screen_midnight.dmi'
 	icon_state = "act_drop"
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 
 /atom/movable/screen/drop/Click()
@@ -413,7 +408,6 @@
 	name = "сопротивляться"
 	icon = 'icons/hud/screen_midnight.dmi'
 	icon_state = "act_resist"
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 
 /atom/movable/screen/resist/Click()
@@ -426,7 +420,6 @@
 	icon = 'icons/hud/screen_midnight.dmi'
 	icon_state = "act_rest"
 	base_icon_state = "act_rest"
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 
 /atom/movable/screen/rest/Click()
@@ -446,7 +439,6 @@
 	name = "хранилище"
 	icon_state = "block"
 	screen_loc = "7,7 to 10,8"
-	layer = HUD_LAYER
 	plane = HUD_PLANE
 
 /atom/movable/screen/storage/Initialize(mapload, new_master)
@@ -526,7 +518,6 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	alpha = 128
 	anchored = TRUE
-	layer = ABOVE_HUD_LAYER
 	plane = ABOVE_HUD_PLANE
 
 /atom/movable/screen/zone_sel/MouseExited(location, control, params)
@@ -682,7 +673,6 @@
 	icon = 'icons/blank_title.png'
 	icon_state = ""
 	screen_loc = "1,1"
-	layer = SPLASHSCREEN_LAYER
 	plane = SPLASHSCREEN_PLANE
 	var/client/holder
 
@@ -726,3 +716,60 @@
 /atom/movable/screen/component_button/Click(params)
 	if(parent)
 		parent.component_click(src, params)
+
+/atom/movable/screen/cooldown_overlay
+	name = ""
+	icon_state = "cooldown"
+	pixel_y = 4
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	appearance_flags = RESET_COLOR | PIXEL_SCALE | RESET_TRANSFORM | KEEP_TOGETHER | RESET_ALPHA
+	vis_flags = VIS_INHERIT_ID
+	var/end_time = 0
+	var/atom/movable/screen/parent_button
+	var/datum/callback/callback
+	var/timer
+
+/atom/movable/screen/cooldown_overlay/Initialize(mapload, button)
+	. = ..(mapload)
+	parent_button = button
+
+/atom/movable/screen/cooldown_overlay/Destroy()
+	stop_cooldown()
+	deltimer(timer)
+	return ..()
+
+/atom/movable/screen/cooldown_overlay/proc/start_cooldown(end_time, need_timer = TRUE)
+	parent_button.color = "#8000007c"
+	parent_button.vis_contents += src
+	src.end_time = end_time
+	set_maptext("[round((end_time - world.time) / 10, 1)]")
+	if(need_timer)
+		timer = addtimer(CALLBACK(src, .proc/tick), 1 SECONDS, TIMER_STOPPABLE)
+
+/atom/movable/screen/cooldown_overlay/proc/tick()
+	if(world.time >= end_time)
+		stop_cooldown()
+		return
+	set_maptext("[round((end_time - world.time) / 10, 1)]")
+	if(timer)
+		timer = addtimer(CALLBACK(src, .proc/tick), 1 SECONDS, TIMER_STOPPABLE)
+
+/atom/movable/screen/cooldown_overlay/proc/stop_cooldown()
+	parent_button.color = "#ffffffff"
+	parent_button.vis_contents -= src
+	if(callback)
+		callback.Invoke()
+
+/atom/movable/screen/cooldown_overlay/proc/set_maptext(time)
+	maptext = "<div style=\"font-size:6pt;font:'Arial Black';text-align:center;\">[time]</div>"
+
+/proc/start_cooldown(atom/movable/screen/cooldown_overlay/button, time, datum/callback/callback)
+	if(!time)
+		return
+	var/atom/movable/screen/cooldown_overlay/cooldown = new(button, button)
+	if(callback)
+		cooldown.callback = callback
+		cooldown.start_cooldown(time)
+	else
+		cooldown.start_cooldown(time, FALSE)
+	return cooldown

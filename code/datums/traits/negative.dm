@@ -214,7 +214,7 @@
 				heirloom_type = pick(/obj/item/stamp, /obj/item/stamp/denied)
 			if("Cargo Technician")
 				heirloom_type = /obj/item/clipboard
-			if("Shaft Miner")
+			if("Shaft Miner" || "Hunter")
 				heirloom_type = pick(/obj/item/pickaxe/mini, /obj/item/shovel)
 
 	if(!heirloom_type)
@@ -356,6 +356,11 @@
 	lose_text = span_notice("Чувствую, что можно защитить себя вновь.")
 	medical_record_text = "Пациент является пацифистом и не может заставить себя причинить вред кому-либо."
 	hardcore_value = 6
+
+/datum/quirk/nonviolent/on_process()
+	if(quirk_holder.mind && LAZYLEN(quirk_holder.mind.antag_datums))
+		to_chat(quirk_holder, span_boldannounce("Моя антагонистическая натура заставила меня обдумать свой пацифизм..."))
+		qdel(src)
 
 /datum/quirk/paraplegic
 	name = "Инвалид"
@@ -768,6 +773,29 @@
 		SEND_SIGNAL(quirk_holder, COMSIG_ADD_MOOD_EVENT, "bad_touch", /datum/mood_event/very_bad_touch)
 	else
 		SEND_SIGNAL(quirk_holder, COMSIG_ADD_MOOD_EVENT, "bad_touch", /datum/mood_event/bad_touch)
+
+/datum/quirk/claustrophobia
+	name = "Клаустрофобия"
+	desc = "Вы боитесь находиться в тесном пространстве. Если вас поместят внутрь какого-либо контейнера, шкафчика или иного оборудования, у вас начнется паническая атака, и вам будет трудно дышать."
+	value = -4
+	medical_record_text = "Пациент демонстрирует явные признаки клаустрофобии."
+	hardcore_value = 5
+
+/datum/quirk/claustrophobia/remove()
+	SEND_SIGNAL(quirk_holder, COMSIG_CLEAR_MOOD_EVENT, "claustrophobia")
+
+/datum/quirk/claustrophobia/process(delta_time)
+	if(quirk_holder.stat != CONSCIOUS || quirk_holder.IsSleeping() || quirk_holder.IsUnconscious())
+		return
+
+	if(isturf(quirk_holder.loc))
+		SEND_SIGNAL(quirk_holder, COMSIG_CLEAR_MOOD_EVENT, "claustrophobia", /datum/mood_event/claustrophobia)
+		return
+
+	SEND_SIGNAL(quirk_holder, COMSIG_ADD_MOOD_EVENT, "claustrophobia")
+	quirk_holder.losebreath += 0.25 // miss a breath one in four times
+	if(DT_PROB(25, delta_time))
+		to_chat(quirk_holder, span_warning("Вы чувствуете себя в ловушке! Должен бежать... не могу дышать...")) // джордж флойд
 
 #undef LOCATION_LPOCKET
 #undef LOCATION_RPOCKET

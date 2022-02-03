@@ -1,7 +1,7 @@
 #ifdef REFERENCE_TRACKING
 
 /datum/verb/find_refs()
-	set category = "Debug"
+	set category = "Дбг"
 	set name = "Find References"
 	set src in world
 
@@ -17,7 +17,7 @@
 			running_find_references = null
 			//restart the garbage collector
 			SSgarbage.can_fire = TRUE
-			SSgarbage.next_fire = world.time + world.tick_lag
+			SSgarbage.update_nextfire(reset_time = TRUE)
 			return
 
 		if(!skip_alert && tgui_alert(usr,"Running this will lock everything up for about 5 minutes.  Would you like to begin the search?", "Find References", list("Yes", "No")) != "Yes")
@@ -50,11 +50,11 @@
 
 	//restart the garbage collector
 	SSgarbage.can_fire = TRUE
-	SSgarbage.next_fire = world.time + world.tick_lag
+	SSgarbage.update_nextfire(reset_time = TRUE)
 
 
 /datum/verb/qdel_then_find_references()
-	set category = "Debug"
+	set category = "Дбг"
 	set name = "qdel() then Find References"
 	set src in world
 
@@ -64,7 +64,7 @@
 
 
 /datum/verb/qdel_then_if_fail_find_references()
-	set category = "Debug"
+	set category = "Дбг"
 	set name = "qdel() then Find References if GC failure"
 	set src in world
 

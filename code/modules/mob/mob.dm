@@ -138,7 +138,7 @@
  * Return the desc of this mob for a photo
  */
 /mob/proc/get_photo_description(obj/item/camera/camera)
-	return "a ... thing?"
+	return "э... что это?"
 
 /**
  * Show a message to this mob (visual or audible)
@@ -212,19 +212,24 @@
 
 		//This entire if/else chain could be in two lines but isn't for readibilties sake.
 		var/msg = message
+		var/msg_type = MSG_VISUAL
+
 		if(M.see_invisible < invisibility)//if src is invisible to M
 			msg = blind_message
+			msg_type = MSG_AUDIBLE
 		else if(T != loc && T != src) //if src is inside something and not a turf.
 			msg = blind_message
+			msg_type = MSG_AUDIBLE
 		else if(M.lighting_alpha > LIGHTING_PLANE_ALPHA_MOSTLY_INVISIBLE && T.is_softly_lit() && !in_range(T,M)) //if it is too dark, unless we're right next to them.
 			msg = blind_message
+			msg_type = MSG_AUDIBLE
 		if(!msg)
 			continue
 
 		if(visible_message_flags & EMOTE_MESSAGE && runechat_prefs_check(M, visible_message_flags) && !M.is_blind())
 			M.create_chat_message(src, raw_message = raw_msg, runechat_flags = visible_message_flags)
 
-		M.show_message(msg, MSG_VISUAL, blind_message, MSG_AUDIBLE)
+		M.show_message(msg, msg_type, blind_message, MSG_AUDIBLE)
 
 
 ///Adds the functionality to self_message.
@@ -403,36 +408,41 @@
  * reset_perspective() set eye to common default : mob on turf, loc otherwise
  * reset_perspective(thing) set the eye to the thing (if it's equal to current default reset to mob perspective)
  */
-/mob/proc/reset_perspective(atom/A)
-	if(client)
-		if(A)
-			if(ismovable(A))
-				//Set the the thing unless it's us
-				if(A != src)
-					client.perspective = EYE_PERSPECTIVE
-					client.eye = A
-				else
-					client.eye = client.mob
-					client.perspective = MOB_PERSPECTIVE
-			else if(isturf(A))
-				//Set to the turf unless it's our current turf
-				if(A != loc)
-					client.perspective = EYE_PERSPECTIVE
-					client.eye = A
-				else
-					client.eye = client.mob
-					client.perspective = MOB_PERSPECTIVE
+/mob/proc/reset_perspective(atom/new_eye)
+	SEND_SIGNAL(src, COMSIG_MOB_RESET_PERSPECTIVE)
+	if(!client)
+		return
+
+	if(new_eye)
+		if(ismovable(new_eye))
+			//Set the new eye unless it's us
+			if(new_eye != src)
+				client.perspective = EYE_PERSPECTIVE
+				client.eye = new_eye
 			else
-				//Do nothing
-		else
-			//Reset to common defaults: mob if on turf, otherwise current loc
-			if(isturf(loc))
 				client.eye = client.mob
 				client.perspective = MOB_PERSPECTIVE
-			else
+		else if(isturf(new_eye))
+			//Set to the turf unless it's our current turf
+			if(new_eye != loc)
 				client.perspective = EYE_PERSPECTIVE
-				client.eye = loc
-		return 1
+				client.eye = new_eye
+			else
+				client.eye = client.mob
+				client.perspective = MOB_PERSPECTIVE
+		else
+			return TRUE //no setting eye to stupid things like areas or whatever
+	else
+		//Reset to common defaults: mob if on turf, otherwise current loc
+		if(isturf(loc))
+			client.eye = client.mob
+			client.perspective = MOB_PERSPECTIVE
+		else
+			client.perspective = EYE_PERSPECTIVE
+			client.eye = loc
+	/// Signal sent after the eye has been successfully updated, with the client existing.
+	SEND_SIGNAL(src, COMSIG_MOB_RESET_PERSPECTIVE)
+	return TRUE
 
 /**
  * Examine a mob
@@ -513,7 +523,7 @@
 		examine_delay_length *= 2
 
 	if(examine_delay_length > 0 && !do_after(src, examine_delay_length, target = examined_thing))
-		to_chat(src, span_notice("Не понятно че это. ДА КАК ОН НАЗВАЛ МОЮ МАТЬ?!"))
+		to_chat(src, span_notice("Начинаю осматривать что-то... ДА КАК ОН НАЗВАЛ МОЮ МАТЬ?!"))
 		return FALSE
 
 	//now we touch the thing we're examining
@@ -1024,6 +1034,7 @@
 	var/datum/dna/mob_dna = has_dna()
 	if(mob_dna?.check_mutation(TK) && tkMaxRangeCheck(src, A))
 		return TRUE
+	return FALSE
 
 ///Can the mob use Topic to interact with machines
 /mob/proc/canUseTopic(atom/movable/M, be_close=FALSE, no_dexterity=FALSE, no_tk=FALSE, need_hands = FALSE, floor_okay=FALSE)
@@ -1173,10 +1184,10 @@
 ///Can this mob read (is literate and not blind)
 /mob/proc/can_read(obj/O)
 	if(is_blind())
-		to_chat(src, span_warning("Пытаясь прочитать [O], внезапно вы чувствуете себя слишком тупым!"))
+		to_chat(src, span_warning("Пытаясь прочитать [O], но внезапно чувствую себя слишком тупым!"))
 		return
 	if(!is_literate())
-		to_chat(src, span_notice("Пытаюсь read [O], but can't comprehend any of it."))
+		to_chat(src, span_notice("Пытаюсь прочитать [O], но внезапно понимаю, что не умею читать."))
 		return
 	return TRUE
 
@@ -1280,12 +1291,6 @@
 ///Adjust the nutrition of a mob
 /mob/proc/adjust_nutrition(change) //Honestly FUCK the oldcoders for putting nutrition on /mob someone else can move it up because holy hell I'd have to fix SO many typechecks
 	nutrition = max(0, nutrition + change)
-
-/mob/proc/adjust_pooition(change)
-	pooition = max(0, pooition + change)
-
-/mob/proc/set_pooition(change)
-	pooition = max(0, change)
 
 ///Force set the mob nutrition
 /mob/proc/set_nutrition(change) //Seriously fuck you oldcoders.

@@ -175,7 +175,8 @@
 
 /obj/structure/bonfire/prelit/Initialize()
 	. = ..()
-	StartBurning()
+	spawn(10)
+		StartBurning()
 
 /obj/structure/bonfire/Initialize()
 	. = ..()
@@ -309,6 +310,6 @@
 	if(..())
 		M.pixel_y += 13
 
-/obj/structure/bonfire/unbuckle_mob(mob/living/buckled_mob, force=FALSE)
+/obj/structure/bonfire/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	if(..())
 		buckled_mob.pixel_y -= 13

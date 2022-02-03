@@ -16,7 +16,7 @@
 
 /datum/mood_event/burnt_thumb
 	description = "<span class='warning'>Не стоило мне играть с зажигалкой.</span>\n"
-	mood_change = -5
+	mood_change = -3
 	timeout = 2 MINUTES
 
 /datum/mood_event/cold
@@ -33,14 +33,13 @@
 	timeout = 3 MINUTES
 
 /datum/mood_event/pooed
-	description = "<span class='warning'>Меня обмазали говном. На вкус как говно.</span>\n"
-	mood_change = -25
-	timeout = 10 MINUTES
+	description = "<span class='warning'>Мы в дерьме!</span>\n"
+	mood_change = -12
 
 /datum/mood_event/slipped
 	description = "<span class='warning'>Опять поскальзываюсь. Надо быть аккуратней.</span>\n"
 	mood_change = -6
-	timeout = 3 MINUTES
+	timeout = 1 MINUTES
 
 /datum/mood_event/eye_stab
 	description = "<span class='boldwarning'>МНЕ ПРОТКНУЛИ ГЛАЗ!!!</span>\n"
@@ -49,38 +48,38 @@
 
 /datum/mood_event/delam //SM delamination
 	description = "<span class='boldwarning'>Эти инженеры никогда не могут что-то сделать нормально...</span>\n"
-	mood_change = -8
-	timeout = 4 MINUTES
+	mood_change = -3
+	timeout = 10 MINUTES
 
 /datum/mood_event/depression_minimal
 	description = "<span class='warning'>Мне немного грустно.</span>\n"
-	mood_change = -20
+	mood_change = -10
 	timeout = 2 MINUTES
 
 /datum/mood_event/depression_mild
 	description = "<span class='warning'>Мне грустно без каких-либо причин.</span>\n"
-	mood_change = -24
+	mood_change = -12
 	timeout = 2 MINUTES
 
 /datum/mood_event/depression_moderate
 	description = "<span class='warning'>Мне грустно.</span>\n"
-	mood_change = -28
+	mood_change = -14
 	timeout = 2 MINUTES
 
 /datum/mood_event/depression_severe
 	description = "<span class='warning'>Хочу умереть.</span>\n"
-	mood_change = -32
+	mood_change = -16
 	timeout = 2 MINUTES
 
 /datum/mood_event/shameful_suicide //suicide_acts that return SHAME, like sord
 	description = "<span class='boldwarning'>Даже не могу покончить со всем этим!</span>\n"
 	mood_change = -30
-	timeout = 60 SECONDS
+	timeout = 1 MINUTES
 
 /datum/mood_event/dismembered
 	description = "<span class='boldwarning'>АА-А! МНЕ НУЖНА БЫЛА ЭТА КОНЕЧНОСТЬ!</span>\n"
-	mood_change = -20
-	timeout = 8 MINUTES
+	mood_change = -15
+	timeout = 2.5 MINUTES
 
 /datum/mood_event/tased
 	description = "<span class='warning'>There's no \"z\" in \"taser\". It's in the zap.</span>\n"
@@ -89,12 +88,12 @@
 
 /datum/mood_event/embedded
 	description = "<span class='boldwarning'>Достаньте это из меня, достаньте!</span>\n"
-	mood_change = -14
+	mood_change = -12
 
 /datum/mood_event/table
 	description = "<span class='warning'>Кто-то бросил меня на стол!</span>\n"
 	mood_change = -4
-	timeout = 2 MINUTES
+	timeout = 1 MINUTES
 
 /datum/mood_event/table/add_effects()
 	if(isfelinid(owner))
@@ -121,8 +120,8 @@
 	description = "<span class='warning'>Хых... Хах... [damage_message]</span>\n"
 
 /datum/mood_event/hulk //Entire duration of having the hulk mutation
-	description = "<span class='warning'>ХАЛК БИТЬ</span>\n"
-	mood_change = -8
+	description = "<span class='warning'>ХАЛК КРУШИТЬ</span>\n"
+	mood_change = 8 //lol
 
 /datum/mood_event/epilepsy //Only when the mutation causes a seizure
 	description = "<span class='warning'>Стоило обратить внимание на предупреждение об эпилепсии.</span>\n"
@@ -133,9 +132,14 @@
 	description = "<span class='warning'>Здесь темновато...</span>\n"
 	mood_change = -6
 
+/datum/mood_event/claustrophobia
+	description = "<span class='warning'>Почему я чувствую себя в ловушке?! Выпустите меня!!!</span>\n"
+	mood_change = -7
+	timeout = 1 MINUTES
+
 /datum/mood_event/bright_light
 	description = "<span class='boldwarning'>Ненавижу белых... Хочу срочно стать негром...</span>\n"
-	mood_change = -24
+	mood_change = -240
 
 /datum/mood_event/family_heirloom_missing
 	description = "<span class='warning'>Скучаю по моей семейной реликвии...</span>\n"
@@ -163,7 +167,7 @@
 /datum/mood_event/painful_medicine
 	description = "<span class='warning'>Медицина может быть и хороша для меня, но сейчас она адово жалит!</span>\n"
 	mood_change = -10
-	timeout = 60 SECONDS
+	timeout = 1 MINUTES
 
 /datum/mood_event/spooked
 	description = "<span class='warning'>Дребезжание тех костей... Я не могу это забыть.</span>\n"
@@ -195,17 +199,17 @@
 
 /datum/mood_event/sapped
 	description = "<span class='boldwarning'>Необъяснимая печаль пожирает меня...</span>\n"
-	mood_change = -30
-	timeout = 90 SECONDS
+	mood_change = -20
+	timeout = 1.5 MINUTES
 
 /datum/mood_event/back_pain
 	description = "<span class='boldwarning'>Сумки никогда не сидят ровно на моей спине, это очень больно!</span>\n"
-	mood_change = -30
+	mood_change = -20
 
 /datum/mood_event/sad_empath
 	description = "<span class='warning'>Кто-то видимо грустит...</span>\n"
 	mood_change = -10
-	timeout = 60 SECONDS
+	timeout = 1 MINUTES
 
 /datum/mood_event/sad_empath/add_effects(mob/sadtarget)
 	description = "<span class='warning'>[sadtarget.name] кажется грустит...</span>\n"
@@ -218,7 +222,7 @@
 /datum/mood_event/artbad
 	description = "<span class='warning'>У меня получалось и лучше чем это.</span>\n"
 	mood_change = -4
-	timeout = 1200
+	timeout = 2 MINUTES
 
 /datum/mood_event/graverobbing
 	description ="<span class='boldwarning'>I just desecrated someone's grave... I can't believe I did that...</span>\n"
@@ -240,7 +244,7 @@
 
 /datum/mood_event/untied
 	description = "<span class='boldwarning'>I hate when my shoes come untied!</span>\n"
-	mood_change = -9
+	mood_change = -2
 	timeout = 1 MINUTES
 
 /datum/mood_event/gates_of_mansus
@@ -279,6 +283,25 @@
 	mood_change *= people_laughing_at_you
 	return ..()
 
+/datum/mood_event/tail_lost
+	description = "<span class='boldwarning'>А-А-А-А! МОЙ ХВОСТ! ЗА ЧТО?!!</span>\n"
+	mood_change = -50
+	timeout = 2 HOURS
+
+/datum/mood_event/tail_balance_lost
+	description = "<span class='warning'>Чувствую, что не могу держать баланс без своего хвостика...</span>\n"
+	mood_change = -4
+
+/datum/mood_event/tail_regained_right
+	description = "<span class='warning'>О-ох. Мой хвост возвращен, но это было больно!</span>\n"
+	mood_change = -4
+	timeout = 5 MINUTES
+
+/datum/mood_event/tail_regained_wrong
+	description = "<span class='boldwarning'>Это что, какая-то больная шутка?! Это не МОЙ хвост!!</span>\n"
+	mood_change = -60 // -8 for tail still missing + -4 bonus for being frakenstein's monster
+	timeout = 3 HOURS
+
 //These are unused so far but I want to remember them to use them later
 /datum/mood_event/surgery
 	description = "<span class='boldwarning'>МЕНЯ РЕЖУТ НА КУСОЧКИ!!</span>\n"
@@ -305,34 +328,24 @@
 	mood_change = -10
 	timeout = 4 MINUTES
 
+/datum/mood_event/noogie
+	description = "<span class='warning'>Ow! This is like space high school all over again...</span>\n"
+	mood_change = -10
+	timeout = 1 MINUTES
+/datum/mood_event/noogie_harsh
+	description = "<span class='warning'>OW!! That was even worse than a regular noogie!</span>\n"
+	mood_change = -20
+	timeout = 1 MINUTES
+
 /datum/mood_event/aquarium_negative
 	description = "<span class='warning'>Жалко рыбок...</span>\n"
 	mood_change = -6
-	timeout = 90 SECONDS
-
-/datum/mood_event/tail_lost
-	description = "<span class='boldwarning'>My tail!! Why?!</span>\n"
-	mood_change = -16
-	timeout = 10 MINUTES
-
-/datum/mood_event/tail_balance_lost
-	description = "<span class='warning'>I feel off-balance without my tail.</span>\n"
-	mood_change = -4
-
-/datum/mood_event/tail_regained_right
-	description = "<span class='warning'>My tail is back, but that was traumatic...</span>\n"
-	mood_change = -4
-	timeout = 5 MINUTES
-
-/datum/mood_event/tail_regained_wrong
-	description = "<span class='boldwarning'>Is this some kind of sick joke?! This is NOT the right tail.</span>\n"
-	mood_change = -24 // -8 for tail still missing + -4 bonus for being frakenstein's monster
-	timeout = 5 MINUTES
+	timeout = 1.5 MINUTES
 
 /datum/mood_event/burnt_wings
 	description = "<span class='boldwarning'>MY PRECIOUS WINGS!!</span>\n"
 	mood_change = -20
-	timeout = 10 MINUTES
+	timeout = 20 MINUTES
 
 /datum/mood_event/holy_smite //punished
 	description = "<span class='warning'>I have been punished by my deity!</span>\n"

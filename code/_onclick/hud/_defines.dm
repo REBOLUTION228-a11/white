@@ -160,6 +160,7 @@
 #define ui_pai_state_laws "SOUTH:6,WEST+8"
 #define ui_pai_pda_send "SOUTH:6,WEST+9"
 #define ui_pai_pda_log "SOUTH:6,WEST+10"
+#define ui_pai_internal_gps "SOUTH:6,WEST+11"
 #define ui_pai_take_picture "SOUTH:6,WEST+12"
 #define ui_pai_view_images "SOUTH:6,WEST+13"
 
@@ -172,7 +173,7 @@
 #define ui_ghost_mafia "SOUTH: 6, CENTER+2:24"
 #define ui_ghost_language_menu "SOUTH: 22,CENTER+3:8"
 #define ui_ghost_pai "SOUTH: 6, CENTER+3:8"
-#define ui_ghost_ctf "SOUTH: 6, CENTER+4:8"
+#define ui_ghost_minigames "SOUTH: 6, CENTER+2:24"
 
 //Blobbernauts
 #define ui_blobbernaut_overmind_health "EAST-1:28,CENTER+0:19"
@@ -182,3 +183,6 @@
 
 //Ammo HUD
 #define ui_ammocounter "EAST-1:12,CENTER-5:8"
+
+//Ruination
+#define ui_station_height "SOUTH, EAST-3"

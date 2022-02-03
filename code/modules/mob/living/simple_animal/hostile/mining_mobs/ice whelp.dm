@@ -9,7 +9,7 @@
 	mouse_opacity = MOUSE_OPACITY_ICON
 	friendly_verb_continuous = "stares down"
 	friendly_verb_simple = "stare down"
-	speak_emote = list("roars")
+	speak_emote = list("рычит")
 	speed = 30
 	move_to_delay = 7
 	ranged = TRUE
@@ -43,7 +43,7 @@
 
 /mob/living/simple_animal/hostile/asteroid/ice_whelp/OpenFire()
 	var/turf/T = get_ranged_target_turf_direct(src, target, fire_range)
-	var/list/burn_turfs = getline(src, T) - get_turf(src)
+	var/list/burn_turfs = get_line(src, T) - get_turf(src)
 	dragon_fire_line(src, burn_turfs)
 
 /mob/living/simple_animal/hostile/asteroid/ice_whelp/Life(delta_time = SSMOBS_DT, times_fired)

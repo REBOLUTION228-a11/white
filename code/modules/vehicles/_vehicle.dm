@@ -5,6 +5,7 @@
 	icon_state = "fuckyou"
 	max_integrity = 300
 	armor = list(MELEE = 30, BULLET = 30, LASER = 30, ENERGY = 0, BOMB = 30, BIO = 0, RAD = 0, FIRE = 60, ACID = 60)
+	plane = GAME_PLANE_FOV_HIDDEN
 	density = TRUE
 	anchored = FALSE
 	COOLDOWN_DECLARE(cooldown_vehicle_move)
@@ -102,9 +103,10 @@
 
 /obj/vehicle/proc/auto_assign_occupant_flags(mob/M)	//override for each type that needs it. Default is assign driver if drivers is not at max.
 	if(driver_amount() < max_drivers)
-		add_control_flags(M, VEHICLE_CONTROL_DRIVE|VEHICLE_CONTROL_PERMISSION)
+		add_control_flags(M, VEHICLE_CONTROL_DRIVE)
 
 /obj/vehicle/proc/remove_occupant(mob/M)
+	SHOULD_CALL_PARENT(TRUE)
 	if(!istype(M))
 		return FALSE
 	remove_control_flags(M, ALL)

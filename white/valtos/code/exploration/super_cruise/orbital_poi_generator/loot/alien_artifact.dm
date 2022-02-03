@@ -64,7 +64,7 @@
 	. = ..()
 	mood_message = span_warning("[scramble_message_replace_chars("###### ### #### ###### #######", 100)]!")
 
-/area/tear_in_reality/proc/get_virtual_z(turf/T)
+/area/tear_in_reality/get_virtual_z(turf/T)
 	return REALITY_TEAR_VIRTUAL_Z
 
 //===================
@@ -154,7 +154,7 @@
 /datum/artifact_effect/projreflect/process(delta_time)
 	for(var/obj/projectile/P in range(3, src))
 		//Reflect projectile
-		P.setAngle(rand(0, 360))
+		P.set_angle(rand(0, 360))
 
 //===================
 // Air Blocker
@@ -230,10 +230,6 @@
 //===================
 // Reality Destabilizer
 //===================
-
-GLOBAL_LIST_EMPTY(destabilization_spawns)
-GLOBAL_LIST_EMPTY(destabliization_exits)
-
 /obj/effect/landmark/destabilization_loc
 	name = "destabilization spawn"
 

@@ -37,6 +37,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!usr || usr != mob)	//stops us calling Topic for somebody else's client. Also helps prevent usr=null
 		return
 
+	if(mentor_client_procs(href_list))
+		return
+
 	// asset_cache
 	var/asset_cache_job
 	if(href_list["asset_cache_confirm_arrival"])
@@ -99,6 +102,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	// Admin PM
 	if(href_list["priv_msg"])
 		cmd_admin_pm(href_list["priv_msg"],null)
+		return
+	// TGUIless adminhelp
+	if(href_list["tguiless_adminhelp"])
+		no_tgui_adminhelp(input(src, "Enter your ahelp", "Ahelp") as null|message)
 		return
 
 	switch(href_list["_src_"])
@@ -475,6 +482,8 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	Master.UpdateTickRate()
 
+	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_CLIENT_CONNECT, src)
+
 //////////////
 //DISCONNECT//
 //////////////
@@ -842,8 +851,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		ip_intel = res.intel
 
 /client/Click(atom/object, atom/location, control, params)
-	if(!control)
-		return
 	if(click_intercept_time)
 		if(click_intercept_time >= world.time)
 			click_intercept_time = 0 //Reset and return. Next click should work, but not this one.
@@ -1083,12 +1090,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/list/verbstoprocess = verbs.Copy()
 	if(mob)
 		verbstoprocess += mob.verbs
-		for(var/AM in mob.contents)
-			var/atom/movable/thing = AM
+		for(var/atom/movable/thing as anything in mob.contents)
 			verbstoprocess += thing.verbs
 	panel_tabs.Cut() // panel_tabs get reset in init_verbs on JS side anyway
-	for(var/thing in verbstoprocess)
-		var/procpath/verb_to_init = thing
+	for(var/procpath/verb_to_init as anything in verbstoprocess)
 		if(!verb_to_init)
 			continue
 		if(verb_to_init.hidden)

@@ -93,7 +93,7 @@
 /turf/open/floor/grass/gensgrass/dirty/stone
 	name = "каменный пол"
 	desc = "Классика."
-	icon = 'white/valtos/icons/gensokyo/turfs.dmi'
+	icon = 'white/kacherkin/icons/dwarfs/obj/turfs1.dmi'
 	icon_state = "stone_floor"
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SAND
@@ -119,7 +119,7 @@
 /turf/open/floor/grass/gensgrass/dirty/stone/raw
 	name = "уродливый камень"
 	desc = "Ужас."
-	icon = 'white/valtos/icons/gensokyo/turfs.dmi'
+	icon = 'white/kacherkin/icons/dwarfs/obj/turfs1.dmi'
 	icon_state = "stone"
 	stoned = FALSE
 	slowdown = 1
@@ -175,7 +175,7 @@
 /turf/open/floor/grass/gensgrass/dirty/stone/fancy
 	name = "красивый каменный пол"
 	desc = "Красивая классика."
-	icon = 'white/valtos/icons/gensokyo/turfs.dmi'
+	icon = 'white/kacherkin/icons/dwarfs/obj/turfs1.dmi'
 	icon_state = "stone_floor_fancy"
 	footstep = FOOTSTEP_SAND
 	barefootstep = FOOTSTEP_SAND
@@ -363,7 +363,7 @@
 	canSmoothWith = list(SMOOTH_GROUP_INDUSTRIAL_LIFT)
 	turf_type = /turf/open/floor/grass/gensgrass/dirty/stone/raw
 	baseturfs = /turf/open/floor/grass/gensgrass/dirty/stone/raw
-	mineralSpawnChanceList = list(/obj/item/stack/ore/gold = 5, /obj/item/stack/ore/iron = 40, /obj/item/gem/diamond=1,/obj/item/gem/ruby=1,/obj/item/gem/saphire=1)
+	mineralSpawnChanceList = list(/obj/item/stack/ore/gold = 5, /obj/item/stack/ore/iron = 40, /obj/item/gem/diamond=1,/obj/item/gem/ruby=1,/obj/item/gem/saphire=1,/obj/item/stack/ore/coal=20)
 
 /turf/closed/mineral/random/dwarf_lustress/Initialize()
 	. = ..()
@@ -380,7 +380,8 @@
 	name = "Тёмное подземелье"
 	icon_state = "unexplored"
 	outdoors = TRUE
-	static_lighting = FALSE
+	static_lighting = TRUE
+	base_lighting_alpha = 0
 	ambientsounds = AWAY_MISSION
 	requires_power = FALSE
 	sound_environment = SOUND_ENVIRONMENT_CAVE

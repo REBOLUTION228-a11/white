@@ -53,7 +53,7 @@ Behavior that's still missing from this component that original food items had t
 	volume = 50,
 	eat_time = 10,
 	list/tastes,
-	list/eatverbs = list("bite","chew","nibble","gnaw","gobble","chomp"),
+	list/eatverbs = list("ест","вкушает","поедает","пожирает","наяривает","кушает"),
 	bite_consumption = 2,
 	microwaved_type,
 	junkiness,
@@ -122,7 +122,7 @@ Behavior that's still missing from this component that original food items had t
 	volume = 50,
 	eat_time = 10,
 	list/tastes,
-	list/eatverbs = list("bite","chew","nibble","gnaw","gobble","chomp"),
+	list/eatverbs = list("ест","вкушает","поедает","пожирает","наяривает","кушает"),
 	bite_consumption = 2,
 	microwaved_type,
 	junkiness,
@@ -173,9 +173,10 @@ Behavior that's still missing from this component that original food items had t
 
 	return TryToEat(user, user)
 
-/datum/component/edible/proc/OnFried(fry_object)
+/datum/component/edible/proc/OnFried(datum/source, atom/fry_object)
 	SIGNAL_HANDLER
 	var/atom/our_atom = parent
+	fry_object.reagents.maximum_volume = our_atom.reagents.maximum_volume
 	our_atom.reagents.trans_to(fry_object, our_atom.reagents.total_volume)
 	qdel(our_atom)
 	return COMSIG_FRYING_HANDLED
@@ -188,11 +189,12 @@ Behavior that's still missing from this component that original food items had t
 		return
 
 	var/atom/this_food = parent
-	var/reagents_for_slice = chosen_processing_option[TOOL_PROCESSING_AMOUNT]
 
-	this_food.create_reagents(volume) //Make sure we have a reagent container
+	//Make sure we have a reagent container large enough to fit the original atom's reagents.
+	volume = max(volume, ROUND_UP(original_atom.reagents.maximum_volume / chosen_processing_option[TOOL_PROCESSING_AMOUNT]))
 
-	original_atom.reagents.trans_to(this_food, reagents_for_slice)
+	this_food.create_reagents(volume)
+	original_atom.reagents.copy_to(this_food, original_atom.reagents.total_volume, 1 / chosen_processing_option[TOOL_PROCESSING_AMOUNT])
 
 	if(original_atom.name != initial(original_atom.name))
 		this_food.name = "кусочек [original_atom.name]"
@@ -206,9 +208,16 @@ Behavior that's still missing from this component that original food items had t
 	var/atom/this_food = parent
 
 	this_food.reagents.multiply_reagents(CRAFTED_FOOD_BASE_REAGENT_MODIFIER)
+	this_food.reagents.maximum_volume *= CRAFTED_FOOD_BASE_REAGENT_MODIFIER
 
 	for(var/obj/item/food/crafted_part in parts_list)
-		crafted_part.reagents?.trans_to(this_food.reagents, crafted_part.reagents.maximum_volume, CRAFTED_FOOD_INGREDIENT_REAGENT_MODIFIER)
+		if(!crafted_part.reagents)
+			continue
+
+		this_food.reagents.maximum_volume += crafted_part.reagents.maximum_volume * CRAFTED_FOOD_INGREDIENT_REAGENT_MODIFIER
+		crafted_part.reagents.trans_to(this_food.reagents, crafted_part.reagents.maximum_volume, CRAFTED_FOOD_INGREDIENT_REAGENT_MODIFIER)
+
+	this_food.reagents.maximum_volume = ROUND_UP(this_food.reagents.maximum_volume) // Just because I like whole numbers for this.
 
 	SSblackbox.record_feedback("tally", "food_made", 1, type)
 
@@ -289,6 +298,7 @@ Behavior that's still missing from this component that original food items had t
 			eater.visible_message(span_notice("[eater] жадно [eatverb] [parent], проглатывая кусками!") , span_notice("Жадно кусаю [parent], проглатывая кусками!"))
 		else if(fullness > 50 && fullness < 150)
 			eater.visible_message(span_notice("[eater] жадно [eatverb] [parent].") , span_notice("Жадно пожираю [parent]."))
+		else if(fullness > 150 && fullness < 500)
 			eater.visible_message(span_notice("[eater] [eatverb] [parent].") , span_notice("Кушаю [parent]."))
 		else if(fullness > 500 && fullness < 600)
 			eater.visible_message(span_notice("[eater] нехотя [eatverb] кусочек [parent].") , span_notice("Нямкаю кусочек [parent]."))
@@ -300,7 +310,7 @@ Behavior that's still missing from this component that original food items had t
 			to_chat(feeder, span_warning("[eater] похоже не имеет рта!"))
 			return
 		if(fullness <= (600 * (1 + eater.overeatduration / (2000 SECONDS))))
-			eater.visible_message(span_danger("[feeder] пытает дать [eater] попробовать [parent].") , \
+			eater.visible_message(span_danger("[feeder] пытается дать [eater] попробовать [parent].") , \
 									span_userdanger("[feeder] пытается дать мне попробовать [parent]."))
 		else
 			eater.visible_message(span_warning("[feeder] не может больше запихнуть [parent] внутрь [eater]!") , \
@@ -460,7 +470,7 @@ Behavior that's still missing from this component that original food items had t
 	SIGNAL_HANDLER
 
 	var/datum/component/edible/E = ingredient
-	if (LAZYLEN(E.tastes))
+	if (LAZYLEN(E.tastes) && tastes)
 		tastes = tastes.Copy()
 		for (var/t in E.tastes)
 			tastes[t] += E.tastes[t]

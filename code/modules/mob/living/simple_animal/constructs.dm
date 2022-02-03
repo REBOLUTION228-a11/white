@@ -5,7 +5,7 @@
 	desc = ""
 	gender = NEUTER
 	mob_biotypes = NONE
-	speak_emote = list("hisses")
+	speak_emote = list("шипит")
 	response_help_continuous = "thinks better of touching"
 	response_help_simple = "think better of touching"
 	response_disarm_continuous = "flails at"
@@ -74,7 +74,7 @@
 /mob/living/simple_animal/hostile/construct/Destroy()
 	QDEL_NULL(our_rune)
 	return ..()
-	
+
 /mob/living/simple_animal/hostile/construct/Login()
 	. = ..()
 	if(!. || !client)
@@ -184,7 +184,7 @@
 				var/new_angle_s = P.Angle + rand(120,240)
 				while(new_angle_s > 180)	// Translate to regular projectile degrees
 					new_angle_s -= 360
-				P.setAngle(new_angle_s)
+				P.set_angle(new_angle_s)
 
 			return BULLET_ACT_FORCE_PIERCE // complete projectile permutation
 

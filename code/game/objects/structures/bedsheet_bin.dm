@@ -14,6 +14,7 @@ LINEN BINS
 	inhand_icon_state = "sheetwhite"
 	slot_flags = ITEM_SLOT_NECK
 	layer = MOB_LAYER
+	plane = GAME_PLANE_FOV_HIDDEN
 	throwforce = 0
 	throw_speed = 1
 	throw_range = 2
@@ -121,7 +122,7 @@ LINEN BINS
 
 /obj/item/bedsheet/captain
 	name = "одеяло капитана"
-	desc = "На нем виднеется символ Нанотрейзена, само одеяло вышито из инновационной ткани, имеющей гарантированную проницаемость в 0.01% для большинства нехимических веществ, популярных у современных капитанов."
+	desc = "На нем виднеется символ NanoTrasen, само одеяло вышито из инновационной ткани, имеющей гарантированную проницаемость в 0.01% для большинства нехимических веществ, популярных у современных капитанов."
 	icon_state = "sheetcaptain"
 	inhand_icon_state = "sheetcaptain"
 	dream_messages = list("власть", "золотая ID-карта", "солнечные очки", "зеленый диск", "старинный пистолет", "капитан")
@@ -227,8 +228,8 @@ LINEN BINS
 	dream_messages = list("книга", "взрыв", "молния", "посох", "скелет", "роба", "магия")
 
 /obj/item/bedsheet/nanotrasen
-	name = "Простыня НаноТрейсена"
-	desc = "На ней логотип НаноТрейсена и она излучает ауру обязанностей."
+	name = "Простыня NanoTrasen"
+	desc = "На ней логотип NanoTrasen и она излучает ауру обязанностей."
 	icon_state = "sheetNT"
 	inhand_icon_state = "sheetNT"
 	dream_messages = list("власть", "завершение")

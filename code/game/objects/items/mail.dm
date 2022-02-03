@@ -127,10 +127,10 @@
 	. = ..()
 	var/list/msg = list(span_notice("<i>Замечаю почтовый штемпель на лицевой стороне письма...</i>"))
 	if(recipient)
-		msg += "\t<span class='info'>Сертифицированная Нанотрейзен посылка для [recipient].</span>"
+		msg += "\t<span class='info'>Сертифицированная NanoTrasen посылка для [recipient].</span>"
 	else
 		msg += "\t<span class='info'>Сертифицированная посылка для [GLOB.station_name].</span>"
-	msg += "\t<span class='info'>Для распространения вручную или через метки назначения с использованием сертифицированной системы мусоропровода Нанотрейзен.</span>"
+	msg += "\t<span class='info'>Для распространения вручную или через метки назначения с использованием сертифицированной системы мусоропровода NanoTrasen.</span>"
 	return msg
 
 /// Accepts a mob to initialize goodies for a piece of mail.
@@ -179,7 +179,7 @@
 	var/list/junk_names = list(
 		/obj/item/paper/pamphlet/gateway = "[initial(name)] для [pick(GLOB.adjectives)] приключенцев",
 		/obj/item/paper/pamphlet/violent_video_games = "[initial(name)] за правду об аркадных автоматах, которую центком не хочет слышать",
-		/obj/item/paper/fluff/junkmail_redpill = "[initial(name)] для [pick(GLOB.adjectives)] работяг Нанотрейзен",
+		/obj/item/paper/fluff/junkmail_redpill = "[initial(name)] для [pick(GLOB.adjectives)] работяг NanoTrasen",
 		/obj/effect/decal/cleanable/ash = "[initial(name)] с НЕВЕРОЯТНО ВАЖНЫМ АРТЕФАКТОМ - ДОСТАВИТЬ В НАУЧНЫЙ ОТДЕЛ. ОЧЕНЬ ХРУПКОЕ СОДЕРЖИМОЕ.",
 	)
 
@@ -244,9 +244,9 @@
 /obj/item/storage/bag/mail
 	name = "мешок с почтой"
 	desc = "Сумка для писем, конвертов и других почтовых отправлений."
-	icon = 'icons/obj/library.dmi'
-	icon_state = "bookbag"
-	worn_icon_state = "bookbag"
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "mailbag"
+	worn_icon_state = "mailbag"
 	resistance_flags = FLAMMABLE
 
 /obj/item/storage/bag/mail/ComponentInitialize()

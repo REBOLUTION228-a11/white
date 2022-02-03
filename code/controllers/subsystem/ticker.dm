@@ -51,8 +51,6 @@ SUBSYSTEM_DEF(ticker)
 
 	var/news_report
 
-	var/late_join_disabled
-
 	var/roundend_check_paused = FALSE
 
 	var/round_start_time = 0
@@ -71,6 +69,8 @@ SUBSYSTEM_DEF(ticker)
 /datum/controller/subsystem/ticker/Initialize(timeofday)
 	load_mode()
 
+	load_mentors()
+
 	var/list/byond_sound_formats = list(
 		"mid"  = TRUE,
 		"midi" = TRUE,
@@ -81,6 +81,7 @@ SUBSYSTEM_DEF(ticker)
 		"oxm"  = TRUE,
 		"wav"  = TRUE,
 		"ogg"  = TRUE,
+		"mp3"  = TRUE,
 		"raw"  = TRUE,
 		"wma"  = TRUE,
 		"aiff" = TRUE
@@ -151,6 +152,10 @@ SUBSYSTEM_DEF(ticker)
 	return ..()
 
 /datum/controller/subsystem/ticker/fire()
+	if(world.time > 30 MINUTES && !GLOB.cryopods_enabled)
+		GLOB.cryopods_enabled = TRUE
+		for(var/obj/machinery/cryopod/pod as anything in GLOB.cryopods)
+			pod.PowerOn()
 	switch(current_state)
 		if(GAME_STATE_STARTUP)
 			if(Master.initializations_finished_with_no_players_logged_in)
@@ -288,7 +293,7 @@ SUBSYSTEM_DEF(ticker)
 		var/list/modes = new
 		for (var/datum/game_mode/M in runnable_modes)
 			modes += M.name
-		modes = sortList(modes)
+		modes = sort_list(modes)
 		message_admins("<b>The gamemode is: secret!\nPossibilities:</B> [english_list(modes)]")
 	else
 		mode.announce()

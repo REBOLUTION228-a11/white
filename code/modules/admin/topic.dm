@@ -132,6 +132,8 @@
 				log_admin("[key_name(usr)] spawned a blob with base resource gain [strength].")
 				new/datum/round_event/ghost_role/blob(TRUE, strength)
 			if("centcom")
+//				if(!check_rights(R_PERMISSIONS))
+//					return
 				message_admins("[key_name(usr)] is creating a CentCom response team...")
 				if(src.makeEmergencyresponseteam())
 					message_admins("[key_name(usr)] created a CentCom response team.")
@@ -180,6 +182,7 @@
 						return
 					if("No")
 						event.announceChance = 0
+				event.on_admin_trigger()
 				event.processing = TRUE
 			message_admins("[key_name_admin(usr)] has triggered an event. ([E.name])")
 			log_admin("[key_name(usr)] has triggered an event. ([E.name])")
@@ -355,10 +358,10 @@
 		if(!check_rights(R_ADMIN))
 			return
 
-		message_admins("<span class='adminnotice'>[key_name_admin(usr)] is considering ending the round.</span>")
+		message_admins(span_adminnotice("[key_name_admin(usr)] is considering ending the round."))
 		if(tgui_alert(usr, "This will end the round, are you SURE you want to do this?", "Confirmation", list("Yes", "No")) == "Yes")
 			if(tgui_alert(usr, "Final Confirmation: End the round NOW?", "Confirmation", list("Yes", "No")) == "Yes")
-				message_admins("<span class='adminnotice'>[key_name_admin(usr)] has ended the round.</span>")
+				message_admins(span_adminnotice("[key_name_admin(usr)] has ended the round."))
 				SSticker.force_ending = 1 //Yeah there we go APC destroyed mission accomplished
 				return
 			else
@@ -638,7 +641,7 @@
 		for (var/rule in subtypesof(/datum/dynamic_ruleset/roundstart))
 			var/datum/dynamic_ruleset/roundstart/newrule = new rule()
 			roundstart_rules[newrule.name] = newrule
-		var/added_rule = input(usr,"What ruleset do you want to force? This will bypass threat level and population restrictions.", "Rigging Roundstart", null) as null|anything in sortList(roundstart_rules)
+		var/added_rule = input(usr,"What ruleset do you want to force? This will bypass threat level and population restrictions.", "Rigging Roundstart", null) as null|anything in sort_list(roundstart_rules)
 		if (added_rule)
 			GLOB.dynamic_forced_roundstart_ruleset += roundstart_rules[added_rule]
 			log_admin("[key_name(usr)] set [added_rule] to be a forced roundstart ruleset.")
@@ -1281,30 +1284,6 @@
 		to_chat(H, span_adminnotice("Your prayers have been answered!! You received the <b>best [new_item.name]!</b>") , confidential = TRUE)
 		SEND_SOUND(H, sound('sound/effects/pray_chaplain.ogg'))
 
-	else if(href_list["adminspawnpoop"])
-		if(!check_rights(R_ADMIN|R_FUN))
-			return
-
-		var/mob/living/carbon/human/H = locate(href_list["adminspawnpoop"])
-		if(!ishuman(H))
-			to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human.", confidential = TRUE)
-			return
-
-		var/obj/item/food/poo/cookie = new(H)
-		if(H.put_in_hands(cookie))
-			H.update_inv_hands()
-		else
-			qdel(cookie)
-			log_admin("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(src.owner)].")
-			message_admins("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(src.owner)].")
-			return
-
-		log_admin("[key_name(H)] got their poop, spawned by [key_name(src.owner)].")
-		message_admins("[key_name(H)] got their poop, spawned by [key_name(src.owner)].")
-		SSblackbox.record_feedback("amount", "admin_poop_spawned", 1)
-		to_chat(H, span_adminnotice("Your prayers have been answered!! You received <font size='16'><b>вонючий кусок кала</b></font>!") , confidential = TRUE)
-		SEND_SOUND(H, sound('sound/effects/pray_chaplain.ogg'))
-
 	else if(href_list["adminsmite"])
 		if(!check_rights(R_ADMIN|R_FUN))
 			return
@@ -1661,7 +1640,7 @@
 		var/list/available_channels = list()
 		for(var/datum/newscaster/feed_channel/F in GLOB.news_network.network_channels)
 			available_channels += F.channel_name
-		src.admincaster_feed_channel.channel_name = adminscrub(input(usr, "Choose receiving Feed Channel.", "Network Channel Handler") in sortList(available_channels) )
+		src.admincaster_feed_channel.channel_name = adminscrub(input(usr, "Choose receiving Feed Channel.", "Network Channel Handler") in sort_list(available_channels) )
 		src.access_news_network()
 
 	else if(href_list["ac_set_new_message"])
@@ -1934,6 +1913,58 @@
 		message_admins("[key_name(usr)] created \"[G.name]\" station goal.")
 		SSticker.mode.station_goals += G
 		modify_goals()
+
+	else if(href_list["change_lag_switch"])
+		if(!check_rights(R_ADMIN))
+			return
+
+		switch(href_list["change_lag_switch"])
+			if("ALL_ON")
+				SSlag_switch.set_all_measures(TRUE)
+				log_admin("[key_name(usr)] turned all Lag Switch measures ON.")
+				message_admins("[key_name_admin(usr)] turned all Lag Switch measures ON.")
+			if("ALL_OFF")
+				SSlag_switch.set_all_measures(FALSE)
+				log_admin("[key_name(usr)] turned all Lag Switch measures OFF.")
+				message_admins("[key_name_admin(usr)] turned all Lag Switch measures OFF.")
+			else
+				var/switch_index = text2num(href_list["change_lag_switch"])
+				if(!SSlag_switch.set_measure(switch_index, !LAZYACCESS(SSlag_switch.measures, switch_index)))
+					to_chat(src, span_danger("Something went wrong when trying to toggle that Lag Switch. Check runtimes for more info."), confidential = TRUE)
+				else
+					log_admin("[key_name(usr)] turned a Lag Switch measure at index ([switch_index]) [LAZYACCESS(SSlag_switch.measures, switch_index) ? "ON" : "OFF"]")
+					message_admins("[key_name_admin(usr)] turned a Lag Switch measure [LAZYACCESS(SSlag_switch.measures, switch_index) ? "ON" : "OFF"]")
+
+		src.show_lag_switch_panel()
+
+	else if(href_list["change_lag_switch_option"])
+		if(!check_rights(R_ADMIN))
+			return
+
+		switch(href_list["change_lag_switch_option"])
+			if("CANCEL")
+				if(SSlag_switch.cancel_auto_enable_in_progress())
+					log_admin("[key_name(usr)] canceled the automatic Lag Switch activation in progress.")
+					message_admins("[key_name_admin(usr)] canceled the automatic Lag Switch activation in progress.")
+				return // return here to avoid (re)rendering the panel for this case
+			if("TOGGLE_AUTO")
+				SSlag_switch.toggle_auto_enable()
+				log_admin("[key_name(usr)] toggled automatic Lag Switch activation [SSlag_switch.auto_switch ? "ON" : "OFF"].")
+				message_admins("[key_name_admin(usr)] toggled automatic Lag Switch activation [SSlag_switch.auto_switch ? "ON" : "OFF"].")
+			if("NUM")
+				var/new_num = input("Enter new threshold value:", "Num") as null|num
+				if(!isnull(new_num))
+					SSlag_switch.trigger_pop = new_num
+					log_admin("[key_name(usr)] set the Lag Switch automatic trigger pop to [new_num].")
+					message_admins("[key_name_admin(usr)] set the Lag Switch automatic trigger pop to [new_num].")
+			if("SLOWCOOL")
+				var/new_num = input("Enter new cooldown in seconds:", "Num") as null|num
+				if(!isnull(new_num))
+					SSlag_switch.change_slowmode_cooldown(new_num)
+					log_admin("[key_name(usr)] set the Lag Switch slowmode cooldown to [new_num] seconds.")
+					message_admins("[key_name_admin(usr)] set the Lag Switch slowmode cooldown to [new_num] seconds.")
+
+		src.show_lag_switch_panel()
 
 	else if(href_list["viewruntime"])
 		var/datum/error_viewer/error_viewer = locate(href_list["viewruntime"])
@@ -2238,13 +2269,10 @@
 		poll_option_parse_href(href_list, poll, option)
 
 	else if(href_list["admincommend"])
-		if(!SSticker.IsRoundInProgress())
-			to_chat(usr, span_warning("The round must be in progress to use this!"))
-			return
 		var/mob/heart_recepient = locate(href_list["admincommend"])
-		if(tgui_alert(usr, "Are you sure you'd like to anonymously commend [heart_recepient.ckey]? NOTE: This is logged, please use this sparingly and only for actual kind behavior, not as a reward for your friends.", "<3?", list("Yes", "No")) == "No")
+		if(tgui_alert(usr, "Хочешь выдать сердечко в ООС [heart_recepient.ckey]?", "<3?", list("Да", "Нет")) == "Нет")
 			return
-		usr.nominate_heart(heart_recepient)
+		heart_recepient.receive_heart(usr, instant = TRUE)
 
 	else if(href_list["force_war"])
 		if(!check_rights(R_ADMIN))

@@ -26,7 +26,7 @@ Difficulty: Hard
 	attack_sound = 'sound/magic/demon_attack1.ogg'
 	attack_vis_effect = ATTACK_EFFECT_CLAW
 	weather_immunities = list(WEATHER_SNOW)
-	speak_emote = list("roars")
+	speak_emote = list("рычит")
 	armour_penetration = 40
 	melee_damage_lower = 40
 	melee_damage_upper = 40
@@ -235,7 +235,7 @@ Difficulty: Hard
 				SLEEP_CHECK_DEATH(6 - WENDIGO_ENRAGED * 2)
 		if("Spiral")
 			var/shots_spiral = WENDIGO_SPIRAL_SHOTCOUNT
-			var/angle_to_target = Get_Angle(src, target)
+			var/angle_to_target = get_angle(src, target)
 			var/spiral_direction = pick(-1, 1)
 			for(var/shot in 1 to shots_spiral)
 				var/shots_per_tick = 5 - WENDIGO_ENRAGED * 3
@@ -284,7 +284,7 @@ Difficulty: Hard
 	. = ..()
 	if(wave_movement)
 		pixel_moves++
-		setAngle(original_angle + pixel_moves * wave_speed)
+		set_angle(original_angle + pixel_moves * wave_speed)
 
 /obj/item/wendigo_blood
 	name = "bottle of wendigo blood"

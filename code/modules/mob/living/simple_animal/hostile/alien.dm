@@ -18,7 +18,7 @@
 	melee_damage_upper = 25
 	attack_verb_continuous = "режет"
 	attack_verb_simple = "режет"
-	speak_emote = list("hisses")
+	speak_emote = list("шипит")
 	bubble_icon = "alien"
 	a_intent = INTENT_HARM
 	attack_sound = 'sound/weapons/bladeslice.ogg'
@@ -35,10 +35,7 @@
 	deathsound = 'sound/voice/hiss6.ogg'
 	deathmessage = "lets out a waning guttural screech, green blood bubbling from its maw..."
 	discovery_points = 2000
-
-/mob/living/simple_animal/hostile/alien/Initialize()
-	. = ..()
-	AddElement(/datum/element/footstep, FOOTSTEP_MOB_CLAW)
+	footstep_type = FOOTSTEP_MOB_CLAW
 
 /mob/living/simple_animal/hostile/alien/drone
 	name = "alien drone"

@@ -21,9 +21,17 @@
 
 /obj/item/clothing/head/helmet/Initialize()
 	. = ..()
+	AddComponent(/datum/component/armor_plate/plasteel)
 	if(attached_light)
 		alight = new(src)
 
+/obj/item/clothing/head/helmet/worn_overlays(isinhands)
+	. = ..()
+	if(!isinhands)
+		var/datum/component/armor_plate/plasteel/ap = GetComponent(/datum/component/armor_plate/plasteel)
+		if(ap?.amount)
+			var/mutable_appearance/armor_overlay = mutable_appearance('icons/mob/clothing/head.dmi', "armor_plasteel_[ap.amount]")
+			. += armor_overlay
 
 /obj/item/clothing/head/helmet/Destroy()
 	var/obj/item/flashlight/seclite/old_light = set_attached_light(null)
@@ -98,11 +106,14 @@
 	dog_fashion = null
 
 /obj/item/clothing/head/helmet/marine
-	name = "marine combat helmet"
-	desc = "A multirole helmet painted in a tactical black, the added binoculars aren't functional, but they make you feel operator as fuck."
+	name = "tactical combat helmet"
+	desc = "A tactical black helmet, sealed from outside hazards with a plate of glass and not much else."
 	icon_state = "marine_command"
 	inhand_icon_state = "helmetalt"
-	armor = list(MELEE = 35, BULLET = 60, LASER = 30, ENERGY = 30, BOMB = 40, BIO = 20, RAD = 0, FIRE = 40, ACID = 50, WOUND = 20)
+	armor = list(MELEE = 50, BULLET = 50, LASER = 30, ENERGY = 25, BOMB = 50, BIO = 100, FIRE = 40, ACID = 50, WOUND = 20)
+	min_cold_protection_temperature = SPACE_HELM_MIN_TEMP_PROTECT
+	clothing_flags = STOPSPRESSUREDAMAGE
+	resistance_flags = FIRE_PROOF | ACID_PROOF
 	can_flashlight = TRUE
 	dog_fashion = null
 
@@ -114,21 +125,15 @@
 
 /obj/item/clothing/head/helmet/marine/security
 	name = "marine heavy helmet"
-	desc = "A heavier armored marine helmet, painted black and with an added ballistic screen for extra protection from dangers to the face."
 	icon_state = "marine_security"
-	armor = list(MELEE = 35, BULLET = 60, LASER = 30, ENERGY = 30, BOMB = 40, BIO = 20, RAD = 0, FIRE = 50, ACID = 50, WOUND = 20)
 
 /obj/item/clothing/head/helmet/marine/engineer
 	name = "marine utility helmet"
-	desc = "A helmet with a pair of military grade welding goggles, sacrificing some armor protection for more environmental protection."
 	icon_state = "marine_engineer"
-	armor = list(MELEE = 35, BULLET = 40, LASER = 20, ENERGY = 20, BOMB = 70, BIO = 20, RAD = 30, FIRE = 70, ACID = 70, WOUND = 10)
 
 /obj/item/clothing/head/helmet/marine/medic
 	name = "marine medic helmet"
-	desc = "A multirole helmet with an attached antenna, which looks cool despite being useless. Has some extra biological protection installed."
 	icon_state = "marine_medic"
-	armor = list(MELEE = 35, BULLET = 40, LASER = 20, ENERGY = 20, BOMB = 30, BIO = 30, RAD = 10, FIRE = 50, ACID = 70, WOUND = 10)
 
 /obj/item/clothing/head/helmet/old
 	name = "изношенный шлем"
@@ -245,7 +250,7 @@
 
 /obj/item/clothing/head/helmet/swat/nanotrasen
 	name = "шлем спецназа"
-	desc = "Чрезвычайно прочный, космический шлем с логотипом Нанотрансен, украшенный сверху."
+	desc = "Чрезвычайно прочный, космический шлем с логотипом NanoTrasen, украшенный сверху."
 	icon_state = "swat"
 	inhand_icon_state = "swat"
 
@@ -452,7 +457,7 @@
 		var/mob/living/something = user
 		to_chat(something, span_boldnotice("На секунду ощутил колющую боль в затылке."))
 		something.apply_damage(5,BRUTE,BODY_ZONE_HEAD,FALSE,FALSE,FALSE) //notably: no damage resist (it's in your helmet), no damage spread (it's in your helmet)
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 		return
 	if(!(GLOB.ghost_role_flags & GHOSTROLE_STATION_SENTIENCE))
 		say("ERROR: Центральное командование временно запретило использование шлемов по увеличению обезьянего интеллекта в этом секторе. БЛИЖАЙШИЙ ЗАКОННЫЙ СЕКТОР: в 2,537 миллионов световых лет от вас.")
@@ -465,7 +470,7 @@
 	if(!candidates.len)
 		magnification = null
 		visible_message(span_notice("[capitalize(src.name)] замолкает и падает на пол. Может стоит попробовать позже?"))
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 		user.dropItemToGround(src)
 		return
 	var/mob/picked = pick(candidates)
@@ -499,7 +504,7 @@
 				if(4) //genetic mass susceptibility (gib)
 					magnification.gib()
 	//either used up correctly or taken off before polling finished (punish this by destroying the helmet)
-	playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+	playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 	playsound(src, "sparks", 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	visible_message(span_warning("[capitalize(src.name)] шипит и распадается"))
 	magnification = null

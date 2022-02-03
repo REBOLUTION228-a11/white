@@ -95,7 +95,7 @@ SUBSYSTEM_DEF(zclear)
 				//Zombie level detected.
 				announced_zombie_levels["[level.z_value]"] = TRUE
 				if(level.orbital_body)
-					priority_announce("Датчики дальнего действия Нанотрейзен показали, что все разумные формы жизни находящиеся в приоритетной точке [level.orbital_body.name] более не подают признаков жизни. Командованию рекомендуется организовать спасательную операцию для извлечения тел. В связи с характером угрозы в этом месте, сотрудникам службы безопасности, вооруженным смертоносным оружием, рекомендуется сопровождать спасательную команду.", "Сенсоры дальнего обнаружения Нанотрейзен")
+					priority_announce("Датчики дальнего действия NanoTrasen показали, что все разумные формы жизни находящиеся в приоритетной точке [level.orbital_body.name] более не подают признаков жизни. Командованию рекомендуется организовать спасательную операцию для извлечения тел. В связи с характером угрозы в этом месте, сотрудникам службы безопасности, вооруженным смертоносным оружием, рекомендуется сопровождать спасательную команду.", "Сенсоры дальнего обнаружения NanoTrasen")
 			continue
 		//Level is free, do the wiping thing.
 		LAZYREMOVE(autowipe, level)
@@ -152,6 +152,8 @@ SUBSYSTEM_DEF(zclear)
 	if(!z_level)
 		return
 
+	SSair.pause_z(z_level)
+
 	var/list/turfs = block(locate(1, 1, z_level), locate(world.maxx, world.maxy, z_level))
 	var/list/divided_turfs = list()
 	var/section_process_time = CLEAR_TURF_PROCESSING_TIME * 0.5 //There are 3 processes, cleaing atoms, cleaing turfs and then reseting atmos
@@ -203,6 +205,7 @@ SUBSYSTEM_DEF(zclear)
 			//Done
 			LAZYREMOVE(processing_levels, cleardata)
 			//Finalize area
+			SSair.unpause_z(cleardata.zvalue)
 			var/area/spaceA = GLOB.areas_by_type[/area/space]
 			spaceA.reg_in_areas_in_z()	//<< Potentially slow proc
 			if(cleardata.completion_callback)

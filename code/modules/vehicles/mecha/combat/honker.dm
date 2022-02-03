@@ -1,6 +1,6 @@
 /obj/vehicle/sealed/mecha/combat/honker
-	desc = "Produced by \"Tyranny of Honk, INC\", this exosuit is designed as heavy clown-support. Used to spread the fun and joy of life. HONK!"
-	name = "\improper H.O.N.K"
+	desc = "Произведен корпорацией \"Тирания Хонка\", спроектирован как тяжелая поддержка клоуна. Используется для распространения веселья и радости жизни. ХОНК!"
+	name = "Х.О.Н.К"
 	icon_state = "honker"
 	movedelay = 3
 	max_integrity = 140
@@ -162,7 +162,7 @@
 			if("lightningbolt")
 				playsound(src, 'sound/magic/lightningbolt.ogg', 50)
 			if("explosionfar")
-				playsound(src, 'sound/effects/explosionfar.ogg', 50)
+				playsound(src, pick(FAR_EXPLOSION_SOUNDS), 50)
 
 
 //DARK H.O.N.K.

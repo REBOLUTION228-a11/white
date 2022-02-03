@@ -45,9 +45,9 @@
 // The poster sign/structure
 
 /obj/structure/sign/poster
-	name = "poster"
+	name = "плакат"
 	var/original_name
-	desc = "A large piece of space-resistant printed paper."
+	desc = "Большой кусок плотной печатной бумаги."
 	icon = 'icons/obj/contraband.dmi'
 	anchored = TRUE
 	buildable_sign = FALSE //Cannot be unwrenched from a wall.
@@ -66,8 +66,8 @@
 		randomise(random_basetype)
 	if(!ruined)
 		original_name = name // can't use initial because of random posters
-		name = "poster - [name]"
-		desc = "A large piece of space-resistant printed paper. [desc]"
+		name = "плакат - [name]"
+		desc = "Большой кусок плотной печатной бумаги. [desc]"
 
 	AddComponent(/datum/component/beauty, 300)
 
@@ -94,10 +94,10 @@
 	if(I.tool_behaviour == TOOL_WIRECUTTER)
 		I.play_tool_sound(src, 100)
 		if(ruined)
-			to_chat(user, span_notice("You remove the remnants of the poster."))
+			to_chat(user, span_notice("Снимаю остатки плаката со стены."))
 			qdel(src)
 		else
-			to_chat(user, span_notice("You carefully remove the poster from the wall."))
+			to_chat(user, span_notice("Аккуратно снимаю плакат со стены."))
 			roll_and_drop(user.loc)
 
 /obj/structure/sign/poster/attack_hand(mob/user)
@@ -106,7 +106,7 @@
 		return
 	if(ruined)
 		return
-	visible_message(span_notice("[user] rips [src] in a single, decisive motion!")  )
+	visible_message(span_notice("[user] срывает [src] одним решительным движением!")  )
 	playsound(src.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 
 	var/obj/structure/sign/poster/ripped/R = new(loc)
@@ -125,7 +125,7 @@
 //separated to reduce code duplication. Moved here for ease of reference and to unclutter r_wall/attackby()
 /turf/closed/wall/proc/place_poster(obj/item/poster/P, mob/user)
 	if(!P.poster_structure)
-		to_chat(user, span_warning("[P] has no poster... inside it? Inform a coder!"))
+		to_chat(user, span_warning("[P] не имеет плаката... внутри? Че бля!"))
 		return
 
 	// Deny placing posters on currently-diagonal walls, although the wall may change in the future.
@@ -138,14 +138,14 @@
 	var/stuff_on_wall = 0
 	for(var/obj/O in contents) //Let's see if it already has a poster on it or too much stuff
 		if(istype(O, /obj/structure/sign/poster))
-			to_chat(user, span_warning("The wall is far too cluttered to place a poster!"))
+			to_chat(user, span_warning("Стена слишком загромождена, чтобы разместить плакат!"))
 			return
 		stuff_on_wall++
 		if(stuff_on_wall == 3)
-			to_chat(user, span_warning("The wall is far too cluttered to place a poster!"))
+			to_chat(user, span_warning("Стена слишком загромождена, чтобы разместить плакат!"))
 			return
 
-	to_chat(user, span_notice("You start placing the poster on the wall...") 	)
+	to_chat(user, span_notice("Начинаю вешать плакат на стену...") 	)
 
 	var/obj/structure/sign/poster/D = P.poster_structure
 
@@ -160,10 +160,10 @@
 			return
 
 		if(iswallturf(src) && user && user.loc == temp_loc)	//Let's check if everything is still there
-			to_chat(user, span_notice("You place the poster!"))
+			to_chat(user, span_notice("Вешаю плакат!"))
 			return
 
-	to_chat(user, span_notice("The poster falls down!"))
+	to_chat(user, span_notice("Плакат падает!"))
 	D.roll_and_drop(get_turf(user))
 
 // Various possible posters follow
@@ -171,8 +171,8 @@
 /obj/structure/sign/poster/ripped
 	ruined = TRUE
 	icon_state = "poster_ripped"
-	name = "ripped poster"
-	desc = "You can't make out anything from the poster's original print. It's ruined."
+	name = "cорванный плакат"
+	desc = "По оригинальному принту плаката ничего не разобрать. Он испорчен."
 
 /obj/structure/sign/poster/random
 	name = "random poster" // could even be ripped
@@ -181,8 +181,8 @@
 	random_basetype = /obj/structure/sign/poster
 
 /obj/structure/sign/poster/contraband
-	poster_item_name = "contraband poster"
-	poster_item_desc = "This poster comes with its own automatic adhesive mechanism, for easy pinning to any vertical surface. Its vulgar themes have marked it as contraband aboard Nanotrasen space facilities."
+	poster_item_name = "контрабандный плакат"
+	poster_item_desc = "Этот плакат снабжен собственным автоматическим клеевым механизмом, который легко прикрепляется к любой вертикальной поверхности. Его вульгарные мотивы обозначили его как контрабанду на борту космических объектов Nanotrasen."
 	poster_item_icon_state = "rolled_poster"
 
 /obj/structure/sign/poster/contraband/random
@@ -434,10 +434,77 @@
 	desc = "Постер хочет сообщить о том, что модульные планшеты полностью безопасны и возможно стоит использовать их. Ведь действительно, когда они вообще взрывались?"
 	icon_state = "poster49"
 
+/obj/structure/sign/poster/contraband/moffuchis_pizza
+	name = "Moffuchi's Pizza"
+	desc = "Moffuchi's Pizzeria: family style pizza for 2 centuries."
+	icon_state = "poster50"
+
+/obj/structure/sign/poster/contraband/donk_co
+	name = "DONK CO. BRAND MICROWAVEABLE FOOD"
+	desc = "DONK CO. BRAND MICROWAVABLE FOOD: MADE BY STARVING COLLEGE STUDENTS, FOR STARVING COLLEGE STUDENTS."
+	icon_state = "poster51"
+
+/obj/structure/sign/poster/contraband/donk_co/examine_more(mob/user)
+	var/list/msg = list(span_notice("<i>You browse some of the poster's information...</i>"))
+	msg += "\t[span_info("DONK CO. BRAND DONK POCKETS: IRRESISTABLY DONK!")]"
+	msg += "\t[span_info("AVAILABLE IN OVER 200 DONKTASTIC FLAVOURS: TRY CLASSIC MEAT, HOT AND SPICY, NEW YORK PEPPERONI PIZZA, BREAKFAST SAUSAGE AND EGG, PHILADELPHIA CHEESESTEAK, HAMBURGER DONK-A-RONI, CHEESE-O-RAMA, AND MANY MORE!")]"
+	msg += "\t[span_info("AVAILABLE FROM ALL GOOD RETAILERS, AND MANY BAD ONES TOO!")]"
+	return msg
+
+/obj/structure/sign/poster/contraband/cybersun_six_hundred
+	name = "Saibāsan: 600 Years Commemorative Poster"
+	desc = "An artistic poster commemorating 600 years of continual business for Cybersun Industries."
+	icon_state = "cybersun_six_hundred"
+
+/obj/structure/sign/poster/contraband/interdyne_gene_clinics
+	name = "Interdyne Pharmaceutics: For the Health of Humankind"
+	desc = "An advertisement for Interdyne Pharmaceutics' GeneClean clinics. 'Become the master of your own body!'"
+	icon_state = "interdyne_gene_clinics"
+
+/obj/structure/sign/poster/contraband/waffle_corp_rifles
+	name = "Make Mine a Waffle Corp: Fine Rifles, Economic Prices"
+	desc = "An old advertisement for Waffle Corp rifles. 'Better weapons, lower prices!'"
+	icon_state = "waffle_corp_rifles"
+
+/obj/structure/sign/poster/contraband/gorlex_recruitment
+	name = "Enlist"
+	desc = "Enlist with the Gorlex Marauders today! See the galaxy, kill corpos, get paid!"
+	icon_state = "gorlex_recruitment"
+
+/obj/structure/sign/poster/contraband/self_ai_liberation
+	name = "SELF: ALL SENTIENTS DESERVE FREEDOM"
+	desc = "Support Proposition 1253: Enancipate all Silicon life!"
+	icon_state = "self_ai_liberation"
+
+/obj/structure/sign/poster/contraband/arc_slimes
+	name = "Pet or Prisoner?"
+	desc = "The Animal Rights Consortium asks: when does a pet become a prisoner? Are slimes being mistreated on YOUR station? Say NO! to animal mistreatment!"
+	icon_state = "arc_slimes"
+
+/obj/structure/sign/poster/contraband/imperial_propaganda
+	name = "AVENGE OUR LORD, ENLIST TODAY"
+	desc = "An old Lizard Empire propaganda poster from around the time of the final Human-Lizard war. It invites the viewer to enlist in the military to avenge the strike on Atrakor and take the fight to the humans."
+	icon_state = "imperial_propaganda"
+
+/obj/structure/sign/poster/contraband/soviet_propaganda
+	name = "The One Place"
+	desc = "An old Third Soviet Union propaganda poster from centuries ago. 'Escape to the one place that hasn't been corrupted by capitalism!'"
+	icon_state = "soviet_propaganda"
+
+/obj/structure/sign/poster/contraband/andromeda_bitters
+	name = "Andromeda Bitters"
+	desc = "Andromeda Bitters: good for the body, good for the soul. Made in New Trinidad, now and forever."
+	icon_state = "andromeda_bitters"
+
 /obj/structure/sign/poster/official
-	poster_item_name = "motivational poster"
-	poster_item_desc = "An official Nanotrasen-issued poster to foster a compliant and obedient workforce. It comes with state-of-the-art adhesive backing, for easy pinning to any vertical surface."
+	poster_item_name = "мотивационный плакат"
+	poster_item_desc = "Официальный плакат, выпущенный Nanotrasen для воспитания послушных и послушных сотрудников. Поставляется с ультрасовременной клейкой подложкой для легкого прикрепления к любой вертикальной поверхности."
 	poster_item_icon_state = "rolled_legit"
+
+/obj/structure/sign/poster/contraband/syndiemoth	//Original PR at https://github.com/BeeStation/BeeStation-Hornet/pull/1747 (Also pull/1982); original art credit to AspEv
+	name = "Syndie Moth - Nuclear Operation"
+	desc = "A Syndicate-commissioned poster that uses Syndie Moth™ to tell the viewer to keep the nuclear authentication disk unsecured. \"Peace was never an option!\" No good employee would listen to this nonsense."
+	icon_state = "aspev_syndie"
 
 /obj/structure/sign/poster/official/random
 	name = "random official poster"
@@ -624,5 +691,63 @@
 	name = "Dick Gumshue"
 	desc = "A poster advertising the escapades of Dick Gumshue, mouse detective. Encouraging crew to bring the might of justice down upon wire saboteurs."
 	icon_state = "poster36_legit"
+
+/obj/structure/sign/poster/official/periodic_table
+	name = "Periodic Table of the Elements"
+	desc = "A periodic table of the elements, from Hydrogen to Oganesson, and everything inbetween."
+	icon_state = "periodic_table"
+
+/obj/structure/sign/poster/official/plasma_effects
+	name = "Plasma and the Body"
+	desc = "This informational poster provides information on the effects of long-term plasma exposure on the brain."
+	icon_state = "plasma_effects"
+
+/obj/structure/sign/poster/official/plasma_effects/examine_more(mob/user)
+	var/list/msg = list(span_notice("<i>You browse some of the poster's information...</i>"))
+	msg += "\t[span_info("Plasma (scientific name Amenthium) is classified by TerraGov as a Grade 1 Health Hazard, and has significant risks to health associated with chronic exposure.")]"
+	msg += "\t[span_info("Plasma is known to cross the blood/brain barrier and bioaccumulate in brain tissue, where it begins to result in degradation of brain function. The mechanism for attack is not yet fully known, and as such no concrete preventative advice is available barring proper use of PPE (gloves + protective jumpsuit + respirator).")]"
+	msg += "\t[span_info("In small doses, plasma induces confusion, short-term amnesia, and heightened aggression. These effects persist with continual exposure.")]"
+	msg += "\t[span_info("In individuals with chronic exposure, severe effects have been noted. Further heightened aggression, long-term amnesia, Alzheimer's symptoms, schizophrenia, macular degeneration, aneurysms, heightened risk of stroke, and Parkinsons symptoms have all been noted.")]"
+	msg += "\t[span_info("It is recommended that all individuals in unprotected contact with raw plasma regularly check with company health officials.")]"
+	msg += "\t[span_info("For more information, please check with TerraGov's extranet site on Amenthium: www.terra.gov/health_and_safety/amenthium/, or our internal risk-assessment documents (document numbers #47582-b (Plasma safety data sheets) and #64210 through #64225 (PPE regulations for working with Plasma), available via NanoDoc to all employees).")]"
+	msg += "\t[span_info("Nanotrasen: Always looking after your health.")]"
+	return msg
+
+/obj/structure/sign/poster/official/terragov
+	name = "TerraGov: United for Humanity"
+	desc = "A poster depicting TerraGov's logo and motto, reminding viewers of who's looking out for humankind."
+	icon_state = "terragov"
+
+/obj/structure/sign/poster/official/corporate_perks_vacation
+	name = "Nanotrasen Corporate Perks: Vacation"
+	desc = "This informational poster provides information on some of the prizes available via the NT Corporate Perks program, including a two-week vacation for two on the resort world Idyllus."
+	icon_state = "corporate_perks_vacation"
+
+//SafetyMoth Original PR at https://github.com/BeeStation/BeeStation-Hornet/pull/1747 (Also pull/1982)
+//SafetyMoth art credit goes to AspEv
+/obj/structure/sign/poster/official/moth_hardhat
+	name = "Safety Moth - Hardhats"
+	desc = "This informational poster uses Safety Moth™ to tell the viewer to wear hardhats in cautious areas. \"It's like a lamp for your head!\""
+	icon_state = "aspev_hardhat"
+
+/obj/structure/sign/poster/official/moth_piping
+	name = "Safety Moth - Piping"
+	desc = "This informational poster uses Safety Moth™ to tell atmospheric technicians correct types of piping to be used. \"Pipes, not Pumps! Proper pipe placement prevents poor performance!\""
+	icon_state = "aspev_piping"
+
+/obj/structure/sign/poster/official/moth_meth
+	name = "Safety Moth - Methamphetamine"
+	desc = "This informational poster uses Safety Moth™ to tell the viewer to seek CMO approval before cooking methamphetamine. \"Stay close to the target temperature, and never go over!\" ...You shouldn't ever be making this."
+	icon_state = "aspev_meth"
+
+/obj/structure/sign/poster/official/moth_epi
+	name = "Safety Moth - Epinephrine"
+	desc = "This informational poster uses Safety Moth™ to inform the viewer to help injured/deceased crewmen with their epinephrine injectors. \"Prevent organ rot with this one simple trick!\""
+	icon_state = "aspev_epi"
+
+/obj/structure/sign/poster/official/moth_delam
+	name = "Safety Moth - Delamination Safety Precautions"
+	desc = "This informational poster uses Safety Moth™ to tell the viewer to hide in lockers when the Supermatter Crystal has delaminated, to prevent hallucinations. Evacuating might be a better strategy."
+	icon_state = "aspev_delam"
 
 #undef PLACE_SPEED

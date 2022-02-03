@@ -47,7 +47,7 @@
 		return
 	if(!radial_based)
 		var/ghost_role = tgui_alert(usr, "Точно хочешь занять этот спаунер? (внимание, текущее тело будет покинуто)",,list("Да","Нет"))
-		if(ghost_role == "Нет" || !loc || QDELETED(user))
+		if(ghost_role != "Да" || !loc || QDELETED(user))
 			return
 	if(!(GLOB.ghost_role_flags & GHOSTROLE_SPAWNER) && !(flags_1 & ADMIN_SPAWNED_1))
 		to_chat(user, span_warning("Администраторы временно отключили гост-роли"))
@@ -393,7 +393,7 @@
 	outfit = /datum/outfit/nanotrasencommandercorpse
 
 /datum/outfit/nanotrasencommandercorpse
-	name = "\improper Глава Внутренней Безопасности Нанотрейзен"
+	name = "\improper Глава Внутренней Безопасности NanoTrasen"
 	uniform = /obj/item/clothing/under/rank/centcom/commander
 	suit = /obj/item/clothing/suit/armor/bulletproof
 	ears = /obj/item/radio/headset/heads/captain
@@ -407,7 +407,7 @@
 	id_trim = /datum/id_trim/centcom/corpse/commander
 
 /obj/effect/mob_spawn/human/nanotrasensoldier
-	name = "Офицер Внутренней Безопасности Нанотрейзен"
+	name = "Офицер Внутренней Безопасности NanoTrasen"
 	outfit = /datum/outfit/nanotrasensoldiercorpse
 
 /datum/outfit/nanotrasensoldiercorpse

@@ -12,7 +12,7 @@
 			return lowertext(id)
 
 /obj/machinery/chem_dispenser
-	name = "раздатчик химикатов"
+	name = "Хим-раздатчик"
 	desc = "Создает и выдает химикаты."
 	density = TRUE
 	icon = 'icons/obj/chemical.dmi'
@@ -89,11 +89,11 @@
 
 /obj/machinery/chem_dispenser/Initialize()
 	. = ..()
-	dispensable_reagents = sortList(dispensable_reagents, /proc/cmp_reagents_asc)
+	dispensable_reagents = sort_list(dispensable_reagents, /proc/cmp_reagents_asc)
 	if(emagged_reagents)
-		emagged_reagents = sortList(emagged_reagents, /proc/cmp_reagents_asc)
+		emagged_reagents = sort_list(emagged_reagents, /proc/cmp_reagents_asc)
 	if(upgrade_reagents)
-		upgrade_reagents = sortList(upgrade_reagents, /proc/cmp_reagents_asc)
+		upgrade_reagents = sort_list(upgrade_reagents, /proc/cmp_reagents_asc)
 	if(is_operational)
 		begin_processing()
 	update_icon()
@@ -335,7 +335,7 @@
 					if(!dispensable_reagents.Find(reagent_id))
 						visible_message(span_warning("[capitalize(src.name)] гудит.") , span_hear("Слышу слабое гудение."))
 						to_chat(usr, "<span class ='danger'>[capitalize(src.name)] не может найти <b>[reagent]</b>!</span>")
-						playsound(src, 'sound/machines/buzz-two.ogg', 50, TRUE)
+						playsound(src, 'white/valtos/sounds/error2.ogg', 50, TRUE)
 						return
 				saved_recipes[name] = recording_recipe
 				recording_recipe = null
@@ -533,6 +533,7 @@
 		/datum/reagent/consumable/ethanol/vodka,
 		/datum/reagent/consumable/ethanol/gin,
 		/datum/reagent/consumable/ethanol/rum,
+		/datum/reagent/consumable/ethanol/navy_rum,
 		/datum/reagent/consumable/ethanol/tequila,
 		/datum/reagent/consumable/ethanol/vermouth,
 		/datum/reagent/consumable/ethanol/cognac,
@@ -543,6 +544,7 @@
 		/datum/reagent/consumable/ethanol/creme_de_cacao,
 		/datum/reagent/consumable/ethanol/creme_de_coconut,
 		/datum/reagent/consumable/ethanol/triple_sec,
+		/datum/reagent/consumable/ethanol/curacao,
 		/datum/reagent/consumable/ethanol/sake,
 		/datum/reagent/consumable/ethanol/applejack
 	)

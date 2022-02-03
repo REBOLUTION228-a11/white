@@ -81,6 +81,8 @@
 		var/trans = target.reagents.trans_to(src, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Заполняю [src] с [trans] единицами содержимого [target]."))
 
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
+
 	//Something like a glass or a food item. Player probably wants to transfer TO it.
 	else if(target.is_drainable() || IS_EDIBLE(target))
 		if(!reagents.total_volume)
@@ -91,6 +93,8 @@
 			return
 		var/trans = src.reagents.trans_to(target, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Переливаю [trans] единиц в [target]."))
+
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
 
 /obj/item/reagent_containers/food/condiment/enzyme
 	name = "universal enzyme"
@@ -195,6 +199,16 @@
 	list_reagents = list(/datum/reagent/consumable/rice = 30)
 	fill_icon_thresholds = null
 
+/obj/item/reagent_containers/food/condiment/cornmeal
+	name = "cornmeal box"
+	desc = "A big box of cornmeal. Great for southern style cooking."
+	icon_state = "cornmeal"
+	inhand_icon_state = "carton"
+	lefthand_file = 'icons/mob/inhands/equipment/kitchen_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/kitchen_righthand.dmi'
+	list_reagents = list(/datum/reagent/consumable/cornmeal = 30)
+	fill_icon_thresholds = null
+
 /obj/item/reagent_containers/food/condiment/soysauce
 	name = "soy sauce"
 	desc = "A salty soy-based flavoring."
@@ -208,6 +222,35 @@
 	icon_state = "mayonnaise"
 	list_reagents = list(/datum/reagent/consumable/mayonnaise = 50)
 	fill_icon_thresholds = null
+
+/obj/item/reagent_containers/food/condiment/yoghurt
+	name = "yoghurt carton"
+	desc = "Creamy and smooth."
+	icon_state = "yoghurt"
+	list_reagents = list(/datum/reagent/consumable/yoghurt = 50)
+	fill_icon_thresholds = null
+
+/obj/item/reagent_containers/food/condiment/vinegar
+	name = "vinegar"
+	desc = "Perfect for chips, if you're feeling Space British."
+	icon_state = "vinegar"
+	list_reagents = list(/datum/reagent/consumable/vinegar = 50)
+	fill_icon_thresholds = null
+
+/obj/item/reagent_containers/food/condiment/quality_oil
+	name = "quality oil"
+	desc = "For the fancy chef inside everyone."
+	icon_state = "oliveoil"
+	list_reagents = list(/datum/reagent/consumable/quality_oil = 50)
+	fill_icon_thresholds = null
+
+/obj/item/reagent_containers/food/condiment/yoghurt
+	name = "yoghurt carton"
+	desc = "Creamy and smooth."
+	icon_state = "yoghurt"
+	list_reagents = list(/datum/reagent/consumable/yoghurt = 50)
+	fill_icon_thresholds = null
+
 
 //Food packs. To easily apply deadly toxi... delicious sauces to your food!
 

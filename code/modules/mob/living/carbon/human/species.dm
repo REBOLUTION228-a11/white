@@ -29,11 +29,6 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/hair_color
 	///The alpha used by the hair. 255 is completely solid, 0 is invisible.
 	var/hair_alpha = 255
-	///The gradient style used for the mob's hair.
-	var/grad_style
-	///The gradient color used to color the gradient.
-	var/grad_color
-
 	///Does the species use skintones or not? As of now only used by humans.
 	var/use_skintones = FALSE
 	///If your race bleeds something other than bog standard blood, change this to reagent id. For example, ethereals bleed liquid electricity.
@@ -188,6 +183,9 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	///Bitflag that controls what in game ways something can select this species as a spawnable source, such as magic mirrors. See [mob defines][code/__DEFINES/mobs.dm] for possible sources.
 	var/changesource_flags = NONE
+
+	//The component to add when swimming
+	var/swimming_component = /datum/component/swimming
 
 	///For custom overrides for species ass images
 	var/icon/ass_image
@@ -466,6 +464,12 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 		for(var/i in inherent_factions)
 			C.faction -= i
 
+	clear_tail_moodlets(C)
+
+	C.remove_movespeed_modifier(/datum/movespeed_modifier/species)
+
+	SEND_SIGNAL(C, COMSIG_SPECIES_LOSS, src)
+
 	if(flying_species)
 		fly.Remove(C)
 		QDEL_NULL(fly)
@@ -547,6 +551,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 				fhair_file = 'icons/mob/facialhair_extensions.dmi'
 
 			var/mutable_appearance/facial_overlay = mutable_appearance(fhair_file, fhair_state, -HAIR_LAYER)
+			var/mutable_appearance/gradient_overlay
 
 			if(!forced_colour)
 				if(hair_color)
@@ -558,6 +563,11 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 						facial_overlay.color = "#" + hair_color
 				else
 					facial_overlay.color = "#" + H.facial_hair_color
+				//Gradients
+				var/grad_style = LAZYACCESS(H.grad_style, GRADIENT_FACIAL_HAIR_KEY)
+				if(grad_style)
+					var/grad_color = LAZYACCESS(H.grad_color, GRADIENT_FACIAL_HAIR_KEY)
+					gradient_overlay = make_gradient_overlay(fhair_file, fhair_state, HAIR_LAYER, GLOB.facial_hair_gradients_list[grad_style], grad_color)
 			else
 				facial_overlay.color = forced_colour
 
@@ -568,6 +578,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 				facial_overlay.pixel_y += H.dna.species.offset_features[OFFSET_FACE][2]
 
 			standing += facial_overlay
+			if(gradient_overlay)
+				standing += gradient_overlay
 
 	if(H.head)
 		var/obj/item/I = H.head
@@ -575,6 +587,14 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			var/obj/item/clothing/C = I
 			dynamic_hair_suffix = C.dynamic_hair_suffix
 		if(I.flags_inv & HIDEHAIR)
+			hair_hidden = TRUE
+
+	if(H.w_uniform)
+		var/obj/item/item_uniform = H.w_uniform
+		if(isclothing(item_uniform))
+			var/obj/item/clothing/clothing_object = item_uniform
+			dynamic_hair_suffix = clothing_object.dynamic_hair_suffix
+		if(item_uniform.flags_inv & HIDEHAIR)
 			hair_hidden = TRUE
 
 	if(H.wear_mask)
@@ -587,7 +607,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	if(!hair_hidden || dynamic_hair_suffix)
 		var/mutable_appearance/hair_overlay = mutable_appearance(layer = -HAIR_LAYER)
-		var/mutable_appearance/gradient_overlay = mutable_appearance(layer = -HAIR_LAYER)
+		var/mutable_appearance/gradient_overlay
 		if(!hair_hidden && !H.getorgan(/obj/item/organ/brain)) //Applies the debrained overlay if there is no brain
 			if(!(NOBLOOD in species_traits))
 				hair_overlay.icon = 'icons/mob/human_face.dmi'
@@ -627,15 +647,10 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 					else
 						hair_overlay.color = "#" + H.hair_color
 						//Gradients
-					grad_style = H.grad_style
-					grad_color = H.grad_color
+					var/grad_style = LAZYACCESS(H.grad_style, GRADIENT_HAIR_KEY)
 					if(grad_style)
-						var/datum/sprite_accessory/gradient = GLOB.hair_gradients_list[grad_style]
-						var/icon/temp = icon(gradient.icon, gradient.icon_state)
-						var/icon/temp_hair = icon(hair_file, hair_state)
-						temp.Blend(temp_hair, ICON_ADD)
-						gradient_overlay.icon = temp
-						gradient_overlay.color = "#" + grad_color
+						var/grad_color = LAZYACCESS(H.grad_color, GRADIENT_HAIR_KEY)
+						gradient_overlay = make_gradient_overlay(hair_file, hair_state, HAIR_LAYER, GLOB.hair_gradients_list[grad_style], grad_color)
 				else
 					hair_overlay.color = forced_colour
 				hair_overlay.alpha = hair_alpha
@@ -644,12 +659,22 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 					hair_overlay.pixel_y += H.dna.species.offset_features[OFFSET_FACE][2]
 		if(hair_overlay.icon)
 			standing += hair_overlay
-			standing += gradient_overlay
+			if(gradient_overlay)
+				standing += gradient_overlay
 
 	if(standing.len)
 		H.overlays_standing[HAIR_LAYER] = standing
 
 	H.apply_overlay(HAIR_LAYER)
+
+/datum/species/proc/make_gradient_overlay(file, icon, layer, datum/sprite_accessory/gradient, grad_color)
+	var/mutable_appearance/gradient_overlay = mutable_appearance(layer = -layer)
+	var/icon/temp = icon(gradient.icon, gradient.icon_state)
+	var/icon/temp_hair = icon(file, icon)
+	temp.Blend(temp_hair, ICON_ADD)
+	gradient_overlay.icon = temp
+	gradient_overlay.color = "#" + grad_color
+	return gradient_overlay
 
 /**
  * Handles the body of a human
@@ -1482,11 +1507,12 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 		if(user.limb_destroyer)
 			target.dismembering_strike(user, affecting.body_zone, TRUE)
 
+		var/attack_direction = get_dir(user, target)
 		if(atk_effect == ATTACK_EFFECT_KICK)//kicks deal 1.5x raw damage
-			target.apply_damage(damage*1.5, user.dna.species.attack_type, affecting, armor_block)
+			target.apply_damage(damage*1.5, user.dna.species.attack_type, affecting, armor_block, attack_direction = attack_direction)
 			log_combat(user, target, "kicked")
 		else//other attacks deal full raw damage + 1.5x in stamina damage
-			target.apply_damage(damage, user.dna.species.attack_type, affecting, armor_block)
+			target.apply_damage(damage, user.dna.species.attack_type, affecting, armor_block, attack_direction = attack_direction)
 			target.apply_damage(damage*1.5, STAMINA, affecting, armor_block)
 			log_combat(user, target, "punched")
 
@@ -1536,6 +1562,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 		H.visible_message(span_warning("[M] пытается дотронуться до [H]!") , \
 						span_userdanger("[M] пытается дотронуться до меня!") , span_hear("Слышу взмах!") , COMBAT_MESSAGE_RANGE, M)
 		to_chat(M, span_warning("Пытаюсь дотронуться до [H]!"))
+		playsound(get_turf(H), 'white/valtos/sounds/block_hand.ogg', 100)
 		return
 
 	SEND_SIGNAL(M, COMSIG_MOB_ATTACK_HAND, M, H, attacker_style)
@@ -1587,7 +1614,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	H.send_item_attack_message(I, user, hit_area, affecting)
 
-	apply_damage(I.force * weakness, I.damtype, def_zone, armor_block, H, wound_bonus = Iwound_bonus, bare_wound_bonus = I.bare_wound_bonus, sharpness = I.get_sharpness())
+	var/attack_direction = get_dir(user, H)
+	apply_damage(I.force * weakness, I.damtype, def_zone, armor_block, H, wound_bonus = Iwound_bonus, bare_wound_bonus = I.bare_wound_bonus, sharpness = I.get_sharpness(), attack_direction = attack_direction)
 
 	if(!I.force || GLOB.is_tournament_rules)
 		return FALSE //item force is zero
@@ -1655,8 +1683,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	return TRUE
 
-/datum/species/proc/apply_damage(damage, damagetype = BRUTE, def_zone = null, blocked, mob/living/carbon/human/H, forced = FALSE, spread_damage = FALSE, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE)
-	SEND_SIGNAL(H, COMSIG_MOB_APPLY_DAMAGE, damage, damagetype, def_zone, wound_bonus, bare_wound_bonus, sharpness) // make sure putting wound_bonus here doesn't screw up other signals or uses for this signal
+/datum/species/proc/apply_damage(damage, damagetype = BRUTE, def_zone = null, blocked, mob/living/carbon/human/H, forced = FALSE, spread_damage = FALSE, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE, attack_direction = null)
+	SEND_SIGNAL(H, COMSIG_MOB_APPLY_DAMAGE, damage, damagetype, def_zone, wound_bonus, bare_wound_bonus, sharpness, attack_direction)
 	var/hit_percent = (100-(blocked+armor))/100
 	hit_percent = (hit_percent * (100-H.physiology.damage_resistance))/100
 	if(!damage || (!forced && hit_percent <= 0))
@@ -1678,7 +1706,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			H.damageoverlaytemp = 20
 			var/damage_amount = forced ? damage : damage * hit_percent * brutemod * H.physiology.brute_mod
 			if(BP)
-				if(BP.receive_damage(damage_amount, 0, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+				if(BP.receive_damage(damage_amount, 0, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness, attack_direction = attack_direction))
 					H.update_damage_overlays()
 			else//no bodypart, we deal damage with a more general method.
 				H.adjustBruteLoss(damage_amount)
@@ -1686,7 +1714,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			H.damageoverlaytemp = 20
 			var/damage_amount = forced ? damage : damage * hit_percent * burnmod * H.physiology.burn_mod
 			if(BP)
-				if(BP.receive_damage(0, damage_amount, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+				if(BP.receive_damage(0, damage_amount, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness, attack_direction = attack_direction))
 					H.update_damage_overlays()
 			else
 				H.adjustFireLoss(damage_amount)
@@ -2138,6 +2166,63 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 /datum/species/proc/is_wagging_tail(mob/living/carbon/human/H)
 	return FALSE
+
+/*
+ * This proc is called when a mob loses their tail.
+ *
+ * tail_owner - the owner of the tail (who holds our species datum)
+ * lost_tail - the tail that was removed
+ * on_species_init - whether or not this was called when the species was initialized, or if it was called due to an ingame means (like surgery)
+ */
+/datum/species/proc/on_tail_lost(mob/living/carbon/human/tail_owner, obj/item/organ/tail/lost_tail, on_species_init = FALSE)
+	SEND_SIGNAL(tail_owner, COMSIG_CLEAR_MOOD_EVENT, "right_tail_regained")
+	SEND_SIGNAL(tail_owner, COMSIG_CLEAR_MOOD_EVENT, "wrong_tail_regained")
+	stop_wagging_tail(tail_owner)
+
+	// If it's initializing the species, don't add moodlets
+	if(on_species_init)
+		return
+	// If we don't have a set tail, don't bother adding moodlets
+	if(!mutant_organs.len)
+		return
+
+	SEND_SIGNAL(tail_owner, COMSIG_ADD_MOOD_EVENT, "tail_lost", /datum/mood_event/tail_lost)
+	SEND_SIGNAL(tail_owner, COMSIG_ADD_MOOD_EVENT, "tail_balance_lost", /datum/mood_event/tail_balance_lost)
+
+/*
+ * This proc is called when a mob gains a tail.
+ *
+ * tail_owner - the owner of the tail (who holds our species datum)
+ * lost_tail - the tail that was added
+ * on_species_init - whether or not this was called when the species was initialized, or if it was called due to an ingame means (like surgery)
+ */
+/datum/species/proc/on_tail_regain(mob/living/carbon/human/tail_owner, obj/item/organ/tail/found_tail, on_species_init = FALSE)
+	SEND_SIGNAL(tail_owner, COMSIG_CLEAR_MOOD_EVENT, "tail_lost")
+	SEND_SIGNAL(tail_owner, COMSIG_CLEAR_MOOD_EVENT, "tail_balance_lost")
+
+	// If it's initializing the species, don't add moodlets
+	if(on_species_init)
+		return
+	// If we don't have a set tail, don't add moodlets
+	if(!mutant_organs.len)
+		return
+
+	if(found_tail.type in mutant_organs)
+		SEND_SIGNAL(tail_owner, COMSIG_ADD_MOOD_EVENT, "right_tail_regained", /datum/mood_event/tail_regained_right)
+	else
+		SEND_SIGNAL(tail_owner, COMSIG_ADD_MOOD_EVENT, "wrong_tail_regained", /datum/mood_event/tail_regained_wrong)
+
+/*
+ * Clears all tail related moodlets when they lose their species.
+ *
+ * former_tail_owner - the mob that was once a species with a tail and now is a different species
+ */
+/datum/species/proc/clear_tail_moodlets(mob/living/carbon/human/former_tail_owner)
+	SEND_SIGNAL(former_tail_owner, COMSIG_CLEAR_MOOD_EVENT, "tail_lost")
+	SEND_SIGNAL(former_tail_owner, COMSIG_CLEAR_MOOD_EVENT, "tail_balance_lost")
+	SEND_SIGNAL(former_tail_owner, COMSIG_CLEAR_MOOD_EVENT, "right_tail_regained")
+	SEND_SIGNAL(former_tail_owner, COMSIG_CLEAR_MOOD_EVENT, "wrong_tail_regained")
+	stop_wagging_tail(former_tail_owner)
 
 /datum/species/proc/start_wagging_tail(mob/living/carbon/human/H)
 

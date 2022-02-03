@@ -22,7 +22,7 @@
 	death = FALSE
 	random = TRUE
 	mob_species = /datum/species/human
-	short_desc = "Я бывший сотрудник корпорации Нанотрейзен"
+	short_desc = "Я бывший сотрудник корпорации NanoTrasen"
 	flavour_text = "Все эти ублюдки с основной станции настолько нам надоели, что мы решили отпилить кусок станции, что сделали почти успешно, однако назад пути теперь НЕТ. Пусть хоть какой-то паразит попробует сюда сунуться - сразу разберём на биомассу и следов не останется!"
 	important_info = "За наши головы готовы неплохо так заплатить, так что эта станция - единственное безопасное место для нас, пока мы не попадёмся кому-то на глаза. Ах, да! Скоро закончится свет."
 	uniform = /datum/outfit/job/assistant
@@ -81,7 +81,7 @@
 	desc = "Для самых отбитых. Гарантированно ведёт в никуда."
 	circuit = /obj/item/circuitboard/computer/explorer_mini
 	shuttleId = "explorer_mini"
-	possible_destinations = "explorer_mini_custom;explorer_mini_station"
+	possible_destinations = "explorer_mini_custom;landing_zone_dock;explorer_mini_station"
 
 /obj/item/paper/crumpled/ruins/autism
 	info = "<i>Ты пидор.</i>"

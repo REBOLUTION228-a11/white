@@ -61,7 +61,8 @@
 
 
 /obj/item/circuitboard/machine/telecomms/broadcaster
-	name = "Subspace Broadcaster (Оборудование)"
+	name = "Подпространственный вещатель"
+	desc = "Машина в форме тарелки, используемая для передачи обработанных подпространственных сигналов."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/broadcaster
 	req_components = list(
@@ -72,7 +73,8 @@
 		/obj/item/stock_parts/micro_laser = 2)
 
 /obj/item/circuitboard/machine/telecomms/bus
-	name = "Bus Mainframe (Оборудование)"
+	name = "Мэйнфрейм шины"
+	desc = "Мощное аппаратное обеспечение, используемое для быстрой передачи огромных объемов данных и связывание машин в общую сеть."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/bus
 	req_components = list(
@@ -81,7 +83,8 @@
 		/obj/item/stock_parts/subspace/filter = 1)
 
 /obj/item/circuitboard/machine/telecomms/hub
-	name = "Hub Mainframe (Оборудование)"
+	name = "Телекоммуникационный узел"
+	desc = "Мощное аппаратное обеспечение, используемое для отправки / приема огромных объемов данных."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/hub
 	req_components = list(
@@ -90,7 +93,8 @@
 		/obj/item/stock_parts/subspace/filter = 2)
 
 /obj/item/circuitboard/machine/telecomms/message_server
-	name = "Messaging Server (Оборудование)"
+	name = "Сервер месенджера"
+	desc = "Машина, которая обрабатывает и маршрутизирует сообщения КПК и запрашивает консольные сообщения."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/message_server
 	req_components = list(
@@ -99,7 +103,8 @@
 		/obj/item/stock_parts/subspace/filter = 3)
 
 /obj/item/circuitboard/machine/telecomms/processor
-	name = "Processor Unit (Оборудование)"
+	name = "Процессорный блок"
+	desc = "Эта машина используется для обработки больших объемов информации."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/processor
 	req_components = list(
@@ -111,7 +116,8 @@
 		/obj/item/stock_parts/subspace/amplifier = 1)
 
 /obj/item/circuitboard/machine/telecomms/receiver
-	name = "Subspace Receiver (Оборудование)"
+	name = "Подпространственный приемник"
+	desc = "Эта машина имеет форму тарелкообразной приемной антенны и зеленые огоньки. Предназначена для приема и обработки подпространственной радиосигнала."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/receiver
 	req_components = list(
@@ -121,7 +127,8 @@
 		/obj/item/stock_parts/micro_laser = 1)
 
 /obj/item/circuitboard/machine/telecomms/relay
-	name = "Relay Mainframe (Оборудование)"
+	name = "Телекоммуникационный ретранслятор"
+	desc = "Мощное аппаратное обеспечение, используемое для передачи огромных объемов данных на огромное расстояние."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/relay
 	req_components = list(
@@ -130,7 +137,8 @@
 		/obj/item/stock_parts/subspace/filter = 2)
 
 /obj/item/circuitboard/machine/telecomms/server
-	name = "Telecommunication Server (Оборудование)"
+	name = "Телекоммуникационный сервер"
+	desc = "Машина, используемая для хранения данных и сетевой статистики."
 	icon_state = "engineering"
 	build_path = /obj/machinery/telecomms/server
 	req_components = list(
@@ -183,7 +191,8 @@
 		/obj/item/stock_parts/subspace/filter = 1)
 
 /obj/item/circuitboard/machine/pacman
-	name = "PACMAN-type Generator (Оборудование)"
+	name = "П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на плазме."
 	icon_state = "engineering"
 	build_path = /obj/machinery/power/port_gen/pacman
 	req_components = list(
@@ -194,12 +203,14 @@
 	needs_anchored = FALSE
 
 /obj/item/circuitboard/machine/pacman/super
-	name = "SUPERPACMAN-type Generator (Оборудование)"
+	name = "С.У.П.Е.Р.П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на уране."
 	icon_state = "engineering"
 	build_path = /obj/machinery/power/port_gen/pacman/super
 
 /obj/item/circuitboard/machine/pacman/mrs
-	name = "MRSPACMAN-type Generator (Оборудование)"
+	name = "М.И.С.И.С.П.А.К.М.А.Н. - портативный генератор"
+	desc = "Портативный генератор для аварийного резервного питания. Работает на алмазах."
 	build_path = /obj/machinery/power/port_gen/pacman/mrs
 
 /obj/item/circuitboard/machine/power_compressor
@@ -276,7 +287,8 @@
 	build_path = /obj/machinery/rnd/production/techfab/department/engineering
 
 /obj/item/circuitboard/machine/thermomachine
-	name = "Thermomachine (Оборудование)"
+	name = "Термомашина"
+	desc = "Нагревает или охлаждает газ в трубах. Потребляет очень много энергии."
 	icon_state = "engineering"
 	build_path = /obj/machinery/atmospherics/components/unary/thermomachine/freezer
 	var/pipe_layer = PIPING_LAYER_DEFAULT
@@ -402,7 +414,8 @@
 	def_components = list(/obj/item/stack/ore/bluespace_crystal = /obj/item/stack/ore/bluespace_crystal/artificial)
 
 /obj/item/circuitboard/machine/paystand
-	name = "Pay Stand (Оборудование)"
+	name = "Плата Терминала оплаты"
+	desc = "Налоговый сбор проверен и одобрен корпорацией Нано-Трейзен."
 	icon_state = "generic"
 	build_path = /obj/machinery/paystand
 	req_components = list()
@@ -422,7 +435,8 @@
 	build_path = /obj/machinery/rnd/production/protolathe/department
 
 /obj/item/circuitboard/machine/reagentgrinder
-	name = "Оборудование (All-In-One Grinder)"
+	name = "Плата Миксера"
+	desc = "От BlenderTech. Замиксуется? Давайте узнаем!"
 	icon_state = "generic"
 	build_path = /obj/machinery/reagentgrinder/constructed
 	req_components = list(
@@ -561,7 +575,7 @@
 			display_vending_names_paths = list()
 			for(var/path in vending_names_paths)
 				display_vending_names_paths[vending_names_paths[path]] = path
-		var/choice =  input(user,"Choose a new brand","Select an Item") as null|anything in sortList(display_vending_names_paths)
+		var/choice =  input(user,"Choose a new brand","Select an Item") as null|anything in sort_list(display_vending_names_paths)
 		set_type(display_vending_names_paths[choice])
 	else
 		return ..()
@@ -614,7 +628,8 @@
 //Medical
 
 /obj/item/circuitboard/machine/chem_dispenser
-	name = "Chem Dispenser (Оборудование)"
+	name = "Плата Хим-раздатчика"
+	desc = "Создает и выдает химикаты."
 	icon_state = "medical"
 	build_path = /obj/machinery/chem_dispenser
 	req_components = list(
@@ -660,7 +675,8 @@
 	needs_anchored = FALSE
 
 /obj/item/circuitboard/machine/chem_heater
-	name = "Chemical Heater (Оборудование)"
+	name = "Плата Реакционной камеры"
+	desc = "Миниатюрная термомашина способная быстро изменять и удерживать температуру состава, а так же мануально контролировать баланс ПШ."
 	icon_state = "medical"
 	build_path = /obj/machinery/chem_heater
 	req_components = list(
@@ -668,10 +684,10 @@
 		/obj/item/stack/sheet/glass = 1)
 
 /obj/item/circuitboard/machine/chem_master
-	name = "ChemMaster 3000 (Оборудование)"
+	name = "Плата ХимМастера 3000"
+	desc = "Используется для разделения химикатов и их распределения в различных состояниях. Режим изменяет отверткой."
 	icon_state = "medical"
 	build_path = /obj/machinery/chem_master
-	desc = "You can turn the \"mode selection\" dial using a screwdriver."
 	req_components = list(
 		/obj/item/reagent_containers/glass/beaker = 2,
 		/obj/item/stock_parts/manipulator = 1,
@@ -694,7 +710,8 @@
 		return ..()
 
 /obj/item/circuitboard/machine/cryo_tube
-	name = "Cryotube (Оборудование)"
+	name = "Плата Криокамеры"
+	desc = "Огромная стеклянная колба использующая целительные свойства холода."
 	icon_state = "medical"
 	build_path = /obj/machinery/atmospherics/components/unary/cryo_cell
 	req_components = list(
@@ -703,20 +720,23 @@
 		/obj/item/stack/sheet/glass = 4)
 
 /obj/item/circuitboard/machine/fat_sucker
-	name = "Lipid Extractor (Оборудование)"
+	name = "Плата Авто-Экстрактора липидов МК IV"
+	desc = "Безопасно и эффективно удаляет лишний жир."
 	icon_state = "medical"
 	build_path = /obj/machinery/fat_sucker
 	req_components = list(/obj/item/stock_parts/micro_laser = 1,
 		/obj/item/kitchen/fork = 1)
 
 /obj/item/circuitboard/machine/harvester
-	name = "Harvester (Оборудование)"
+	name = "Плата Авто-Потрошителя МК II"
+	desc = "Извлекает из тела ВСЁ лишнее, включая органы, конечности и голову."
 	icon_state = "medical"
 	build_path = /obj/machinery/harvester
 	req_components = list(/obj/item/stock_parts/micro_laser = 4)
 
 /obj/item/circuitboard/machine/medical_kiosk
-	name = "Medical Kiosk (Оборудование)"
+	name = "Плата Медицинского киоска"
+	desc = "За небольшую плату поможет продиагностировать пациента на основные виды повреждений и заболеваний."
 	icon_state = "medical"
 	build_path = /obj/machinery/medical_kiosk
 	var/custom_cost = 10
@@ -738,7 +758,8 @@
 	. += "<hr>The cost to use this kiosk is set to [custom_cost]."
 
 /obj/item/circuitboard/machine/limbgrower
-	name = "Limb Grower (Оборудование)"
+	name = "Плата Биосинтезатора"
+	desc = "Выращивает органы и конечности из синтетической плоти."
 	icon_state = "medical"
 	build_path = /obj/machinery/limbgrower
 	req_components = list(
@@ -761,12 +782,9 @@
 		/obj/item/stack/cable_coil = 1,
 		/obj/item/stack/sheet/glass = 2)
 
-/obj/item/circuitboard/machine/sleeper/party
-	name = "Party Pod (Оборудование)"
-	build_path = /obj/machinery/sleeper/party
-
 /obj/item/circuitboard/machine/smoke_machine
-	name = "Smoke Machine (Оборудование)"
+	name = "Плата Дымогенератора"
+	desc = "Аппарат с установленной внутри центрифугой. Производит дым с любыми реагентами, помещенными в него вами."
 	icon_state = "medical"
 	build_path = /obj/machinery/smoke_machine
 	req_components = list(
@@ -778,7 +796,8 @@
 	needs_anchored = FALSE
 
 /obj/item/circuitboard/machine/stasis
-	name = "Lifeform Stasis Unit (Оборудование)"
+	name = "Плата Стазисной кровати"
+	desc = "Не очень комфортная кровать, которая постоянно жужжит, однако она помещает пациента в стазис с надеждой, что когда-нибудь он все-таки дождется помощи."
 	icon_state = "medical"
 	build_path = /obj/machinery/stasis
 	req_components = list(
@@ -787,7 +806,8 @@
 		/obj/item/stock_parts/capacitor = 1)
 
 /obj/item/circuitboard/machine/medipen_refiller
-	name = "Medipen Refiller (Оборудование)"
+	name = "Плата Наполнителя медипенов"
+	desc = "Машина перезаряжающая медипены химикатами."
 	icon_state = "medical"
 	build_path = /obj/machinery/medipen_refiller
 	req_components = list(
@@ -961,7 +981,8 @@
 	def_components = list(/obj/item/stack/ore/bluespace_crystal = /obj/item/stack/ore/bluespace_crystal/artificial)
 
 /obj/item/circuitboard/machine/dnascanner
-	name = "DNA Scanner (Оборудование)"
+	name = "плата Манипулятора ДНК"
+	desc = "При подключении к консоли позволяет видоизменять ДНК подопытного для получения ценной информации и коррекции генетического кода."
 	icon_state = "science"
 	build_path = /obj/machinery/dna_scannernew
 	req_components = list(
@@ -1341,7 +1362,8 @@
 #undef PATH_POWERCOIL
 #undef PATH_RPCOIL
 /obj/item/circuitboard/machine/plumbing_receiver
-	name = "Chemical Recipient (Оборудование)"
+	name = "Плата Химического приемника"
+	desc = "Принимает химикаты с маяков. Используйте мультитул для связи с маяками через буфер. Для сброса открутите крышку и перекусите главный провод."
 	icon_state = "medical"
 	build_path = /obj/machinery/plumbing/receiver
 	req_components = list(

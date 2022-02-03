@@ -1,5 +1,3 @@
-GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
-
 /obj/machinery/computer/shuttle_flight
 	name = "shuttle console"
 	desc = "A shuttle control computer."
@@ -32,6 +30,7 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 	var/orbital_map_index = PRIMARY_ORBITAL_MAP
 
 	//Our orbital body.
+	var/referencedOrbitalObjectVarName = "shuttleObject"
 	var/datum/orbital_object/shuttle/shuttleObject
 
 	var/list/banned_types = list(
@@ -53,14 +52,15 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 /obj/machinery/computer/shuttle_flight/Destroy()
 	. = ..()
 	SSorbits.open_orbital_maps -= SStgui.get_all_open_uis(src)
-	shuttleObject = null
+	shuttleObject?.UnregisterReference(src)
 
 /obj/machinery/computer/shuttle_flight/process()
 	. = ..()
 
-	//Check to see if the shuttleobject was launched by another console.
+	//Check to see if the shuttleObject was launched by another console.
 	if(QDELETED(shuttleObject) && SSorbits.assoc_shuttles.Find(shuttleId))
-		shuttleObject = SSorbits.assoc_shuttles[shuttleId]
+		var/datum/orbital_object/O = SSorbits.assoc_shuttles[shuttleId]
+		O.RegisterReference(src)
 
 	if(recall_docking_port_id && shuttleObject?.docking_target && shuttleObject.autopilot && shuttleObject.shuttleTarget == shuttleObject.docking_target && shuttleObject.controlling_computer == src)
 		//We are at destination, dock.
@@ -112,31 +112,18 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 	return data
 
 /obj/machinery/computer/shuttle_flight/ui_data(mob/user)
-	var/list/data = list()
-	data["update_index"] = SSorbits.times_fired
-	//Add orbital bodies
-	data["map_objects"] = list()
-	var/datum/orbital_map/showing_map = SSorbits.orbital_maps[orbital_map_index]
-	for(var/map_key in showing_map.collision_zone_bodies)
-		for(var/datum/orbital_object/object as() in showing_map.collision_zone_bodies[map_key])
-			if(!object)
-				continue
-			//we can't see it, unless we are stealth too
-			if(shuttleObject)
-				if(object != shuttleObject && (object.stealth && !shuttleObject.stealth))
-					continue
-			else
-				if(object.stealth)
-					continue
-			//Send to be rendered on the UI
-			data["map_objects"] += list(list(
-				"name" = object.name,
-				"position_x" = object.position.x,
-				"position_y" = object.position.y,
-				"velocity_x" = object.velocity.x * object.velocity_multiplier,
-				"velocity_y" = object.velocity.y * object.velocity_multiplier,
-				"radius" = object.radius
-			))
+	//Fetch data
+	var/user_ref = "[REF(user)]"
+
+	//Get the base map data
+	var/list/data = SSorbits.get_orbital_map_base_data(
+		SSorbits.orbital_maps[orbital_map_index],
+		user_ref,
+		FALSE,
+		shuttleObject
+	)
+
+	//Send shuttle data
 	if(!SSshuttle.getShuttle(shuttleId))
 		data["linkedToShuttle"] = FALSE
 		return data
@@ -169,8 +156,6 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 	data["shuttleAngle"] = shuttleObject.angle
 	data["shuttleThrust"] = shuttleObject.thrust
 	data["autopilot_enabled"] = shuttleObject.autopilot
-	data["desired_vel_x"] = shuttleObject.desired_vel_x
-	data["desired_vel_y"] = shuttleObject.desired_vel_y
 	if(shuttleObject?.shuttleTarget)
 		data["shuttleVelX"] = shuttleObject.velocity.x - shuttleObject.shuttleTarget.velocity.x
 		data["shuttleVelY"] = shuttleObject.velocity.y - shuttleObject.shuttleTarget.velocity.y
@@ -248,13 +233,14 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 									return
 							if(shuttleObject.shuttleTarget == z_linked && shuttleObject.controlling_computer == src)
 								return
-							shuttleObject = SSorbits.assoc_shuttles[shuttleId]
+							var/datum/orbital_object/O = SSorbits.assoc_shuttles[shuttleId]
+							O.RegisterReference(src)
 							shuttleObject.shuttleTarget = z_linked
 							shuttleObject.autopilot = TRUE
 							shuttleObject.controlling_computer = src
 							say("Шаттл запрошен.")
 							return
-				say("Место стыковки в жопе. Свяжитесь с техниками Нанотрейзен.")
+				say("Место стыковки в жопе. Свяжитесь с техниками NanoTrasen.")
 		return
 
 	switch(action)
@@ -334,7 +320,7 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 				//Do this last
 				if(other_shuttle == shuttleObject)
 					continue
-				if(other_shuttle?.position?.Distance(shuttleObject.position) <= interdiction_range && !other_shuttle.stealth)
+				if(other_shuttle?.position?.DistanceTo(shuttleObject.position) <= interdiction_range && !other_shuttle.stealth)
 					interdicted_shuttles += other_shuttle
 			if(!length(interdicted_shuttles))
 				say("Не обнаружено целей для перехвата.")
@@ -382,7 +368,7 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 			//Special check
 			if(params["port"] == "custom_location")
 				//Open up internal docking computer if any location is allowed.
-				if(shuttleObject?.docking_target?.can_dock_anywhere)
+				if(shuttleObject.docking_target.can_dock_anywhere)
 					if(GLOB.shuttle_docking_jammed)
 						say("Консоль блокирована.")
 						return
@@ -421,7 +407,7 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 					QDEL_NULL(shuttleObject)
 					//Hold the shuttle in the docking position until ready.
 					mobile_port.setTimer(INFINITY)
-					say("Ожидаем очищение гиперпространственных пробок... А вы что думали?")
+					say("Ожидаем очищение гиперпространственных пробок...")
 					INVOKE_ASYNC(src, .proc/unfreeze_shuttle, mobile_port, SSmapping.get_level(target_port.z))
 				if(1)
 					to_chat(usr, span_warning("Неправильный шаттл запрошен."))
@@ -448,9 +434,11 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 		return
 	if(SSorbits.assoc_shuttles.Find(shuttleId))
 		say("Перехват управления из внешнего ПУ, обновление телеметрии.")
-		shuttleObject = SSorbits.assoc_shuttles[shuttleId]
+		var/datum/orbital_object/O = SSorbits.assoc_shuttles[shuttleId]
+		O.RegisterReference(src)
 		return shuttleObject
-	shuttleObject = mobile_port.enter_supercruise()
+	var/datum/orbital_object/O = mobile_port.enter_supercruise()
+	O.RegisterReference(src)
 	if(!shuttleObject)
 		say("БЛЯТЬ?")
 		return
@@ -553,3 +541,11 @@ GLOBAL_VAR_INIT(shuttle_docking_jammed, FALSE)
 	req_access = list()
 	obj_flags |= EMAGGED
 	to_chat(user, span_notice("Сжигаю консоль."))
+
+// temp solution
+
+/obj/machinery/computer/shuttle_flight/proc/RegisterReference(datum/source_object)
+	return
+
+/obj/machinery/computer/shuttle_flight/proc/UnregisterReference(datum/source_object)
+	return

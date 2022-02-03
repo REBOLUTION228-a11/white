@@ -23,10 +23,6 @@
 	///Directly relates to the 'knockdown' duration. Lowered by armor (i.e. helmets)
 	var/bottle_knockdown_duration = 1.3 SECONDS
 
-/obj/item/reagent_containers/food/drinks/bottle/update_overlays()
-	. = ..()
-	. += "[initial(icon_state)]shine"
-
 /obj/item/reagent_containers/food/drinks/bottle/small
 	name = "small glass bottle"
 	desc = "This blank bottle is unyieldingly anonymous, offering no clues to its contents."
@@ -385,6 +381,25 @@
 	desc = "A bottle of pure Fernet Bronca, produced in Cordoba Space Station"
 	icon_state = "fernetbottle"
 	list_reagents = list(/datum/reagent/consumable/ethanol/fernet = 100)
+
+/obj/item/reagent_containers/food/drinks/bottle/bitters
+	name = "Andromeda Bitters"
+	desc = "An aromatic addition to any drink. Made in New Trinidad, now and forever."
+	icon_state = "bitters_bottle"
+	volume = 30
+	list_reagents = list(/datum/reagent/consumable/ethanol/bitters = 30)
+
+/obj/item/reagent_containers/food/drinks/bottle/curacao
+	name = "Beekhof Blauw Curaçao"
+	desc = "Still produced on the island of Curaçao, after all these years."
+	icon_state = "curacao_bottle"
+	list_reagents = list(/datum/reagent/consumable/ethanol/curacao = 100)
+
+/obj/item/reagent_containers/food/drinks/bottle/navy_rum
+	name = "Pride of the Union Navy-Strength Rum"
+	desc = "Ironically named, given it's made in Bermuda."
+	icon_state = "navy_rum_bottle"
+	list_reagents = list(/datum/reagent/consumable/ethanol/navy_rum = 100)
 
 //////////////////////////JUICES AND STUFF ///////////////////////
 

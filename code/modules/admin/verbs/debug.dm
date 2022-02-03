@@ -169,7 +169,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	if(matches.len==0)
 		return
-	var/hsbitem = input(usr, "Choose an object to delete.", "Delete:") as null|anything in sortList(matches)
+	var/hsbitem = input(usr, "Choose an object to delete.", "Delete:") as null|anything in sort_list(matches)
 	if(hsbitem)
 		hsbitem = matches[hsbitem]
 		var/counter = 0
@@ -266,7 +266,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	if(M.ckey)
 		if(tgui_alert(usr,"This mob is being controlled by [M.key]. Are you sure you wish to give someone else control of it? [M.key] will be made a ghost.",,list("Yes","No")) != "Yes")
 			return
-	var/client/newkey = input(src, "Pick the player to put in control.", "New player") as null|anything in sortList(GLOB.clients)
+	var/client/newkey = input(src, "Pick the player to put in control.", "New player") as null|anything in sort_list(GLOB.clients)
 	var/mob/oldmob = newkey.mob
 	var/delmob = FALSE
 	if((isobserver(oldmob) || tgui_alert(usr,"Do you want to delete [newkey]'s old mob?","Delete?",list("Yes","No")) != "No"))
@@ -513,7 +513,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		if(initial(O.can_be_admin_equipped))
 			outfits[initial(O.name)] = path
 
-	var/dresscode = input("Select outfit", "Robust quick dress shop") as null|anything in baseoutfits + sortList(outfits)
+	var/dresscode = input("Select outfit", "Robust quick dress shop") as null|anything in baseoutfits + sort_list(outfits)
 	if (isnull(dresscode))
 		return
 
@@ -528,7 +528,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if(initial(O.can_be_admin_equipped))
 				job_outfits[initial(O.name)] = path
 
-		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sortList(job_outfits)
+		dresscode = input("Select job equipment", "Robust quick dress shop") as null|anything in sort_list(job_outfits)
 		dresscode = job_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -541,7 +541,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if(initial(O.can_be_admin_equipped))
 				plasmaman_outfits[initial(O.name)] = path
 
-		dresscode = input("Select plasmeme equipment", "Robust quick dress shop") as null|anything in sortList(plasmaman_outfits)
+		dresscode = input("Select plasmeme equipment", "Robust quick dress shop") as null|anything in sort_list(plasmaman_outfits)
 		dresscode = plasmaman_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -554,7 +554,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 			if(initial(O.can_be_admin_equipped))
 				white_outfits[initial(O.name)] = path
 
-		dresscode = input("ДАВАЙ УРААА ДАВАЙ ДАВАЙ ДАВААААЙ", "ВЫБИРАЕЕЕМ") as null|anything in sortList(white_outfits)
+		dresscode = input("ДАВАЙ УРААА ДАВАЙ ДАВАЙ ДАВААААЙ", "ВЫБИРАЕЕЕМ") as null|anything in sort_list(white_outfits)
 		dresscode = white_outfits[dresscode]
 		if(isnull(dresscode))
 			return
@@ -563,7 +563,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		var/list/custom_names = list()
 		for(var/datum/outfit/D in GLOB.custom_outfits)
 			custom_names[D.name] = D
-		var/selected_name = input("Select outfit", "Robust quick dress shop") as null|anything in sortList(custom_names)
+		var/selected_name = input("Select outfit", "Robust quick dress shop") as null|anything in sort_list(custom_names)
 		dresscode = custom_names[selected_name]
 		if(isnull(dresscode))
 			return
@@ -727,7 +727,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 		names[name] = ruin_landmark
 
-	var/ruinname = input("Select ruin", "Jump to Ruin") as null|anything in sortList(names)
+	var/ruinname = input("Select ruin", "Jump to Ruin") as null|anything in sort_list(names)
 
 
 	var/obj/effect/landmark/ruin/landmark = names[ruinname]
@@ -754,6 +754,9 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	names += "---- Dynamic Ruins ----"
 	for(var/name in SSmapping.space_ruins_templates)
 		names[name] = list(SSmapping.space_ruins_templates[name], ZTRAIT_DYNAMIC_LEVEL, list(/area/space))
+	names += "---- Near Ruins ----"
+	for(var/name in SSmapping.space_ruins_templates)
+		names[name] = list(SSmapping.space_ruins_templates[name], ZTRAIT_NEAR_SPACE_LEVEL, list(/area/space))
 	names += "---- Lava Ruins ----"
 	for(var/name in SSmapping.lava_ruins_templates)
 		names[name] = list(SSmapping.lava_ruins_templates[name], ZTRAIT_LAVA_RUINS, list(/area/lavaland/surface/outdoors/unexplored))
@@ -764,7 +767,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	for(var/name in SSmapping.ice_ruins_underground_templates)
 		names[name] = list(SSmapping.ice_ruins_underground_templates[name], ZTRAIT_ICE_RUINS_UNDERGROUND, list(/area/icemoon/underground/unexplored))
 
-	var/ruinname = input("Select ruin", "Spawn Ruin") as null|anything in sortList(names)
+	var/ruinname = input("Select ruin", "Spawn Ruin") as null|anything in sort_list(names)
 	var/data = names[ruinname]
 	if (!data)
 		return
@@ -787,6 +790,24 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		to_chat(src, span_italics("[template.description]") , confidential = TRUE)
 	else
 		to_chat(src, span_warning("Failed to place [template.name].") , confidential = TRUE)
+
+/client/proc/run_empty_query(val as num)
+	set category = "Дбг"
+	set name = "Run empty query"
+	set desc = "Amount of queries to run"
+
+	var/list/queries = list()
+	for(var/i in 1 to val)
+		var/datum/db_query/query = SSdbcore.NewQuery("NULL")
+		INVOKE_ASYNC(query, /datum/db_query.proc/Execute)
+		queries += query
+
+	for(var/datum/db_query/query as anything in queries)
+		query.sync()
+		qdel(query)
+	queries.Cut()
+
+	message_admins("[key_name_admin(src)] ran [val] empty queries.")
 
 /client/proc/generate_ruin()
 	set category = "Дбг"
@@ -969,7 +990,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 #ifdef TESTING
 /client/proc/check_missing_sprites()
-	set category = "Debug"
+	set category = "Дбг"
 	set name = "Debug Worn Item Sprites"
 	set desc = "We're cancelling the Spritemageddon. (This will create a LOT of runtimes! Don't use on a live server!)"
 	var/actual_file_name

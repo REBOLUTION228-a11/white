@@ -944,7 +944,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 			else
 				target.playsound_local(source, 'sound/effects/explosion2.ogg', 50, 1)
 		if("far explosion")
-			target.playsound_local(source, 'sound/effects/explosionfar.ogg', 50, 1)
+			target.playsound_local(source, pick(FAR_EXPLOSION_SOUNDS), 50, 1)
 		if("glass")
 			target.playsound_local(source, pick('sound/effects/glassbr1.ogg','sound/effects/glassbr2.ogg','sound/effects/glassbr3.ogg'), 50, 1)
 		if("alarm")
@@ -1055,7 +1055,7 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 				target,
 				/mob/.proc/playsound_local,
 				target,
-				'sound/effects/explosion_distant.ogg',
+				'white/valtos/sounds/nuclearexplosion.ogg',
 				50,
 				FALSE,
 				/* frequency = */ null,
@@ -1234,7 +1234,6 @@ GLOBAL_LIST_INIT(hallucination_list, list(
 			slots_free += ui_storage2
 	if(slots_free.len)
 		halitem.screen_loc = pick(slots_free)
-		halitem.layer = ABOVE_HUD_LAYER
 		halitem.plane = ABOVE_HUD_PLANE
 		switch(rand(1,6))
 			if(1) //revolver

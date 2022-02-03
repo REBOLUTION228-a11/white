@@ -224,6 +224,9 @@
 	initial_gas_mix = OPENTURF_DEFAULT_ATMOS
 	temperature = 255.37
 
+/turf/open/floor/engine/hull/shipceiling
+	name = "обшивка шаттла"
+
 /turf/open/floor/plating/ice/smooth/oxy
 	initial_gas_mix = OPENTURF_DEFAULT_ATMOS
 	planetary_atmos = FALSE
@@ -291,7 +294,7 @@
 	anchored = 1
 	density = 0
 	opacity = 0
-	plane = -2
+	plane = FLOOR_PLANE
 
 /obj/machinery/oldvents/variant1
 	icon_state = "vent1_1"
@@ -632,7 +635,6 @@
 	if(ishuman(AM))
 		var/mob/living/carbon/human/H = AM
 		H.wash()
-		H.wash_poo()
 		if(H.fire_stacks)
 			H.fire_stacks = 0
 			H.extinguish_mob()
@@ -1248,13 +1250,3 @@
 
 /obj/effect/turf_decal/cataclysmdda/grass/alt
 	icon_state = "grassdecal2"
-
-
-/obj/effect/invisiblewall
-	name = "Invisible Wall"
-	icon = 'white/rebolution228/map_sprites.dmi'
-	icon_state = "blocker"
-	anchored = TRUE
-	density = 1
-	opacity = 0
-	invisibility = 101

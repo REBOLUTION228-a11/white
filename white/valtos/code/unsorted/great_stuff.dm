@@ -80,22 +80,33 @@
 	icon_state = "super_elite_army_coat"
 	armor = list("melee" = 0, "bullet" = 0, "laser" = 0,"energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0, "fire" = 0, "acid" = 0)
 
-/obj/item/clothing/suit/cowl
-	name = "cowl"
-	desc = "Красивое покрывало."
-	worn_icon = 'white/valtos/icons/clothing/mob/suit.dmi'
-	icon = 'white/valtos/icons/clothing/suits.dmi'
+/obj/item/clothing/neck/cowl
+	name = "платок"
+	desc = "Красивый."
+	worn_icon = 'white/valtos/icons/clothing/mob/neck.dmi'
+	icon = 'white/valtos/icons/clothing/necks.dmi'
 	icon_state = "cowl"
-	slot_flags = ITEM_SLOT_NECK
 
-/obj/item/clothing/suit/cowl/robe
-	name = "роба"
+/obj/item/clothing/neck/cowl/robe
+	name = "синяя роба"
 	desc = "Модное покрывало."
 	icon_state = "robes_blue"
 
-/obj/item/clothing/suit/cowl/robe/Initialize()
-	. = ..()
-	icon_state = pick("robes_blue", "robes_red")
+/obj/item/clothing/neck/cowl/robe/red
+	name = "красная роба"
+	icon_state = "robes_red"
+
+/obj/item/clothing/neck/cowl/terran
+	name = "терранская роба"
+	icon_state = "terrandress"
+
+/obj/item/clothing/neck/cowl/terran/off
+	name = "терранская роба"
+	icon_state = "terrandress_off"
+
+/obj/item/clothing/neck/cowl/terran/comm
+	name = "терранская роба"
+	icon_state = "terrandress_comm"
 
 //gloves
 
@@ -341,6 +352,8 @@
 	H.facial_hairstyle = "Beard (Very Long)"
 	H.update_hair()
 	H.fully_replace_character_name(H.real_name, "[pick("Джохар", "Аслан", "Абу", "Шамиль", "Усама", "Ахтар", "Кари")] Бомбаев")
+	H.grant_language(/datum/language/arab)
+	H.remove_language(/datum/language/common)
 
 /datum/outfit/terrorist_f/post_equip(mob/living/carbon/human/H, visualsOnly)
 	. = ..()
@@ -350,6 +363,8 @@
 	H.facial_hair_color = "000"
 	H.update_hair()
 	H.fully_replace_character_name(H.real_name, "[pick("Адиля", "Гульшат", "Динара", "Ляйсан", "Нарима", "Рахима", "Ширин")] Бомбаева")
+	H.grant_language(/datum/language/arab)
+	H.remove_language(/datum/language/common)
 
 /obj/effect/proc_holder/spell/self/his_wish
 	name = "Воззвать к Всевышнему"
@@ -363,6 +378,7 @@
 	school = "restoration"
 	sound = 'white/valtos/sounds/Alah.ogg'
 	action_icon_state = "spacetime"
+	stat_allowed = TRUE
 
 /obj/effect/proc_holder/spell/self/his_wish/cast(list/targets, mob/living/carbon/human/user)
 	user.adjustBruteLoss(-50)

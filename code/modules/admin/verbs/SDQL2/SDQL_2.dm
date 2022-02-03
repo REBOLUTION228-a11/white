@@ -209,7 +209,7 @@
 		SDQL2_query(msg)
 
 /client/proc/SDQL2_query(query_text as message)
-	if(!check_rights(R_DEBUG))  //Shouldn't happen... but just to be safe.
+	if(!check_rights(R_SDQL))  //Shouldn't happen... but just to be safe.
 		message_admins(span_danger("ERROR: Non-admin [key_name(usr)] attempted to execute a SDQL query!"))
 		log_admin("Non-admin [key_name(usr)] attempted to execute a SDQL query!")
 		return FALSE
@@ -273,7 +273,7 @@
 	var/selectors_used = FALSE
 	var/list/combined_refs = list()
 	do
-		CHECK_TICK
+		stoplag(1)
 		finished = TRUE
 		for(var/i in running)
 			var/datum/sdql2_query/query = i
@@ -544,7 +544,7 @@ GLOBAL_DATUM_INIT(sdql2_vv_statobj, /obj/effect/statclick/sdql2_vv_all, new(null
 			if(length(select_text))
 				var/text = islist(select_text)? select_text.Join() : select_text
 				var/static/result_offset = 0
-				showmob << browse(text, "window=SDQL-result-[result_offset++]")
+				showmob << browse("<head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head>[text]", "window=SDQL-result-[result_offset++]")
 	show_next_to_key = null
 	if(qdel_on_finish)
 		qdel(src)

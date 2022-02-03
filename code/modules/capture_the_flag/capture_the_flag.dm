@@ -7,7 +7,6 @@
 #define INSTAGIB_RESPAWN 50 //5 seconds
 #define DEFAULT_RESPAWN 150 //15 seconds
 #define AMMO_DROP_LIFETIME 300
-#define CTF_REQUIRED_PLAYERS 4
 
 /obj/item/ctf
 	name = "Баннер"
@@ -16,7 +15,7 @@
 	inhand_icon_state = "banner"
 	lefthand_file = 'icons/mob/inhands/equipment/banners_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/banners_righthand.dmi'
-	desc = "Баннер с логотипом Нанотрейзен."
+	desc = "Баннер с логотипом NanoTrasen."
 	slowdown = 2
 	throw_speed = 0
 	throw_range = 1
@@ -146,7 +145,7 @@
 	name = "Точка знамени"
 	icon = 'icons/obj/items_and_weapons.dmi'
 	icon_state = "banner"
-	desc = "Сюда вставляется знамя Нанотрейзен."
+	desc = "Сюда вставляется знамя NanoTrasen."
 	layer = LOW_ITEM_LAYER
 	var/obj/item/ctf/flag
 
@@ -269,7 +268,6 @@
 	instagib_gear = /datum/outfit/ctf/blue/instagib
 
 /obj/machinery/capture_the_flag/blue/warfare
-	game_id = "warfare"
 	player_traits = list()
 	ctf_gear = list("blue" = /datum/outfit/ctf/blue/warfare)
 
@@ -290,7 +288,6 @@
 	instagib_gear = /datum/outfit/ctf/yellow/instagib
 
 /obj/machinery/capture_the_flag/yellow/warfare
-	game_id = "warfare"
 	player_traits = list()
 	ctf_gear = list("yellow" = /datum/outfit/ctf/yellow/warfare)
 
@@ -371,7 +368,7 @@
 		for(var/key in ctf_gear)
 			chosen_class = ctf_gear[key]
 	else if(ctf_gear.len > 3) //a lot of choices, so much that we can't use a basic alert
-		var/result = input(new_team_member, "Select a class.", "CTF") as null|anything in sortList(ctf_gear)
+		var/result = input(new_team_member, "Select a class.", "CTF") as null|anything in sort_list(ctf_gear)
 		if(!result || !(GLOB.ghost_role_flags & GHOSTROLE_MINIGAME) || (new_team_member.ckey in recently_dead_ckeys) || !isobserver(new_team_member.mob))
 			return //picked nothing, admin disabled it, cheating to respawn faster, cheating to respawn... while in game?
 		chosen_class = ctf_gear[result]
@@ -964,4 +961,3 @@
 #undef INSTAGIB_RESPAWN
 #undef DEFAULT_RESPAWN
 #undef AMMO_DROP_LIFETIME
-#undef CTF_REQUIRED_PLAYERS

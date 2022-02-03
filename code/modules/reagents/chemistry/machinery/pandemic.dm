@@ -6,9 +6,9 @@
 	desc = "Используется при работе с вирусами."
 	density = TRUE
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "mixer0"
+	icon_state = "pandemic0"
 	icon_keyboard = null
-	base_icon_state = "mixer"
+	base_icon_state = "pandemic"
 	use_power = IDLE_POWER_USE
 	idle_power_usage = 20
 	resistance_flags = ACID_PROOF
@@ -75,7 +75,7 @@
 		if(istype(D, /datum/disease/advance))
 			var/datum/disease/advance/A = D
 			var/disease_name = SSdisease.get_disease_name(A.GetDiseaseID())
-			this["can_rename"] = ((disease_name == "Unknown") && A.mutable)
+			this["can_rename"] = ((disease_name == "Неизвестно") && A.mutable)
 			this["name"] = disease_name
 			this["is_adv"] = TRUE
 			this["symptoms"] = list()

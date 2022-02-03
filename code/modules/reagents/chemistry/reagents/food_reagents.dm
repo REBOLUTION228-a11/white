@@ -137,6 +137,22 @@
 	nutriment_factor = 9 * REAGENTS_METABOLISM //45% as calorie dense as corn oil.
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
+/datum/reagent/consumable/nutriment/protein/semen
+	name = "Сперма"
+	description = "Натуральный биопродукт."
+	brute_heal = 0.3
+	nutriment_factor = 18 * REAGENTS_METABOLISM
+
+/datum/reagent/consumable/nutriment/protein/semen/expose_turf(turf/exposed_turf, reac_volume)
+	. = ..()
+	if(isspaceturf(exposed_turf))
+		return
+
+	var/obj/effect/decal/cleanable/cum/reagentdecal = new(exposed_turf)
+	reagentdecal = locate() in exposed_turf
+	if(reagentdecal)
+		reagentdecal.reagents.add_reagent(/datum/reagent/consumable/nutriment/protein/semen, reac_volume)
+
 /datum/reagent/consumable/nutriment/organ_tissue
 	name = "Органная Ткань"
 	description = "Natural tissues that make up the bulk of organs, providing many vitamins and minerals."
@@ -484,6 +500,14 @@
 	taste_description = "чеснок"
 	metabolization_rate = 0.15 * REAGENTS_METABOLISM
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/garlic/on_mob_add(mob/living/L, amount)
+	. = ..()
+	ADD_TRAIT(L, TRAIT_GARLIC_BREATH, type)
+
+/datum/reagent/consumable/garlic/on_mob_delete(mob/living/L)
+	. = ..()
+	REMOVE_TRAIT(L, TRAIT_GARLIC_BREATH, type)
 
 /datum/reagent/consumable/garlic/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	if(isvampire(M)) //incapacitating but not lethal. Unfortunately, vampires cannot vomit.
@@ -1016,3 +1040,47 @@
 	color = "#fccc98"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	hydration_factor = DRINK_HYDRATION_FACTOR_LOW
+
+/datum/reagent/consumable/cornmeal
+	name = "Cornmeal"
+	description = "Ground cornmeal, for making corn related things."
+	taste_description = "raw cornmeal"
+	color = "#ebca85"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/yoghurt
+	name = "Йогурт"
+	description = "Creamy natural yoghurt, with applications in both food and drinks."
+	taste_description = "йогурт"
+	color = "#efeff0"
+	nutriment_factor = 2 * REAGENTS_METABOLISM
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/cornmeal_batter
+	name = "Cornmeal Batter"
+	description = "An eggy, milky, corny mixture that's not very good raw."
+	taste_description = "raw batter"
+	color = "#ebca85"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/peanut_butter
+	name = "Peanut Butter"
+	description = "A rich, creamy spread produced by grinding peanuts."
+	taste_description = "peanuts"
+	color = "#D9A066"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/vinegar
+	name = "Vinegar"
+	description = "Useful for pickling, or putting on chips."
+	taste_description = "acid"
+	color = "#661F1E"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+//A better oil, representing choices like olive oil, argan oil, avocado oil, etc.
+/datum/reagent/consumable/quality_oil
+	name = "Quality Oil"
+	description = "A high quality oil, suitable for dishes where the oil is a key flavour."
+	taste_description = "olive oil"
+	color = "#DBCF5C"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED

@@ -177,6 +177,9 @@
 	zone_select.update_icon()
 	static_inventory += zone_select
 
+	if(owner)
+		add_emote_panel(owner)
+		add_multiz_buttons(owner)
 
 /datum/hud/proc/toggle_show_robot_modules()
 	if(!iscyborg(mymob))
@@ -226,7 +229,6 @@
 				A.screen_loc = "CENTER[x]:16,SOUTH+[y]:7"
 			else
 				A.screen_loc = "CENTER+[x]:16,SOUTH+[y]:7"
-			A.layer = ABOVE_HUD_LAYER
 			A.plane = ABOVE_HUD_PLANE
 
 			x++

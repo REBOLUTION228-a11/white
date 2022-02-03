@@ -1,5 +1,3 @@
-
-
 /datum/team/vampireclan
 	name = "Clan" // Teravanni,
 
@@ -104,7 +102,6 @@
 	owner.announce_objectives()
 	to_chat(owner, "<span class='boldannounce'>* You regenerate your health slowly, you're weak to fire, and you depend on blood to survive. Allow your stolen blood to run too low, and you will find yourself at \
 	risk of being discovered!</span><br>")
-	//to_chat(owner, "<span class='boldannounce'>As an immortal, your power is linked to your age. The older you grow, the more abilities you will have access to.<span>")
 	to_chat(owner, "<span class='boldannounce'>* Other Bloodsuckers are not necessarily your friends, but your survival may depend on cooperation. Betray them at your own discretion and peril.</span><br>")
 	to_chat(owner, "<span class='boldannounce'><i>* Use \",b\" to speak your ancient Bloodsucker language.</span><br>")
 	to_chat(owner, "<span class='announce'>Bloodsucker Tip: Rest in a <i>Coffin</i> to claim it, and that area, as your lair.</span><br>")
@@ -742,10 +739,6 @@
 
 
 		// BLOOD COUNTER & RANK MARKER ! //
-
-#define ui_sunlight_display "WEST:6,CENTER-0:0"  // 6 pixels to the right, zero tiles & 5 pixels DOWN.
-#define ui_blood_display "WEST:6,CENTER-1:0"  	  // 1 tile down
-#define ui_vamprank_display "WEST:6,CENTER-2:-5"   // 2 tiles down
 
 /datum/hud
 	var/atom/movable/screen/bloodsucker/blood_counter/blood_display

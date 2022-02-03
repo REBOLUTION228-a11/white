@@ -3,7 +3,7 @@ GLOBAL_LIST_EMPTY(announcement_systems)
 /obj/machinery/announcement_system
 	density = TRUE
 	name = "АСО"
-	desc = "Автоматизированная Система Оповещений делает важные оповещения в радиоканалах, пока ты не трогаешь её своими грязными рукаи."
+	desc = "Автоматизированная Система Оповещений делает важные оповещения в радиоканалах, пока ты не трогаешь её своими грязными руками."
 	icon = 'icons/obj/machines/telecomms.dmi'
 	icon_state = "AAS_On"
 
@@ -122,7 +122,7 @@ GLOBAL_LIST_EMPTY(announcement_systems)
 		return
 	if(machine_stat & BROKEN)
 		visible_message(span_warning("[capitalize(src.name)] buzzes.") , span_hear("You hear a faint buzz."))
-		playsound(src.loc, 'sound/machines/buzz-two.ogg', 50, TRUE)
+		playsound(src.loc, 'white/valtos/sounds/error2.ogg', 50, TRUE)
 		return
 	switch(action)
 		if("ArrivalText")

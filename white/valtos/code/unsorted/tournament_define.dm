@@ -1,8 +1,6 @@
 
 // Для турниров
 
-GLOBAL_VAR_INIT(is_tournament_rules, FALSE)
-
 /client/proc/toggle_tournament_rules()
 	set name = "ПЕРЕКЛЮЧИТЬ РЕЖИМ ТУРНИРА"
 	set category = "Особенное"
@@ -17,8 +15,15 @@ GLOBAL_VAR_INIT(is_tournament_rules, FALSE)
 			animate(transform = null, time = rand(15, 35), easing = SINE_EASING)
 
 		for(var/mob/M in GLOB.player_list)
-			M.hud_used.update_parallax_pref(M, TRUE)
+			M.hud_used.update_parallax_pref(M, 1)
 			SEND_SOUND(M, sound('white/valtos/sounds/impact.ogg'))
+
+		if(SSticker.current_state == GAME_STATE_PREGAME)
+			for(var/mob/dead/new_player/player in GLOB.player_list)
+				to_chat(player, "<span class=greenannounce>Ты призрак. Скоро предоставят возможность вступить в схватку.</span>")
+				player.ready = FALSE
+				player.make_me_an_observer(TRUE)
+			SSticker.start_immediately = TRUE
 
 	to_chat(world, "\n\n<span class='revenbignotice'><center>Турнирный режим теперь <b>[GLOB.is_tournament_rules ? "ВКЛЮЧЕН" : "ОТКЛЮЧЕН"]</b>.</center></span>\n\n")
 	message_admins("[ADMIN_LOOKUPFLW(usr)] переключает режимммм турнира в положение [GLOB.is_tournament_rules ? "ВКЛ" : "ВЫКЛ"].")

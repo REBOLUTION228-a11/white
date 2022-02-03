@@ -48,7 +48,7 @@
 	if(user.mind && user.mind.holy_role)
 		return ..()
 	else
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 40, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 40, TRUE)
 		return FALSE
 
 /obj/item/choice_beacon/holy/generate_display_names()
@@ -184,6 +184,21 @@
 	new /obj/item/clothing/suit/hooded/chaplain_hoodie(src)
 	new /obj/item/clothing/suit/hooded/chaplain_hoodie(src)
 
+/obj/item/storage/box/mothic_rations
+	name = "Mothic Rations Pack"
+	desc = "A box containing a few rations and some Activin gum, for keeping a starving moth going."
+	icon_state = "moth_package"
+	illustration = null
+
+/obj/item/storage/box/mothic_rations/PopulateContents()
+	for(var/i in 1 to 3)
+		var/randomFood = pickweight(list(/obj/item/food/sustenance_bar = 10,
+							  /obj/item/food/sustenance_bar/cheese = 5,
+							  /obj/item/food/sustenance_bar/mint = 5,
+							  /obj/item/food/sustenance_bar/neapolitan = 5,
+							  /obj/item/food/sustenance_bar/wonka = 1))
+		new randomFood(src)
+	new /obj/item/storage/box/gum/wake_up(src)
 /obj/item/clothing/suit/hooded/chaplain_hoodie
 	name = "follower hoodie"
 	desc = "Hoodie made for acolytes of the chaplain."
@@ -262,7 +277,7 @@
 			display_names[initial(rodtype.name)] = rodtype
 			nullrod_icons += list(initial(rodtype.name) = image(icon = initial(rodtype.icon), icon_state = initial(rodtype.icon_state)))
 
-	nullrod_icons = sortList(nullrod_icons)
+	nullrod_icons = sort_list(nullrod_icons)
 	var/choice = show_radial_menu(M, src , nullrod_icons, custom_check = CALLBACK(src, .proc/check_menu, M), radius = 42, require_near = TRUE)
 	if(!choice || !check_menu(M))
 		return

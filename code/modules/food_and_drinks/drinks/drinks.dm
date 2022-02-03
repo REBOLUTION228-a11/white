@@ -29,12 +29,19 @@
 		return FALSE
 
 	if(M == user)
+		if(user.hydration >= HYDRATION_LEVEL_OVERHYDRATED)
+			to_chat(M, span_warning("В меня больше не лезет содержимое [src.name]!"))
+			return
 		user.visible_message(span_notice("[user] делает глоток из [src.name].") , \
 			span_notice("Делаю глоток из [src.name]."))
 		if(HAS_TRAIT(M, TRAIT_VORACIOUS))
 			M.changeNext_move(CLICK_CD_MELEE * 0.5) //chug! chug! chug!
 
 	else
+		if(M.hydration >= HYDRATION_LEVEL_OVERHYDRATED)
+			M.visible_message(span_danger("[user] не может больше напоить [M] содержимым [src.name]."), \
+			span_userdanger("[user] больше не может напоить меня содержимым [src.name]."))
+			return
 		M.visible_message(span_danger("[user] пытается напоить [M] содержимым [src.name].") , \
 			span_userdanger("[user] пытается напоить меня содержимым [src.name]."))
 		if(!do_mob(user, M))
@@ -97,6 +104,8 @@
 		var/trans = src.reagents.trans_to(target, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Переливаю [trans] единиц жидкости в [target]."))
 
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
+
 		if(iscyborg(user)) //Cyborg modules that include drinks automatically refill themselves, but drain the borg's cell
 			var/mob/living/silicon/robot/bro = user
 			bro.cell.use(30)
@@ -117,6 +126,8 @@
 
 		var/trans = target.reagents.trans_to(src, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Переливаю в [src.name] [trans] единиц из [target]."))
+
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
 
 /obj/item/reagent_containers/food/drinks/attackby(obj/item/I, mob/user, params)
 	var/hotness = I.get_temperature()
@@ -300,9 +311,9 @@
 	icon = 'icons/obj/drinks.dmi'
 	icon_state = "smallbottle"
 	inhand_icon_state = "bottle"
-	list_reagents = list(/datum/reagent/water = 49.5, /datum/reagent/fluorine = 0.5)//see desc, don't think about it too hard
+	list_reagents = list(/datum/reagent/water = 99.5, /datum/reagent/fluorine = 0.5)//see desc, don't think about it too hard
 	custom_materials = list(/datum/material/plastic=1000)
-	volume = 50
+	volume = 100
 	amount_per_transfer_from_this = 10
 	fill_icon_thresholds = list(0, 10, 25, 50, 75, 80, 90)
 	isGlass = FALSE
@@ -415,8 +426,8 @@
 	desc = "A fresh commercial-sized bottle of water."
 	icon_state = "largebottle"
 	custom_materials = list(/datum/material/plastic=3000)
-	list_reagents = list(/datum/reagent/water = 100)
-	volume = 100
+	list_reagents = list(/datum/reagent/water = 150)
+	volume = 150
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,20,25,30,50,100)
 	cap_icon_state = "bottle_cap"
@@ -586,7 +597,7 @@
 //	icon states.
 
 /obj/item/reagent_containers/food/drinks/shaker
-	name = "shaker"
+	name = "шейкер"
 	desc = "A metal shaker to mix drinks in."
 	icon_state = "shaker"
 	custom_materials = list(/datum/material/iron=1500)
@@ -595,7 +606,7 @@
 	isGlass = FALSE
 
 /obj/item/reagent_containers/food/drinks/flask
-	name = "flask"
+	name = "фляжка"
 	desc = "Every good spaceman knows it's a good idea to bring along a couple of pints of whiskey wherever they go."
 	custom_price = PAYCHECK_HARD * 2
 	icon_state = "flask"
@@ -604,13 +615,13 @@
 	isGlass = FALSE
 
 /obj/item/reagent_containers/food/drinks/flask/gold
-	name = "captain's flask"
+	name = "фляжка капитана"
 	desc = "A gold flask belonging to the captain."
 	icon_state = "flask_gold"
 	custom_materials = list(/datum/material/gold=500)
 
 /obj/item/reagent_containers/food/drinks/flask/det
-	name = "detective's flask"
+	name = "фляжка детектива"
 	desc = "The detective's only true friend."
 	icon_state = "detflask"
 	list_reagents = list(/datum/reagent/consumable/ethanol/whiskey = 30)

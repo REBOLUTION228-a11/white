@@ -21,7 +21,7 @@
 	obj_damage = 0
 	gold_core_spawnable = HOSTILE_SPAWN
 	environment_smash = ENVIRONMENT_SMASH_NONE
-	speak_emote = list("squeaks")
+	speak_emote = list("пищит")
 	ventcrawler = VENTCRAWLER_ALWAYS
 	var/datum/mind/origin
 	var/egg_lain = 0
@@ -61,7 +61,7 @@
 
 /obj/item/organ/body_egg/changeling_egg/egg_process(delta_time, times_fired)
 	// Changeling eggs grow in dead people
-	time += delta_time
+	time += delta_time * 10
 	if(time >= EGG_INCUBATION_TIME)
 		Pop()
 		Remove(owner)

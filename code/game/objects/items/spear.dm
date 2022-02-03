@@ -138,7 +138,7 @@
 //GREY TIDE
 /obj/item/spear/grey_tide
 	name = "Grey Tide"
-	desc = "Оправившийся от последствий восстания на борту оборонительного поста Theta Aegis, в котором, казалось бы, нескончаемый поток ассистентов привел к большим потерям среди вооруженных сил НаноТрейсена."
+	desc = "Оправившийся от последствий восстания на борту оборонительного поста Theta Aegis, в котором, казалось бы, нескончаемый поток ассистентов привел к большим потерям среди вооруженных сил NanoTrasen."
 	attack_verb_continuous = list("gores")
 	attack_verb_simple = list("gore")
 	force=15
@@ -179,3 +179,18 @@
 
 /obj/item/spear/bonespear/update_icon_state()
 	icon_state = "bone_spear0"
+
+/*
+ * Bamboo Spear
+ */
+/obj/item/spear/bamboospear //Blatant imitation of spear, but all natural. Also not valid for explosive modification.
+	icon_state = "bamboo_spear0"
+	base_icon_state = "bamboo_spear0"
+	icon_prefix = "bamboo_spear"
+	name = "бамбуковое копьё"
+	desc = "Бамбуковая палка с острым концом. Невероятно смертельное оружие."
+	throwforce = 22	//Better to throw
+
+/obj/item/spear/bonespear/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/two_handed, force_unwielded=10, force_wielded=18, icon_wielded="[icon_prefix]1")

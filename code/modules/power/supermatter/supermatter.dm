@@ -483,6 +483,9 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	explode()
 
 /obj/machinery/power/supermatter_crystal/proc/explode()
+
+	GLOB.is_engine_sabotaged = TRUE
+
 	for(var/mob in GLOB.alive_mob_list)
 		var/mob/living/L = mob
 		if(istype(L) && (L.z == z || (is_station_level(L.z) && is_station_level(z))))
@@ -1042,9 +1045,10 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	playsound(get_turf(src), 'sound/effects/supermatter.ogg', 50, TRUE)
 	Consume(AM)
 
-/obj/machinery/power/supermatter_crystal/intercept_zImpact(atom/movable/AM, levels)
+/obj/machinery/power/supermatter_crystal/intercept_zImpact(list/falling_movables, levels)
 	. = ..()
-	Bumped(AM)
+	for(var/atom/movable/hit_object as anything in falling_movables)
+		Bumped(hit_object)
 	. |= FALL_STOP_INTERCEPTING | FALL_INTERCEPTED
 
 /obj/machinery/power/supermatter_crystal/proc/Consume(atom/movable/AM)

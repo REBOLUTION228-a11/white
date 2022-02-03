@@ -4,8 +4,6 @@ GLOBAL_LIST_INIT(exc_start, world.file2list("cfg/autoeban/exc_start.fackuobema")
 GLOBAL_LIST_INIT(exc_end, world.file2list("cfg/autoeban/exc_end.fackuobema"))
 GLOBAL_LIST_INIT(exc_full, world.file2list("cfg/autoeban/exc_full.fackuobema"))
 
-GLOBAL_LIST_INIT(neobuchaemie_debili, world.file2list("cfg/autoeban/debix_list.fackuobema"))
-
 /proc/proverka_na_detey(var/msg, var/mob/target)
 	if(!target.client)
 		return TRUE
@@ -37,6 +35,6 @@ GLOBAL_LIST_INIT(neobuchaemie_debili, world.file2list("cfg/autoeban/debix_list.f
 
 			SEND_SOUND(target, sound('sound/effects/singlebeat.ogg'))
 
-			message_admins("[ADMIN_LOOKUPFLW(target)] попытался насрать на ИС словом \"[W]\". ([msg]) [ADMIN_SMITE(target)]")
+			message_admins("[ADMIN_LOOKUPFLW(target)] попытался насрать на ИС словом \"[W]\". ([strip_html(msg)]) [ADMIN_SMITE(target)]")
 			return FALSE
 	return TRUE

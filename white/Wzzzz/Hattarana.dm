@@ -70,7 +70,7 @@
 	icon_state = "brown_jacket"
 	body_parts_covered = CHEST|ARMS
 	inhand_icon_state = "brown_jacket"
-
+/*
 
 /obj/item/clothing/neck/stripedgreenscarf/black
 	name = "striped black scarf"
@@ -79,7 +79,7 @@
 	custom_price = 25
 	worn_icon = 'white/Wzzzz/clothing/mob/ties.dmi'
 	icon = 'white/Wzzzz/clothing/ties.dmi'
-
+*/
 /obj/item/clothing/mask/skull
 	name = "skull mask"
 	desc = "Life is full of cruel. That's one of examples."
@@ -94,6 +94,7 @@
 	force = 5
 	throwforce = 3
 
+/*
 /obj/item/clothing/neck/stripedgreenscarf/grey
 	name = "striped grey scarf"
 	icon_state = "stripedgreyscarf"
@@ -101,7 +102,7 @@
 	custom_price = 25
 	worn_icon = 'white/Wzzzz/clothing/mob/ties.dmi'
 	icon = 'white/Wzzzz/clothing/ties.dmi'
-
+*/
 /obj/item/clothing/suit/armor/vest/leather/tailcoat
 	name = "tail coat"
 	desc = "Stylish armored coat."
@@ -247,7 +248,7 @@
 	armor = list("melee" = 40, "bullet" = 25, "laser" = 20,"energy" = 10, "bomb" = 25, "bio" = 0, "rad" = 0, "fire" = 30, "acid" = 30)
 
 /obj/item/clothing/head/helmet/voxstealth
-	name = "stealth helmet"
+	name = "Скрытность helmet"
 	desc = "Not for humans, but looks great"
 	worn_icon = 'white/Wzzzz/clothing/mob/head.dmi'
 	icon = 'white/Wzzzz/clothing/head.dmi'
@@ -353,7 +354,7 @@
 	armor = list("melee" = 35, "bullet" = 30, "laser" = 30,"energy" = 10, "bomb" = 25, "bio" = 0, "rad" = 0, "fire" = 50, "acid" = 50)
 
 /obj/item/clothing/mask/gas/stealth_rig
-	name = "stealth mask"
+	name = "Скрытность mask"
 	body_parts_covered = HEAD
 	var/lighting_alpha = LIGHTING_PLANE_ALPHA_MOSTLY_INVISIBLE
 	var/darkness_view = 10

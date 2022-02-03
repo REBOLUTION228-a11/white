@@ -1,3 +1,4 @@
+
 /obj/machinery/mecha_part_fabricator
 	icon = 'icons/obj/robotics.dmi'
 	icon_state = "fab-idle"
@@ -12,6 +13,9 @@
 	processing_flags = START_PROCESSING_MANUALLY
 
 	subsystem_type = /datum/controller/subsystem/processing/fastprocess
+
+	/// Флаг куда будут сбрасываться предметы: TRUE - на клетку ниже, FALSE - на клетку фабрикатора
+	var/drop_zone = TRUE
 
 	/// Current items in the build queue.
 	var/list/queue = list()
@@ -45,21 +49,23 @@
 
 	/// A list of categories that valid MECHFAB design datums will broadly categorise themselves under.
 	var/list/part_sets = list(
-								"Cyborg",
-								"Ripley",
-								"Odysseus",
-								"Clarke",
-								"Gygax",
-								"Durand",
-								"H.O.N.K",
-								"Phazon",
-								"Модули экзоскелетов",
+								"Киборги",
+								"Модули киборгов",
+								"Рипли",
+								"Одиссей",
+								"Кларк",
+								"Гигакс",
+								"Дюранд",
+								"Х.О.Н.К",
+								"Фазон",
+								"Саванна-Иванов",
+								"Модули экзокостюмов",
+								"Орудийные модули",
 								"Аммуниция",
-								"Улучшения киборгов",
+								"Управление",
 								"Кибернетика",
 								"Импланты",
-								"Управление",
-								"Разное"
+								"Батареи и прочее"
 								)
 
 /obj/machinery/mecha_part_fabricator/Initialize(mapload)
@@ -116,61 +122,15 @@
 		var/datum/material/M = c
 		cost[M.name] = get_resource_cost_w_coeff(D, M)
 
-	var/obj/built_item = D.build_path
-
 	var/list/category_override = null
-	var/list/sub_category = null
-
-	if(categories)
-		// Handle some special cases to build up sub-categories for the fab interface.
-		// Start with checking if this design builds a cyborg module.
-		if(built_item in typesof(/obj/item/borg/upgrade))
-			var/obj/item/borg/upgrade/U = built_item
-			var/module_types = initial(U.module_flags)
-			sub_category = list()
-			if(module_types)
-				if(module_types & BORG_MODULE_SECURITY)
-					sub_category += "Охранный"
-				if(module_types & BORG_MODULE_MINER)
-					sub_category += "Шахтёрский"
-				if(module_types & BORG_MODULE_JANITOR)
-					sub_category += "Уборщик"
-				if(module_types & BORG_MODULE_MEDICAL)
-					sub_category += "Медицинский"
-				if(module_types & BORG_MODULE_ENGINEERING)
-					sub_category += "Инженерный"
-			else
-				sub_category += "Все киборги"
-		// Else check if this design builds a piece of exosuit equipment.
-		else if(built_item in typesof(/obj/item/mecha_parts/mecha_equipment))
-			var/obj/item/mecha_parts/mecha_equipment/E = built_item
-			var/mech_types = initial(E.mech_flags)
-			sub_category = "Снаряжение"
-			if(mech_types)
-				category_override = list()
-				if(mech_types & EXOSUIT_MODULE_RIPLEY)
-					category_override += "Ripley"
-				if(mech_types & EXOSUIT_MODULE_ODYSSEUS)
-					category_override += "Odysseus"
-				if(mech_types & EXOSUIT_MODULE_CLARKE)
-					category_override += "Clarke"
-				if(mech_types & EXOSUIT_MODULE_GYGAX)
-					category_override += "Gygax"
-				if(mech_types & EXOSUIT_MODULE_DURAND)
-					category_override += "Durand"
-				if(mech_types & EXOSUIT_MODULE_HONK)
-					category_override += "H.O.N.K"
-				if(mech_types & EXOSUIT_MODULE_PHAZON)
-					category_override += "Phazon"
-
 
 	var/list/part = list(
 		"name" = D.name,
-		"desc" = initial(built_item.desc),
+		"desc" = D.get_description(),
 		"printTime" = get_construction_time_w_coeff(initial(D.construction_time))/10,
 		"cost" = cost,
 		"id" = D.id,
-		"subCategory" = sub_category,
+		"subCategory" = D.sub_category,
 		"categoryOverride" = category_override,
 		"searchMeta" = D.search_metadata
 	)
@@ -258,14 +218,17 @@
 	var/datum/component/material_container/materials = rmat.mat_container
 	if (!materials)
 		if(verbose)
+			playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
 			say("Нет доступа к хранилищу материалов, свяжитесь с завхозом.")
 		return FALSE
 	if (rmat.on_hold())
 		if(verbose)
+			playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
 			say("Запрещено использование материалов из хранилища, свяжитесь с завхозом.")
 		return FALSE
 	if(!check_resources(D))
 		if(verbose)
+			playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
 			say("Недостаточно ресурсов. Остановка.")
 		return FALSE
 
@@ -288,6 +251,7 @@
 		if(exit.density)
 			return TRUE
 
+		playsound(src, 'white/valtos/sounds/click2.ogg', 20, TRUE)
 		say("Препятствие убрано. Деталь [stored_part] готова.")
 		stored_part.forceMove(exit)
 		stored_part = null
@@ -322,17 +286,25 @@
 	I.set_custom_materials(build_materials)
 
 	being_built = null
-
+	var/drop_location = drop_location()
 	var/turf/exit = get_step(src,(dir))
-	if(exit.density)
-		say("Ошибка! Выход заблокирован.")
-		desc = "Пытается выдавить [D.name], но выход заблокирован."
-		stored_part = I
-		return FALSE
+	if(drop_zone)
+		if(exit.density)
+			playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
+			say("Ошибка! Выход заблокирован.")
+			desc = "Пытается выдавить [D.name], но выход заблокирован."
+			stored_part = I
+			return FALSE
 
-	say("[capitalize(I.name)] готова.")
-	I.forceMove(exit)
-	return TRUE
+		playsound(src, 'white/valtos/sounds/click2.ogg', 20, TRUE)
+		say("[capitalize(I.name)] готова.")
+		I.forceMove(exit)
+		return TRUE
+	else
+		playsound(src, 'white/valtos/sounds/click2.ogg', 20, TRUE)
+		say("[capitalize(I.name)] готова.")
+		I.forceMove(drop_location)
+		return TRUE
 
 /**
  * Adds a list of datum designs to the build queue.
@@ -494,6 +466,7 @@
 		if("sync_rnd")
 			// Syncronises designs on interface with R&D techweb.
 			update_static_data(usr)
+			playsound(src, 'white/valtos/sounds/click2.ogg', 20, TRUE)
 			say("Successfully synchronized with R&D server.")
 			return
 		if("add_queue_set")
@@ -579,9 +552,11 @@
 /obj/machinery/mecha_part_fabricator/proc/eject_sheets(eject_sheet, eject_amt)
 	var/datum/component/material_container/mat_container = rmat.mat_container
 	if (!mat_container)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
 		say("Нет доступа к хранилищу материалов, свяжитесь с завхозом.")
 		return 0
 	if (rmat.on_hold())
+		playsound(src, 'white/valtos/sounds/error1.ogg', 20, TRUE)
 		say("Запрещено использование материалов из хранилища, свяжитесь с завхозом.")
 		return 0
 	var/count = mat_container.retrieve_sheets(text2num(eject_amt), eject_sheet, drop_location())

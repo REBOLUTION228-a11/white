@@ -46,7 +46,9 @@
 	if(prob(0.1))
 		new /mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient(T)
 	else if(prob(2))
-		new /mob/living/simple_animal/hostile/frogman(T)
+		new /mob/living/simple_animal/hostile/shrooman(T)
+	else if(prob(1))
+		new /mob/living/simple_animal/hostile/shrooman/fighter(T)
 	else if(prob(0.1))
 		new /mob/living/simple_animal/hostile/froggernaut(T)
 
@@ -84,7 +86,8 @@
 	name = "Тёмное подземелье"
 	icon_state = "unexplored"
 	outdoors = TRUE
-	static_lighting = FALSE
+	static_lighting = TRUE
+	base_lighting_alpha = 0
 	ambientsounds = AWAY_MISSION
 	requires_power = FALSE
 	sound_environment = SOUND_ENVIRONMENT_CAVE

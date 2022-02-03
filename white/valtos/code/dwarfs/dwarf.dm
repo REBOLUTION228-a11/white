@@ -20,16 +20,11 @@
 		if((human.wear_mask && (human.wear_mask.flags_inv & HIDEFACE)) || (human.head && (human.head.flags_inv & HIDEFACE)) || !head || head.status == BODYPART_ROBOTIC)
 			bodyparts_adding -= "ipc_screen"
 
-
-#define DWARF_ALCOHOL_RATE 0.1 // The normal rate is 0.005. For 100 units of the strongest alcohol possible (boozepwr = 100), you'd have 10*100*0.005 = 5, which is too small as a value to operate with.
-								// With 0.1, 100 units of the strongest alcohol would refill you completely from 0 to 100, which is perfect.
-#define DRUNK_ALERT_TIME_OFFSET 10 SECONDS
 // To make dwarven only jumpsuits, add this species' path to the clothing's species_exception list. By default jumpsuits don't fit dwarven since they're big boned
 /datum/species/dwarf
 	name = "Dwarf"
 	id = "dwarf"
-	species_traits = list(EYECOLOR,HAIR,FACEHAIR,LIPS)
-	species_traits = list(EYECOLOR,HAIR,FACEHAIR,LIPS,NO_UNDERWEAR)
+	species_traits = list(EYECOLOR, HAIR, FACEHAIR, LIPS, NO_UNDERWEAR)
 	mutant_bodyparts = list("mcolor" = "FFF", "wings" = "None")
 	use_skintones = 1
 	disliked_food = GROSS | RAW
@@ -123,8 +118,6 @@
 /obj/item/organ/lungs/dwarven
 	name = "dwarven lungs"
 	desc = "A pair of quite small lungs. They look different than normal human's ones."
-	safe_oxygen_min = 0
-	safe_nitro_min = 16
 
 /datum/language/dwarven
 	name = "Дварфийский"
@@ -157,7 +150,6 @@
 	name = "Dwarf"
 	uniform = /obj/item/clothing/under/dwarf
 	shoes = /obj/item/clothing/shoes/dwarf
-	back = /obj/item/storage/backpack
 
 /datum/outfit/dwarf/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
 	. = ..()

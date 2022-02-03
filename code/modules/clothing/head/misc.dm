@@ -407,12 +407,15 @@
 	. = ..()
 	if (slot == ITEM_SLOT_HEAD)
 		RegisterSignal(M, COMSIG_MOB_SAY, .proc/handle_speech)
+		ADD_TRAIT(M, TRAIT_GARLIC_BREATH, type)
 	else
 		UnregisterSignal(M, COMSIG_MOB_SAY)
+		REMOVE_TRAIT(M, TRAIT_GARLIC_BREATH, type)
 
 /obj/item/clothing/head/frenchberet/dropped(mob/M)
 	. = ..()
 	UnregisterSignal(M, COMSIG_MOB_SAY)
+	REMOVE_TRAIT(M, TRAIT_GARLIC_BREATH, type)
 
 /obj/item/clothing/head/frenchberet/proc/handle_speech(datum/source, mob/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
@@ -500,7 +503,7 @@
 /obj/item/clothing/head/centom_cap
 	name = "шляпа офицера ЦентКома"
 	icon_state = "centcom_cap"
-	desc = "Внутри есть какие-то мутные инициалы, которые уже невозможно прочитать."
+	desc = "На шляпе есть какие-то мутные инициалы, которые уже невозможно прочитать."
 	inhand_icon_state = "that"
 	flags_inv = 0
 	armor = list(MELEE = 30, BULLET = 15, LASER = 30, ENERGY = 40, BOMB = 25, BIO = 0, RAD = 0, FIRE = 50, ACID = 50)
@@ -563,3 +566,61 @@
 	dynamic_hair_suffix = ""
 	attack_verb_continuous = list("коронует")
 	attack_verb_simple = list("коронует")
+
+/obj/item/clothing/head/ushanka/soviet
+	name = "soviet ushanka"
+	desc = "For the union!"
+	icon_state = "sovietushankadown"
+	inhand_icon_state = "sovietushankadown"
+
+/obj/item/clothing/head/irs
+	name = "internal revenue service cap"
+	icon_state = "irs_hat"
+	inhand_icon_state = "irs_hat"
+
+/obj/item/clothing/head/pg
+	name = "powder ganger beanie"
+	icon_state = "pg_hat"
+	inhand_icon_state = "pg_hat"
+
+/obj/item/clothing/head/tmc
+	name = "Lost M.C. bandana"
+	icon_state = "tmc_hat"
+	inhand_icon_state = "tmc_hat"
+
+/obj/item/clothing/head/deckers
+	name = "Decker headphones"
+	icon_state = "decker_hat"
+	inhand_icon_state = "decker_hat"
+
+/obj/item/clothing/head/morningstar
+	name = "Morningstar beret"
+	icon_state = "morningstar_hat"
+	inhand_icon_state = "morningstar_hat"
+
+/obj/item/clothing/head/saints
+	name = "Saints hat"
+	icon_state = "saints_hat"
+	inhand_icon_state = "saints_hat"
+
+/obj/item/clothing/head/allies
+	name = "allies helmet"
+	icon_state = "allies_helmet"
+	inhand_icon_state = "allies_helmet"
+
+/obj/item/clothing/head/yuri
+	name = "yuri initiate helmet"
+	icon_state = "yuri_helmet"
+	inhand_icon_state = "yuri_helmet"
+	clothing_flags = SNUG_FIT
+	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
+
+/obj/item/clothing/head/sybil_slickers
+	name = "sybil slickers helmet"
+	icon_state = "football_helmet_blue"
+	inhand_icon_state = "football_helmet_blue"
+
+/obj/item/clothing/head/basil_boys
+	name = "basil boys helmet"
+	icon_state = "football_helmet_red"
+	inhand_icon_state = "football_helmet_red"

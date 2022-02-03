@@ -220,8 +220,8 @@
 	layer = BELOW_MOB_LAYER
 	max_integrity = 100
 	use_power = ACTIVE_POWER_USE
-	idle_power_usage = 200
-	active_power_usage = 2000
+	idle_power_usage = 20
+	active_power_usage = 200
 	power_channel = AREA_USAGE_LIGHT //Lights are calc'd via area so they dont need to be in the machine list
 	var/on = FALSE					// 1 if on, 0 if off
 	var/on_gs = FALSE
@@ -402,15 +402,14 @@
 
 /obj/machinery/light/update_overlays()
 	. = ..()
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
 	if(on && status == LIGHT_OK)
 		var/area/A = get_area(src)
 		if(emergency_mode || (A?.fire))
-			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_emergency", layer, plane, dir)
+			. += mutable_appearance(overlayicon, "[base_state]_emergency")
 		else if (nightshift_enabled)
-			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_nightshift", layer, plane, dir)
+			. += mutable_appearance(overlayicon, "[base_state]_nightshift")
 		else
-			SSvis_overlays.add_vis_overlay(src, overlayicon, base_state, layer, plane, dir)
+			. += mutable_appearance(overlayicon, base_state)
 
 // update the icon_state and luminosity of the light depending on its state
 /obj/machinery/light/proc/update(trigger = TRUE)
@@ -454,7 +453,7 @@
 		set_light(0)
 	update_icon()
 
-	active_power_usage = (brightness * 100)
+	active_power_usage = (brightness * 25)
 	if(on != on_gs)
 		on_gs = on
 		if(on)
@@ -647,7 +646,7 @@
 // true if area has power and lightswitch is on
 /obj/machinery/light/proc/has_power()
 	var/area/A = get_area(src)
-	return A.lightswitch && A.power_light
+	return A?.lightswitch && A?.power_light
 
 // returns whether this light has emergency power
 // can also return if it has access to a certain amount of that power
@@ -827,7 +826,8 @@
 /obj/machinery/light/power_change()
 	SHOULD_CALL_PARENT(FALSE)
 	var/area/A = get_area(src)
-	seton(A.lightswitch && A.power_light)
+	if(A)
+		seton(A.lightswitch && A.power_light)
 
 // called when heated
 
@@ -885,7 +885,7 @@
 		return BRUTELOSS
 
 /obj/item/light/tube
-	name = "световая трубка"
+	name = "лампа дневного света"
 	desc = "Запасная, наверное."
 	icon_state = "ltube"
 	base_state = "ltube"

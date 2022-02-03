@@ -383,8 +383,8 @@ GLOBAL_LIST_EMPTY(objectives)
 
 /datum/objective/hijack
 	name = "hijack"
-	explanation_text = "Захватить шаттл, чтобы ни один преданный член экипажа Нанотрейзен не был на нём в живых."
-	team_explanation_text = "Захватить шаттл, чтобы ни один преданный член экипажа Нанотрейзен не был на нём в живых."
+	explanation_text = "Захватить шаттл, чтобы ни один преданный член экипажа NanoTrasen не был на нём в живых."
+	team_explanation_text = "Захватить шаттл, чтобы ни один преданный член экипажа NanoTrasen не был на нём в живых."
 	martyr_compatible = FALSE //Technically you won't get both anyway.
 	/// Overrides the hijack speed of any antagonist datum it is on ONLY, no other datums are impacted.
 	var/hijack_speed_override = 1
@@ -1035,7 +1035,7 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 /proc/generate_admin_objective_list()
 	GLOB.admin_objective_list = list()
 
-	var/list/allowed_types = sortList(list(
+	var/list/allowed_types = sort_list(list(
 		/datum/objective/assassinate,
 		/datum/objective/maroon,
 		/datum/objective/debrain,
@@ -1080,3 +1080,32 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	var/area/target_area = get_area(target)
 
 	return (istype(user_area, dropoff) && istype(target_area, dropoff))
+
+/datum/objective/ruiner
+	name = "ruiner"
+	explanation_text = "Уничтожить станцию уронив её при помощи импульсных двигателей."
+	team_explanation_text = "Уничтожить станцию уронив её при помощи импульсных двигателей."
+	martyr_compatible = TRUE
+	reward = 50
+
+/datum/objective/ruiner/check_completion()
+	if(SSticker && SSticker.mode && SSticker.mode.station_was_nuked)
+		return TRUE
+	return FALSE
+
+/datum/objective/sabotage
+	name = "sabotage engine"
+	martyr_compatible = TRUE
+	reward = 30
+
+/datum/objective/sabotage/find_target(dupe_search_range)
+	return TRUE
+
+/datum/objective/sabotage/check_completion()
+	if(GLOB.is_engine_sabotaged)
+		return TRUE
+	return FALSE
+
+/datum/objective/sabotage/update_explanation_text()
+	..()
+	explanation_text = "Саботировать работу основного двигателя на станции."

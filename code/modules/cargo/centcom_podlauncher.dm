@@ -92,10 +92,12 @@
 	cam_screen.del_on_map_removal = TRUE
 	cam_screen.screen_loc = "[map_name]:1,1"
 	cam_plane_masters = list()
-	for(var/plane in subtypesof(/atom/movable/screen/plane_master))
-		var/atom/movable/screen/instance = new plane()
+	for(var/plane in subtypesof(/atom/movable/screen/plane_master) - /atom/movable/screen/plane_master/blackness)
+		var/atom/movable/screen/plane_master/instance = new plane()
 		if (!renderLighting && instance.plane == LIGHTING_PLANE)
 			instance.alpha = 100
+		if(instance.blend_mode_override)
+			instance.blend_mode = instance.blend_mode_override
 		instance.assigned_map = map_name
 		instance.del_on_map_removal = TRUE
 		instance.screen_loc = "[map_name]:CENTER"
@@ -347,7 +349,7 @@
 			var/shrapnelInput
 			var/search = input("Input typepath of projectile you're looking for or leave the bar empty to show all projectiles.")
 			if(isnull(search) || search == "")
-				shrapnelInput = input("Please enter the type of pellet cloud you'd like to create on landing (Can be any projectile!)", "Projectile Typepath",  0) in sortList(subtypesof(/obj/projectile), /proc/cmp_typepaths_asc)
+				shrapnelInput = input("Please enter the type of pellet cloud you'd like to create on landing (Can be any projectile!)", "Projectile Typepath",  0) in sort_list(subtypesof(/obj/projectile), /proc/cmp_typepaths_asc)
 			else
 				shrapnelInput = pick_closest_path(search, matches = get_fancy_list_of_projectile_types())
 			if (isnull(shrapnelInput))
@@ -587,6 +589,7 @@
 		var/mob/holder_mob = holder.mob
 		holder.mouse_up_icon = null
 		holder.mouse_down_icon = null
+		holder.mouse_override_icon = null
 		holder.click_intercept = null
 		holder_mob?.update_mouse_pointer() //set the moues icons to null, then call update_moues_pointer() which resets them to the correct values based on what the mob is doing (in a mech, holding a spell, etc)()
 

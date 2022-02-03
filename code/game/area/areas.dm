@@ -9,7 +9,7 @@
 	icon_state = "unknown"
 	layer = AREA_LAYER
 	//Keeping this on the default plane, GAME_PLANE, will make area overlays fail to render on FLOOR_PLANE.
-	plane = BLACKNESS_PLANE
+	plane = AREA_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	invisibility = INVISIBILITY_LIGHTING
 
@@ -514,10 +514,15 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 	if(L.client?.prefs.toggles & SOUND_SHIP_AMBIENCE)
 		SEND_SOUND(L, sound('sound/ambience/shipambience.ogg', repeat = 1, wait = 0, volume = 5, channel = CHANNEL_BUZZ))
 
-	if(!(L.client && (L.client.prefs.toggles & SOUND_AMBIENCE)))
-		return //General ambience check is below the ship ambience so one can play without the other
+	if(L?.client && (L.client.prefs.toggles & SOUND_AMBIENCE))
+		play_ambience(L.client)
 
-	if(!L.client.played)
+/area/proc/play_ambience(client/C)
+
+	if(!C?.mob)
+		return
+
+	if(!C.played)
 		var/sound/S = sound(pick(ambientsounds))
 
 		S.repeat = TRUE
@@ -526,34 +531,24 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 		S.volume = ambience_volume
 		S.status = SOUND_STREAM
 
-		SEND_SOUND(L, S)
+		SEND_SOUND(C.mob, S)
 
-		L.client.played = TRUE
+		C.played = TRUE
 
 		spawn(30)
 			var/soundLen = 30
-			if(L.client)
-				var/list/sounds_list = L.client.SoundQuery()
+			if(C)
+				var/list/sounds_list = C.SoundQuery()
 
 				for(var/playing_sound in sounds_list)
 					var/sound/found = playing_sound
 					if(found.file == S.file)
 						soundLen = found.len
 
-				addtimer(VARSET_CALLBACK(L.client, played, FALSE), soundLen * 10)
-/*
-	if(prob(35) && !istype(src, /area/awaymission))
-		var/sound/AGS = sound(pick(GENERIC_AMBIGEN))
+				addtimer(CALLBACK(src, /area/.proc/reset_ambience_played, C), soundLen * 10)
 
-		AGS.repeat = FALSE
-		AGS.channel = CHANNEL_AMBIGEN
-		AGS.volume = ambience_volume * 2
-		AGS.status = SOUND_STREAM
-
-		SEND_SOUND(L, AGS)
-*/
-
-
+/area/proc/reset_ambience_played(client/C)
+	C?.played = FALSE
 
 ///Divides total beauty in the room by roomsize to allow us to get an average beauty per tile.
 /area/proc/update_beauty()
@@ -625,3 +620,9 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 /// Called when a living mob that spawned here, joining the round, receives the player client.
 /area/proc/on_joining_game(mob/living/boarder)
 	return
+/// Gets an areas virtual z value. For having multiple areas on the same z-level treated mechanically as different z-levels
+/area/proc/get_virtual_z(turf/T)
+	return T.z
+
+/area/get_virtual_z_level()
+	return get_virtual_z(get_turf(src))

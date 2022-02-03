@@ -1,7 +1,7 @@
 #define STASIS_TOGGLE_COOLDOWN 50
 /obj/machinery/stasis
-	name = "lifeform stasis unit"
-	desc = "A not so comfortable looking bed with some nozzles at the top and bottom. It will keep someone in stasis."
+	name = "Стазисная кровать"
+	desc = "Не очень комфортная кровать, которая постоянно жужжит, однако она помещает пациента в стазис с надеждой, что когда-нибудь он все-таки дождется помощи."
 	icon = 'icons/obj/machines/stasis.dmi'
 	icon_state = "stasis"
 	density = FALSE
@@ -19,6 +19,9 @@
 	var/obj/effect/overlay/vis/mattress_on
 	var/obj/machinery/computer/operating/op_computer
 
+	var/handbeltsmod = FALSE
+	var/handbeltsmod_active = FALSE
+
 /obj/machinery/stasis/Initialize()
 	. = ..()
 	for(var/direction in GLOB.alldirs)
@@ -34,8 +37,10 @@
 
 /obj/machinery/stasis/examine(mob/user)
 	. = ..()
-	. += "<hr><span class='notice'>ПКМ to [stasis_enabled ? "turn off" : "turn on"] the machine.</span>"
-	. += span_notice("\n<b>[src.name]</b> is [op_computer ? "linked" : "<b>NOT</b> linked"] to a nearby operating computer.")
+	. += "<hr><span class='notice'>Alt + Клик для [stasis_enabled ? "<b>выключения</b>" : "<b>включения</b>"] машины.</span>"
+	if(handbeltsmod)
+		. += "<hr><span class='notice'>ПКМ для активации <b>энергетических ремней</b>, ЛКМ для отстегивания.</span>"
+	. += span_notice("\n<b>[src.name]</b> [op_computer ? "синхронизирована" : "<b>НЕ</b> синхронизирована"] с операционным компьютером.")
 
 /obj/machinery/stasis/proc/play_power_sound()
 	var/_running = stasis_running()
@@ -52,9 +57,9 @@
 		stasis_enabled = !stasis_enabled
 		stasis_can_toggle = world.time + STASIS_TOGGLE_COOLDOWN
 		playsound(src, 'sound/machines/click.ogg', 60, TRUE)
-		user.visible_message(span_notice("<b>[src.name]</b> [stasis_enabled ? "powers on" : "shuts down"].") , \
-					span_notice("You [stasis_enabled ? "power on" : "shut down"] <b>[src.name]</b>.") , \
-					span_hear("You hear a nearby machine [stasis_enabled ? "power on" : "shut down"]."))
+		user.visible_message(span_notice("<b>[src.name]</b> [stasis_enabled ? "включается" : "выключается"].") , \
+					span_notice("[stasis_enabled ? "Включаю" : "Выключаю"] <b>[src.name]</b>.") , \
+					span_hear("Вы слышите звук [stasis_enabled ? "включения" : "выключения"] машины."))
 		play_power_sound()
 		update_icon()
 
@@ -158,3 +163,68 @@
 	unbuckle_mob(violator, TRUE)
 
 #undef STASIS_TOGGLE_COOLDOWN
+
+
+/obj/machinery/stasis/attackby(obj/item/W, mob/user, params)
+	if(istype(W, /obj/item/handbeltsmodif))
+		if(!handbeltsmod)
+			handbeltsmod = TRUE
+			to_chat(user, span_notice("Устанавливаю хардлайт-прожекторы на стазис-кровать, теперь на ней можно фиксировать пациентов."))
+			playsound(src.loc, 'sound/machines/click.ogg', 50, TRUE)
+			qdel(W)
+		else
+			to_chat(user, span_warning("Здесь уже устанавлена эта модификация."))
+
+/obj/machinery/stasis/user_unbuckle_mob(mob/living/buckled_mob, mob/living/user)
+	if(has_buckled_mobs())
+		for(var/buck in buckled_mobs) //breaking a nest releases all the buckled mobs, because the nest isn't holding them down anymore
+			var/mob/living/M = buck
+
+			if(M != user)
+				M.visible_message(span_notice("[user.name] отстегивает [skloname(M.name, VINITELNI, M.gender)] от удерживающих ремней.") ,\
+					span_notice("[user.name] освобождает меня."))
+			else
+				if(handbeltsmod)
+					if(handbeltsmod_active)
+						M.visible_message(span_warning("[M.name] пытается вырваться из удерживающих его ремней!") ,\
+							span_notice("Пытаюсь освободиться от удерживающих меня ремней!"))
+						if(!do_after(M, 30 SECONDS, target = src))
+							if(M?.buckled)
+								to_chat(M, span_warning("Не получается!"))
+							return
+						if(!M.buckled)
+							return
+						M.visible_message(span_warning("[M.name] вырватается из удерживающих его ремней!") ,\
+							span_notice("У меня получилось освободиться!"))
+
+			unbuckle_mob(M)
+			handbeltsmod_active = FALSE
+
+// Активация ремней
+/obj/machinery/stasis/attack_hand_secondary(mob/user, list/modifiers)
+	. = ..()
+	var/mob/living/carbon/human/victim = occupant
+	if(handbeltsmod)
+		if(occupant)
+			if(ishuman(occupant))
+				if(!handbeltsmod_active)
+					user.visible_message(span_alert("Пытается включить энергетические ремни, чтобы зафиксировать [skloname(victim.name, DATELNI, victim.gender)]!"),\
+										span_notice("Включаю энергетические ремни..."))
+					if(!do_after(user, 4 SECONDS, target = victim))
+						return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+					if(occupant != victim)
+						to_chat(user, span_notice("Ой, а куда он делся?.."))
+						return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+					to_chat(user, span_warning("[src.name] проецирует вокруг [skloname(victim.name, VINITELNI, victim.gender)] энергетические ремни, надёжно фиксируя его!"))
+					log_combat(src, victim, "handcuffed", src.name)
+					playsound(src.loc, 'sound/weapons/saberon.ogg', 50, TRUE)
+					handbeltsmod_active = TRUE
+				else
+					to_chat(user, span_noticeital("Энергетические ремни рассеиваются, позволяя [skloname(victim.name, DATELNI, victim.gender)] встать."))
+					log_combat(src, victim, "handcuffed", src.name)
+					playsound(src.loc, 'sound/weapons/saberoff.ogg', 50, TRUE)
+					handbeltsmod_active = FALSE
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+		else
+			to_chat(user, span_notice("Некого фиксировать! Уложите пациента на стазис-кровать и потом включайте ремни."))
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN

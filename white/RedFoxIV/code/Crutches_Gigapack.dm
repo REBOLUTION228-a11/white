@@ -29,7 +29,8 @@
 	var/teamname_gc = copytext_char(sanitize(team_name_genitive_case), 1, MAX_MESSAGE_LEN)
 	var/teamname = copytext_char(sanitize(team_name), 1, MAX_MESSAGE_LEN)
 
-	message_admins("[Sender] собирается вызвать [teamname_gc] с миссией: [msg]")
+	if(Sender)
+		message_admins("[Sender] собирается вызвать [teamname_gc] с миссией: [msg]")
 	var/list/mob/dead/observer/candidates = poll_ghost_candidates("Хотите быть в специальном отряде быстрого реагирования?", "deathsquad", null)
 	var/teamSpawned = FALSE
 
@@ -81,7 +82,7 @@
 			numagents--
 			teamSpawned++
 
-		if (teamSpawned)
+		if (teamSpawned && Sender)
 			message_admins("[Sender] вызывает [teamname] с миссией: [msg]")
 
 		return TRUE
@@ -99,3 +100,104 @@
 
 /proc/deathsquad_request(input, cumshit)
 	general_ert_request(input, "Отряд смерти", "отряд смерти", new /datum/antagonist/ert/deathsquad/leader, new /datum/antagonist/ert/deathsquad, cumshit)
+
+
+
+/proc/getnoun(number, one, two, five)
+	var/n = abs(number)
+	n = n % 100
+	if (n >= 11 &&  n <= 19)
+		return five
+
+	n = n % 10
+	switch(n)
+		if(1)
+			return one
+		if(2 to 4)
+			return two
+	return five
+
+
+
+/proc/get_funny_name(special_name_chance = 0)
+	var/static/list/L1 = list (
+						"Ushat", \
+						"Ulov", \
+						"Buket", \
+						"Rekord", \
+						"Otryad", \
+						"Podriv", \
+						"Pogrom", \
+						"Podzhog", \
+						"Zahvat", \
+						"Ishod", \
+						"Pobeg", \
+						"Obval", \
+						"Ugon", \
+						"Udel", \
+						"Kamaz", \
+						"Razvod", \
+						"Zabeg", \
+						"Parad", \
+						"Vagon", \
+						"Rulon", \
+						"Kvartet", \
+						"Zagul", \
+						"Uchet", \
+						"Razbor", \
+						"Karman", \
+						"Obed", \
+						"Meshok", \
+						"Polet", \
+						"Barak", \
+						"Ukral")
+	var/static/list/L2 = list(
+						"Pomoev" , \
+						"Nalimov" , \
+						"Kovboev" , \
+						"Ustoev" , \
+						"Evreev" , \
+						"Saraev" , \
+						"Pokoev" , \
+						"Isgoev" , \
+						"Zlodeev" , \
+						"Zaboev" , \
+						"Plebeev" , \
+						"Othodov" , \
+						"Suprugov" , \
+						"Debilov" , \
+						"Urodov" , \
+						"Gandonov" , \
+						"Huev" , \
+						"Oboev" , \
+						"Bratanov" , \
+						"Rashodov" , \
+						"Limonov" , \
+						"Poletov" , \
+						"Lemurov" , \
+						"Pistonov" , \
+						"Gormonov" , \
+						"Zaboev" , \
+						"Fazanov" , \
+						"Pingvinov" , \
+						"Arabov" , \
+						"Mongolov" , \
+						"Baranov" , \
+						"Morozov" , \
+						"Matrosov" , \
+						"Shakalov" , \
+						"Pigmeev")
+	var/static/list/S = list(
+						"Karasik Dvachev", \
+						"Grifon Debilov", \
+						"Kommit Valtosov")
+	if(prob(special_name_chance))
+		return pick(S)
+	return "[pick(L1)] [pick(L2)]"
+
+/proc/programmify(text, color1 = "#ff6090", color2 = "#eeeeee")
+	var/result
+	for(var/i = 1, i < length(text)+1, i += 2)
+		result += "<font color='[color1]'>[text[i]]</font>"
+		result += "<font color='[color2]'>[text[i+1]]</font>"
+	return result

@@ -73,7 +73,7 @@
 
 /obj/item/gun/ballistic/rifle/boltaction/blow_up(mob/user)
 	. = 0
-	if(chambered?.BB)
+	if(chambered?.loaded_projectile)
 		process_fire(user, user, FALSE)
 		. = 1
 
@@ -110,6 +110,9 @@
 	trigger_guard = TRIGGER_GUARD_ALLOW_ALL
 
 	mag_type = /obj/item/ammo_box/magazine/internal/boltaction/enchanted/arcane_barrage
+
+/obj/item/gun/ballistic/rifle/boltaction/enchanted/arcane_barrage/make_jamming()
+	return
 
 /obj/item/gun/ballistic/rifle/boltaction/enchanted/dropped()
 	. = ..()

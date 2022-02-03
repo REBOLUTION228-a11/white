@@ -74,6 +74,11 @@
 	explosionSize = list(0,0,1,2)
 	delays = list(POD_TRANSIT = 25, POD_FALLING = 4, POD_OPENING = 30, POD_LEAVING = 30)
 
+//type used for one drop spawning items. doesn't have a style as style is set by the helper that creates this
+/obj/structure/closet/supplypod/podspawn
+	bluespace = TRUE
+	explosionSize = list(0,0,0,0)
+
 /obj/structure/closet/supplypod/centcompod
 	style = STYLE_CENTCOM
 	bluespace = TRUE
@@ -84,6 +89,14 @@
 /obj/structure/closet/supplypod/battleroyale
 	style = STYLE_BOX
 	bluespace = FALSE
+	explosionSize = list(0,0,0,0)
+	delays = list(POD_TRANSIT = 40, POD_FALLING = 4, POD_OPENING = 30, POD_LEAVING = 30) //Very slow
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	max_integrity = 20
+
+/obj/structure/closet/supplypod/box
+	style = STYLE_BOX
+	bluespace = TRUE
 	explosionSize = list(0,0,0,0)
 	delays = list(POD_TRANSIT = 40, POD_FALLING = 4, POD_OPENING = 30, POD_LEAVING = 30) //Very slow
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF

@@ -1,6 +1,3 @@
-
-GLOBAL_LIST_EMPTY(objective_computers)
-
 /obj/machinery/computer/objective
 	name = "консоль заданий"
 	desc = "Консоль, которая загружает список свежих заданий от Центрального Командования."
@@ -56,10 +53,16 @@ GLOBAL_LIST_EMPTY(objective_computers)
 	. = ..()
 	if(.)
 		return
-	if(action != "assign")
-		return
-	var/obj_id = params["id"]
-	for(var/datum/orbital_objective/objective in SSorbits.possible_objectives)
-		if(objective.id == obj_id)
-			say(SSorbits.assign_objective(src, objective))
+	switch(action)
+		if("assign")
+			var/obj_id = params["id"]
+			for(var/datum/orbital_objective/objective in SSorbits.possible_objectives)
+				if(objective.id == obj_id)
+					say(SSorbits.assign_objective(src, objective))
+					return
+		if("remove")
+			if(SSorbits.current_objective)
+				SSorbits.current_objective.remove_objective()
+			return
+		else
 			return

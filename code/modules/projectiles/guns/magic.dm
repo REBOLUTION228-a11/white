@@ -23,6 +23,9 @@
 	trigger_guard = TRIGGER_GUARD_ALLOW_ALL // Has no trigger at all, uses magic instead
 	pin = /obj/item/firing_pin/magic
 
+/obj/item/gun/magic/make_jamming()
+	return
+
 /obj/item/gun/magic/process_fire(atom/target, mob/living/user, message, params, zone_override, bonus_spread)
 	if(no_den_usage)
 		var/area/A = get_area(user)
@@ -42,11 +45,11 @@
 	return charges
 
 /obj/item/gun/magic/recharge_newshot()
-	if (charges && chambered && !chambered.BB)
+	if (charges && chambered && !chambered.loaded_projectile)
 		chambered.newshot()
 
 /obj/item/gun/magic/handle_chamber()
-	if(chambered && !chambered.BB) //if BB is null, i.e the shot has been fired...
+	if(chambered && !chambered.loaded_projectile) //if loaded_projectile is null, i.e the shot has been fired...
 		charges--//... drain a charge
 		recharge_newshot()
 

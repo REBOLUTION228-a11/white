@@ -322,7 +322,7 @@ GLOBAL_LIST_EMPTY(gateway_destinations)
 			if(!GLOB.isGatewayLoaded)
 				message_admins("[ADMIN_LOOKUPFLW(usr)] активирует врата.")
 				log_game("[key_name(usr)] активирует врата.")
-				priority_announce("Началась операция по поиску новых врат в отдалённых секторах. Это займёт некоторое время.", "Звёздные врата", 'sound/misc/announce_dig.ogg')
+				priority_announce("Началась операция по поиску новых врат в отдалённых секторах. Это займёт некоторое время.", "Звёздные врата", 'white/valtos/sounds/trevoga4.ogg')
 				GLOB.isGatewayLoaded = TRUE
 				createRandomZlevel()
 			return TRUE
@@ -338,7 +338,7 @@ GLOBAL_LIST_EMPTY(gateway_destinations)
 	G.activate(D)
 
 /obj/item/paper/fluff/gateway
-	info = "Поздравляем,<br><br>Ваша станция была выбрана для нашего проекта \"Врата\".<br><br>Мы пришлем вам оборудование в следующем квартале.<br> Оборудуйте защищенное помещение по требованиям, приведенным в прикрепленных документах.<br><br>--Исследовательский Центр Блюспейса Нанотрейзен"
+	info = "Поздравляем,<br><br>Ваша станция была выбрана для нашего проекта \"Врата\".<br><br>Мы пришлем вам оборудование в следующем квартале.<br> Оборудуйте защищенное помещение по требованиям, приведенным в прикрепленных документах.<br><br>--Исследовательский Центр Блюспейса NanoTrasen"
 	name = "Конфиденциальная переписка, стр 1"
 
 /obj/effect/gateway_portal_effect
@@ -373,4 +373,5 @@ GLOBAL_LIST_EMPTY(gateway_destinations)
 	animate(get_filter("portal_ripple"), time = 1.3 SECONDS, loop = -1, easing = LINEAR_EASING, radius = 32)
 
 	var/turf/center_turf = our_destination.get_target_turf()
-	vis_contents += block(locate(center_turf.x - 1, center_turf.y - 1, center_turf.z), locate(center_turf.x + 1, center_turf.y + 1, center_turf.z))
+	if(center_turf)
+		vis_contents += block(locate(center_turf.x - 1, center_turf.y - 1, center_turf.z), locate(center_turf.x + 1, center_turf.y + 1, center_turf.z))

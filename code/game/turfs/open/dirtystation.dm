@@ -34,7 +34,7 @@
 		return
 
 
-	if(prob(80))	//mid dirt  - 1/15
+	if(prob(60))	//mid dirt  - 2/5
 		return
 
 		//Construction zones. Blood, sweat, and oil.  Oh, and dirt.
@@ -43,6 +43,7 @@
 														/area/science/robotics,
 														/area/maintenance,
 														/area/construction,
+														/area/partyhard,
 														/area/commons/vacant_room/commissary,
 														/area/survivalpod))
 	if(is_type_in_typecache(A, engine_dirt_areas))

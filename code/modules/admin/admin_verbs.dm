@@ -73,6 +73,8 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/datum/admins/proc/open_borgopanel,
 	/datum/admins/proc/view_all_circuits,
 	/datum/admins/proc/view_all_sdql_spells,
+	/datum/admins/proc/paintings_manager,
+	/datum/admins/proc/known_alts_panel,
 	)
 GLOBAL_LIST_INIT(admin_verbs_ban, list(/client/proc/unban_panel, /client/proc/ban_panel, /client/proc/stickybanpanel, /client/proc/assblast_panel, /client/proc/show_assblasts))
 GLOBAL_PROTECT(admin_verbs_ban)
@@ -81,6 +83,7 @@ GLOBAL_PROTECT(admin_verbs_sounds)
 GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/enforce_containment_procedures,
 	/client/proc/invisimin,				/*allows our mob to go invisible/visible*/
+	/datum/admins/proc/show_lag_switch_panel,
 	/client/proc/game_panel,			/*game panel, allows to change game-mode etc*/
 	/datum/admins/proc/announce,		/*priority announce something to all clients.*/
 	/datum/admins/proc/set_admin_notice, /*announcement all clients see when joining the server.*/
@@ -120,7 +123,8 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/huesoslist,
 	/client/proc/battle_royale,
 	/client/proc/load_circuit,
-	/client/proc/change_lobby_music
+	/client/proc/change_lobby_music,
+	/client/proc/cmd_admin_toggle_fov,
 	))
 GLOBAL_PROTECT(admin_verbs_fun)
 GLOBAL_LIST_INIT(admin_verbs_spawn, list(/datum/admins/proc/spawn_atom, /datum/admins/proc/podspawn_atom,
@@ -189,6 +193,7 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/map_template_upload,
 	/client/proc/jump_to_ruin,
 	/client/proc/clear_dynamic_transit,
+	/client/proc/run_empty_query,
 	/client/proc/toggle_medal_disable,
 	/client/proc/view_runtimes,
 	/client/proc/pump_random_event,
@@ -207,6 +212,7 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/export_dynamic_json,
 	/client/proc/run_dynamic_simulations,
 	#endif
+	/client/proc/display_sendmaps,
 	/datum/admins/proc/create_or_modify_area,
 	/client/proc/clicker_panel,
 	/client/proc/check_timer_sources,
@@ -218,9 +224,9 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	)
 GLOBAL_LIST_INIT(admin_verbs_possess, list(/proc/possess, /proc/possess, /proc/release))
 GLOBAL_PROTECT(admin_verbs_possess)
-GLOBAL_LIST_INIT(admin_verbs_permissions, list(/client/proc/edit_admin_permissions, /client/proc/retrieve_file, /client/proc/manage_lists, /client/proc/add_bug_down))
+GLOBAL_LIST_INIT(admin_verbs_permissions, list(/client/proc/edit_admin_permissions, /client/proc/manage_lists, /client/proc/add_bug_down))
 GLOBAL_PROTECT(admin_verbs_permissions)
-GLOBAL_LIST_INIT(admin_verbs_secured, list(/client/proc/de_admin))
+GLOBAL_LIST_INIT(admin_verbs_secured, list(/client/proc/de_admin, /client/proc/manage_some_donations, /client/proc/manage_player_ranks))
 GLOBAL_PROTECT(admin_verbs_secured)
 GLOBAL_LIST_INIT(admin_verbs_poll, list(/client/proc/poll_panel))
 GLOBAL_PROTECT(admin_verbs_poll)
@@ -320,6 +326,8 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		if(rights & R_STEALTH)
 			add_verb(src, /client/proc/stealth)
 		if(rights & R_ADMIN)
+			add_verb(src, GLOB.admin_verbs_poll)
+		if(rights & R_SDQL)
 			add_verb(src, GLOB.admin_verbs_poll)
 		if(rights & R_SOUND)
 			add_verb(src, GLOB.admin_verbs_sounds)
@@ -668,7 +676,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(!SStrading_card_game.loaded)
 		message_admins("The card subsystem is not currently loaded")
 		return
-	var/pack = input("Which pack should we test?", "You fucked it didn't you") as null|anything in sortList(SStrading_card_game.card_packs)
+	var/pack = input("Which pack should we test?", "You fucked it didn't you") as null|anything in sort_list(SStrading_card_game.card_packs)
 	var/batchCount = input("How many times should we open it?", "Don't worry, I understand") as null|num
 	var/batchSize = input("How many cards per batch?", "I hope you remember to check the validation") as null|num
 	var/guar = input("Should we use the pack's guaranteed rarity? If so, how many?", "We've all been there. Man you should have seen the old system") as null|num
@@ -688,7 +696,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	var/type_length = length_char("/obj/effect/proc_holder/spell") + 2
 	for(var/spell in GLOB.spells)
 		spell_list[copytext_char("[spell]", type_length)] = spell
-	var/spell_desc = input("Choose the spell to give to that guy", "ABRAKADABRA") as null|anything in sortList(spell_list)
+	var/spell_desc = input("Choose the spell to give to that guy", "ABRAKADABRA") as null|anything in sort_list(spell_list)
 	if(!spell_desc)
 		return
 
@@ -721,7 +729,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set desc = "Remove a spell from the selected mob."
 
 	if(T?.mind)
-		var/obj/effect/proc_holder/spell/S = input("Choose the spell to remove", "NO ABRAKADABRA") as null|anything in sortList(T.mind.spell_list)
+		var/obj/effect/proc_holder/spell/S = input("Choose the spell to remove", "NO ABRAKADABRA") as null|anything in sort_list(T.mind.spell_list)
 		if(S)
 			T.mind.RemoveSpell(S)
 			log_admin("[key_name(usr)] removed the spell [S] from [key_name(T)].")
@@ -735,7 +743,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(!istype(T))
 		to_chat(src, span_notice("You can only give a disease to a mob of type /mob/living.") , confidential = TRUE)
 		return
-	var/datum/disease/D = input("Choose the disease to give to that guy", "ACHOO") as null|anything in sortList(SSdisease.diseases, /proc/cmp_typepaths_asc)
+	var/datum/disease/D = input("Choose the disease to give to that guy", "ACHOO") as null|anything in sort_list(SSdisease.diseases, /proc/cmp_typepaths_asc)
 	if(!D)
 		return
 	T.ForceContractDisease(new D, FALSE, TRUE)
@@ -870,3 +878,9 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set category = "Дбг"
 
 	src << output("", "statbrowser:create_debug")
+
+/client/proc/display_sendmaps()
+	set name = "Send Maps Profile"
+	set category = "Дбг"
+
+	src << link("?debug=profile&type=sendmaps&window=test")

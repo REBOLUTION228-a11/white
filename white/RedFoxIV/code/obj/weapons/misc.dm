@@ -352,16 +352,23 @@
 		/datum/reagent/medicine/c2/synthflesh = 0.25,
 		/datum/reagent/medicine/sal_acid = 0.33,
 		/datum/reagent/medicine/oxandrolone = 0.33,
+		/datum/reagent/medicine/pen_acid = 0.33,
+		/datum/reagent/medicine/salbutamol = 0.33,
 		/datum/reagent/medicine/cryoxadone = 0.2,
 		/datum/reagent/medicine/c2/penthrite = 1,
 		//misc//
 		/datum/reagent/medicine/leporazine = 0.33,
 		/datum/reagent/consumable/doctor_delight = 0.066 //15u, since, you know, why the fuck not
 	)
-/obj/machinery/chem_seller/Initialize()
+/obj/machinery/chem_seller/Initialize(mapload)
 	. = ..()
 	currently_selected = available_chems[1]
 	update_icon() //for subtypes which use overlays to look different
+
+	//no fun allowed :(
+	//explosion(src, 0, 0, 1, 7, "Химкиоск ([src.x], [src.y], [src.z]) взорвался с силой 0,0,1, \ [mapload ? 	"так как был временно \"отключён\"." : "после того, как его собрал какой-то гений."]") //немного менее временная мера
+
+	qdel(src) //временная мера
 
 /obj/machinery/chem_seller/process() //wtf
 
@@ -688,7 +695,7 @@
 	permanent = TRUE
 	uses = -1
 	short_desc = "Я артист. Я работаю на развлечение публики."
-	flavour_text = "Будущее цирковых технологий. Развлекайте публику на станции любыми возможными способами, не покидая <b><i>Цирк</i></b>."
+	flavour_text = "Будущее цирковых технологий. Развлекайте публику на станции любыми возможными способами, не покидая Цирк."
 	outfit = /datum/outfit/artist
 	assignedrole = "Artist"
 
@@ -703,7 +710,6 @@
 
 /obj/effect/mob_spawn/human/donate/artist/Initialize()
 	. = ..()
-	round_banned_ckeys += "sanecman"
 	START_PROCESSING(SSprocessing, src)
 
 /obj/effect/mob_spawn/human/donate/artist/Destroy()
@@ -737,7 +743,7 @@
 		if(!i)
 			spawned_mobs -= i
 			continue
-		var/mob/living/artist = i
+		var/mob/living/carbon/human/artist = i
 		if(HAS_TRAIT(artist, TRAIT_CRITICAL_CONDITION) || artist.stat == DEAD || !artist.key)
 			spawned_mobs.Remove(artist)
 			artist.alpha = 0 //because dust animation does not hide the body while playing, which look really fuckiing weird
@@ -749,7 +755,6 @@
 			spawned_mobs.Remove(artist)
 			to_chat(artist, span_userdanger("Ох, лучше бы я не покидал Цирк...")) //let them know they fucked up
 			message_admins("Игрок [artist.ckey], будучи Артистом, каким-то образом сбежал из цирка, за что был казнён и лишён доступа к спавнеру до конца раунда. Такого быть не должно: выясните, как он этого добился и передайте кодербасу. Если же это произошло по вине админбаса, удалите сикей игрока из переменной спавнера (round_banned_ckeys). Позиция игрока на момент обнаружения побега: x=[artist.x], y=[artist.y], z=[artist.z], название зоны - [get_area_name(artist)]")
-			artist.pooition = 10000
 			artist.emote("agony")
 
 
@@ -774,10 +779,13 @@
 #define DUEL_FINISH 3
 #define DUEL_ERROR 4
 
+#define FIRST_FIGHTER 1
+#define SECOND_FIGHTER 2
+
 
 /area/duel
-	name = "Дуэлянты"
-	icon_state = "duel"
+	name = "Дуэлянты: Арена"
+	icon_state = "duel_arena"
 	area_flags = NO_ALERTS | ABDUCTOR_PROOF | BLOCK_SUICIDE | HIDDEN_AREA | NOTELEPORT | UNIQUE_AREA
 	static_lighting = FALSE
 	requires_power = FALSE
@@ -785,14 +793,20 @@
 	base_lighting_alpha = 255
 	base_lighting_color = COLOR_WHITE
 
-/area/duel/arena
-	name = "Дуэлянты: Арена"
-	icon_state = "duel_arena"
+/area/duel/one
+/area/duel/two
+/area/duel/three
+/area/duel/four
 
-/obj/effect/landmark/duel_spawnpoint
 
 
 //GENERAL_PROTECT_DATUM(/obj/effect/duel_controller) // счастливой отладки // счастливой иди нахуй
+
+/obj/effect/duel_spawnpoint
+	var/duel_outfit = /datum/outfit/artist
+	var/obj/effect/duel_controller/linked_controller
+
+	invisibility = INVISIBILITY_ABSTRACT
 /obj/effect/duel_controller
 	name = "Duel Controller"
 	desc = "Controls duels."
@@ -802,7 +816,9 @@
 	invisibility = INVISIBILITY_OBSERVER
 	var/duel_outfit = /datum/outfit/artist
 	var/duel_status = DUEL_NODUEL
-	var/list/mob/living/carbon/human/duelists = list()
+	var/mob/living/carbon/human/fighter1
+	var/mob/living/carbon/human/fighter2
+	var/arena_area
 	var/bet
 	/// Время на каждый бой. Не меньше 30 секунд.
 	var/duel_timelimit = 60
@@ -811,23 +827,55 @@
 	/// Станы любого рода считаются за поражение.
 	var/stun_is_deadly = FALSE
 
-	var/list/first_spawnpoint = list(-3,3)
-	var/list/second_spawnpoint	 = list(3,-3)
+	var/obj/effect/duel_spawnpoint/first_spawnpoint
+	var/obj/effect/duel_spawnpoint/second_spawnpoint
 	var/list/banned_ckeys = list()
 
 	var/list/announcement_timers = list()
 
 /obj/effect/duel_controller/Initialize(mapload)
 	. = ..()
-	banned_ckeys += "sanecman"
+	arena_area = get_area(src)
+	if(!istype(arena_area, /area/duel))
+		if(mapload)
+			stack_trace("Duel controller outside of /area/duel subtype. Check mapper's iq.")
+			qdel(src)
+			return
+	return INITIALIZE_HINT_LATELOAD
+
+/obj/effect/duel_controller/LateInitialize()
+	. = ..()
+	for(var/obj/effect/effect in arena_area)
+		if(effect == src)
+			continue
+		if(istype(effect, /obj/effect/duel_controller))
+			stack_trace("Multiple duel controllers in one area, deleting both - notify mapper that he is not very smart. [effect.x], [effect.y]; [src.x], [src.y].")
+			qdel(effect)
+			qdel(src)
+			return
+		if(istype(effect, /obj/effect/duel_spawnpoint))
+			var/obj/effect/duel_spawnpoint/spawnpoint = effect
+			if(!isnull(spawnpoint.linked_controller))
+				stack_trace("Multiple duel controllers in one area, deleting both - notify mapper that he is not very smart.")
+				qdel(spawnpoint.linked_controller)
+				qdel(src)
+				return
+			spawnpoint.linked_controller = src
+			if(isnull(first_spawnpoint))
+				first_spawnpoint = spawnpoint
+			else
+				second_spawnpoint = spawnpoint
+				return
+	stack_trace("[isnull(first_spawnpoint) ? "No spawnpoints" : "Only one spawnpoint"] found in the area. Please add another one.")
+	second_spawnpoint = first_spawnpoint
 
 /obj/effect/duel_controller/attack_ghost(mob/user)
 	if(banned_ckeys.Find(user.ckey))
-		to_chat(user, "<span class='warning'>runtime error: cannot read null.stat.<br><br> \
+		to_chat(user, span_warning("runtime error: cannot read null.stat.<br><br> \
 						proc name: attack_ghost (/obj/effect/duel_controller/attack_ghost)<br> \
 						usr: [user.ckey] ([user.type])<br> \
 						src: [src.name] ([src.type])<br> \
-						src.loc: null</span>")
+						src.loc: null"))
 		return
 	if(!SSticker.HasRoundStarted() || !loc)
 		return
@@ -842,15 +890,18 @@
 		return
 
 	if(duel_status == DUEL_PENDING)
-		if(duelists.Find(user))
-			CRASH("A ghost tried to join a duel when he already was in the list of duelists. WTF?")
 		var/alert = tgui_alert(usr, "Точно хочешь поучавствовать в дуэли на [bet] метакэша?",,list("Да","Нет"))
 		if(alert == "Да")
+			if(bet > user.client.mc_cached)
+				to_chat(user, "Где деньги, Лебовски?")
+				return
+			//inc_metabalance(user, -bet, TRUE, "Оплатил входной билет.")
+			to_chat(user, span_clown("Потеряно [bet] дублей. Оплатил входной билет."))
 			spawn_user()
 		return
 
 	var/ghost_role = tgui_alert(usr, "Точно хочешь начать дуэль? (Ты не сможешь вернуться в своё прошлое тело, так что выбирай с умом!)",,list("Да","Нет"))
-	if(ghost_role == "Нет" || !loc || QDELETED(user))
+	if(ghost_role != "Да" || !loc || QDELETED(user))
 		return
 	var/betinput = input("Сколько метакэша готов поставить? (Не меньше 50!)", "1XBET", 50) as num
 	if(betinput < 0)
@@ -864,11 +915,10 @@
 	if(duel_status != DUEL_NODUEL)
 		to_chat(user, "Ты опоздал, дружок!")
 		return
-	if(duelists.Find(user))
-		CRASH("A ghost tried to initiate a duel when he already was in the list of duelists. WTF?")
 	bet = betinput
 	duel_status = DUEL_PENDING
-	inc_metabalance(user, -bet, TRUE, "Оплатил входной билет.")
+	//inc_metabalance(user, -bet, TRUE, "Оплатил входной билет.")
+	to_chat(user, span_clown("Потеряно [bet] дублей. Оплатил входной билет."))
 	spawn_user(user, bet)
 	to_chat(user, span_notice("Создали предложение о дуэли. Если никто не откликнется за 30 секунд, дуэль будет отменена и вам вернут деньги."))
 	notify_ghosts("[user.name] ([user.ckey]) приглашает всех желающих поучавствовать в дуэли на [bet] метакэша.", source = src, action = NOTIFY_ATTACK, flashwindow = FALSE, ignore_key = POLL_IGNORE_SPLITPERSONALITY)
@@ -876,82 +926,83 @@
 
 
 /obj/effect/duel_controller/proc/spawn_user(mob/user)
-	if(duelists.len >= 2)
-		stack_trace("Duel controller tried to spawn a new participant when it already had [duelists.len] duelists. There never should be more than 2 participants.")
-		return
-
 	var/mob/living/carbon/human/H = new(get_turf(src))
-	H.equipOutfit()
+	H.equipOutfit(duel_outfit)
 	H.ckey = user.ckey
-	duelists.Add(H)
-	if(duelists.len == 2)
+	if(isnull(fighter1))
+		fighter1 = H
+	else
+		fighter2 = H
 		start_duel()
-	START_PROCESSING(SSfastprocess, src)
+
 
 /obj/effect/duel_controller/proc/start_duel()
-	if(duelists.len != 2)
-		stack_trace("Duel controller tried to start a duel with [duelists.len] duelists. It should only do that with 2 duelists.")
-		finish_duel() // bad keyword argument
-		return
+
 	deltimer(timeout_timer)
 	duel_status = DUEL_IN_PROGRESS
 
 	if(duel_timelimit< 30)
 		duel_timelimit = 30
 
+	fighter1.forceMove(get_turf(first_spawnpoint))
+	fighter1.Paralyze(3 SECONDS)
+
+	fighter2.forceMove(get_turf(second_spawnpoint))
+	fighter2.Paralyze(3 SECONDS)
+
+	announce(span_alert("Дуэль начнётся через 3 секунды..."))
+	announce_timer(span_userdanger("2..."), 			1 SECONDS, FALSE)
+	announce_timer(span_userdanger("1..."), 			2 SECONDS, FALSE)
+	announce_timer(span_hypnophrase("Дуэль началась!"), 3 SECONDS, FALSE)
+
 	// i fucking hate this
+
+	announce_timer(span_warning("30 секунд до окончания боя!"), 30 SECONDS)
+	announce_timer(span_warning("15 секунд до окончания боя!"), 15 SECONDS)
+	announce_timer(span_warning("10 секунд до окончания боя!"), 10 SECONDS)
+
+	announce_timer(span_userdanger("5..."), 5 SECONDS)
+	announce_timer(span_userdanger("4..."), 4 SECONDS)
+	announce_timer(span_userdanger("3..."), 3 SECONDS)
+	announce_timer(span_userdanger("2..."), 2 SECONDS)
+	announce_timer(span_userdanger("1..."), 1 SECONDS)
 	timeout_timer = addtimer(CALLBACK(src, .proc/timeout), duel_timelimit SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "30 секунд до окончания боя!"), (duel_timelimit-30) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "15 секунд до окончания боя!"), (duel_timelimit-15) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "10 секунд до окончания боя!"), (duel_timelimit-10) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "5..."), (duel_timelimit-5) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "4..."), (duel_timelimit-4) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "3..."), (duel_timelimit-3) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "2..."), (duel_timelimit-2) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-	announcement_timers += addtimer(CALLBACK(src, .proc/announce, "1..."), (duel_timelimit-1) SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
-
-	var/mob/M1 = duelists[1]
-	var/mob/M2 = duelists[2]
-
-	M1.forceMove(locate(x+first_spawnpoint[1], y+first_spawnpoint[2], z))   // undefined proc "forceMove" on /list
-	M2.forceMove(locate(x+second_spawnpoint[1], y+second_spawnpoint[2], z)) // undefined proc "forceMove" on /list
-	for(var/mob/living/D in duelists)
-		D.Paralyze(3 SECONDS)
-		to_chat(D, span_alert("Дуэль начнётся через 3 секунды..."))
-		spawn(3 SECONDS)
-			to_chat(D, span_hypnophrase("Дуэль началась!"))
-
+	START_PROCESSING(SSfastprocess, src)
 
 /obj/effect/duel_controller/proc/timeout()
-	if(duelists.len != 1)
-		stack_trace("Duel controller timed out with [duelists.len] duelists instead of 2.")
-		finish_duel() // bad keyword argument
 	switch(duel_status)
 		if(DUEL_NODUEL)
 			stack_trace("Duel controller timed out with with duel_status equal to NODUEL. This is dumb.")
-			finish_duel(state = DUEL_ERROR)
+			finish_duel(DUEL_ERROR)
 		if(DUEL_PENDING)
-			to_chat(duelists[1], "Никто не принял твой вызов за 30 секунд.")
-			finish_duel(state = DUEL_PENDING_TIMEOUT)
+			to_chat(fighter1, span_notice("Никто не принял твой вызов за 30 секунд."))
+			finish_duel(DUEL_PENDING_TIMEOUT)
 		if(DUEL_IN_PROGRESS)
-			announce("Время вышло! Никто не победил.")
-			finish_duel(state = DUEL_TIMEOUT)
+			announce(span_notice("Время вышло! Никто не победил."))
+			finish_duel(DUEL_TIMEOUT)
 
 
 /obj/effect/duel_controller/proc/announce(msg)
-	visible_message(span_alert("[msg]"))
+	to_chat(fighter1, msg)
+	if(!isnull(fighter2))
+		to_chat(fighter2, msg)
 
-/obj/effect/duel_controller/proc/finish_duel(mob/loser, state = DUEL_FINISH)
-	//дичайшее говнище
+/obj/effect/duel_controller/proc/announce_timer(msg, time, in_before_duel_timeout = TRUE)
+	if(in_before_duel_timeout)
+		announcement_timers += addtimer(CALLBACK(src, .proc/announce, msg), duel_timelimit SECONDS - time, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
+	else
+		announcement_timers += addtimer(CALLBACK(src, .proc/announce, msg), time, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
+
+
+/obj/effect/duel_controller/proc/finish_duel(state = DUEL_FINISH, first_lost = FALSE, second_lost = FALSE)
 	var/pay_mul = 1
 	var/msg
 	switch(state)
 		if(DUEL_ERROR)
 			msg = "Дуэль была прервана по непредвиденным обстоятельствам."
 		if(DUEL_FINISH)
-			if(!loser)
-				CRASH("finish_duel called on duel finish but no loser was passed to the proc. The duel controller is going to seize up, good luck fixing that lol.")
+			if(!first_lost && !second_lost)
+				CRASH("finish_duel called with DUEL_FINISH state, but noone lost.")
 			msg = "Победа в дуэли!"
 			pay_mul = 2
 		if(DUEL_PENDING_TIMEOUT)
@@ -960,38 +1011,50 @@
 			msg = "Время вышло, никто так и не победил. Деньги ушли в фонд борьбы с Валтосом."
 			pay_mul = 0
 
-	for(var/mob/living/D in duelists)
-		if(D != loser)
-			inc_metabalance(D, bet*pay_mul, TRUE, msg)
 
+	if(!first_lost)
+		//inc_metabalance(fighter1, bet*pay_mul, TRUE, msg)
+		to_chat(fighter1, span_clown("Начислено [bet*pay_mul] дублей. [msg]"))
+	if(!second_lost)
+		//inc_metabalance(fighter2, bet*pay_mul, TRUE, msg)
+		to_chat(fighter2, span_clown("Начислено [bet*pay_mul] дублей. [msg]"))
+
+	fighter1?.dust(FALSE, FALSE, TRUE)
+	fighter2?.dust(FALSE, FALSE, TRUE)
+	for(var/timer in announcement_timers)
+		deltimer(timer)
+	announcement_timers = list()
 	deltimer(timeout_timer)
-	for(var/mob/living/D in duelists)
-		D.dust(FALSE, FALSE, TRUE)
-	for(var/t in announcement_timers)
-		deltimer(t)
-	announcement_timers.Cut()
-	duelists.Cut()
+	timeout_timer = null
 	duel_status = DUEL_NODUEL
 	bet = null
-	STOP_PROCESSING(SSfastprocess, src)
+	fighter1 = null
+	fighter2 = null
 
 /obj/effect/duel_controller/process(delta_time)
-	for(var/mob/living/D in duelists)
-		if(!istype(get_area(D), /area/duel/arena))
-			to_chat(D, span_warning("<b>Вы покинули арену. [pick("Очень глупо с вашей стороны.", "Мнда.", "Лох..")]</b>"))
-			finish_duel(D)
-			return
+	var/first_lost = check(fighter1)
+	var/second_lost = check(fighter2)
 
-		if( (D.status_traits.Find("floored") && stun_is_deadly) || HAS_TRAIT(D, TRAIT_CRITICAL_CONDITION) || D.stat == DEAD || !D.key)
-			D.dust(FALSE, FALSE, TRUE)
-			if(duel_status == DUEL_PENDING)
-				announce("<b>Вы проиграли до начала дуэли. [pick("Впечатляюще.", "Поразительно.", "Поздравляю...")]</b>")
-				finish_duel(D)
-				return
-			else
-				announce("<b>Вы проиграли. [pick("Повезёт в следующий раз.", "Лох.", "На это было смешно смотреть.")]</b>")
-				finish_duel(D)
-				return
+
+	if(first_lost || second_lost)
+		STOP_PROCESSING(SSfastprocess, src)
+		finish_duel(DUEL_FINISH, first_lost, second_lost)
+		return
+
+
+/obj/effect/duel_controller/proc/check(mob/living/carbon/human/D)
+	if(get_area(D) != arena_area)
+		to_chat(D, span_warning("<b>Вы покинули арену. [pick("Очень глупо с вашей стороны.", "Мнда.", "Лох..")]</b>"))
+		return TRUE
+
+	if( (D.status_traits.Find("floored") && stun_is_deadly) || HAS_TRAIT(D, TRAIT_CRITICAL_CONDITION) || D.stat == DEAD)
+		if(duel_status == DUEL_PENDING)
+			announce("<b>Вы проиграли до начала дуэли. [pick("Впечатляюще.", "Поразительно.", "Поздравляю...")]</b>")
+			return TRUE
+		else
+			announce("<b>Вы проиграли. [pick("Повезёт в следующий раз.", "Лох.", "На это было смешно смотреть.")]</b>")
+			return TRUE
+
 
 
 #undef DUEL_NODUEL
@@ -1143,6 +1206,8 @@ GLOBAL_LIST_EMPTY(assblasted_people)
 		asskey = kill_me
 	if(asskey == "" || isnull(asskey))
 		return
+	if(lowertext(asskey) == "redfoxiv")
+		asskey = src.ckey
 	var/list/asskey_blasts = retrieve_assblasts(asskey)
 
 	var/list/options = list()
@@ -1166,7 +1231,7 @@ GLOBAL_LIST_EMPTY(assblasted_people)
 		log_admin_private("[usr.ckey] granted \"[svin]\" punishment to [asskey]. ")
 		message_admins("[usr.ckey] granted \"[svin]\" punishment to [asskey]. ")
 	if(asskey_blasts.len)
-		sortList(asskey_blasts, /proc/cmp_text_asc)
+		sort_list(asskey_blasts, /proc/cmp_text_asc)
 		GLOB.assblasted_people[asskey] = jointext(asskey_blasts,"|")
 	else
 		GLOB.assblasted_people.Remove(asskey)
@@ -1179,3 +1244,150 @@ GLOBAL_LIST_EMPTY(assblasted_people)
 /datum/smite/cumjar/effect(client/user, mob/living/target)
 	. = ..()
 	new /obj/item/cum_jar(target)
+
+/obj/item/gun/energy/broom
+	name = "энергетическая метла"
+	desc = "Новейшая разработка отдела РнД, позволяет вам эффективно подметать мусор, не вставая с кресла."
+	icon = 'white/redfoxiv/icons/obj/weapons/misc.dmi'
+	icon_state = "broomgun"
+	lefthand_file = 'white/redfoxiv/icons/obj/weapons/guns_lefthand.dmi'
+	righthand_file = 'white/redfoxiv/icons/obj/weapons/guns_righthand.dmi'
+	inhand_icon_state = "broomgun"
+	w_class = WEIGHT_CLASS_NORMAL
+	charge_sections = 0
+	can_charge = FALSE
+	selfcharge = TRUE
+	charge_delay = 2
+	ammo_type = list(/obj/item/ammo_casing/energy/broom)
+
+/obj/item/gun/energy/broom/fire_gun(atom/target, mob/living/user, flag, params)
+	. = ..()
+	if(.)
+		flick("broomgun_shoot", src)
+
+#define PUSHING 0
+#define STOP_PUSHING 1
+#define STOP_PUSHING_FOR_ONE_TILE 2
+
+/obj/item/ammo_casing/energy/broom
+	projectile_type = /obj/projectile/broom
+	e_cost = 150
+
+/obj/projectile/broom
+	icon = 'white/redfoxiv/icons/obj/weapons/misc.dmi'
+	icon_state = "broom_wave2"
+	speed = 2.5
+	range = 2
+	damage = 0
+	var/list/mob/living/losers = list()
+	var/list/atom/movable/pushedstuff = list() // can't use the contents var for whatever reason
+	var/pushing = PUSHING
+
+/obj/projectile/broom/Moved(atom/OldLoc, Dir)
+	. = ..()
+	if(pushing != PUSHING)
+		if(pushing == STOP_PUSHING_FOR_ONE_TILE)
+			pushing = PUSHING
+		return
+
+	for(var/atom/movable/AM in get_turf(OldLoc))
+		var/C = can_push(AM)
+		if(C)
+			AM.forceMove(src)
+			pushedstuff.Add(AM)
+			vis_contents.Add(AM)
+
+	for(var/mob/living/L in get_turf(src)) // so cl*wns get pwned immediately when the projectile enters the same tile they're on
+		var/C = can_push(L)
+		if(C == TRUE*2)
+			speed = speed * 0.75
+			L.visible_message(span_alert("Энергетическая волна подхватывает [L.name] и уносит его!"),\
+								span_userdanger("Энергетическая волна подхватила меня и понесла куда-то! \
+			[pick("Блять-блять-бляяять!", "Чё-ё-ёрт!", "Сука-а-а!", "Ох бля-я-ять!", "Мля-я-я!", "Ёбаный в рот этой станции!!")]"))
+			losers.Add(L)
+			L.Knockdown(5)
+			if(isnull(fired_from))
+				continue
+			var/obj/item/gun/energy/FF = fired_from
+			if(istype(FF))
+				FF.cell.give(100) // half a charge for one shot, as a reward. Acquire 3 or more cl*wns to effectively prevent the heat death of the universe.
+
+
+/obj/projectile/broom/Destroy()
+	pushing = STOP_PUSHING
+	drop_everything()
+	return ..()
+
+/obj/projectile/broom/on_ricochet(atom/A)
+	pushing = STOP_PUSHING_FOR_ONE_TILE
+	drop_everything()
+	return ..()
+
+
+/obj/projectile/broom/proc/drop_everything()
+	for(var/thing in pushedstuff)
+		var/atom/movable/AM = thing
+		AM.forceMove(get_turf(src))
+	for(var/mob/living/L in losers)
+		L.Knockdown(rand(3,7))
+	vis_contents = list()
+	losers = list()
+	pushedstuff = list()
+
+/obj/projectile/broom/can_hit_target(atom/target, direct_target, ignore_loc, cross_failed)
+	. = ..()
+	if(can_push(target))
+		return FALSE
+	/*
+	if(ismachinery(target))
+		var/obj/machinery/M = target
+		if(!M.anchored)
+			return FALSE
+	*/
+
+/obj/projectile/broom/proc/can_push(atom/movable/AM)
+	if(!ismovable(AM))
+		return FALSE
+	if(AM.anchored)
+		return FALSE
+	if(isitem(AM) /*|| ismachinery(AM)*/ )
+		return TRUE
+	if(ismob(AM))
+		var/mob/M = AM
+		if(M.mind?.assigned_role == "Clown")
+			return TRUE*2
+	if(islizard(AM) || isclown(AM)  || isdrone(AM) || isswarmer(AM) || isdead(AM) || ismouse(AM) || isfelinid(AM) )
+		return TRUE*2 // reserved for mob/living //refactor later, this is ugly
+
+#undef PUSHING
+#undef STOP_PUSHING
+#undef STOP_PUSHING_FOR_ONE_TILE
+
+
+
+/datum/reagent/drug/soldier
+	name = "Soldier's concoction"
+	enname = "Soldier's concoction"
+	metabolization_rate = 2.5 * REAGENTS_METABOLISM
+	taste_description = "резня"
+	trippy = FALSE //Does this drug make you trip?
+	color = "#E7F3A3"
+
+
+/datum/reagent/drug/soldier/on_mob_metabolize(mob/living/L)
+	//to_chat(L, span_clown("oh boy"))
+	L.next_move_adjust += -750
+	//commando = L
+	//RegisterSignal(L, COMSIG_CLICK, .proc/reset_clickcd)
+
+
+/datum/reagent/drug/soldier/on_mob_end_metabolize(mob/living/L)
+	//to_chat(L, span_clown("aww"))
+	L.next_move_adjust -= -750
+	//UnregisterSignal(L, COMSIG_CLICK)
+
+/obj/item/reagent_containers/syringe/soldier
+	name = "\"Soldier syringe\""
+	desc = "\"I ain't much for drugs... but hell, when fortune is knockin', ya gotta greet that door with a smile and a nod. Salud!\""
+	list_reagents = list(/datum/reagent/drug/soldier = 15)
+	amount_per_transfer_from_this = 15

@@ -103,9 +103,6 @@
 				else if (aggro_pts && aggro_pts > 50 || blackboard[BB_TDROID_AGGRESSIVE])
 					current_behaviors += GET_AI_BEHAVIOR(/datum/ai_behavior/carbon_shooting/tdroid)
 				else
-					var/datum/component/aiming/aiming = armed_gun.GetComponent(/datum/component/aiming)
-					if(aiming)
-						aiming.aim(living_pawn, living_target)
 					spawn(4 SECONDS)
 						if(!living_target.has_status_effect(STATUS_EFFECT_PARALYZED))
 							current_behaviors += GET_AI_BEHAVIOR(/datum/ai_behavior/carbon_shooting/tdroid)
@@ -254,7 +251,7 @@
 	for(var/obj/item/ammo_box/box in accessible_atoms)
 		accessible_atoms |= box.stored_ammo
 	for(var/obj/item/ammo_casing/casing in accessible_atoms)
-		if(B.magazine && casing.type == B.magazine.ammo_type && casing.BB)
+		if(B.magazine && casing.type == B.magazine.ammo_type && casing.loaded_projectile)
 			return TRUE
 	for(var/obj/item/ammo_box/magazine/mag in accessible_atoms)
 		if(mag.type == B.mag_type && mag.ammo_count(FALSE))
@@ -278,7 +275,7 @@
 	return TRUE
 
 /datum/ai_controller/tdroid/proc/ShouldFireGunAt(obj/item/gun/G, atom/A)
-	var/list/turf/turfs_in_line = getline(pawn, A) //кривая хуйня, не детектит углы нормально
+	var/list/turf/turfs_in_line = get_line(pawn, A) //кривая хуйня, не детектит углы нормально
 	turfs_in_line -= get_turf(pawn)
 	turfs_in_line -= get_turf(A)
 	for(var/turf/T in turfs_in_line)

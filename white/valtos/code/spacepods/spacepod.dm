@@ -4,8 +4,6 @@
 // - damages shit if you run into it too fast instead of just stopping. You have to have a huge running start to do that though and damages the spacepod as well.
 // - doesn't explode
 
-GLOBAL_LIST_INIT(spacepods_list, list())
-
 /obj/spacepod
 	name = "space pod"
 	desc = "A frame for a spacepod."
@@ -15,7 +13,6 @@ GLOBAL_LIST_INIT(spacepods_list, list())
 	density = 1
 	opacity = 0
 	dir = NORTH // always points north because why not
-	layer = SPACEPOD_LAYER
 	bound_width = 32
 	bound_height = 32
 	animate_movement = NO_STEPS // we do our own gliding here
@@ -279,7 +276,7 @@ GLOBAL_LIST_INIT(spacepods_list, list())
 		INVOKE_ASYNC(src, .proc/async_fire_weapons_at, object)
 		//weapon.fire_weapons(object)
 	else
-		//desired_angle = Get_Angle(src, object)
+		//desired_angle = get_angle(src, object)
 		var/list/sl_list = splittext(modifiers["screen-loc"],",")
 		var/list/sl_x_list = splittext(sl_list[1], ":")
 		var/list/sl_y_list = splittext(sl_list[2], ":")

@@ -372,7 +372,8 @@
 	clothing_flags = DANGEROUS_OBJECT
 	equip_delay_self = 50
 	strip_delay = 60
-	breakouttime = 3000
+	breakouttime = 3 MINUTES
+	breakoutchance = 100
 	slowdown = 4
 	var/mob/straight_user
 
@@ -504,7 +505,7 @@
 
 /obj/item/clothing/suit/jacket/letterman_nanotrasen
 	name = "синяя куртка леттерман"
-	desc = "Синяя курта леттерман с зачетной Нанотрейсеновской N на спине. На бирке сказано что её сшили в Космическом Китае."
+	desc = "Синяя курта леттерман с зачетной буквой N на спине. На бирке сказано что её сшили в Космическом Китае."
 	icon_state = "letterman_n"
 	inhand_icon_state = "letterman_n"
 	species_exception = list(/datum/species/golem)
@@ -599,7 +600,7 @@
 	cold_protection = CHEST|GROIN|ARMS
 	min_cold_protection_temperature = FIRE_SUIT_MIN_TEMP_PROTECT
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 10, RAD = 0, FIRE = 0, ACID = 0)
-	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter)
+	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/storage/bag/books)
 
 /obj/item/clothing/head/hooded/winterhood
 	name = "зимний капюшон"
@@ -649,6 +650,10 @@
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 50, RAD = 0, FIRE = 0, ACID = 45)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/medical
 
+/obj/item/clothing/suit/hooded/wintercoat/medical/Initialize(mapload)
+	. = ..()
+	allowed += /obj/item/storage/bag/chemistry
+
 /obj/item/clothing/head/hooded/winterhood/medical
 	icon_state = "winterhood_medical"
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 50, RAD = 0, FIRE = 0, ACID = 45)
@@ -657,7 +662,7 @@
 	name = "научное зимнее пальто"
 	icon_state = "coatscience"
 	inhand_icon_state = "coatscience"
-	allowed = list(/obj/item/analyzer, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman)
+	allowed = list(/obj/item/analyzer, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/storage/bag/bio)
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 10, BIO = 0, RAD = 0, FIRE = 0, ACID = 0)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/science
 	species_exception = list(/datum/species/golem)
@@ -671,7 +676,7 @@
 	icon_state = "coatengineer"
 	inhand_icon_state = "coatengineer"
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 20, FIRE = 30, ACID = 45)
-	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/t_scanner, /obj/item/construction/rcd, /obj/item/pipe_dispenser, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter)
+	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/t_scanner, /obj/item/construction/rcd, /obj/item/pipe_dispenser, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/storage/bag/construction)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/engineering
 	species_exception = list(/datum/species/golem/uranium)
 
@@ -703,6 +708,7 @@
 	icon_state = "coatcargo"
 	inhand_icon_state = "coatcargo"
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/cargo
+	allowed = list(/obj/item/storage/bag/mail)
 
 /obj/item/clothing/head/hooded/winterhood/cargo
 	icon_state = "winterhood_cargo"
@@ -711,7 +717,7 @@
 	name = "шахтёрское зимнее пальто"
 	icon_state = "coatminer"
 	inhand_icon_state = "coatminer"
-	allowed = list(/obj/item/pickaxe, /obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter)
+	allowed = list(/obj/item/pickaxe, /obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/storage/bag/ore)
 	armor = list(MELEE = 10, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 0, ACID = 0)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/miner
 
@@ -854,3 +860,101 @@
 	inhand_icon_state = "DutchJacket"
 	body_parts_covered = ARMS
 
+
+/obj/item/clothing/suit/driscoll
+	name = "driscoll poncho"
+	desc = "Keeping you warm in the harsh cold of space."
+	icon_state = "driscoll_suit"
+	inhand_icon_state = "driscoll_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/irs
+	name = "internal revenue service jacket"
+	desc = "I'm crazy enough to take on The Owl, but the IRS? Nooo thank you!"
+	icon_state = "irs_suit"
+	inhand_icon_state = "irs_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/osi
+	name = "\improper O.S.I. body armor"
+	desc = "You're beyond good and evil, super man. You work for the government. And you're a tool, boy, a tool! Built for a single purpose by the United States of shut your third fucking damn eye for a fucking reason! You can't teach a hammer to love nails, son. That dog don't hunt!"
+	icon_state = "osi_suit"
+	inhand_icon_state = "osi_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/tmc
+	name = "\improper Lost M.C. cut"
+	desc = "Making sure everyone knows you're in the best biker gang this side of Alderney."
+	icon_state = "tmc_suit"
+	inhand_icon_state = "tmc_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/pg
+	name = "powder ganger jacket"
+	desc = "Remind Security of their mistakes in giving prisoners blasting charges."
+	icon_state = "pg_suit"
+	inhand_icon_state = "pg_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/deckers
+	name = "decker hoodie"
+	desc = "Based? Based on what?"
+	icon_state = "decker_suit"
+	inhand_icon_state = "decker_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/morningstar
+	name = "morningstar coat"
+	desc = "This coat costs more than you've ever made in your entire life."
+	icon_state = "morningstar_suit"
+	inhand_icon_state = "morningstar_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/saints
+	name = "Third Street Saints fur coat"
+	desc = "Rated 10 out of 10 in Cosmo for best coat brand."
+	icon_state = "saints_suit"
+	inhand_icon_state = "saints_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/phantom
+	name = "phantom thief coat"
+	desc = "Your foes will never see you coming in this stealthy yet stylish getup."
+	icon_state = "phantom_suit"
+	inhand_icon_state = "phantom_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/allies
+	name = "allies body armor"
+	desc = "How 'bout some action!? Sponsored by DonkSoft Co. for historical reenactment of the Third World War!"
+	icon_state = "allies_armor"
+	inhand_icon_state = "allies_armor"
+	body_parts_covered = CHEST|GROIN
+
+/obj/item/clothing/suit/soviet
+	name = "soviet armored coat"
+	desc = "Conscript reporting! Sponsored by DonkSoft Co. for historical reenactment of the Third World War!"
+	icon_state = "soviet_suit"
+	inhand_icon_state = "soviet_suit"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/yuri
+	name = "yuri initiate coat"
+	desc = "Yuri is master! Sponsored by DonkSoft Co. for historical reenactment of the Third World War!"
+	icon_state = "yuri_coat"
+	inhand_icon_state = "yuri_coat"
+	body_parts_covered = CHEST|GROIN|ARMS
+
+/obj/item/clothing/suit/sybil_slickers
+	name = "sybil slickers protective gear"
+	desc = "Given to members of the Sybil Slickers football team!"
+	icon_state = "football_armor_blue"
+	inhand_icon_state = "football_armor_blue"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+
+/obj/item/clothing/suit/basil_boys
+	name = "basil boys protective gear"
+	desc = "Given to members of the Basil Boys football team!"
+	icon_state = "football_armor_red"
+	inhand_icon_state = "football_armor_red"
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS

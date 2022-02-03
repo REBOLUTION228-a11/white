@@ -6,7 +6,13 @@
 /obj/item/gun/blastcannon
 	name = "трубопистолет"
 	desc = "Труба приваренная к прикладу пистолета с механическим курком. Сверху на трубе есть отверстие и если в него заглянуть, то можно увидеть подпружиненное колесо. Довольно небольшой, можно таскать в сумке."
-	icon_state = "empty_blastcannon"
+	icon = 'icons/obj/guns/wide_guns.dmi'
+	icon_state = "blastcannon_empty"
+	lefthand_file = 'icons/mob/inhands/weapons/64x_guns_left.dmi'
+	righthand_file = 'icons/mob/inhands/weapons/64x_guns_right.dmi'
+	inhand_x_dimension = 64
+	base_pixel_x = -2
+	pixel_x = -2
 	inhand_icon_state = "blastcannon_empty"
 	w_class = WEIGHT_CLASS_NORMAL
 	force = 10
@@ -14,8 +20,6 @@
 	item_flags = NONE
 	clumsy_check = FALSE
 	randomspread = FALSE
-	/// The icon state used when this is loaded with a bomb.
-	var/icon_state_loaded = "loaded_blastcannon"
 
 	/// The TTV this contains that will be used to create the projectile
 	var/obj/item/transfer_valve/bomb
@@ -43,6 +47,7 @@
 	. = ..()
 	if(!pin)
 		pin = new
+	AddElement(/datum/element/update_icon_updates_onmob)
 
 /obj/item/gun/blastcannon/Destroy()
 	if(bomb)
@@ -62,7 +67,8 @@
 
 /obj/item/gun/blastcannon/update_icon_state()
 	. = ..()
-	icon_state = bomb ? icon_state_loaded : initial(icon_state)
+	icon_state = "[base_icon_state]_[bomb ? "loaded" : "empty"]"
+	inhand_icon_state = icon_state
 
 /obj/item/gun/blastcannon/attackby(obj/item/transfer_valve/bomb_to_attach, mob/user)
 	if(!istype(bomb_to_attach))
@@ -124,7 +130,8 @@
 	message_admins("Blast wave fired from [ADMIN_VERBOSEJMP(starting)] at [ADMIN_VERBOSEJMP(targturf)] ([target.name]) by [ADMIN_LOOKUPFLW(user)] with power [heavy]/[medium]/[light].")
 	log_game("Blast wave fired from [AREACOORD(starting)] at [AREACOORD(targturf)] ([target.name]) by [key_name(user)] with power [heavy]/[medium]/[light].")
 	var/obj/projectile/blastwave/BW = new(loc, heavy, medium, light)
-	BW.preparePixelProjectile(target, get_turf(src), params, 0)
+	var/modifiers = params2list(params)
+	BW.preparePixelProjectile(target, get_turf(src), modifiers, 0)
 	BW.fire()
 	name = initial(name)
 	desc = initial(desc)

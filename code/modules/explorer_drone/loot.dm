@@ -86,6 +86,11 @@ GLOBAL_LIST_INIT(adventure_loot_generator_index,generate_generator_index())
 	id = "weapons"
 	loot_list = list(/obj/item/gun/energy/laser,/obj/item/melee/baton/loaded)
 
+/// Rare fish! Of the syndicate variety
+/datum/adventure_loot_generator/simple/syndicate_fish
+	id = "syndicate_fish"
+	loot_list = list(/obj/item/storage/fish_case/syndicate)
+
 /// Pets and pet accesories in carriers
 /datum/adventure_loot_generator/pet
 	id = "pets"
@@ -175,7 +180,7 @@ GLOBAL_LIST_INIT(adventure_loot_generator_index,generate_generator_index())
 		var/turf/start_turf = get_turf(user)
 		var/turf/last_turf = get_ranged_target_turf(start_turf,user.dir,melt_range)
 		start_turf.Beam(last_turf,icon_state="solar_beam",time=1 SECONDS)
-		for(var/turf/turf_to_melt in getline(start_turf,last_turf))
+		for(var/turf/turf_to_melt in get_line(start_turf,last_turf))
 			if(turf_to_melt.density)
 				turf_to_melt.Melt()
 	inhand_icon_state = initial(inhand_icon_state)

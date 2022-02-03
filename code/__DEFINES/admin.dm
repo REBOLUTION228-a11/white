@@ -39,10 +39,11 @@
 #define R_AUTOADMIN		(1<<13)
 #define R_DBRANKS		(1<<14)
 #define R_SECURED		(1<<15)
+#define R_SDQL			(1<<16)
 
 #define R_DEFAULT R_AUTOADMIN
 
-#define R_EVERYTHING (1<<16)-1 //the sum of all other rank permissions, used for +EVERYTHING
+#define R_EVERYTHING (1<<17)-1 //the sum of all other rank permissions, used for +EVERYTHING
 
 #define ADMIN_QUE(user) 	"([ADMIN_QUE_NB(user)])"
 #define ADMIN_PP(user)  	"([ADMIN_PP_NB(user)])"
@@ -65,7 +66,6 @@
 #define ADMIN_CENTCOM_REPLY(user) "(<a href='?_src_=holder;[HrefToken(TRUE)];CentComReply=[REF(user)]'>RPLY</a>)"
 #define ADMIN_SYNDICATE_REPLY(user) "(<a href='?_src_=holder;[HrefToken(TRUE)];SyndicateReply=[REF(user)]'>RPLY</a>)"
 #define ADMIN_SC(user) "(<a href='?_src_=holder;[HrefToken(TRUE)];adminspawncookie=[REF(user)]'>SC</a>)"
-#define ADMIN_SP(user) "(<a href='?_src_=holder;[HrefToken(TRUE)];adminspawnpoop=[REF(user)]'>SP</a>)"
 #define ADMIN_LOOKUP(user) "[key_name_admin(user)][ADMIN_QUE(user)]"
 #define ADMIN_LOOKUPFLW(user) "[key_name_admin(user)][ADMIN_QUE(user)] [ADMIN_FLW(user)]"
 #define ADMIN_SET_SD_CODE "(<a href='?_src_=holder;[HrefToken(TRUE)];set_selfdestruct_code=1'>SETCODE</a>)"
@@ -154,3 +154,9 @@ GLOBAL_VAR_INIT(ghost_role_flags, (~0))
 
 #define LIGHTNING_BOLT_DAMAGE 75
 #define LIGHTNING_BOLT_ELECTROCUTION_ANIMATION_LENGTH 40
+
+/// for asay pings, this is the index in the return list for [/proc/check_admin_pings] that contains the message modified with underlines for the spotted names
+#define ADMINSAY_PING_UNDERLINE_NAME_INDEX "!underlined_names"
+
+/// When passed in as the duration for ban_panel, will make the ban default to permanent
+#define BAN_PANEL_PERMANENT "permanent"

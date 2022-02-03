@@ -2,6 +2,7 @@
 	name = "Неизвестный маяк"
 	collision_type = COLLISION_Z_LINKED
 	collision_flags = COLLISION_SHUTTLES
+	priority = 1
 	//The space level(s) we are linked to
 	var/list/datum/space_level/linked_z_level
 	//If docking is forced upon collision
@@ -32,7 +33,7 @@
 				break
 	//Prevent access to the z-level.
 	//Announcement
-	priority_announce("Орбитальное тело [name] было уничтожено. Переход в эту зону более невозможен.", "Отслеживание космоса Нанотрейзен")
+	priority_announce("Орбитальное тело [name] было уничтожено. Переход в эту зону более невозможен.", "Отслеживание космоса NanoTrasen")
 	qdel(src)
 
 /datum/orbital_object/z_linked/collision(datum/orbital_object/other)

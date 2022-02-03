@@ -1,8 +1,8 @@
 /// The limbgrower. Makes organd and limbs with synthflesh and chems.
 /// See [limbgrower_designs.dm] for everything we can make.
 /obj/machinery/limbgrower
-	name = "limb grower"
-	desc = "It grows new limbs using Synthflesh."
+	name = "Биосинтезатор"
+	desc = "Выращивает органы и конечности из синтетической плоти."
 	icon = 'icons/obj/machines/limbgrower.dmi'
 	icon_state = "limbgrower_idleoff"
 	density = TRUE
@@ -160,7 +160,7 @@
 				consumed_reagents_list[reagent_id] *= production_coefficient
 				if(!reagents.has_reagent(reagent_id, consumed_reagents_list[reagent_id]))
 					audible_message(span_notice("The [src] buzzes."))
-					playsound(src, 'sound/machines/buzz-sigh.ogg', 50, FALSE)
+					playsound(src, 'white/valtos/sounds/error1.ogg', 50, FALSE)
 					return
 
 				power = max(2000, (power + consumed_reagents_list[reagent_id]))
@@ -188,7 +188,7 @@
 	for(var/reagent_id in modified_consumed_reagents_list)
 		if(!reagents.has_reagent(reagent_id, modified_consumed_reagents_list[reagent_id]))
 			audible_message(span_notice("The [src] buzzes."))
-			playsound(src, 'sound/machines/buzz-sigh.ogg', 50, FALSE)
+			playsound(src, 'white/valtos/sounds/error1.ogg', 50, FALSE)
 			break
 
 		reagents.remove_reagent(reagent_id, modified_consumed_reagents_list[reagent_id])

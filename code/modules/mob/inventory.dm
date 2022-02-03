@@ -164,7 +164,6 @@
 		dropItemToGround(get_item_for_held_index(hand_index), force = TRUE)
 	I.forceMove(src)
 	held_items[hand_index] = I
-	I.layer = ABOVE_HUD_LAYER
 	I.plane = ABOVE_HUD_PLANE
 	I.equipped(src, ITEM_SLOT_HANDS)
 	if(QDELETED(I)) // this is here because some ABSTRACT items like slappers and circle hands could be moved from hand to hand then delete, which meant you'd have a null in your hand until you cleared it (say, by dropping it)
@@ -221,13 +220,13 @@
 		if (merge_stacks)
 			if (istype(active_stack) && active_stack.can_merge(item_stack))
 				if (item_stack.merge(active_stack))
-					to_chat(usr, span_notice("Your [active_stack.name] stack now contains [active_stack.get_amount()] [active_stack.singular_name]\s."))
+					to_chat(usr, span_notice("[capitalize(active_stack.name)] теперь содержит [active_stack.get_amount()] [active_stack.singular_name]."))
 					return TRUE
 			else
 				var/obj/item/stack/inactive_stack = get_inactive_held_item()
 				if (istype(inactive_stack) && inactive_stack.can_merge(item_stack))
 					if (item_stack.merge(inactive_stack))
-						to_chat(usr, span_notice("Your [inactive_stack.name] stack now contains [inactive_stack.get_amount()] [inactive_stack.singular_name]\s."))
+						to_chat(usr, span_notice("[capitalize(active_stack.name)] теперь содержит [inactive_stack.get_amount()] [inactive_stack.singular_name]."))
 						return TRUE
 
 	if(put_in_active_hand(I, forced))
@@ -283,13 +282,17 @@
 */
 /mob/proc/dropItemToGround(obj/item/I, force = FALSE, silent = FALSE, invdrop = TRUE)
 	. = doUnEquip(I, force, drop_location(), FALSE, invdrop = invdrop, silent = silent)
-	if(. && I && !(I.item_flags & NO_PIXEL_RANDOM_DROP)) //ensure the item exists and that it was dropped properly.
+	if(!. || !I) //ensure the item exists and that it was dropped properly.
+		return
+	if(!(I.item_flags & NO_PIXEL_RANDOM_DROP))
 		I.pixel_x = I.base_pixel_x + rand(-6, 6)
 		I.pixel_y = I.base_pixel_y + rand(-6, 6)
+	I.do_drop_animation(src)
 
 //for when the item will be immediately placed in a loc other than the ground
 /mob/proc/transferItemToLoc(obj/item/I, newloc = null, force = FALSE, silent = TRUE)
-	return doUnEquip(I, force, newloc, FALSE, silent = silent)
+	. = doUnEquip(I, force, newloc, FALSE, silent = silent)
+	I.do_drop_animation(src)
 
 //visibly unequips I but it is NOT MOVED AND REMAINS IN SRC
 //item MUST BE FORCEMOVE'D OR QDEL'D
@@ -396,7 +399,7 @@
 
 /obj/item/proc/equip_to_best_slot(mob/M, check_hand = TRUE)
 	if(check_hand && src != M.get_active_held_item())
-		to_chat(M, span_warning("You are not holding anything to equip!"))
+		to_chat(M, span_warning("В руке ничего нет!"))
 		return FALSE
 
 	if(M.equip_to_appropriate_slot(src))
@@ -417,7 +420,7 @@
 		if(SEND_SIGNAL(I, COMSIG_TRY_STORAGE_INSERT, src, M))
 			return TRUE
 
-	to_chat(M, span_warning("You are unable to equip that!"))
+	to_chat(M, span_warning("Не получается!"))
 	return FALSE
 
 

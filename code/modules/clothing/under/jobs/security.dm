@@ -15,7 +15,7 @@
 
 /obj/item/clothing/under/rank/security/officer
 	name = "комбинезон офицера"
-	desc = "Тактический защитный комбинезон для офицеров в комплекте с ремнем безопасности Нанотрейзен."
+	desc = "Тактический защитный комбинезон для офицеров в комплекте с ремнем безопасности NanoTrasen."
 	icon_state = "rsecurity"
 	inhand_icon_state = "r_suit"
 	armor = list(MELEE = 10, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 30, ACID = 30, WOUND = 10)
@@ -26,7 +26,7 @@
 
 /obj/item/clothing/under/rank/security/officer/grey
 	name = "серый комбинезон офицера"
-	desc = "Тактическая реликвия прошлых лет до того, как Нанотрейзен решил, что покрасить костюмы в красный цвет дешевле, чем смывать кровь."
+	desc = "Тактическая реликвия прошлых лет до того, как NanoTrasen решил, что покрасить костюмы в красный цвет дешевле, чем смывать кровь."
 	icon_state = "security"
 	inhand_icon_state = "gy_suit"
 
@@ -37,7 +37,7 @@
 	inhand_icon_state = "r_suit"
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
-	fitted = FEMALE_UNIFORM_TOP
+	fitted = NO_FEMALE_UNIFORM
 
 /obj/item/clothing/under/rank/security/officer/blueshirt
 	name = "голубая рубашка и галстук"
@@ -63,7 +63,7 @@
 
 /obj/item/clothing/under/rank/security/warden
 	name = "костюм офицера"
-	desc = "Формальный защитный костюм для офицеров в комплекте с пряжкой на поясе Нанотрейзен."
+	desc = "Формальный защитный костюм для офицеров в комплекте с пряжкой на поясе NanoTrasen."
 	icon_state = "rwarden"
 	inhand_icon_state = "r_suit"
 	armor = list(MELEE = 10, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 30, ACID = 30, WOUND = 10)
@@ -74,19 +74,18 @@
 
 /obj/item/clothing/under/rank/security/warden/grey
 	name = "серый костюм офицера"
-	desc = "Классическая реликвия прошлых лет до того, как Нанотрейзен решил, что покрасить костюмы в красный цвет дешевле, чем смывать кровь."
+	desc = "Классическая реликвия прошлых лет до того, как NanoTrasen решил, что покрасить костюмы в красный цвет дешевле, чем смывать кровь."
 	icon_state = "warden"
 	inhand_icon_state = "gy_suit"
 
 /obj/item/clothing/under/rank/security/warden/skirt
 	name = "костюм надзирателя с юбкой"
-	desc = "Формальный защитный костюм для офицеров в комплекте с пряжкой на поясе Нанотрейзен."
+	desc = "Формальный защитный костюм для офицеров в комплекте с пряжкой на поясе NanoTrasen."
 	icon_state = "rwarden_skirt"
 	inhand_icon_state = "r_suit"
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	fitted = NO_FEMALE_UNIFORM
-	can_adjust = FALSE
 
 /obj/item/clothing/under/rank/security/warden/formal
 	desc = "Знаки отличия на этой форме говорят о том, что эта форма принадлежит Надзирателю."
@@ -117,7 +116,6 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	fitted = FEMALE_UNIFORM_TOP
-	can_adjust = FALSE
 
 /obj/item/clothing/under/rank/security/detective/grey
 	name = "нуарный костюм"
@@ -134,7 +132,6 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	fitted = FEMALE_UNIFORM_TOP
-	can_adjust = FALSE
 
 /*
  * Head of Security
@@ -158,7 +155,6 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	fitted = NO_FEMALE_UNIFORM
-	can_adjust = FALSE
 
 /obj/item/clothing/under/rank/security/head_of_security/grey
 	name = "серый костюм начальника охраны"
@@ -216,7 +212,7 @@
 
 /obj/item/clothing/under/rank/prisoner
 	name = "тюремный комбинезон"
-	desc = "Это унифицированная тюремная одежда Нанотрейзен. Его датчики костюма застряли в положении \"Полностью Вкл\"."
+	desc = "Это унифицированная тюремная одежда NanoTrasen. Его датчики костюма застряли в положении \"Полностью Вкл\"."
 	icon_state = "jumpsuit"
 	greyscale_colors = "#ff8300"
 	greyscale_config = /datum/greyscale_config/jumpsuit_prison
@@ -229,7 +225,7 @@
 
 /obj/item/clothing/under/rank/prisoner/skirt
 	name = "тюремный юбкомбез"
-	desc = "Это унифицированная тюремная одежда Нанотрейзен. Его датчики костюма застряли в положении \"Полностью Вкл\"."
+	desc = "Это унифицированная тюремная одежда NanoTrasen. Его датчики костюма застряли в положении \"Полностью Вкл\"."
 	icon_state = "jumpskirt"
 	greyscale_colors = "#ff8300"
 	greyscale_config = /datum/greyscale_config/jumpsuit_prison

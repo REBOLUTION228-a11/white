@@ -78,6 +78,7 @@ PROCESSING_SUBSYSTEM_DEF(orbits)
 	//Create asteroid belt
 	for(var/i in 1 to initial_asteroids)
 		new /datum/orbital_object/z_linked/beacon/ruin/asteroid()
+	//Create some derelict station
 	//new /datum/orbital_object/z_linked/habitable()
 
 /datum/controller/subsystem/processing/orbits/fire(resumed)
@@ -98,7 +99,6 @@ PROCESSING_SUBSYSTEM_DEF(orbits)
 	//Check objective
 	if(current_objective)
 		if(current_objective.check_failed())
-			priority_announce("Основное задание провалено.", "Центральное командование", SSstation.announcer.get_rand_report_sound())
 			QDEL_NULL(current_objective)
 	//Process events
 	for(var/datum/ruin_event/ruin_event as() in ruin_events)
@@ -132,10 +132,6 @@ PROCESSING_SUBSYSTEM_DEF(orbits)
 	if(observer_count > 2)
 		valid_objectives |= list(/datum/orbital_objective/headhunt = 1)
 
-	if(!length(possible_objectives) && !GLOB.disable_fucking_station_shit_please)
-		spawn(10 SECONDS)
-			priority_announce("Основное задание для станции было выбрано - Детали были разосланы на все консоли заданий. \
-				[GLOB.station_name] получит средства после выполнения задания.", "Центральное Командование", SSstation.announcer.get_rand_report_sound())
 	var/chosen = pickweight(valid_objectives)
 	if(!chosen)
 		return
@@ -151,7 +147,6 @@ PROCESSING_SUBSYSTEM_DEF(orbits)
 		return "Задание уже выбрано и должно быть выполнено."
 	objective.on_assign(objective_computer)
 	objective.generate_attached_beacon()
-	objective.announce()
 	current_objective = objective
 	possible_objectives.Remove(objective)
 	update_objective_computers()
@@ -161,3 +156,52 @@ PROCESSING_SUBSYSTEM_DEF(orbits)
 	for(var/obj/machinery/computer/objective/computer as() in GLOB.objective_computers)
 		for(var/M in computer.viewing_mobs)
 			computer.update_static_data(M)
+
+/*
+ * Returns the base data of what is required for
+ * OrbitalMapSvg to function.
+ *
+ * This will display the base map, additional shuttle/weapons functionality
+ * can be appended to the returned data list in ui_data.
+ *
+ * This exists to normalise the ui_data between different consoles that use the orbital
+ * map interface and to prevent repeating code.
+ */
+/datum/controller/subsystem/processing/orbits/proc/get_orbital_map_base_data(
+		//The map to generate the data from.
+		datum/orbital_map/showing_map,
+		//The reference of the user (REF(user))
+		user_ref,
+		//Can we see stealthed objects?
+		see_stealthed = FALSE,
+		//Our attached orbital object (Overrides stealth)
+		datum/orbital_object/attached_orbital_object = null,
+	)
+	var/data = list()
+	data["update_index"] = SSorbits.times_fired
+	data["map_objects"] = list()
+	//Fetch the active single instances
+	//Get the objects
+	for(var/zone in showing_map.collision_zone_bodies)
+		for(var/datum/orbital_object/object as() in showing_map.collision_zone_bodies[zone])
+			if(!object)
+				continue
+			//we can't see it, unless we are stealth too
+			if(attached_orbital_object)
+				if(object != attached_orbital_object && (object.stealth && !attached_orbital_object.stealth))
+					continue
+			else if(!see_stealthed && object.stealth)
+				continue
+			//Transmit map data about non single-instanced objects.
+			data["map_objects"] += list(list(
+				"id" = object.unique_id,
+				"name" = object.name,
+				"position_x" = object.position.x,
+				"position_y" = object.position.y,
+				"velocity_x" = object.velocity.x,
+				"velocity_y" = object.velocity.y,
+				"radius" = object.radius,
+				"render_mode" = object.render_mode,
+				"priority" = object.priority,
+			))
+	return data

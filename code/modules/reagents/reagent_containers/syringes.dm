@@ -267,7 +267,7 @@
 	list_reagents = list(/datum/reagent/apostletoxin = 1)
 
 /obj/item/reagent_containers/syringe/bluespace
-	name = "блюспейс-шприц"
+	name = "блюспейс шприц"
 	desc = "Эта малышка может хранить 60 единиц в себе."
 	icon = 'white/Feline/icons/syringe_bluespace.dmi'
 	amount_per_transfer_from_this = 20
@@ -279,6 +279,13 @@
 	icon = 'white/Feline/icons/syringe_piercing.dmi'
 	volume = 10
 	proj_piercing = 1
+
+/obj/item/reagent_containers/syringe/crude
+	name = "примитивный шприц"
+	desc = "Экологически правильный продукт."
+	icon_state = "crude_0"
+	possible_transfer_amounts = list(1,5)
+	volume = 5
 
 /obj/item/reagent_containers/syringe/spider_extract
 	name = "шприц с экстрактом паука"

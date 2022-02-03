@@ -14,9 +14,12 @@
 	var/max_filters = 1
 	///List to keep track of each filter
 	var/list/gas_filters
+	///Does the mask have an FOV?
+	var/has_fov = FALSE
 
 /obj/item/clothing/mask/gas/Initialize()
 	. = ..()
+	init_fov()
 	if(!max_filters)
 		return
 	for(var/i in 1 to max_filters)
@@ -59,6 +62,11 @@
 		has_filter = FALSE
 	return filtered_breath
 
+/// Initializes the FoV component for the gas mask
+/obj/item/clothing/mask/gas/proc/init_fov()
+	if(has_fov)
+		AddComponent(/datum/component/clothing_fov_visor, FOV_90_DEGREES)
+
 /**
  * Getter for overall filter durability, takes into consideration all filters filter_status
  */
@@ -84,7 +92,7 @@
 
 /obj/item/clothing/mask/gas/atmos/captain
 	name = "противогаз капитана"
-	desc = "Нанотрейзен срезал углы и перекрасил запасной противогаз, но никому не говори."
+	desc = "NanoTrasen срезал углы и перекрасил запасной противогаз, но никому не говори."
 	icon_state = "gas_cap"
 	inhand_icon_state = "gas_cap"
 	resistance_flags = FIRE_PROOF | ACID_PROOF
@@ -126,16 +134,20 @@
 	desc = "Модернизированная версия классического дизайна, эта маска не только отфильтровывает токсины, но также может быть подключена к источнику воздуха."
 	icon_state = "plaguedoctor"
 	inhand_icon_state = "gas_mask"
-	armor = list(MELEE = 0, BULLET = 0, LASER = 2,ENERGY = 2, BOMB = 0, BIO = 75, RAD = 0, FIRE = 0, ACID = 0)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 2,ENERGY = 2, BOMB = 0, BIO = 75, FIRE = 0, ACID = 0)
+	has_fov = FALSE
+	flags_cover = MASKCOVERSEYES
 
 /obj/item/clothing/mask/gas/syndicate
-	name = "синдимаска"
+	name = "тактическая маска"
 	desc = "Обтягивающая тактическая маска, которая может быть подключена к источнику воздуха."
 	icon_state = "syndicate"
 	inhand_icon_state = "gas_mask"
 	lefthand_file = 'white/valtos/icons/lefthand.dmi'
 	righthand_file = 'white/valtos/icons/righthand.dmi'
 	strip_delay = 60
+	w_class = WEIGHT_CLASS_SMALL
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/clown_hat
 	name = "парик клоуна и маска"
@@ -151,6 +163,7 @@
 	dog_fashion = /datum/dog_fashion/head/clown
 	species_exception = list(/datum/species/golem/bananium)
 	var/list/clownmask_designs = list()
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/clown_hat/Initialize(mapload)
 	.=..()
@@ -196,6 +209,7 @@
 	flags_cover = MASKCOVERSEYES
 	resistance_flags = FLAMMABLE
 	species_exception = list(/datum/species/golem/bananium)
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/mime
 	name = "маска мима"
@@ -209,6 +223,7 @@
 	actions_types = list(/datum/action/item_action/adjust)
 	species_exception = list(/datum/species/golem)
 	var/list/mimemask_designs = list()
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/mime/Initialize(mapload)
 	.=..()
@@ -250,6 +265,7 @@
 	inhand_icon_state = "monkeymask"
 	flags_cover = MASKCOVERSEYES
 	resistance_flags = FLAMMABLE
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/sexymime
 	name = "сексуальная маска мима"
@@ -260,25 +276,31 @@
 	flags_cover = MASKCOVERSEYES
 	resistance_flags = FLAMMABLE
 	species_exception = list(/datum/species/golem)
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/cyborg
 	name = "забрало киборга"
 	desc = "Бип буп."
 	icon_state = "death"
 	resistance_flags = FLAMMABLE
+	has_fov = FALSE
+	flags_cover = MASKCOVERSEYES
 
 /obj/item/clothing/mask/gas/owl_mask
 	name = "маска совы"
-	desc = "Туууу!"
+	desc = "У-УУУ!"
 	icon_state = "owl"
 	clothing_flags = MASKINTERNALS
 	flags_cover = MASKCOVERSEYES
 	resistance_flags = FLAMMABLE
+	has_fov = FALSE
 
 /obj/item/clothing/mask/gas/carp
 	name = "маска карпа"
 	desc = "Кусь-кусь."
 	icon_state = "carp_mask"
+	has_fov = FALSE
+	flags_cover = MASKCOVERSEYES
 
 /obj/item/clothing/mask/gas/tiki_mask
 	name = "маска тики"
@@ -287,6 +309,8 @@
 	inhand_icon_state = "tiki_eyebrow"
 	custom_materials = list(/datum/material/wood = MINERAL_MATERIAL_AMOUNT * 1.25)
 	resistance_flags = FLAMMABLE
+	has_fov = FALSE
+	flags_cover = MASKCOVERSEYES
 	max_integrity = 100
 	actions_types = list(/datum/action/item_action/adjust)
 	dog_fashion = null
@@ -328,9 +352,18 @@
 	actions_types = list()
 
 /obj/item/clothing/mask/gas/hunter
-	name = "маска охотника"
+	name = "маска педераста"
 	desc = "Тактическая маска с добавленными отличительными знаками."
 	icon_state = "hunter"
 	inhand_icon_state = "hunter"
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	flags_inv = HIDEFACIALHAIR|HIDEFACE|HIDEEYES|HIDEEARS|HIDEHAIR|HIDESNOUT
+	has_fov = FALSE
+
+/obj/item/clothing/mask/gas/driscoll
+	name = "driscoll mask"
+	desc = "Great for train hijackings. Works like a normal full face gas mask, but won't conceal your identity."
+	icon_state = "driscoll_mask"
+	flags_inv = HIDEFACIALHAIR
+	w_class = WEIGHT_CLASS_NORMAL
+	inhand_icon_state = "driscoll_mask"

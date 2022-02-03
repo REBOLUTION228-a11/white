@@ -24,7 +24,7 @@ other types of metals and chemistry for reagents).
 	/// Name of the created object
 	var/name = "Name"
 	/// Description of the created object
-	var/desc = "Desc"
+	var/desc = null
 	/// The ID of the design. Used for quick reference. Alphanumeric, lower-case, no symbols
 	var/id = DESIGN_ID_IGNORE
 	/// Bitflags indicating what machines this design is compatable with. ([IMPRINTER]|[PROTOLATHE]|[AUTOLATHE]|[MECHFAB]|[BIOGENERATOR]|[LIMBGROWER]|[SMELTER]|[NANITE_COMPILER])
@@ -39,6 +39,8 @@ other types of metals and chemistry for reagents).
 	var/list/make_reagents = list()
 	/// What category this design falls under. Used for sorting in production machines, mostly the mechfab.
 	var/list/category = null
+	///	Подкатегория
+	var/list/sub_category = null
 	/// List of reagents required to create one unit of the product.
 	var/list/reagents_list = list()
 	/// The maximum number of units of whatever is produced by this can be produced in one go.
@@ -83,6 +85,12 @@ other types of metals and chemistry for reagents).
 	var/datum/asset/spritesheet/sheet = get_asset_datum(/datum/asset/spritesheet/research_designs)
 	sheet.send(user)
 	return sheet.icon_tag(id)
+
+/// Returns the description of the design
+/datum/design/proc/get_description()
+	var/obj/object_build_item_path = build_path
+
+	return isnull(desc) ? initial(object_build_item_path.desc) : desc
 
 ////////////////////////////////////////
 //Disks for transporting design datums//

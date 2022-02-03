@@ -56,7 +56,7 @@
 
 /obj/item/clothing/gloves/combat/yohei
 	name = "перчатки йохея"
-	desc = "Образец того как Нанотрейзен не доверяет своим работникам. Защищают неплохо от всего"
+	desc = "Образец того как NanoTrasen не доверяет своим работникам. Защищают неплохо от всего"
 	icon_state = "yohei"
 	worn_icon = 'white/valtos/icons/clothing/mob/glove.dmi'
 	icon = 'white/valtos/icons/clothing/gloves.dmi'
@@ -103,11 +103,11 @@
 	icon = 'white/valtos/icons/clothing/belts.dmi'
 	inhand_icon_state = "assaultbelt"
 	worn_icon_state = "cloak"
-	charge = 400
-	max_charge = 400
+	charge = 35
+	max_charge = 35
 
 /obj/item/shadowcloak/yohei/process(delta_time)
-	if(user.get_item_by_slot(ITEM_SLOT_BELT) != src)
+	if(user.get_item_by_slot(ITEM_SLOT_BELT) != src || user.pooed)	
 		Deactivate()
 		return
 	var/turf/T = get_turf(src)
@@ -117,7 +117,6 @@
 			charge = max(0, charge - 25 * delta_time)//Quick decrease in light
 		else
 			charge = min(max_charge, charge + 30 * delta_time) //Charge in the dark
-		animate(user,alpha = clamp(255 - charge,0,255),time = 10)
 
 /obj/item/gun/ballistic/automatic/pistol/fallout/yohei9mm
 	name = "пистолет Тиберия"
@@ -127,7 +126,7 @@
 	mag_type = /obj/item/ammo_box/magazine/fallout/m9mm
 	fire_sound = 'white/valtos/sounds/fallout/gunsounds/9mm/9mm2.ogg'
 	w_class = WEIGHT_CLASS_NORMAL
-	fire_delay = 8
+	fire_delay = 4
 	extra_damage = 30
 	extra_penetration = 25
 
@@ -327,7 +326,7 @@
 			BT.tension = 80
 		to_chat(H, span_revenbignotice("Давно не виделись, а?"))
 		if(H?.hud_used)
-			H.hud_used.update_parallax_pref(H, TRUE)
+			H.hud_used.update_parallax_pref(H, 1)
 
 		H.mind.teach_crafting_recipe(/datum/crafting_recipe/hacker/head)
 		H.mind.teach_crafting_recipe(/datum/crafting_recipe/hacker/suit)
@@ -343,8 +342,6 @@
 	back = /obj/item/gun/ballistic/crossbow/energy
 
 	backpack_contents = list()
-
-GLOBAL_VAR(yohei_main_controller)
 
 /obj/lab_monitor/yohei
 	name = "Монитор исполнения"
@@ -439,6 +436,8 @@ GLOBAL_VAR(yohei_main_controller)
 		internal_radio.talk_into(src, "Задание выполнено. Награда в размере [current_task.prize] выдана. Получение следующего задания...", FREQ_YOHEI)
 		for(var/mob/living/carbon/human/H in action_guys)
 			inc_metabalance(H, current_task.prize, reason = "Задание выполнено.")
+			var/obj/item/card/id/cardid = H.get_idcard(FALSE)
+			cardid?.registered_account?.adjust_money(rand(500, 1000))
 		qdel(current_task)
 
 		var/datum/yohei_task/new_task = pick(possible_tasks)
@@ -537,94 +536,12 @@ GLOBAL_VAR(yohei_main_controller)
 	else
 		qdel(src)
 		return FALSE
-/*
-/datum/yohei_task/gamemode
-	desc = "Нет особых заданий"
-	prize = 0
-	var/datum/antagonist/adatum = null
 
-/datum/yohei_task/gamemode/generate_task()
-	switch(SSticker.mode.type)
-		if(/datum/game_mode/traitor)
-			if(prob(50))
-				desc = "Помочь Синдикату"
-				adatum = /datum/antagonist/traitor
-			else
-				desc = "Помочь Станции"
-				adatum = /datum/antagonist/traitor/internal_affairs
-			return TRUE
-		if(/datum/game_mode/wizard)
-			if(prob(50))
-				desc = "Помочь Волшебникам"
-				adatum = /datum/antagonist/wizard/apprentice
-			else
-				desc = "Затроллить всех"
-				adatum = /datum/antagonist/wizard/apprentice/imposter
-			return TRUE
-		if(/datum/game_mode/nuclear)
-			desc = "Помочь Оперативникам Синдиката"
-			adatum = /datum/antagonist/nukeop/reinforcement
-			return TRUE
-		if(/datum/game_mode/cult)
-			desc = "Помочь Культистам Нар-Си"
-			adatum = /datum/antagonist/cult
-			return TRUE
-		if(/datum/game_mode/clockcult)
-			desc = "Помочь Служителям Ратвара"
-			adatum = /datum/antagonist/servant_of_ratvar
-			return TRUE
-		if(/datum/game_mode/bloodsucker)
-			desc = "Помочь Вампирам"
-			adatum = /datum/antagonist/vassal
-			return TRUE
-		if(/datum/game_mode/changeling)
-			desc = "Помочь Генокрадам"
-			adatum = /datum/antagonist/changeling
-			return TRUE
-		if(/datum/game_mode/heretics)
-			desc = "Помочь Еретикам"
-			adatum = /datum/antagonist/heretic
-			return TRUE
-		if(/datum/game_mode/monkey)
-			desc = "Помочь Мартышкам"
-			adatum = /datum/antagonist/monkey
-			return TRUE
-		if(/datum/game_mode/shadowling)
-			desc = "Помочь Теневикам"
-			adatum = /datum/antagonist/thrall
-			return TRUE
-		if(/datum/game_mode/revolution)
-			desc = "Помочь Революции"
-			adatum = /datum/antagonist/rev
-			return TRUE
-		if(/datum/game_mode/gang)
-			desc = "Помочь Гангстерам"
-			adatum = pick(subtypesof(/datum/antagonist/gang))
-			return TRUE
-		else
-			adatum = null
-			return FALSE
-
-
-/datum/yohei_task/gamemode/check_task(mob/user)
-	if(!adatum)
-		qdel(src)
-		if(GLOB.yohei_main_controller)
-			var/obj/lab_monitor/yohei/LM = GLOB.yohei_main_controller
-			LM.current_task = null
-		return FALSE
-	if(!is_special_character(user))
-		user.mind.add_antag_datum(adatum)
-	return FALSE
-*/
 /area/ruin/powered/yohei_base
 	name = "Ресурс Йохеев"
 	icon_state = "dk_yellow"
 	parallax_movedir = NORTH
 	area_flags = BLOBS_ALLOWED | UNIQUE_AREA | BLOCK_SUICIDE | NOTELEPORT
-	static_lighting = FALSE
-	base_lighting_alpha = 255
-	base_lighting_color = COLOR_WHITE
 
 /obj/item/card/id/yohei
 	name = "странная карточка"
@@ -641,6 +558,7 @@ GLOBAL_VAR(yohei_main_controller)
 	. = ..()
 	var/datum/bank_account/bank_account = new /datum/bank_account(name)
 	registered_account = bank_account
+	registered_account.adjust_money(1200)
 
 /obj/item/card/id/yohei/update_label()
 	if(assigned_by)
@@ -765,6 +683,7 @@ GLOBAL_VAR(yohei_main_controller)
 
 /datum/antagonist/yohei/on_gain()
 	forge_objectives()
+	ADD_TRAIT(owner.current, TRAIT_CLUMSY, "donation reward")
 	. = ..()
 
 /datum/antagonist/yohei/greet()
@@ -788,6 +707,7 @@ GLOBAL_VAR(yohei_main_controller)
 	name = "Кодекс Йохея"
 	desc = "Весьма важный путеводитель."
 	author = "Сомнительный Господин"
+	title = "Кодекс Йохея"
 	icon_state = "stealthmanual"
 	dat = "<center><h1>Положения кодекса</h1></center><i>«Прошу Вас судить обо мне по врагам, которых я приобрёл.»</i></br> — Франклин Делано Рузвельт.<ul><li>Никому не верь, но используй всех.</li><li>Наемник всегда готов отправиться куда угодно и встретить любую опасность.</li><li>Никаких друзей, никаких врагов. Только союзники и противники.</li><li>Всегда будь вежлив с клиентом.</li><li>Наемник никогда не жалуется.</li><li>Наемник не имеет привязанностей.</li><li>Жизнь растет на смерти.</li><li>Меняй распорядок. Шаблон — это ловушка.</li><li>Никогда не привлекай к себе внимания.</li><li>Не говори больше нужного.</li><li>Будь вежлив всегда. Особенно с врагами.</li><li>Тот, кто нанимает мою руку, нанимает всего меня.</li><li>Делай то, чего боишься больше всего, и обретешь храбрость.</li><li>Воображение — главное оружие воина.</li><li>Наемник никогда не отвлекается на общую картину. Мелочи играют главную роль.</li><li>Никогда не говори всю правду, торгуясь.</li><li>Услуга — это инвестиция.</li><li>Деньги — это сила.</li><li>Будь осторожен в любой ситуации.</li><li>Если ты должен умереть, сделай это с честью.</li></ul><b>Следуя данному кодексу Вы в полном праве можете называть себя Йохеем.</b> <i>Наверное.</i>"
 
@@ -800,7 +720,7 @@ GLOBAL_VAR(yohei_main_controller)
 	worn_icon_state = "gun"
 	lefthand_file = 'white/valtos/icons/fallout/guns_lefthand.dmi'
 	righthand_file = 'white/valtos/icons/fallout/guns_righthand.dmi'
-	w_class = WEIGHT_CLASS_BULKY
+	w_class = WEIGHT_CLASS_NORMAL
 	slot_flags = ITEM_SLOT_SUITSTORE | ITEM_SLOT_BELT
 
 /obj/item/cat_hook/afterattack(atom/target, mob/user, proximity_flag, click_parameters)
@@ -863,3 +783,34 @@ GLOBAL_VAR(yohei_main_controller)
 		else
 			to_chat(user, span_danger("Не получится здесь. Нужен космос."))
 	return
+
+/obj/machinery/vending/yoheiking
+	name = "ЙохейКинг"
+	desc = "Здесь обязательно можно найти то, что нужно."
+	icon_state = "yohei"
+	product_slogans = "Убей или будь убитым!;Предай друга!;Качественные приблуды по низким ценам!;Лучше быть убийцей, чем трупом!"
+	product_ads = "МОЧИ-И-И!;Контракт должен быть выполнен любой ценой!;Пушки не убивают людей, но вы можете!;Кому нужны контракты, когда у вас есть оружие?"
+	vend_reply = "Ничего личного, только бизнес!"
+	products = list(/obj/item/ammo_box/magazine/fallout/m9mm = 10,
+					/obj/item/ammo_box/magazine/fallout/r308 = 5,
+					/obj/item/rcd_ammo/large = 5,
+					/obj/item/stack/sheet/iron/fifty = 3,
+					/obj/item/stack/sheet/glass/fifty = 3,
+					/obj/item/stack/sheet/plasteel/fifty = 1,
+					/obj/item/storage/mre = 3,
+					/obj/item/storage/mre/vegan = 3,
+					/obj/item/storage/mre/protein = 3,
+					/obj/item/stack/medical/aloe = 5,
+					/obj/item/stack/medical/suture/medicated = 5)
+	premium = list(/obj/item/shadowcloak/yohei = 1,
+		           /obj/item/gun/ballistic/automatic/pistol/fallout/yohei9mm = 3,
+				   /obj/item/gun/ballistic/automatic/fallout/marksman/sniper = 1,
+		           /obj/item/pamk = 5,
+		           /obj/item/storage/belt/military/abductor/full = 1,
+				   /obj/item/storage/firstaid/tactical = 3)
+	armor = list(MELEE = 100, BULLET = 100, LASER = 100, ENERGY = 100, BOMB = 0, BIO = 0, RAD = 0, FIRE = 100, ACID = 50)
+	resistance_flags = INDESTRUCTIBLE
+	default_price = CARGO_CRATE_VALUE * 2.5
+	extra_price = CARGO_CRATE_VALUE * 5
+	payment_department = ACCOUNT_TRA
+	light_mask = "yohei-light-mask"

@@ -287,7 +287,7 @@
 	desc = "A strong bola, bound with dark magic that allows it to pass harmlessly through Nar'Sien cultists. Throw it to trip and slow your victim."
 	icon_state = "bola_cult"
 	inhand_icon_state = "bola_cult"
-	breakouttime = 60
+	breakoutchance = 5
 	knockdown = 30
 
 /obj/item/restraints/legcuffs/bola/cult/attack_hand(mob/living/user)
@@ -507,7 +507,7 @@
 		return
 	if(totalcurses >= MAX_SHUTTLE_CURSES)
 		to_chat(user, span_warning("Пытаюсь shatter the orb, but it remains as solid as a rock!"))
-		to_chat(user, span_danger("<span class='big'>It seems that the blood cult has exhausted its ability to curse the emergency escape shuttle. It would be unwise to create more cursed orbs or to continue to try to shatter this one.</span>"))
+		to_chat(user, span_danger(span_big("It seems that the blood cult has exhausted its ability to curse the emergency escape shuttle. It would be unwise to create more cursed orbs or to continue to try to shatter this one.")))
 		return
 	if(locate(/obj/narsie) in SSpoints_of_interest.narsies)
 		to_chat(user, span_warning("Nar'Sie is already on this plane, there is no delaying the end of all things."))
@@ -545,11 +545,11 @@
 		message += " The shuttle will be delayed by three minutes."
 		priority_announce("[message]", "System Failure", 'sound/misc/notice1.ogg')
 		if(MAX_SHUTTLE_CURSES-totalcurses <= 0)
-			to_chat(user, span_danger("<span class='big'>You sense that the emergency escape shuttle can no longer be cursed. It would be unwise to create more cursed orbs.</span>"))
+			to_chat(user, span_danger(span_big("You sense that the emergency escape shuttle can no longer be cursed. It would be unwise to create more cursed orbs.")))
 		else if(MAX_SHUTTLE_CURSES-totalcurses == 1)
-			to_chat(user, span_danger("<span class='big'>You sense that the emergency escape shuttle can only be cursed one more time.</span>"))
+			to_chat(user, span_danger(span_big("You sense that the emergency escape shuttle can only be cursed one more time.")))
 		else
-			to_chat(user, span_danger("<span class='big'>You sense that the emergency escape shuttle can only be cursed [MAX_SHUTTLE_CURSES-totalcurses] more times.</span>"))
+			to_chat(user, span_danger(span_big("You sense that the emergency escape shuttle can only be cursed [MAX_SHUTTLE_CURSES-totalcurses] more times.")))
 		qdel(src)
 
 #undef MAX_SHUTTLE_CURSES
@@ -873,7 +873,7 @@
 		return
 	var/C = user.client
 	if(ishuman(user) && C)
-		var/list/angle_vector = calculate_projectile_angle_and_pixel_offsets(user, params)
+		var/list/angle_vector = calculate_projectile_angle_and_pixel_offsets(user, A, params)
 		angle = angle_vector[1]
 	else
 		qdel(src)
@@ -927,7 +927,7 @@
 		playsound(src, 'sound/magic/exit_blood.ogg', 75, TRUE)
 		new /obj/effect/temp_visual/dir_setting/cult/phase(user.loc, user.dir)
 		var/turf/temp_target = get_turf_in_angle(set_angle, targets_from, 40)
-		for(var/turf/T in getline(targets_from,temp_target))
+		for(var/turf/T in get_line(targets_from,temp_target))
 			if (locate(/obj/effect/blessing, T))
 				temp_target = T
 				playsound(T, 'sound/machines/clockcult/ark_damage.ogg', 50, TRUE)

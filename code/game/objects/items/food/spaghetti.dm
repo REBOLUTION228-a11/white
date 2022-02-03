@@ -26,7 +26,6 @@
 	name = "boiled spaghetti"
 	desc = "A plain dish of noodles, this needs more ingredients."
 	icon_state = "spaghettiboiled"
-	trash_type = /obj/item/trash/plate
 	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/vitamin = 1)
 
 /obj/item/food/spaghetti/boiledspaghetti/Initialize()
@@ -37,7 +36,6 @@
 	name = "spaghetti"
 	desc = "Spaghetti and crushed tomatoes. Just like your abusive father used to make!"
 	icon_state = "pastatomato"
-	trash_type = /obj/item/trash/plate
 	bite_consumption = 4
 	food_reagents = list(/datum/reagent/consumable/nutriment = 6, /datum/reagent/consumable/tomatojuice = 10, /datum/reagent/consumable/nutriment/vitamin = 4)
 	microwaved_type = null
@@ -101,4 +99,12 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment = 9, /datum/reagent/consumable/nutriment/vitamin = 2)
 	microwaved_type = null
 	tastes = list("лапша" = 1, "масло" = 1)
+	foodtypes = GRAIN | DAIRY
+
+/obj/item/food/spaghetti/mac_n_cheese
+	name = "mac n' cheese"
+	desc = "Made the proper way with only the finest cheese and breadcrumbs. And yet, it can't scratch the same itch as Ready-Donk."
+	icon_state = "mac_n_cheese"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 9, /datum/reagent/consumable/nutriment/vitamin = 2)
+	tastes = list("cheese" = 1, "breadcrumbs" = 1, "pasta" = 1)
 	foodtypes = GRAIN | DAIRY

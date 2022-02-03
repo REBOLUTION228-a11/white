@@ -44,11 +44,10 @@
 	var/change_Y = abs(origin_y - T.y)
 	return (change_X < max_range && change_Y < max_range)
 
-/mob/camera/ai_eye/remote/shuttle_creation/setLoc(T)
+/mob/camera/ai_eye/remote/shuttle_creation/setLoc(T, force_update = FALSE)
 	..()
 	if(eye_user?.client)
 		eye_user.client.images -= user_image
 		var/image/I = image(icon, loc, icon_state, FLY_LAYER, dir)
-		I.plane = MASSIVE_OBJ_LAYER
 		user_image = I
 		eye_user.client.images += user_image

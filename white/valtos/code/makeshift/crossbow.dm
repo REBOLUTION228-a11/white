@@ -30,7 +30,7 @@
 				var/obj/item/stack/rods/R = A
 				if (R.use(1))
 					chambered = new rod_type
-					var/obj/projectile/rod/PR = chambered.BB
+					var/obj/projectile/rod/PR = chambered.loaded_projectile
 
 					if (PR)
 						PR.range = PR.range * charge
@@ -41,12 +41,12 @@
 
 					playsound(user, insert_sound, 50, 1)
 
-					user.visible_message(span_notice("[user] аккуратно устанавливает [chambered.BB] в [src].") , \
-                                         span_notice("Аккуратно устанавливаю [chambered.BB] в [src]."))
+					user.visible_message(span_notice("[user] аккуратно устанавливает [chambered.loaded_projectile] в [src].") , \
+                                         span_notice("Аккуратно устанавливаю [chambered.loaded_projectile] в [src]."))
 		else
 			to_chat(user, span_warning("Стоит натянуть тетиву перед установкой снаряда!"))
 	else
-		to_chat(user, "<span class='warning'>Здесь уже есть [chambered.BB] внутри!<span>")
+		to_chat(user, span_warning("Здесь уже есть [chambered.loaded_projectile] внутри!"))
 
 	update_icon()
 	return
@@ -67,7 +67,7 @@
 	if (charge <= 0)
 		return
 
-	return (chambered.BB ? 1 : 0)
+	return (chambered.loaded_projectile ? 1 : 0)
 
 /obj/item/gun/ballistic/crossbow/attack_self(mob/living/user)
 	if (!chambered)
@@ -93,8 +93,8 @@
 		else
 			to_chat(user, span_warning("Тетива натянута, милорд!"))
 	else
-		user.visible_message(span_notice("[user] достаёт [chambered.BB] из [src].") , \
-							span_notice("Достаю [chambered.BB] из [src]."))
+		user.visible_message(span_notice("[user] достаёт [chambered.loaded_projectile] из [src].") , \
+							span_notice("Достаю [chambered.loaded_projectile] из [src]."))
 		user.put_in_hands(new /obj/item/stack/rods)
 		chambered = null
 		playsound(user, insert_sound, 50, 1)
@@ -117,8 +117,8 @@
 
 	. += "[charge > 2 ? "!" : "."]<br>"
 
-	if (chambered?.BB)
-		. += "[capitalize(chambered.BB)] установлен."
+	if (chambered?.loaded_projectile)
+		. += "[capitalize(chambered.loaded_projectile)] установлен."
 
 /obj/item/gun/ballistic/crossbow/update_icon()
 	..()
@@ -160,8 +160,8 @@
 	icon = 'white/valtos/icons/weapons/crossbow.dmi'
 	icon_state = "rod_proj"
 	suppressed = TRUE
-	damage = 10 // multiply by how drawn the bow string is
-	range = 10 // also multiply by the bow string
+	damage = 6 // multiply by how drawn the bow string is
+	range = 12 // also multiply by the bow string
 	damage_type = BRUTE
 	flag = BULLET
 	hitsound = null // We use our own for different circumstances
@@ -171,7 +171,7 @@
 
 /obj/projectile/rod/on_range()
 	// we didn't hit anything, place a rod here
-	new /obj/item/bent_rod(get_turf(src))
+	new /obj/item/stack/rods(get_turf(src))
 	..()
 
 /obj/projectile/rod/proc/Impale(mob/living/carbon/human/H)
@@ -237,8 +237,22 @@
 	inhand_icon_state = "crossbow_body_improv"
 	insert_sound = 'white/valtos/sounds/rodgun_reload.ogg'
 	bow_type_overlay = "e_"
-	charge_time = 1
+	charge_time = 5
 	rod_type = /obj/item/ammo_casing/rod/energy
+
+/obj/item/gun/ballistic/crossbow/energy/attack_self(mob/living/user)
+	charge_time = initial(charge_time)
+	switch(charge)
+		if(0)
+			charge_time = 10
+		if(1)
+			charge_time = 14
+		if(2)
+			charge_time = 18
+		if(3)
+			charge_time = 22
+	. = ..()
+
 
 /obj/item/ammo_casing/rod/energy
 	projectile_type = /obj/projectile/rod/energy
@@ -247,5 +261,5 @@
 	name = "раскалённый металлический стержень"
 	icon = 'white/valtos/icons/weapons/crossbow.dmi'
 	icon_state = "e_rod_proj"
-	damage = 17
-	range = 20
+	damage = 10
+	range = 12

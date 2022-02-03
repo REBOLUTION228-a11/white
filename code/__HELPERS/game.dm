@@ -1,8 +1,11 @@
 //supposedly the fastest way to do this according to https://gist.github.com/Giacom/be635398926bb463b42a
 #define RANGE_TURFS(RADIUS, CENTER) \
+	RECT_TURFS(RADIUS, RADIUS, CENTER)
+
+#define RECT_TURFS(H_RADIUS, V_RADIUS, CENTER) \
 	block( \
-	locate(max(CENTER.x-(RADIUS),1),          max(CENTER.y-(RADIUS),1),          CENTER.z), \
-	locate(min(CENTER.x+(RADIUS),world.maxx), min(CENTER.y+(RADIUS),world.maxy), CENTER.z) \
+	locate(max(CENTER.x-(H_RADIUS),1),          max(CENTER.y-(V_RADIUS),1),          CENTER.z), \
+	locate(min(CENTER.x+(H_RADIUS),world.maxx), min(CENTER.y+(V_RADIUS),world.maxy), CENTER.z) \
 	)
 
 #define Z_TURFS(ZLEVEL) block(locate(1,1,ZLEVEL), locate(world.maxx, world.maxy, ZLEVEL))
@@ -255,7 +258,7 @@
 #undef SIGNV
 
 
-/proc/isInSight(atom/A, atom/B)
+/proc/is_in_sight(atom/A, atom/B)
 	var/turf/Aturf = get_turf(A)
 	var/turf/Bturf = get_turf(B)
 
@@ -316,26 +319,27 @@
 	return O
 
 /// Removes an image from a client's `.images`. Useful as a callback.
-/proc/remove_image_from_client(image/image, client/remove_from)
-	remove_from?.images -= image
+/proc/remove_image_from_client(image/image_to_remove, client/remove_from)
+	remove_from?.images -= image_to_remove
 
-/proc/remove_images_from_clients(image/I, list/show_to)
-	for(var/client/C in show_to)
-		C.images -= I
+///Like remove_image_from_client, but will remove the image from a list of clients
+/proc/remove_images_from_clients(image/image_to_remove, list/show_to)
+	for(var/client/remove_from in show_to)
+		remove_from.images -= image_to_remove
 
-/proc/flick_overlay(image/I, list/show_to, duration)
-	for(var/client/C in show_to)
-		C.images += I
-	if(duration != -1)
-		addtimer(CALLBACK(GLOBAL_PROC, /proc/remove_images_from_clients, I, show_to), duration, TIMER_CLIENT_TIME)
+///Add an image to a list of clients and calls a proc to remove it after a duration
+/proc/flick_overlay(image/image_to_show, list/show_to, duration)
+	for(var/client/add_to in show_to)
+		add_to.images += image_to_show
+	addtimer(CALLBACK(GLOBAL_PROC, /proc/remove_images_from_clients, image_to_show, show_to), duration, TIMER_CLIENT_TIME)
 
-/proc/flick_overlay_view(image/I, atom/target, duration) //wrapper for the above, flicks to everyone who can see the target atom
+///wrapper for flick_overlay(), flicks to everyone who can see the target atom
+/proc/flick_overlay_view(image/image_to_show, atom/target, duration)
 	var/list/viewing = list()
-	for(var/m in viewers(target))
-		var/mob/M = m
-		if(M.client)
-			viewing += M.client
-	flick_overlay(I, viewing, duration)
+	for(var/mob/viewer as anything in viewers(target))
+		if(viewer.client)
+			viewing += viewer.client
+	flick_overlay(image_to_show, viewing, duration)
 
 /proc/get_active_player_count(alive_check = 0, afk_check = 0, human_check = 0)
 	// Get active players who are playing in the round
@@ -371,7 +375,7 @@
 			to_chat(candidate_mob, span_notice("Выбираем: Да."))
 			if(time_passed + poll_time <= world.time)
 				to_chat(candidate_mob, span_danger("СЛИШКОМ ПОЗДНО!"))
-				SEND_SOUND(candidate_mob, 'sound/machines/buzz-sigh.ogg')
+				SEND_SOUND(candidate_mob, 'white/valtos/sounds/error1.ogg')
 				candidates -= candidate_mob
 			else
 				candidates += candidate_mob
@@ -561,7 +565,7 @@
 	var/list/turfs = RANGE_TURFS(range, center)
 	var/list/possible_loc = list()
 
-	for(var/turf/found_turf in turfs)
+	for(var/turf/found_turf as anything in turfs)
 		var/area/turf_area = get_area(found_turf)
 
 		// We check if both the turf is a floor, and that it's actually in the area.

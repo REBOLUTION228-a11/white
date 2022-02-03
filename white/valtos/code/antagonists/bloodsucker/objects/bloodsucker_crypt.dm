@@ -208,7 +208,7 @@
 	..()
 	unbuckle_mob(M)
 
-/obj/structure/bloodsucker/vassalrack/unbuckle_mob(mob/living/buckled_mob, force=FALSE)//, force=FALSE)
+/obj/structure/bloodsucker/vassalrack/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	if (!..())
 		return
 	var/matrix/m180 = matrix(buckled_mob.transform)
@@ -352,8 +352,8 @@
 		//	to_chat(user, span_danger("<i>The ritual has been interrupted!</i>"))
 		//	useLock = FALSE
 		//	return
-		user.playsound_local(null, 'sound/effects/explosion_distant.ogg', 40, 1) 	// Play THIS sound for user only. The "null" is where turf would go if a location was needed. Null puts it right in their head.
-		target.playsound_local(null, 'sound/effects/explosion_distant.ogg', 40, 1) 	// Play THIS sound for user only. The "null" is where turf would go if a location was needed. Null puts it right in their head.
+		user.playsound_local(null, 'white/valtos/sounds/nuclearexplosion.ogg', 40, 1) 	// Play THIS sound for user only. The "null" is where turf would go if a location was needed. Null puts it right in their head.
+		target.playsound_local(null, 'white/valtos/sounds/nuclearexplosion.ogg', 40, 1) 	// Play THIS sound for user only. The "null" is where turf would go if a location was needed. Null puts it right in their head.
 		target.playsound_local(null, 'sound/effects/singlebeat.ogg', 40, 1) 		// Play THIS sound for user only. The "null" is where turf would go if a location was needed. Null puts it right in their head.
 		target.Jitter(25)
 		target.emote("laugh")

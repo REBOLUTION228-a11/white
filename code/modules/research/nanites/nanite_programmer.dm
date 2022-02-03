@@ -16,11 +16,10 @@
 
 /obj/machinery/nanite_programmer/update_overlays()
 	. = ..()
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
 	if((machine_stat & (NOPOWER|MAINT|BROKEN)) || panel_open)
 		return
-	SSvis_overlays.add_vis_overlay(src, icon, "nanite_programmer_on", layer, plane)
-	SSvis_overlays.add_vis_overlay(src, icon, "nanite_programmer_on", EMISSIVE_LAYER, EMISSIVE_PLANE)
+	. += mutable_appearance(icon, "nanite_programmer_on", layer, plane)
+	. += mutable_appearance(icon, "nanite_programmer_on", 0, EMISSIVE_PLANE)
 
 /obj/machinery/nanite_programmer/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/disk/nanite_program))
@@ -169,8 +168,3 @@
 				investigate_log("[key_name(usr)] edited [program.name] trigger delay timer into [timer/10] s", INVESTIGATE_NANITES)
 			. = TRUE
 
-/obj/machinery/nanite_programmer/Hear(message, atom/movable/speaker, message_language, raw_message, radio_freq, list/spans, list/message_mods = list())
-	. = ..()
-	var/static/regex/when = regex("(?:^\\W*when|when\\W*$)", "i") //starts or ends with when
-	if(findtext(raw_message, when) && !istype(speaker, /obj/machinery/nanite_programmer))
-		say("When you code it!!")

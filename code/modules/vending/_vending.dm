@@ -261,9 +261,8 @@ IF YOU MODIFY THE PRODUCTS LIST OF A MACHINE, MAKE SURE TO UPDATE ITS RESUPPLY C
 	if(!light_mask)
 		return
 
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
 	if(!(machine_stat & BROKEN) && powered())
-		SSvis_overlays.add_vis_overlay(src, icon, light_mask, EMISSIVE_LAYER, EMISSIVE_PLANE)
+		. += mutable_appearance(icon, light_mask, 0, EMISSIVE_PLANE)
 
 /obj/machinery/vending/obj_break(damage_flag)
 	. = ..()
@@ -649,7 +648,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 	to_chat(user, span_notice("Вставляю [I] в [src]."))
 	loaded_items++
 
-/obj/machinery/vending/unbuckle_mob(mob/living/buckled_mob, force=FALSE)
+/obj/machinery/vending/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	if(!force)
 		return
 	. = ..()
@@ -718,7 +717,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 			return
 
 	if(tilted && !user.buckled && !isAI(user))
-		to_chat(user, span_notice("Начинаю настраивать [src]."))
+		to_chat(user, span_notice("Поднимаю [src]."))
 		if(do_after(user, 50, target=src))
 			untilt(user)
 		return
@@ -896,11 +895,6 @@ GLOBAL_LIST_EMPTY(vending_products)
 		else if (!C.registered_account)
 			say("Аккаунт не найден.")
 			flick(icon_deny,src)
-			vend_ready = TRUE
-			return
-		else if(!C.registered_account.account_job)
-			say("Счета отделов не подходят для оплаты.")
-			flick(icon_deny, src)
 			vend_ready = TRUE
 			return
 		else if(age_restrictions && R.age_restricted && (!C.registered_age || C.registered_age < AGE_MINOR))

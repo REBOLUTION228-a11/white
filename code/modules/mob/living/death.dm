@@ -69,7 +69,6 @@
  * * gibbed - Was the mob gibbed?
 */
 /mob/living/proc/death(gibbed)
-	INVOKE_ASYNC(src, .proc/try_poo)
 	set_stat(DEAD)
 	unset_machine()
 	timeofdeath = world.time
@@ -77,6 +76,9 @@
 	var/turf/T = get_turf(src)
 	if(mind && mind.name && mind.active && !istype(T.loc, /area/ctf))
 		deadchat_broadcast(" погибает в локации <b>[get_area_name(T)]</b>.", "<b>[mind.name]</b>", follow_target = src, turf_target = T, message_type=DEADCHAT_DEATHRATTLE)
+		if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP] && !client?.holder)
+			to_chat(src, span_deadsay(span_big("Свободный обзор ограничен.\nОрбитируйте, Телепортируйтесь, и Прыгайте вместо этого.")))
+			ghostize(TRUE)
 	if(mind)
 		mind.store_memory("Время смерти: [tod]", 0)
 	set_drugginess(0)

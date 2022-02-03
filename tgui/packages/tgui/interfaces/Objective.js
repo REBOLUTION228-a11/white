@@ -15,6 +15,15 @@ export const Objective = (props, context) => {
       resizable>
       <Window.Content
         scrollable>
+        <Section
+          title="Контроль исполнения"
+          key="645">
+          <Button
+            icon="trash"
+            content="Отказаться"
+            disabled={!selected_objective}
+            onClick={() => act('remove')} />
+        </Section>
         {!selected_objective || <SelectedObjective
           objective={selected_objective} />}
         {possible_objectives.map(objective => (

@@ -112,7 +112,7 @@
 		border-width: 1px;
 		border-style: solid;
 		color: rgba(0, 0, 0, 0.7);
-		padding: 4px 3px;
+		padding: 0;
 		text-align: center;
 		text-decoration: none;
 		font-size: 13px;
@@ -120,7 +120,7 @@
 		cursor: pointer;
 		transition-duration: 0.25s;
 		order: 3;
-		min-width: 40px;
+		min-width: 0px;
 	}
 
 	.dark button {
@@ -436,6 +436,7 @@ function createStatusTab(name) {
 	B.id = name;
 	B[textContentKey] = name;
 	B.className = "button";
+	B.innerHTML = "<img src=\"" + get_icon_for_tab_by_name(name) + "\">";
 	//ORDERING ALPHABETICALLY
 	B.style.order = name.charCodeAt(0);
 	if(name == "Состояние" || name == "MC")
@@ -444,6 +445,41 @@ function createStatusTab(name) {
 	menu.appendChild(B);
 	SendTabToByond(name);
 	under_menu.style.height = menu.clientHeight + 'px';
+}
+
+function get_icon_for_tab_by_name(name) {
+	switch(name) {
+		case 'Состояние':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922266065113858118/test.png';
+		case 'IC':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922276501490110494/ic.png';
+		case 'OOC':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922276501666275428/ooc.png';
+		case 'Настройки':
+			return 'https://media.discordapp.net/attachments/891936642380759050/922270099711352892/cog.png';
+		case 'Объект':
+			return 'https://media.discordapp.net/attachments/891936642380759050/922271046613225492/obj.png';
+		case 'Особенное':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922302559752945664/other.png';
+		case 'Призрак':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922273417649070081/ghost.png';
+		case 'Адм':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922275501916164186/pidor.png';
+		case 'Дбг':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922279552418476052/debug.png';
+		case 'Срв':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922279819700494346/amogus.png';
+		case 'Тикеты':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922303360445579264/tickets.png';
+		case 'MC':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922304005646995466/MC.png';
+		case 'МАГИЯ':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922279819700494346/amogus.png';
+		case 'Знаток':
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/935522367902462012/pidor.png';
+		default:
+			return 'https://cdn.discordapp.com/attachments/891936642380759050/922279819700494346/amogus.png';
+	}
 }
 
 function removeStatusTab(name) {
@@ -990,7 +1026,17 @@ function draw_listedturf() {
 			// rather than every onmousedown getting the "part" of the last entry.
 			return function(e) {
 				e.preventDefault();
-				clickcatcher = "?src=" + part[1] + ";statpanel_item_click=1";
+				clickcatcher = "?src=" + part[1];
+				switch(e.button){
+					case 1:
+						clickcatcher += ";statpanel_item_click=middle"
+						break;
+					case 2:
+						clickcatcher += ";statpanel_item_click=right"
+						break;
+					default:
+						clickcatcher += ";statpanel_item_click=left"
+				}
 				if(e.shiftKey){
 					clickcatcher += ";statpanel_item_shiftclick=1";
 				}
@@ -1027,7 +1073,7 @@ function draw_sdql2(){
 		var td2 = document.createElement("td");
 		if(part[2]) {
 			var a = document.createElement("a");
-			a.href = "?src=" + part[2] + ";statpanel_item_click=1";
+			a.href = "?src=" + part[2] + ";statpanel_item_click=left";
 			a[textContentKey] = part[1];
 			td2.appendChild(a);
 		} else {
@@ -1053,12 +1099,12 @@ function draw_tickets() {
 		var td2 = document.createElement("td");
 		if(part[2]) {
 			var a = document.createElement("a");
-			a.href = "?_src_=holder;admin_token=" + href_token + ";ahelp=" + part[2] + ";ahelp_action=ticket;statpanel_item_click=1;action=ticket" ;
+			a.href = "?_src_=holder;admin_token=" + href_token + ";ahelp=" + part[2] + ";ahelp_action=ticket;statpanel_item_click=left;action=ticket" ;
 			a[textContentKey] = part[1];
 			td2.appendChild(a);
 		} else if(part[3]){
 			var a = document.createElement("a");
-			a.href = "?src=" + part[3] + ";statpanel_item_click=1";
+			a.href = "?src=" + part[3] + ";statpanel_item_click=left";
 			a[textContentKey] = part[1];
 			td2.appendChild(a);
 		} else {
@@ -1078,7 +1124,7 @@ function draw_interviews() {
 	manDiv.className = "interview_panel_controls"
 	var manLink = document.createElement("a");
 	manLink[textContentKey] = "Open Interview Manager Panel";
-	manLink.href = "?_src_=holder;admin_token=" + href_token + ";interview_man=1;statpanel_item_click=1";
+	manLink.href = "?_src_=holder;admin_token=" + href_token + ";interview_man=1;statpanel_item_click=left";
 	manDiv.appendChild(manLink);
 	body.appendChild(manDiv);
 
@@ -1110,7 +1156,7 @@ function draw_interviews() {
 		var td = document.createElement("td");
 		var a = document.createElement("a");
 		a[textContentKey] = part["status"];
-		a.href = "?_src_=holder;admin_token=" + href_token + ";interview=" + part["ref"] + ";statpanel_item_click=1";
+		a.href = "?_src_=holder;admin_token=" + href_token + ";interview=" + part["ref"] + ";statpanel_item_click=left";
 		td.appendChild(a);
 		tr.appendChild(td);
 		table.appendChild(tr);
@@ -1130,7 +1176,7 @@ function draw_spells(cat) {
 		var td2 = document.createElement("td");
 		if(part[3]) {
 			var a = document.createElement("a");
-			a.href = "?src=" + part[3] + ";statpanel_item_click=1";
+			a.href = "?src=" + part[3] + ";statpanel_item_click=left";
 			a[textContentKey] = part[2];
 			td2.appendChild(a);
 		} else {

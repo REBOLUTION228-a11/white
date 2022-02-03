@@ -144,6 +144,11 @@
 			maroon_objective.owner = owner
 			maroon_objective.find_target()
 			add_objective(maroon_objective)
+		else if(prob(30))
+			var/datum/objective/sabotage/sabotage_objective = new
+			sabotage_objective.owner = owner
+			sabotage_objective.find_target()
+			add_objective(sabotage_objective)
 		else
 			var/datum/objective/assassinate/kill_objective = new
 			kill_objective.owner = owner
@@ -190,7 +195,7 @@
 			.=2
 
 /datum/antagonist/traitor/greet()
-	to_chat(owner.current, span_alertsyndie("Да я же [owner.special_role]."))
+	to_chat(owner.current, span_alertsyndie("Да я же агент Синдиката!"))
 	owner.announce_objectives()
 	if(should_give_codewords)
 		give_codewords()
@@ -210,7 +215,7 @@
 	. = ..()
 	var/mob/living/M = mob_override || owner.current
 	add_antag_hud(antag_hud_type, antag_hud_name, M)
-	handle_clown_mutation(M, mob_override ? null : "Благодаря упорным тренировкам мне удалось побороть мою клоунскую натуру и дало мне возможность пользоваться оружием без вреда себе.")
+	handle_clown_mutation(M, mob_override ? null : "Благодаря упорным тренировкам мне удалось побороть мою клоунскую натуру и это дало мне возможность пользоваться оружием без вреда себе.")
 	var/mob/living/silicon/ai/A = M
 	if(istype(A) && traitor_kind == TRAITOR_AI)
 		A.hack_software = TRUE

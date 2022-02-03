@@ -81,6 +81,10 @@ GLOBAL_VAR(restart_counter)
 	HandleTestRun()
 	#endif
 
+	#ifdef AUTOWIKI
+	setup_autowiki()
+	#endif
+
 /world/proc/InitTgs()
 	TgsNew(new /datum/tgs_event_handler/impl, TGS_SECURITY_TRUSTED)
 	GLOB.revdata.load_tgs_info()
@@ -143,6 +147,7 @@ GLOBAL_VAR(restart_counter)
 	GLOB.world_shuttle_log = "[GLOB.log_directory]/shuttle.log"
 	GLOB.world_mechcomp_log = "[GLOB.log_directory]/mechcomp.log"
 	GLOB.world_exrp_log = "[GLOB.log_directory]/exrp.log"
+	GLOB.world_uplink_log = "[GLOB.log_directory]/uplink.log"
 
 	GLOB.demo_log = "[GLOB.log_directory]/demo.log"
 
@@ -160,6 +165,7 @@ GLOBAL_VAR(restart_counter)
 	start_log(GLOB.world_qdel_log)
 	start_log(GLOB.world_runtime_log)
 	start_log(GLOB.world_job_debug_log)
+	start_log(GLOB.world_uplink_log)
 	start_log(GLOB.tgui_log)
 	start_log(GLOB.world_shuttle_log)
 	start_log(GLOB.world_mechcomp_log)
@@ -274,8 +280,9 @@ GLOBAL_VAR(restart_counter)
 
 	TgsReboot()
 	shutdown_logging() // Past this point, no logging procs can be used, at risk of data loss.
-	shelleo("curl -X POST http://localhost:3636/hard-reboot-white")
-	shelleo("python3 /home/ubuntu/tenebrae/prod/server_white/data/parser.py [GLOB.round_id]")
+	if(CONFIG_GET(flag/this_shit_is_stable))
+		shelleo("curl -X POST http://localhost:3636/hard-reboot-white")
+		shelleo("python3 /home/ubuntu/tenebrae/prod/server_white/data/parser.py [GLOB.round_id]")
 	..()
 
 /world/Del()
@@ -319,7 +326,7 @@ sssyhoyo.```````````````````````.``````````````````````````````````.:+shhhmNdhhm
 sssho./os/.````````````````````````````````````````````````````````````-:odmhyyhdmNMMMMMdo-``+dmmssyyyyhhhhhhddddyoohmmN
 sssm:`.-:/+/:-.````````````````````````````````````````````````````````````-/syhhdNm/sNMMMmo:`dNyssyyyyyhhhhhdddhoosmmNm
 sssm.`````````````````````````````````````````````````````````````````````````.:smh. `:mMMMy::mysssyyyyyhhhhddddo+odmmmd
-sssm````````````````````````````````````````````````````...-------.````````.`````.```.:osssymdhssssyyyyyyhhhdddsoohmmNmh
+sssm```````````````````````````````````````ХУЙ``````````...-------.````````.`````.```.:osssymdhssssyyyyyykahdddsoohmmNmh
 sssm` `````````````````````````````````````````````````````````........----.```````````````/syssssyyyyyyhhhhdds+osdmNmdm
 sssm. ``````````````:.`````````````````````````````````````----................-.`````````+sssssssyyyyyhhhhddy++odmNmdyy
 sssd/ ``````````````.:-```````````````````````````````````````.......----.......```..````+ssssssssyyyyhhhhhdho+ohdmNmhoo
@@ -354,7 +361,7 @@ GLOBAL_VAR_INIT(hub_mimic_desc, "GO! GO! GO!")
 	var/s = ""
 
 	if(!GLOB.hub_mimic)
-		s += "<big><b>White Dream: RU</b></big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
+		s += "<big><b>White Dream: RU</b> 18+</big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
 		switch(rand(1, 5))
 			if(1)
 				s += "<img src='https://assets.station13.ru/l/w7.png'>\n\n"

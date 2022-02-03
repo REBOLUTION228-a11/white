@@ -1,5 +1,7 @@
 // Disposal bin and Delivery chute.
 
+GLOBAL_VAR_INIT(disposals_are_hungry, FALSE)
+
 #define SEND_PRESSURE (0.05*ONE_ATMOSPHERE)
 
 /obj/machinery/disposal
@@ -110,7 +112,12 @@
 
 /obj/machinery/disposal/proc/place_item_in_disposal(obj/item/I, mob/user)
 	I.forceMove(src)
-	user.visible_message(span_notice("[user.name] закидывает [I] в [src].") , span_notice("Закидываю [I] в [src]."))
+	if(GLOB.disposals_are_hungry)
+		user.visible_message(span_danger("[user.name] кормит [src] используя [I]."), span_danger("Кормлю [src] используя [I]."))
+		playsound(get_turf(src), 'sound/items/eatfood.ogg', 100, TRUE)
+		qdel(I)
+	else
+		user.visible_message(span_notice("[user.name] закидывает [I] в [src]."), span_notice("Закидываю [I] в [src]."))
 
 //mouse drop another mob or self
 /obj/machinery/disposal/MouseDrop_T(mob/living/target, mob/living/user)
@@ -149,6 +156,9 @@
 			log_combat(user, target, "stuffed", addition="into [src]")
 			target.LAssailant = WEAKREF(user)
 			. = TRUE
+		if(GLOB.disposals_are_hungry)
+			playsound(get_turf(src), 'sound/items/eatfood.ogg', 100, TRUE)
+			target.gib()
 		update_icon()
 
 /obj/machinery/disposal/relaymove(mob/living/user, direction)
@@ -357,7 +367,6 @@ GLOBAL_LIST_EMPTY(disposal_bins)
 /obj/machinery/disposal/bin/update_overlays()
 	. = ..()
 
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
 	luminosity = 0
 
 	if(machine_stat & BROKEN)
@@ -375,15 +384,15 @@ GLOBAL_LIST_EMPTY(disposal_bins)
 	//check for items in disposal - occupied light
 	if(contents.len > 0)
 		. += "dispover-full"
-		SSvis_overlays.add_vis_overlay(src, icon, "dispover-full", EMISSIVE_LAYER, EMISSIVE_PLANE, dir, alpha)
+		. += mutable_appearance(icon, "dispover-full", 0, EMISSIVE_PLANE, alpha)
 
 	//charging and ready light
 	if(pressure_charging)
 		. += "dispover-charge"
-		SSvis_overlays.add_vis_overlay(src, icon, "dispover-charge-glow", EMISSIVE_LAYER, EMISSIVE_PLANE, dir, alpha)
+		. += mutable_appearance(icon, "dispover-charge-glow", 0, EMISSIVE_PLANE, alpha)
 	else if(full_pressure)
 		. += "dispover-ready"
-		SSvis_overlays.add_vis_overlay(src, icon, "dispover-ready-glow", EMISSIVE_LAYER, EMISSIVE_PLANE, dir, alpha)
+		. += mutable_appearance(icon, "dispover-ready-glow", 0, EMISSIVE_PLANE, alpha)
 
 /obj/machinery/disposal/bin/proc/do_flush()
 	set waitfor = FALSE

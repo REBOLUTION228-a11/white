@@ -358,12 +358,12 @@ GLOBAL_LIST_EMPTY(PDAs)
 				var/count = 0
 
 				if (!toff)
-					for (var/obj/item/pda/P in get_viewable_pdas(sort_by_job))
-						if (P == src)
+					for (var/obj/item/pda/pda as anything in get_viewable_pdas())
+						if (pda == src)
 							continue
-						dat += "<li><a href='byond://?src=[REF(src)];choice=Message;target=[REF(P)]'>[P.owner] ([P.ownjob])</a>"
+						dat += "<li><a href='byond://?src=[REF(src)];choice=Message;target=[REF(pda)]'>[pda.owner] ([pda.ownjob])</a>"
 						if(cartridge)
-							dat += cartridge.message_special(P)
+							dat += cartridge.message_special(pda)
 						dat += "</li>"
 						count++
 				dat += "</ul>"
@@ -656,6 +656,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 						pai.attack_self(U)
 					if("2")		// Eject pAI device
 						usr.put_in_hands(pai)
+						pai.slotted = FALSE
 						to_chat(usr, span_notice("You remove the pAI from the [name]."))
 
 //SKILL FUNCTIONS===================================
@@ -1047,6 +1048,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 		if(!user.transferItemToLoc(C, src))
 			return
 		pai = C
+		pai.slotted = TRUE
 		to_chat(user, span_notice("You slot [C] into [src]."))
 		update_icon()
 		updateUsrDialog()
@@ -1198,7 +1200,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 
 		plist[avoid_assoc_duplicate_keys(pda.owner, namecounts)] = pda
 
-	var/choice = tgui_input_list(user, "Please select a PDA", "PDA Messenger", sortList(plist))
+	var/choice = tgui_input_list(user, "Please select a PDA", "PDA Messenger", sort_list(plist))
 
 	if (!choice)
 		return
@@ -1247,7 +1249,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 	else
 		sortmode = /proc/cmp_pdaname_asc
 
-	for(var/obj/item/pda/P in sortList(GLOB.PDAs, sortmode))
+	for(var/obj/item/pda/P in sort_list(GLOB.PDAs, sortmode))
 		if(!P.owner || P.toff || P.hidden)
 			continue
 		. += P

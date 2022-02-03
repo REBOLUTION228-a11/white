@@ -83,7 +83,7 @@
 	SSmachines.setup_template_powernets(cables)
 	SSair.setup_template_machinery(atmos_machines)
 
-/datum/map_template/proc/initTemplateBounds(list/bounds)
+/datum/map_template/proc/initTemplateBounds(list/bounds, init_atmos = TRUE)
 	if (!bounds) //something went wrong
 		stack_trace("[name] template failed to initialize correctly!")
 		return
@@ -142,6 +142,24 @@
 	SSmachines.setup_template_powernets(cables)
 	SSair.setup_template_machinery(atmos_machines)
 
+	if(init_atmos)
+		//calculate all turfs inside the border
+		var/list/template_and_bordering_turfs = block(
+			locate(
+				max(bounds[MAP_MINX]-1, 1),
+				max(bounds[MAP_MINY]-1, 1),
+				bounds[MAP_MINZ]
+				),
+			locate(
+				min(bounds[MAP_MAXX]+1, world.maxx),
+				min(bounds[MAP_MAXY]+1, world.maxy),
+				bounds[MAP_MAXZ]
+				)
+		)
+		for(var/turf/affected_turf as anything in template_and_bordering_turfs)
+			affected_turf.air_update_turf(TRUE)
+			affected_turf.levelupdate()
+
 /datum/map_template/proc/load_new_z(orbital_body_type, list/level_traits = list(ZTRAIT_AWAY = TRUE))
 	var/x = round((world.maxx - width) * 0.5) + 1
 	var/y = round((world.maxy - height) * 0.5) + 1
@@ -161,7 +179,7 @@
 
 	return level
 
-/datum/map_template/proc/load(turf/T, centered = FALSE)
+/datum/map_template/proc/load(turf/T, centered = FALSE, init_atmos = TRUE)
 	if(centered)
 		T = locate(T.x - round(width/2) , T.y - round(height/2) , T.z)
 	if(!T)
@@ -171,12 +189,11 @@
 	if(T.y+height > world.maxy)
 		return
 
-	var/list/border = block(locate(max(T.x-1, 1),			max(T.y-1, 1),			 T.z),
-							locate(min(T.x+width+1, world.maxx),	min(T.y+height+1, world.maxy), T.z))
+	var/list/border = block(locate(max(T.x, 1), max(T.y, 1),  T.z),
+							locate(min(T.x+width, world.maxx), min(T.y+height, world.maxy), T.z))
 	for(var/L in border)
 		var/turf/turf_to_disable = L
-		SSair.remove_from_active(turf_to_disable) //stop processing turfs along the border to prevent runtimes, we return it in initTemplateBounds()
-		turf_to_disable.atmos_adjacent_turfs?.Cut()
+		turf_to_disable.ImmediateDisableAdjacency()
 
 	// Accept cached maps, but don't save them automatically - we don't want
 	// ruins clogging up memory for the whole round.
@@ -197,7 +214,7 @@
 		repopulate_sorted_areas()
 
 	//initialize things that are normally initialized after map load
-	initTemplateBounds(bounds)
+	initTemplateBounds(bounds, init_atmos)
 
 	log_game("[name] loaded at [T.x],[T.y],[T.z]")
 	return bounds
@@ -216,6 +233,23 @@
 			placement = corner
 	return block(placement, locate(placement.x+width-1, placement.y+height-1, placement.z))
 
+/// Takes in a type path, locates an instance of that type in the cached map, and calculates its offset from the origin of the map, returns this offset in the form list(x, y).
+/datum/map_template/proc/discover_offset(obj/marker)
+	var/key
+	var/list/models = cached_map.grid_models
+	for(key in models)
+		if(findtext(models[key], "[marker]")) // Yay compile time checks
+			break // This works by assuming there will ever only be one mobile dock in a template at most
+
+	for(var/datum/grid_set/gset as anything in cached_map.gridSets)
+		var/ycrd = gset.ycrd
+		for(var/line in gset.gridLines)
+			var/xcrd = gset.xcrd
+			for(var/j in 1 to length(line) step cached_map.key_len)
+				if(key == copytext(line, j, j + cached_map.key_len))
+					return list(xcrd, ycrd)
+				++xcrd
+			--ycrd
 
 //for your ever biggening badminnery kevinz000
 //❤ - Cyberboss

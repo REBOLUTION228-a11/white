@@ -60,7 +60,7 @@
 			to_chat(usr, span_danger("Раунд ещё не начался или уже завершился..."))
 			return
 
-		if(!GLOB.enter_allowed)
+		if(SSlag_switch.measures[DISABLE_NON_OBSJOBS])
 			to_chat(usr, span_notice("Нельзя!"))
 			return
 
@@ -95,9 +95,10 @@
 		ready = PLAYER_NOT_READY
 		return FALSE
 
-	var/this_is_like_playing_right = "Да"
-	if(!force_observe)
-		this_is_like_playing_right = tgui_alert(usr,"Действительно хочешь следить? У меня не будет возможности зайти в этот раунд (исключая частые ивенты и спаунеры)!","Странный господин",list("Да","Нет"))
+	var/less_input_message
+	if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP])
+		less_input_message = " - Заметка: Призраки на данный момент ограничены."
+	var/this_is_like_playing_right = tgui_alert(usr, "Действительно хочешь следить? У меня не будет возможности зайти в этот раунд (исключая частые ивенты и спаунеры)![less_input_message]","Странный господин",list("Да","Нет"))
 
 	if(QDELETED(src) || !src.client || this_is_like_playing_right != "Да")
 		ready = PLAYER_NOT_READY
@@ -108,7 +109,6 @@
 	spawning = TRUE
 
 	client.kill_lobby()
-	SStitle.update_lobby()
 
 	observer.started_as_observer = TRUE
 	close_spawn_windows()
@@ -131,6 +131,9 @@
 	deadchat_broadcast(" становится призраком.", "<b>[observer.real_name]</b>", follow_target = observer, turf_target = get_turf(observer), message_type = DEADCHAT_DEATHRATTLE)
 	QDEL_NULL(mind)
 	qdel(src)
+
+	SStitle.update_lobby()
+
 	return TRUE
 
 /proc/get_job_unavailable_error_message(retval, jobtitle)
@@ -182,10 +185,6 @@
 	var/error = IsJobUnavailable(rank)
 	if(error != JOB_AVAILABLE)
 		tgui_alert(usr, get_job_unavailable_error_message(error, rank))
-		return FALSE
-
-	if(SSticker.late_join_disabled)
-		tgui_alert(usr, "Нельзя!")
 		return FALSE
 
 	var/arrivals_docked = TRUE
@@ -274,6 +273,8 @@
 	if(humanc && SSaspects.current_aspect)
 		to_chat(humanc, "\n<span class='notice'><B>[gvorno(TRUE)]:</B> [SSaspects.current_aspect.desc]</span><BR> ")
 
+	SStitle.update_lobby()
+
 	log_manifest(character.mind.key,character.mind,character,latejoin = TRUE)
 
 /mob/dead/new_player/proc/AddEmploymentContract(mob/living/carbon/human/employee)
@@ -285,7 +286,10 @@
 
 
 /mob/dead/new_player/proc/LateChoices()
-	var/list/dat = list("<div class='notice'>Длительность раунда: [DisplayTimeText(world.time - SSticker.round_start_time)]</div>")
+	var/list/dat = list()
+	if(SSlag_switch.measures[DISABLE_NON_OBSJOBS])
+		dat += "<div class='notice red' style='font-size: 125%'>Разрешено только следить на данный момент.</div><br>"
+	dat += "<div class='notice'>Длительность раунда: [DisplayTimeText(world.time - SSticker.round_start_time)]</div>"
 	if(SSshuttle.emergency)
 		switch(SSshuttle.emergency.mode)
 			if(SHUTTLE_ESCAPE)
@@ -404,6 +408,7 @@
 	src << browse(null, "window=playersetup") //closes the player setup window
 	src << browse(null, "window=preferences") //closes job selection
 	src << browse(null, "window=mob_occupation")
+	src << browse(null, "window=pdec")
 	src << browse(null, "window=latechoices") //closes late job selection
 
 // Used to make sure that a player has a valid job preference setup, used to knock players out of eligibility for anything if their prefs don't make sense.

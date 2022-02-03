@@ -39,8 +39,8 @@
  *
  */
 /mob/living/simple_animal/drone
-	name = "Drone"
-	desc = "A maintenance drone, an expendable robot built to perform station repairs."
+	name = "Дрон"
+	desc = "Обслуживающий беспилотник, расходный робот, созданный для ремонта станции."
 	icon = 'icons/mob/drone.dmi'
 	icon_state = "drone_maint_grey"
 	icon_living = "drone_maint_grey"
@@ -59,7 +59,7 @@
 	status_flags = (CANPUSH | CANSTUN | CANKNOCKDOWN)
 	gender = NEUTER
 	mob_biotypes = MOB_ROBOTIC
-	speak_emote = list("chirps")
+	speak_emote = list("чирикает")
 	speech_span = SPAN_ROBOT
 	bubble_icon = "machine"
 	initial_language_holder = /datum/language_holder/drone

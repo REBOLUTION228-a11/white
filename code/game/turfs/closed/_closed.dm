@@ -82,6 +82,11 @@
 				time_to_fall = 2 SECONDS
 			spawn(time_to_fall)
 				user.movement_type &= ~FLYING
+				var/turf/feetson = get_turf(user)
+				if(isgroundlessturf(feetson))
+					if(locate(/obj/structure/lattice) in feetson)
+						return
+					feetson.zFall(user)
 	else
 		to_chat(user, span_notice("Толкаю стену, но ничего не происходит!"))
 
@@ -107,7 +112,6 @@
 	desc = "Поколение странных увлечений."
 	icon = 'icons/runtime/default_title.dmi'
 	icon_state = "station_intact"
-	layer = SPLASHSCREEN_LAYER
 	plane = SPLASHSCREEN_PLANE
 	bullet_bounce_sound = null
 	maptext_height = 480
@@ -118,15 +122,6 @@
 /turf/closed/indestructible/splashscreen/New()
 	SStitle.splash_turf = src
 	..()
-
-/turf/closed/indestructible/splashscreen/Click()
-	..()
-	if(isnewplayer(usr))
-		if(winexists(usr, "pdec"))
-			if(winget(usr, "pdec", "is-visible") == "true")
-				winset(usr, "pdec", "is-visible=false")
-			else
-				winset(usr, "pdec", "is-visible=true")
 
 /turf/closed/indestructible/splashscreen/vv_edit_var(var_name, var_value)
 	. = ..()

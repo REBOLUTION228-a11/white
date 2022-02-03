@@ -97,7 +97,7 @@ SUBSYSTEM_DEF(title)
 	for(var/line in GLOB.whitelist)
 		cum += "[line]"
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
-		for(var/line in sortList(caa))
+		for(var/line in sort_list(caa))
 			tcc += "<tr><td class='role'>[line]</td><td>[english_list(caa[line])]</td></tr>"
 		tcc += "<tr><td class='role'>Не готовы</td><td>"
 	else
@@ -106,12 +106,12 @@ SUBSYSTEM_DEF(title)
 	cached_title = tcc
 
 /client/proc/show_lobby()
-	usr << browse(file('html/lobby.html'), "window=pdec;display=1;is-visible=false;size=300x650;border=0;can_close=0;can_resize=0;can_minimize=0;titlebar=0;is-disabled=false;")
+	usr << browse(file('html/lobby.html'), "window=pdec;display=1;is-visible=false;size=300x650;border=0;can_close=1;can_resize=1;can_minimize=1;titlebar=1;is-disabled=false;")
 	winset(usr, "pdec", "pos=10,60")
 	update_lobby()
 	spawn(100)
 		winset(usr, "pdec", "is-visible=true;pos=10,60")
-		update_lobby()
+		SStitle.update_lobby()
 
 /client/proc/kill_lobby()
 	src << browse(null, "window=pdec")

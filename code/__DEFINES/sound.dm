@@ -12,7 +12,8 @@
 #define CHANNEL_CUSTOM_JUKEBOX 1014
 #define CHANNEL_TTS_ANNOUNCER 1013
 #define CHANNEL_BATTLETENSION 1012
-#define CHANNEL_TTS_AVAILABLE 1011
+#define CHANNEL_RUINATION_OST 1011
+#define CHANNEL_TTS_AVAILABLE 1010
 #define CHANNEL_BOOMBOX_AVAILABLE 800
 #define CHANNEL_WIND_AVAILABLE 780
 #define CHANNEL_HIGHEST_AVAILABLE 770
@@ -128,6 +129,12 @@
 						'white/valtos/sounds/prison/amb7.ogg',\
 						'white/valtos/sounds/prison/amb8.ogg')
 
+#define RANGERS_AMB list('white/valtos/sounds/rangers/1.ogg',\
+						'white/valtos/sounds/rangers/2.ogg',\
+						'white/valtos/sounds/rangers/3.ogg',\
+						'white/valtos/sounds/rangers/4.ogg',\
+						'white/valtos/sounds/rangers/5.ogg')
+
 #define SOVIET_AMB_CAVES list('white/valtos/sounds/prison/ambout1.ogg')
 
 #define SCARLET_DAWN_AMBIENT list('white/valtos/sounds/dz/ambidawn.ogg')
@@ -147,8 +154,38 @@
 						'sound/ambience/ambigen15.ogg')
 
 #define TURBOLIFT list('white/jhnazar/sound/effects/lift/elevatormusic.ogg',\
-					'white/jhnazar/sound/effects/turbolift/elevatormusic1.ogg',\
-					'white/jhnazar/sound/effects/turbolift/elevatormusic2.ogg')
+						'white/jhnazar/sound/effects/turbolift/elevatormusic1.ogg',\
+						'white/jhnazar/sound/effects/turbolift/elevatormusic2.ogg')
+
+#define FAR_EXPLOSION_SOUNDS list('white/valtos/sounds/farexplosion/1.ogg',\
+						'white/valtos/sounds/farexplosion/2.ogg',\
+						'white/valtos/sounds/farexplosion/3.ogg',\
+						'white/valtos/sounds/farexplosion/4.ogg',\
+						'white/valtos/sounds/farexplosion/5.ogg',\
+						'white/valtos/sounds/farexplosion/6.ogg',\
+						'white/valtos/sounds/farexplosion/7.ogg',\
+						'white/valtos/sounds/farexplosion/8.ogg',\
+						'white/valtos/sounds/farexplosion/9.ogg',\
+						'sound/effects/explosionfar.ogg')
+
+#define WATER_FLOW_MINI list('white/valtos/sounds/voda1.ogg',\
+						'white/valtos/sounds/voda2.ogg',\
+						'white/valtos/sounds/voda3.ogg',\
+						'white/valtos/sounds/voda4.ogg',\
+						'white/valtos/sounds/voda5.ogg')
+
+#define RANDOM_DEEPH_SOUNDS list('white/valtos/sounds/lifeweb/deeph1.ogg',\
+						'white/valtos/sounds/lifeweb/deeph2.ogg',\
+						'white/valtos/sounds/lifeweb/deeph3.ogg',\
+						'white/valtos/sounds/lifeweb/deeph4.ogg',\
+						'white/valtos/sounds/lifeweb/deeph5.ogg',\
+						'white/valtos/sounds/lifeweb/deeph6.ogg')
+
+#define RANDOM_DREAMER_SOUNDS list('white/valtos/sounds/lifeweb/dream1.ogg',\
+						'white/valtos/sounds/lifeweb/dream2.ogg',\
+						'white/valtos/sounds/lifeweb/dream3.ogg',\
+						'white/valtos/sounds/lifeweb/dream4.ogg',\
+						'white/valtos/sounds/lifeweb/dream5.ogg')
 
 #define INTERACTION_SOUND_RANGE_MODIFIER -3
 #define EQUIP_SOUND_VOLUME 30

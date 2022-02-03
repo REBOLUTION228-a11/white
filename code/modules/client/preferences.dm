@@ -16,6 +16,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/lastchangelog = ""				//Saved changlog filesize to detect if there was a change
 	var/ooccolor = "#c43b23"
 	var/asaycolor = "#ff4500"			//This won't change the color for current admins, only incoming ones.
+	var/auto_dementor = FALSE
 	var/enable_tips = TRUE
 	var/tip_delay = 500 //tip delay in milliseconds
 
@@ -77,10 +78,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/jumpsuit_style = PREF_SUIT		//suit/skirt
 	var/hairstyle = "Bald"				//Hair type
 	var/hair_color = "000"				//Hair color
-	var/grad_style = "None"
-	var/grad_color = "000"
+	var/hair_grad_style = "None"
+	var/hair_grad_color = "000"
 	var/facial_hairstyle = "Shaved"	//Face hair type
 	var/facial_hair_color = "000"		//Facial hair color
+	var/facial_grad_style = "None"
+	var/facial_grad_color = "000"
 	var/skin_tone = "caucasian1"		//Skin color
 	var/eye_color = "000"				//Eye color
 	var/datum/species/pref_species = new /datum/species/human()	//Mutant race
@@ -316,13 +319,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<tr><td><b>Носки:</b></td><td align='right'><a href='?_src_=prefs;preference=socks;task=input'>[socks]</a></td>"
 			dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_SOCKS]'>[(randomise[RANDOM_SOCKS]) ? "🔓" : "🔒"]</A></td></tr>"
 
-			dat += "<tr><td><b>Рюкзак:</b></td><td align='right'><a href='?_src_=prefs;preference=bag;task=input'>[backpack]</a>"
+			dat += "<tr><td><b>Рюкзак:</b></td><td align='right'><a href='?_src_=prefs;preference=bag;task=input'>[backpack_to_ru_conversion(backpack)]</a>"
 			dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_BACKPACK]'>[(randomise[RANDOM_BACKPACK]) ? "🔓" : "🔒"]</A></td></tr>"
 
-			dat += "<tr><td><b>Комбез:</b></td><td align='right'><a href='?_src_=prefs;preference=suit;task=input'>[jumpsuit_style]</a>"
+			dat += "<tr><td><b>Комбез:</b></td><td align='right'><a href='?_src_=prefs;preference=suit;task=input'>[jumpsuit_to_ru_conversion(jumpsuit_style)]</a>"
 			dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_JUMPSUIT_STYLE]'>[(randomise[RANDOM_JUMPSUIT_STYLE]) ? "🔓" : "🔒"]</A></td></tr>"
 
-			dat += "<tr><td><b>Аплинк:</b></td><td align='right'><a href='?_src_=prefs;preference=uplink_loc;task=input'>[uplink_spawn_loc]</a></td></tr>"
+			dat += "<tr><td><b>Аплинк:</b></td><td align='right'><a href='?_src_=prefs;preference=uplink_loc;task=input'>[uplink_to_ru_conversion(uplink_spawn_loc)]</a></td></tr>"
 
 			//Adds a thing to select which phobia because I can't be assed to put that in the quirks window
 			if("Phobia" in all_quirks)
@@ -374,8 +377,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_HAIR_COLOR]'>[(randomise[RANDOM_HAIR_COLOR]) ? "🔓" : "🔒"]</A></td></tr>"
 
 				dat += "<tr><td><b>Градиент волос:</b></td><td align='right'>"
-				dat += "<a href='?_src_=prefs;preference=grad_style;task=input'>[grad_style]</a>"
-				dat += "<br><span style='border:1px solid #161616; background-color: #[grad_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=grad_color;task=input'>Изменить</a>"
+				dat += "<span style='border:1px solid #161616; background-color: #[hair_grad_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=hair_grad_color;task=input'>Изменить</a><a href='?_src_=prefs;preference=hair_grad_style;task=input'>[hair_grad_style]</a></td></tr>"
+
+				dat += "<tr><td><b>Градиент бороды:</b></td><td align='right'>"
+				dat += "<span style='border:1px solid #161616; background-color: #[facial_grad_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=facial_grad_color;task=input'>Изменить</a><a href='?_src_=prefs;preference=facial_grad_style;task=input'>[facial_grad_style]</a></td></tr>"
 
 				dat += "<tr><td><b>Борода:</b></td><td align='right'>"
 
@@ -508,7 +513,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 
 			if(gear_tab == "Инвентарь")
-				dat += "<span class='linkOff'>Инвентарь</span>"
+				dat += span_linkoff("Инвентарь")
 			else
 				dat += "<a href='?_src_=prefs;preference=gear;select_category=Инвентарь'>Инвентарь</a>"
 
@@ -556,21 +561,17 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						dat += "<font size=2>Все</font>"
 					dat += "</td><td><font size=2><i>[G.description]</i></font></td></tr>"
 			else
-				var/line_num = 0
-				dat += "<tr class='metaitem buyed'><td>"
-				for(var/gear_name in purchased_gear)
-					var/datum/gear/G = GLOB.gear_datums[gear_name]
-					if(!G)
+				for(var/category in GLOB.loadout_categories)
+					if(category == "OOC" || category == "Роли")
 						continue
-					if(G.sort_category == "OOC" || G.sort_category == "Роли")
-						continue
-					var/ticked = (G.id in equipped_gear)
-					if(line_num == 20)
-						dat += "</td></tr><tr class='metaitem buyed'><td>"
-						line_num = 0
-					dat += "<a class='tooltip' style='padding: 10px 2px;' [ticked ? "class='linkOn' " : ""]href='?_src_=prefs;preference=gear;toggle_gear=[G.id]'>[G.get_base64_icon_html()]<span class='tooltiptext'>[G.display_name]</span></a>"
-					line_num++
-				dat += "</td></tr>"
+					dat += "<tr class='metaitem buyed'><td><b>[category]:</b></td><td>"
+					for(var/gear_name in purchased_gear)
+						var/datum/gear/G = GLOB.gear_datums[gear_name]
+						if(!G || category != G.sort_category)
+							continue
+						var/ticked = (G.id in equipped_gear)
+						dat += "<a class='tooltip[ticked ? " linkOn" : ""]' style='padding: 10px 2px;' href='?_src_=prefs;preference=gear;toggle_gear=[G.id]'>[G.get_base64_icon_html()]<span class='tooltiptext'>[G.display_name]</span></a>"
+					dat += "</td></tr>"
 			dat += "</table>"
 
 		if (2) // Game Preferences
@@ -899,7 +900,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
 		var/datum/job/lastJob
 
-		for(var/datum/job/job in sortList(SSjob.occupations, /proc/cmp_job_display_asc))
+		for(var/datum/job/job in sort_list(SSjob.occupations, /proc/cmp_job_display_asc))
 
 			index += 1
 			if((index >= limit) || (job.title in splitJobs))
@@ -1394,15 +1395,25 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					else
 						hairstyle = next_list_item(hairstyle, GLOB.hairstyles_list)
 
-				if("grad_style")
+				if("hair_grad_style")
 					var/new_grad_style = input(user, "Choose a color pattern for your hair:", "Character Preference")  as null|anything in GLOB.hair_gradients_list
 					if(new_grad_style)
-						grad_style = new_grad_style
+						hair_grad_style = new_grad_style
 
-				if("grad_color")
-					var/new_grad_color = input(user, "Choose your character's secondary hair color:", "Character Preference","#"+grad_color) as color|null
+				if("hair_grad_color")
+					var/new_grad_color = input(user, "Choose your character's secondary hair color:", "Character Preference","#"+hair_grad_color) as color|null
 					if(new_grad_color)
-						grad_color = sanitize_hexcolor(new_grad_color)
+						hair_grad_color = sanitize_hexcolor(new_grad_color)
+
+				if("facial_grad_style")
+					var/new_grad_style = input(user, "Choose a color pattern for your facial:", "Character Preference")  as null|anything in GLOB.facial_hair_gradients_list
+					if(new_grad_style)
+						facial_grad_style = new_grad_style
+
+				if("facial_grad_color")
+					var/new_grad_color = input(user, "Choose your character's secondary facial color:", "Character Preference","#"+facial_grad_color) as color|null
+					if(new_grad_color)
+						facial_grad_color = sanitize_hexcolor(new_grad_color)
 
 				if("previous_hairstyle")
 					if (gender == MALE)
@@ -1697,7 +1708,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 							friendlyname += " (disabled)"
 						maplist[friendlyname] = VM.map_name
 					maplist[default] = null
-					var/pickedmap = input(user, "Choose your preferred map. This will be used to help weight random map selection.", "Character Preference")  as null|anything in sortList(maplist)
+					var/pickedmap = input(user, "Choose your preferred map. This will be used to help weight random map selection.", "Character Preference")  as null|anything in sort_list(maplist)
 					if (pickedmap)
 						preferred_map = maplist[pickedmap]
 
@@ -1714,7 +1725,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						parent.fps = (clientfps < 0) ? RECOMMENDED_FPS : clientfps
 
 				if("ui")
-					var/pickedui = input(user, "Choose your UI style.", "Character Preference", UI_style)  as null|anything in sortList(GLOB.available_ui_styles)
+					var/pickedui = input(user, "Choose your UI style.", "Character Preference", UI_style)  as null|anything in sort_list(GLOB.available_ui_styles)
 					if(pickedui)
 						UI_style = pickedui
 						if (parent && parent.mob && parent.mob.hud_used)
@@ -1824,7 +1835,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						if(!length(key_bindings[old_key]))
 							key_bindings -= old_key
 					key_bindings[full_key] += list(kb_name)
-					key_bindings[full_key] = sortList(key_bindings[full_key])
+					key_bindings[full_key] = sort_list(key_bindings[full_key])
 
 					user << browse(null, "window=capturekeypress")
 					user.client.set_macros()
@@ -1968,8 +1979,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				if("ambientocclusion")
 					ambientocclusion = !ambientocclusion
 					if(parent?.screen && parent.screen.len)
-						var/atom/movable/screen/plane_master/game_world/PM = locate(/atom/movable/screen/plane_master/game_world) in parent.screen
-						PM.backdrop(parent.mob)
+						var/atom/movable/screen/plane_master/game_world/plane_master = locate() in parent.screen
+						plane_master.backdrop(parent.mob)
 
 				if("auto_fit_viewport")
 					auto_fit_viewport = !auto_fit_viewport
@@ -2045,9 +2056,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					user.client.view_size.setZoomMode()
 
 				if("save")
-					if(SSmetainv)
-						SSmetainv.save_inv(user.client.ckey)
-
 					save_preferences()
 					save_character()
 
@@ -2125,8 +2133,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.hair_color = hair_color
 	character.facial_hair_color = facial_hair_color
 
-	character.grad_color = grad_color
-	character.grad_style = grad_style
+	LAZYSETLEN(character.grad_color, GRADIENTS_LEN)
+	character.grad_color[GRADIENT_HAIR_KEY] = hair_grad_color
+	character.grad_color[GRADIENT_FACIAL_HAIR_KEY] = facial_grad_color
+
+	LAZYSETLEN(character.grad_style, GRADIENTS_LEN)
+	character.grad_style[GRADIENT_HAIR_KEY] = hair_grad_style
+	character.grad_style[GRADIENT_FACIAL_HAIR_KEY] = facial_grad_style
 
 	character.skin_tone = skin_tone
 	character.hairstyle = hairstyle
@@ -2142,10 +2155,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/datum/species/chosen_species
 	chosen_species = pref_species.type
-	if(roundstart_checks && !(pref_species.id in GLOB.roundstart_races) && !(pref_species.id in (CONFIG_GET(keyed_list/roundstart_no_hard_check))))
-		chosen_species = /datum/species/human
-		pref_species = new /datum/species/human
-		save_character()
 
 	character.dna.features = features.Copy()
 	character.set_species(chosen_species, icon_update = FALSE, pref_load = TRUE)

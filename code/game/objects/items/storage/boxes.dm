@@ -94,7 +94,7 @@
 /obj/item/storage/box/mime/Moved(oldLoc, dir)
 	if (iscarbon(oldLoc))
 		alpha = 0
-	..()
+	return ..()
 
 //Disk boxes
 
@@ -127,6 +127,7 @@
 	var/mask_type = /obj/item/clothing/mask/breath/cheap
 	var/internal_type = /obj/item/tank/internals/emergency_oxygen
 	var/medipen_type = /obj/item/reagent_containers/hypospray/medipen
+	var/bottle_type = /obj/item/reagent_containers/food/drinks/waterbottle/large
 
 /obj/item/storage/box/survival/PopulateContents()
 	new mask_type(src)
@@ -138,6 +139,7 @@
 	else
 		new /obj/item/tank/internals/plasmaman/belt(src)
 	new /obj/item/emergency_shield(src)
+	new bottle_type(src)
 
 /obj/item/storage/box/survival/radio/PopulateContents()
 	..() // we want the survival stuff too.
@@ -704,6 +706,7 @@
 	drop_sound = 'sound/items/handling/matchbox_drop.ogg'
 	pickup_sound =  'sound/items/handling/matchbox_pickup.ogg'
 	custom_price = PAYCHECK_ASSISTANT * 0.4
+	illustration = null
 
 /obj/item/storage/box/matches/ComponentInitialize()
 	. = ..()
@@ -895,7 +898,7 @@
 
 /obj/item/storage/box/papersack/Initialize(mapload)
 	. = ..()
-	papersack_designs = sortList(list(
+	papersack_designs = sort_list(list(
 		"None" = image(icon = src.icon, icon_state = "paperbag_None"),
 		"NanotrasenStandard" = image(icon = src.icon, icon_state = "paperbag_NanotrasenStandard"),
 		"SyndiSnacks" = image(icon = src.icon, icon_state = "paperbag_SyndiSnacks"),
@@ -920,7 +923,7 @@
 			if("None")
 				desc = "Мешок, аккуратно сделанный из бумаги."
 			if("NanotrasenStandard")
-				desc = "Стандартный бумажный обеденный мешок Нанотрейзен для лояльных сотрудников в дороге."
+				desc = "Стандартный бумажный обеденный мешок NanoTrasen для лояльных сотрудников в дороге."
 			if("SyndiSnacks")
 				desc = "Дизайн этого бумажного пакета - пережиток печально известной программы СиндиЗакуски.."
 			if("Heart")

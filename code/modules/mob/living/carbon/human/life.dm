@@ -39,6 +39,15 @@
 			//heart attack stuff
 			handle_heart(delta_time, times_fired)
 			handle_liver(delta_time, times_fired)
+			if(dancing_period)
+				dancing_period--
+			if(prob(2))
+				if(nutrition < NUTRITION_LEVEL_STARVING)
+					to_chat(src, span_warning("[pick("Голодно...", "Кушать хочу...", "Вот бы что-нибудь съесть...", "Мой живот урчит...")]"))
+					take_overall_damage(stamina = 60)
+				if(hydration <= HYDRATION_LEVEL_DEHYDRATED)
+					to_chat(src, span_warning("[pick("Пить хочется...", "В горле пересохло...", "Водички бы сейчас...")]"))
+					take_overall_damage(stamina = 60)
 
 		dna.species.spec_life(src, delta_time, times_fired) // for mutantraces
 	else
@@ -49,20 +58,15 @@
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
-	if(stat != DEAD)
-		if(prob(2))
-			if(nutrition < NUTRITION_LEVEL_STARVING)
-				to_chat(src, span_warning("[pick("Голодно...", "Кушать хочу...", "Вот бы что-нибудь съесть...", "Мой живот урчит...")]"))
-				take_overall_damage(stamina = 60)
-			switch(pooition)
-				if(75 to 100)
-					to_chat(src, span_warning("[pick("Где тут уборная?", "Хочу в туалет.", "Надо в туалет.")]"))
-				if(125 to 129)
-					to_chat(src, span_warning("[pick("СРОЧНО В ТУАЛЕТ!", "ЖОПНЫЙ КЛАПАН НА ПРЕДЕЛЕ!", "ХОЧУ В ТУАЛЕТ!")]"))
-				if(130 to INFINITY)
-					try_poo()
-		return TRUE
+	if(!stat && mind && client)
+		var/ourtext = get_input_text()
+		if(ourtext && ourtext[1] != "*")
+			create_typing_indicator()
+		else
+			remove_typing_indicator()
 
+	if(stat != DEAD)
+		return TRUE
 
 /mob/living/carbon/human/calculate_affecting_pressure(pressure)
 	var/chest_covered = FALSE
@@ -354,25 +358,6 @@
 		Unconscious(80)
 	// Tissues die without blood circulation
 	adjustBruteLoss(1 * delta_time)
-
-/mob/living/carbon/human/handle_hydration(delta_time, times_fired)
-	..()
-	if(hydration >= HYDRATION_LEVEL_OVERHYDRATED)
-		if(DT_PROB(5, delta_time))
-			if(w_uniform)
-				Stun(4 SECONDS)
-				visible_message("<b>[capitalize(src.name)]</b> мочится себе в трусы!")
-				playsound(src, 'sound/effects/splat.ogg', 50, 1)
-				hydration -= 5
-				for(var/mob/M in viewers(src, 7))
-					if(ishuman(M) && M != src)
-						M.emote("laugh")
-			else
-				Stun(2 SECONDS)
-				visible_message("<b>[capitalize(src.name)]</b> обильно ссыт на пол!")
-				playsound(src, 'sound/effects/splat.ogg', 50, 1)
-				hydration -= 10
-
 
 #undef THERMAL_PROTECTION_HEAD
 #undef THERMAL_PROTECTION_CHEST

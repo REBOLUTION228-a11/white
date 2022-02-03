@@ -4,23 +4,25 @@
 /////////////////////////////////////////
 
 /datum/design/health_hud
-	name = "Health Scanner HUD"
-	desc = "A heads-up display that scans the humans in view and provides accurate data about their health status."
+	name = "Медицинский HUD"
+	desc = "Дисплей с заголовком, который сканирует гуманоидов и предоставляет точные данные о состоянии их здоровья."
 	id = "health_hud"
-	build_type = PROTOLATHE
+	build_type = PROTOLATHE | MECHFAB
 	materials = list(/datum/material/iron = 500, /datum/material/glass = 500)
 	build_path = /obj/item/clothing/glasses/hud/health
-	category = list("Снаряжение")
+	category = list("Снаряжение", "Медицинское снаряжение")
+	sub_category = list("Диагностика и мониторинг")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /datum/design/health_hud_night
-	name = "Night Vision Health Scanner HUD"
-	desc = "An advanced medical head-up display that allows doctors to find patients in complete darkness."
+	name = "Медицинский HUD с ПНВ"
+	desc = "Усовершенствованный медицинский дисплей, позволяющий врачам находить пациентов в полной темноте."
 	id = "health_hud_night"
-	build_type = PROTOLATHE
+	build_type = PROTOLATHE | MECHFAB
 	materials = list(/datum/material/iron = 600, /datum/material/glass = 600, /datum/material/uranium = 1000, /datum/material/silver = 350)
 	build_path = /obj/item/clothing/glasses/hud/health/night
-	category = list("Снаряжение")
+	category = list("Снаряжение", "Медицинское снаряжение")
+	sub_category = list("Диагностика и мониторинг")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /datum/design/security_hud
@@ -86,16 +88,6 @@
 	build_path = /obj/item/clothing/mask/gas/welding
 	category = list("Снаряжение")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE | DEPARTMENTAL_FLAG_ENGINEERING
-
-/datum/design/bright_helmet
-	name = "Workplace-Ready Firefighter Helmet"
-	desc = "By applying state of the art lighting technology to a fire helmet with industry standard photo-chemical hardening methods, this hardhat will protect you from robust workplace hazards."
-	id = "bright_helmet"
-	build_type = PROTOLATHE
-	materials = list(/datum/material/iron = 4000, /datum/material/glass = 1000, /datum/material/plastic = 3000, /datum/material/silver = 500)
-	build_path = /obj/item/clothing/head/hardhat/red/upgraded
-	category = list("Снаряжение")
-	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE | DEPARTMENTAL_FLAG_ENGINEERING | DEPARTMENTAL_FLAG_SECURITY | DEPARTMENTAL_FLAG_CARGO
 
 /datum/design/mauna_mug
 	name = "Mauna Mug"
@@ -208,14 +200,15 @@
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING
 
 /datum/design/sci_goggles
-	name = "Science Goggles"
-	desc = "Goggles fitted with a portable analyzer capable of determining the research worth of an item or components of a machine."
+	name = "Научные очки"
+	desc = "Пара шикарных очков, используемых для защиты от химических разливов. Оснащен анализатором для сканирования предметов и реагентов."
 	id = "scigoggles"
-	build_type = PROTOLATHE
+	build_type = PROTOLATHE | MECHFAB
 	materials = list(/datum/material/iron = 500, /datum/material/glass = 500)
 	build_path = /obj/item/clothing/glasses/science
-	category = list("Снаряжение")
-	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
+	category = list("Снаряжение", "Медицинское снаряжение")
+	sub_category = list("Диагностика и мониторинг")
+	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE | DEPARTMENTAL_FLAG_MEDICAL
 
 /datum/design/diskplantgene
 	name = "Plant Data Disk"
@@ -379,13 +372,14 @@
 	departmental_flags = DEPARTMENTAL_FLAG_SERVICE
 
 /datum/design/light_replacer
-	name = "Light Replacer"
-	desc = "A device to automatically replace lights. Refill with working light bulbs."
+	name = "Лампозаменитель"
+	desc = "Устройство для автоматической замены ламп. Заправляется целыми или разбитыми лампочками, а так же листами стекла."
 	id = "light_replacer"
 	build_type = PROTOLATHE
 	materials = list(/datum/material/iron = 1500, /datum/material/silver = 150, /datum/material/glass = 3000)
 	build_path = /obj/item/lightreplacer
-	category = list("Снаряжение")
+	category = list("Снаряжение", "Рабочие инструменты ")
+	sub_category = list("Монтажные комплексы")
 	departmental_flags = DEPARTMENTAL_FLAG_SERVICE | DEPARTMENTAL_FLAG_ENGINEERING
 
 /datum/design/buffer
@@ -465,13 +459,14 @@
 	departmental_flags = DEPARTMENTAL_FLAG_SECURITY
 
 /datum/design/glasses_prescription
-	name = "Prescription Glasses"
-	desc = "Made by Nerd. Co."
+	name = "Очки по рецепту"
+	desc = "Было изготовлено, собрано, доставлено и продано компанией Ботан-корп."
 	id = "glasses_prescription"
-	build_type = PROTOLATHE
+	build_type = PROTOLATHE | MECHFAB
 	materials = list(/datum/material/iron = 500, /datum/material/glass = 2000)
 	build_path = /obj/item/clothing/glasses/regular
-	category = list("Снаряжение")
+	category = list("Снаряжение", "Медицинское снаряжение")
+	sub_category = list("Прочее")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /datum/design/holosignengi
@@ -495,13 +490,14 @@
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING
 
 /datum/design/holobarrier_med
-	name = "PENLITE Holobarrier Projector"
-	desc = "PENLITE holobarriers, a device that halts individuals with malicious diseases."
-	build_type = PROTOLATHE
+	name = "Медицинский голопроектор PENLITE"
+	desc = "Создает барьер который блокирует проход пациентам с опасными заболеваниями. Используется для контроля эпидемий."
+	build_type = PROTOLATHE | MECHFAB
 	build_path = /obj/item/holosign_creator/medical
 	materials = list(/datum/material/iron = 500, /datum/material/glass = 500, /datum/material/silver = 100) //a hint of silver since it can troll 2 antags (bad viros and sentient disease)
 	id = "holobarrier_med"
-	category = list("Медицинские разработки")
+	category = list("Медицинские разработки", "Медицинское снаряжение")
+	sub_category = list("Экипировка")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /////////////////////////////////////////
@@ -603,12 +599,14 @@
 	departmental_flags = DEPARTMENTAL_FLAG_SECURITY
 
 /datum/design/plumbing_rcd
-	name = "Plumbing Constructor"
+	name = "Хим-фаб конструктор"
+	desc = "Модификация РЦД для создания химических фабрик."
 	id = "plumbing_rcd"
-	build_type = PROTOLATHE
+	build_type = PROTOLATHE | MECHFAB
 	materials = list(/datum/material/iron = 75000, /datum/material/glass = 37500, /datum/material/plastic = 1000)
 	build_path = /obj/item/construction/plumbing
-	category = list("Снаряжение")
+	category = list("Снаряжение", "Фармацевтика")
+	sub_category = list("Хим-фабрика")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /datum/design/gas_filter

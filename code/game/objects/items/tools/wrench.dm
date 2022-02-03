@@ -28,8 +28,8 @@
 	return (BRUTELOSS)
 
 /obj/item/wrench/abductor
-	name = "чужеродный гаечный ключ"
-	desc = "Поляризованный ключ. Это приводит к тому, что все, что находится между челюстями, поворачивается."
+	name = "инопланетный гаечный ключ"
+	desc = "Поляризованный ключ. Это приводит к тому, что все, что находится между полюсами, поворачивается."
 	icon = 'icons/obj/abductor.dmi'
 	icon_state = "wrench"
 	usesound = 'sound/effects/empulse.ogg'
@@ -74,7 +74,7 @@
 /obj/item/wrench/cyborg
 	name = "гидравлический гаечный ключ"
 	desc = "Усовершенствованный роботизированный ключ, приводимый в действие внутренней гидравликой. В два раза быстрее, чем версия для портативных устройств."
-	icon = 'icons/obj/items_cyborg.dmi'
+	icon = 'white/Feline/icons/cyber_arm_tools.dmi'
 	icon_state = "wrench_cyborg"
 	toolspeed = 0.5
 

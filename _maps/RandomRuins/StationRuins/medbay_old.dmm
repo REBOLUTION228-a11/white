@@ -2370,7 +2370,7 @@
 /area/medical/virology)
 "yM" = (
 /obj/machinery/light,
-/obj/machinery/rnd/production/techfab/department/medical,
+/obj/machinery/mecha_part_fabricator/med,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/storage)
 "yR" = (
@@ -3033,6 +3033,7 @@
 "Eu" = (
 /obj/structure/table,
 /obj/machinery/light,
+/obj/item/stack/sheet/plastic/fifty,
 /obj/item/book/manual/wiki/medicine,
 /obj/item/clothing/glasses/hud/health,
 /obj/item/clothing/glasses/hud/health,
@@ -4293,6 +4294,7 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 5
 	},
+/obj/structure/cable,
 /turf/open/floor/plating,
 /area/maintenance/department/medical/morgue)
 "QO" = (

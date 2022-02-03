@@ -184,13 +184,15 @@
 #define NUTRITION_LEVEL_START_MAX 400
 
 //Humans get thirsty
-#define HYDRATION_LEVEL_OVERHYDRATED 100
+#define HYDRATION_LEVEL_OVERHYDRATED 300
 #define HYDRATION_LEVEL_NORMAL 40
 #define HYDRATION_LEVEL_THIRSTY 20
 #define HYDRATION_LEVEL_DEHYDRATED 0
-#define HYDRATION_LEVEL_START_MIN 60
-#define HYDRATION_LEVEL_START_MAX 90
-#define HYDRATION_LOSS_PER_LIFE 0.005
+#define HYDRATION_LEVEL_START_MIN 150
+#define HYDRATION_LEVEL_START_MAX 200
+#define HYDRATION_LEVEL_MIN_CAP -10
+#define HYDRATION_LOSS_PER_LIFE 0.15
+#define HYDRATION_LOSS_PER_MOVE 0.0025
 #define DRINK_HYDRATION_FACTOR_HIGH 1.5
 #define DRINK_HYDRATION_FACTOR_MEDIUM 1
 #define DRINK_HYDRATION_FACTOR_LOW 0.5
@@ -342,8 +344,8 @@
 #define OFFSET_NECK "neck"
 
 //MINOR TWEAKS/MISC
-#define AGE_MIN				17	//youngest a character can be
-#define AGE_MAX				85	//oldest a character can be
+#define AGE_MIN				18	//youngest a character can be
+#define AGE_MAX				80	//oldest a character can be
 #define AGE_MINOR			20  //legal age of space drinking and smoking
 #define WIZARD_AGE_MIN		30	//youngest a wizard can be
 #define APPRENTICE_AGE_MIN	29	//youngest an apprentice can be
@@ -468,3 +470,13 @@
 
 //Saves a proc call, life is suffering. If who has no targets_from var, we assume it's just who
 #define GET_TARGETS_FROM(who) (who.targets_from ? who.get_targets_from() : who)
+
+//defines for grad_color and grad_styles list access keys
+#define GRADIENT_HAIR_KEY 1
+#define GRADIENT_FACIAL_HAIR_KEY 2
+//Keep up to date with the highest key value
+#define GRADIENTS_LEN 2
+
+// /datum/sprite_accessory/gradient defines
+#define GRADIENT_APPLIES_TO_HAIR (1<<0)
+#define GRADIENT_APPLIES_TO_FACIAL_HAIR (1<<1)

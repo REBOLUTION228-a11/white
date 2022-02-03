@@ -125,8 +125,10 @@
 /obj/structure/chair/proc/handle_layer()
 	if(has_buckled_mobs() && dir == NORTH)
 		layer = ABOVE_MOB_LAYER
+		plane = ABOVE_GAME_PLANE
 	else
-		layer = initial(layer)
+		layer = OBJ_LAYER
+		plane = GAME_PLANE
 
 /obj/structure/chair/post_buckle_mob(mob/living/M)
 	. = ..()
@@ -182,10 +184,11 @@
 /obj/structure/chair/comfy/Initialize()
 	armrest = GetArmrest()
 	armrest.layer = ABOVE_MOB_LAYER
+	armrest.plane = ABOVE_GAME_PLANE
 	return ..()
 
 /obj/structure/chair/comfy/proc/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "comfychair_armrest")
+	return mutable_appearance('icons/obj/chairs.dmi', "comfychair_armrest", plane = ABOVE_GAME_PLANE)
 
 /obj/structure/chair/comfy/Destroy()
 	QDEL_NULL(armrest)
@@ -227,7 +230,7 @@
 	buildstacktype = /obj/item/stack/sheet/mineral/titanium
 
 /obj/structure/chair/comfy/shuttle/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_armrest")
+	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_armrest", plane = ABOVE_GAME_PLANE)
 
 /obj/structure/chair/comfy/shuttle/electrify_self(obj/item/assembly/shock_kit/input_shock_kit, mob/user, list/overlays_from_child_procs)
 	if(!overlays_from_child_procs)
@@ -291,6 +294,16 @@
 	icon = 'white/valtos/icons/chairs.dmi'
 	icon_state = "bar"
 	item_chair = /obj/item/chair/stool/bar
+
+/obj/structure/chair/stool/bamboo
+	name = "бамбуковый стул"
+	desc = "Самодельный стул, выглядит прикольно."
+	icon_state = "bamboo_stool"
+	resistance_flags = FLAMMABLE
+	max_integrity = 60
+	buildstacktype = /obj/item/stack/sheet/mineral/bamboo
+	buildstackamount = 2
+	item_chair = /obj/item/chair/stool/bamboo
 
 /obj/item/chair
 	name = "стул"
@@ -388,6 +401,14 @@
 	inhand_icon_state = "stool"
 	origin_type = /obj/structure/chair/stool
 	break_chance = 0 //It's too sturdy.
+
+/obj/item/chair/stool/bamboo
+	name = "бамбуковый стул"
+	icon_state = "bamboo_stool"
+	inhand_icon_state = "stool_bamboo"
+	hitsound = 'sound/weapons/genhit1.ogg'
+	origin_type = /obj/structure/chair/stool/bamboo
+	break_chance = 50	//Submissive and breakable unlike the chad iron stool
 
 /obj/item/chair/stool/bar
 	name = "барный стул"
@@ -554,8 +575,10 @@
 /obj/machinery/painmachine/proc/handle_layer()
 	if(has_buckled_mobs() && dir == NORTH)
 		layer = ABOVE_MOB_LAYER
+		plane = ABOVE_GAME_PLANE
 	else
-		layer = initial(layer)
+		layer = OBJ_LAYER
+		plane = GAME_PLANE
 
 /obj/machinery/painmachine/post_buckle_mob(mob/living/M)
 	. = ..()

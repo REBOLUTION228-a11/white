@@ -534,7 +534,7 @@
 			if(AM)
 				if(check_target(AM, exclude_contents = TRUE))
 					acting_object.investigate_log("grabbed ([AM]) using [src].", INVESTIGATE_CIRCUIT)
-					acting_object.start_pulling(AM,mode)
+					acting_object.start_pulling(AM, mode)
 					if(acting_object.pulling)
 						set_pin_data(IC_OUTPUT, 1, TRUE)
 					else

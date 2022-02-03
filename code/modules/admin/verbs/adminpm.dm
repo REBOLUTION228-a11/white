@@ -36,7 +36,7 @@
 				targets["[client.mob.real_name](as [client.mob.name]) - [client]"] = client
 		else
 			targets["(No Mob) - [client]"] = client
-	var/target = input(src,"To whom shall we send a message?","Admin PM",null) as null|anything in sortList(targets)
+	var/target = input(src,"To whom shall we send a message?","Admin PM",null) as null|anything in sort_list(targets)
 	cmd_admin_pm(targets[target],null)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin PM") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -242,7 +242,7 @@
 
 			//play the receiving admin the adminhelp sound (if they have them enabled)
 			if(recipient.prefs.toggles & SOUND_ADMINHELP)
-				SEND_SOUND(recipient, sound(pick('white/fogmann/APM/APM1.ogg', 'white/fogmann/APM/APM2.ogg', 'white/fogmann/APM/APM3.ogg', 'white/fogmann/APM/APM4.ogg', 'white/fogmann/APM/APM5.ogg', 'white/fogmann/APM/APM6.ogg')))
+				SEND_SOUND(recipient, sound('sound/effects/adminhelp.ogg'))
 
 		else
 			if(holder)	//sender is an admin but recipient is not. Do BIG RED TEXT
@@ -275,7 +275,7 @@
 					SSblackbox.LogAhelp(recipient.current_ticket.id, "Reply", msg, recipient.ckey, src.ckey)
 
 				//always play non-admin recipients the adminhelp sound
-				SEND_SOUND(recipient, sound(pick('white/fogmann/APM/APM1.ogg', 'white/fogmann/APM/APM2.ogg', 'white/fogmann/APM/APM3.ogg', 'white/fogmann/APM/APM4.ogg', 'white/fogmann/APM/APM5.ogg', 'white/fogmann/APM/APM6.ogg')))
+				SEND_SOUND(recipient, sound('sound/effects/adminhelp.ogg'))
 				//AdminPM popup for ApocStation and anybody else who wants to use it. Set it with POPUP_ADMIN_PM in config.txt ~Carn
 				if(CONFIG_GET(flag/popup_admin_pm))
 					INVOKE_ASYNC(src, .proc/popup_admin_pm, recipient, msg)
@@ -417,7 +417,7 @@
 
 	window_flash(C, ignorepref = TRUE)
 	//always play non-admin recipients the adminhelp sound
-	SEND_SOUND(C, sound(pick('white/fogmann/APM/APM1.ogg', 'white/fogmann/APM/APM2.ogg', 'white/fogmann/APM/APM3.ogg', 'white/fogmann/APM/APM4.ogg', 'white/fogmann/APM/APM5.ogg', 'white/fogmann/APM/APM6.ogg')))
+	SEND_SOUND(C, sound('sound/effects/adminhelp.ogg'))
 
 	C.externalreplyamount = EXTERNALREPLYCOUNT
 

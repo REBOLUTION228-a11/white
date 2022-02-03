@@ -10,6 +10,7 @@
 	faction += "[REF(src)]"
 	GLOB.mob_living_list += src
 	SSpoints_of_interest.make_point_of_interest(src)
+	update_fov()
 
 	spawn(5 SECONDS)
 		if(ckey in GLOB.pacifist_list)
@@ -59,9 +60,10 @@
 	sharedSoullinks = null
 	return ..()
 
-/mob/living/onZImpact(turf/T, levels)
+/mob/living/onZImpact(turf/T, levels, message = TRUE)
 	if(!isgroundlessturf(T))
 		ZImpactDamage(T, levels)
+		message = FALSE
 	return ..()
 
 /mob/living/proc/ZImpactDamage(turf/T, levels)
@@ -224,6 +226,7 @@
 	if(!client && (mob_size < MOB_SIZE_SMALL))
 		return
 	now_pushing = TRUE
+	SEND_SIGNAL(src, COMSIG_LIVING_PUSHING_MOVABLE, AM)
 	var/t = get_dir(src, AM)
 	var/push_anchored = FALSE
 	if((AM.move_resist * MOVE_FORCE_CRUSH_RATIO) <= force)
@@ -397,12 +400,6 @@
 		return FALSE
 	if(!..())
 		return FALSE
-	var/obj/item/held = get_active_held_item()
-	if(held)
-		var/datum/component/aiming/aiming = held?.GetComponent(/datum/component/aiming)
-		if(aiming && isliving(A))
-			aiming.aim(src, A)
-			return TRUE
 	visible_message(span_name("[capitalize(src.name)]</span> показывает на <b>[skloname(A.name, VINITELNI, A.gender)]</b>."),
 					span_notice("Показываю на <b>[skloname(A.name, VINITELNI, A.gender)]</b>."))
 	return TRUE
@@ -415,7 +412,7 @@
 		return FALSE
 	if(!whispered)
 		var/response = tgui_alert(usr, "Преждевременный выход из тела отбирает у меня право на донос.\nОно мне нужно?", "Ты УВЕРЕН?", list("Да", "Нет"))
-		if(response == "Нет")
+		if(response != "Да")
 			to_chat(src, span_boldnotice("Пока ещё живу."))
 			return
 	log_message("Has [whispered ? "whispered his final words" : "succumbed to death"] with [round(health, 0.1)] points of health!", LOG_ATTACK)
@@ -709,7 +706,6 @@
 		adjustToxLoss(-20, TRUE, TRUE) //slime friendly
 		updatehealth()
 		grab_ghost()
-	SEND_SIGNAL(src, COMSIG_LIVING_REVIVE, full_heal, admin_revive)
 	if(full_heal)
 		fully_heal(admin_revive = admin_revive)
 	if(stat == DEAD && can_be_revived()) //in some cases you can't revive (e.g. no brain)
@@ -732,6 +728,8 @@
 	else if(admin_revive)
 		updatehealth()
 		get_up(TRUE)
+	// The signal is called after everything else so components can properly check the updated values
+	SEND_SIGNAL(src, COMSIG_LIVING_REVIVE, full_heal, admin_revive)
 
 
 /mob/living/proc/remove_CC()
@@ -790,9 +788,10 @@
 		lying_angle_on_movement(direct)
 	if (buckled && buckled.loc != newloc) //not updating position
 		if (!buckled.anchored)
-			return buckled.Move(newloc, direct, glide_size)
-		else
-			return FALSE
+			buckled.moving_from_pull = moving_from_pull
+			. = buckled.Move(newloc, direct, glide_size)
+			buckled?.moving_from_pull = null
+		return
 
 	var/old_direction = dir
 	var/turf/T = loc
@@ -800,12 +799,9 @@
 		update_pull_movespeed()
 	. = ..()
 
-	if(pulledby && moving_diagonally != FIRST_DIAG_STEP && get_dist(src, pulledby) > 1 && (pulledby != moving_from_pull))//separated from our puller and not in the middle of a diagonal move.
-		pulledby.stop_pulling()
-	else
-		if(isliving(pulledby))
-			var/mob/living/L = pulledby
-			L.set_pull_offsets(src, pulledby.grab_state)
+	if(moving_diagonally != FIRST_DIAG_STEP && isliving(pulledby))
+		var/mob/living/L = pulledby
+		L.set_pull_offsets(src, pulledby.grab_state)
 
 	if(active_storage && !(CanReach(active_storage.parent,view_only = TRUE)))
 		active_storage.close(src)
@@ -1370,15 +1366,15 @@
 	return L
 
 /mob/living/forceMove(atom/destination)
-	stop_pulling()
-	if(buckled)
-		buckled.unbuckle_mob(src, force = TRUE)
-	if(has_buckled_mobs())
-		unbuckle_all_mobs(force = TRUE)
+	if(!currently_z_moving)
+		stop_pulling()
+		if(buckled && !HAS_TRAIT(src, TRAIT_CANNOT_BE_UNBUCKLED))
+			buckled.unbuckle_mob(src, force = TRUE)
+		if(has_buckled_mobs())
+			unbuckle_all_mobs(force = TRUE)
 	. = ..()
-	if(.)
-		if(client)
-			reset_perspective()
+	if(. && client)
+		reset_perspective()
 
 
 /mob/living/proc/update_z(new_z) // 1+ to register, null to unregister

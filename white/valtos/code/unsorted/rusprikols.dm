@@ -32,17 +32,20 @@
 
 /obj/machinery/porta_turret/armory
 	name = "armory defense turret"
-	desc = "An energy blaster auto-turret."
+	desc = "An energy blaster auto-turret with an internal fusion core. Not dangerous in the slightest."
 	installation = null
 	stun_projectile = /obj/projectile/energy/electrode
 	stun_projectile_sound = 'sound/weapons/taser.ogg'
-	lethal_projectile = /obj/projectile/beam/laser/heavylaser/penetrator
+	lethal_projectile = /obj/projectile/beam/laser/penetrator
 	lethal_projectile_sound = 'sound/weapons/lasercannonfire.ogg'
+	max_integrity = 200
 	mode = TURRET_LETHAL
-	turret_flags = TURRET_FLAG_SHOOT_UNSHIELDED | TURRET_FLAG_SHOOT_CRIMINALS | TURRET_FLAG_AUTH_WEAPONS
-	//stun_all = 1
-	always_up = 1
+	uses_stored = FALSE
+	always_up = TRUE
+	turret_flags = TURRET_FLAG_SHOOT_ALL_REACT
+	has_cover = FALSE
 	scan_range = 9
+	shot_delay = 15
 	use_power = NO_POWER_USE
 	faction = list("silicon","turret")
 
@@ -56,10 +59,17 @@
 /obj/machinery/porta_turret/armory/interact(mob/user)
 	return
 
-/obj/projectile/beam/laser/heavylaser/penetrator
+/obj/machinery/porta_turret/armory/assess_perp(mob/living/carbon/human/perp)
+	. = ..()
+	if(. && istype(get_area(perp), /area/ai_monitored/security/armory))
+		return 10
+	return 0
+
+/obj/projectile/beam/laser/penetrator
+	damage = 40
 	projectile_piercing = PASSMOB
 	projectile_phasing = (ALL & (~PASSMOB))
-	range = 12
+	range = 9
 
 /obj/item/melee/classic_baton/dildon
 	name = "дилдо"

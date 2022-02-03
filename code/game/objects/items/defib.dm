@@ -2,8 +2,8 @@
 #define HALFWAYCRITDEATH ((HEALTH_THRESHOLD_CRIT + HEALTH_THRESHOLD_DEAD) * 0.5)
 
 /obj/item/defibrillator
-	name = "defibrillator"
-	desc = "A device that delivers powerful shocks to detachable paddles that resuscitate incapacitated patients."
+	name = "дефибриллятор"
+	desc = "Устройство генерирует короткий высоковольтный импульс, вызывающий полное сокращение миокарда. После того, как сердце полностью сократилось, существует вероятность восстановления нормального синусового ритма."
 	icon = 'icons/obj/defib.dmi'
 	icon_state = "defibunit"
 	inhand_icon_state = "defibunit"
@@ -24,6 +24,16 @@
 	var/obj/item/stock_parts/cell/high/cell
 	var/combat = FALSE //if true, revive through hardsuits, allow for combat shocking
 	var/cooldown_duration = 5 SECONDS//how long does it take to recharge
+	/// The icon state for the paddle overlay, not applied if null
+	var/paddle_state = "defibunit-paddles"
+	/// The icon state for the powered on overlay, not applied if null
+	var/powered_state = "defibunit-powered"
+	/// The icon state for the charge bar overlay, not applied if null
+	var/charge_state = "defibunit-charge"
+	/// The icon state for the missing cell overlay, not applied if null
+	var/nocell_state = "defibunit-nocell"
+	/// The icon state for the emagged overlay, not applied if null
+	var/emagged_state = "defibunit-emagged"
 
 /obj/item/defibrillator/get_cell()
 	return cell
@@ -63,18 +73,18 @@
 /obj/item/defibrillator/update_overlays()
 	. = ..()
 
-	if(!on)
-		. += "[initial(icon_state)]-paddles"
-	if(powered)
-		. += "[initial(icon_state)]-powered"
-		if(!QDELETED(cell))
+	if(!on && paddle_state)
+		. += paddle_state
+	if(powered && powered_state)
+		. += powered_state
+		if(!QDELETED(cell) && charge_state)
 			var/ratio = cell.charge / cell.maxcharge
 			ratio = CEILING(ratio*4, 1) * 25
-			. += "[initial(icon_state)]-charge[ratio]"
-	if(!cell)
-		. += "[initial(icon_state)]-nocell"
-	if(!safety)
-		. += "[initial(icon_state)]-emagged"
+			. += "[charge_state][ratio]"
+	if(!cell && nocell_state)
+		. += "[nocell_state]"
+	if(!safety && emagged_state)
+		. += emagged_state
 
 /obj/item/defibrillator/CheckParts(list/parts_list)
 	..()
@@ -141,10 +151,10 @@
 /obj/item/defibrillator/emag_act(mob/user)
 	if(safety)
 		safety = FALSE
-		to_chat(user, span_warning("You silently disable [src] safety protocols with the cryptographic sequencer."))
+		to_chat(user, span_warning("Вы незаметно выключаете протоколы безопасности [src] при помощи криптографического секвенсора."))
 	else
 		safety = TRUE
-		to_chat(user, span_notice("You silently enable [src] safety protocols with the cryptographic sequencer."))
+		to_chat(user, span_notice("Вы незаметно включаете протоколы безопасности [src] при помощи криптографического секвенсора."))
 
 /obj/item/defibrillator/emp_act(severity)
 	. = ..()
@@ -154,11 +164,11 @@
 		return
 	if(safety)
 		safety = FALSE
-		visible_message(span_notice("[capitalize(src.name)] beeps: Safety protocols disabled!"))
+		visible_message(span_notice("[capitalize(src.name)] пиликает: протоколы безопасности выключены!"))
 		playsound(src, 'sound/machines/defib_saftyOff.ogg', 50, FALSE)
 	else
 		safety = TRUE
-		visible_message(span_notice("[capitalize(src.name)] beeps: Safety protocols enabled!"))
+		visible_message(span_notice("[capitalize(src.name)] пиликает: протоколы безопасности включены!"))
 		playsound(src, 'sound/machines/defib_saftyOn.ogg', 50, FALSE)
 	update_power()
 
@@ -236,13 +246,18 @@
 	update_power()
 
 /obj/item/defibrillator/compact
-	name = "compact defibrillator"
-	desc = "A belt-equipped defibrillator that can be rapidly deployed."
+	name = "компактный дефибриллятор"
+	desc = "Более компактная и продвинутая версия дефибриллятора. Можно носить на поясе."
 	icon_state = "defibcompact"
 	inhand_icon_state = "defibcompact"
 	worn_icon_state = "defibcompact"
 	w_class = WEIGHT_CLASS_NORMAL
 	slot_flags = ITEM_SLOT_BELT
+	paddle_state = "defibcompact-paddles"
+	powered_state = "defibcompact-powered"
+	charge_state = "defibcompact-charge"
+	nocell_state = "defibcompact-nocell"
+	emagged_state = "defibcompact-emagged"
 
 /obj/item/defibrillator/compact/item_action_slot_check(slot, mob/user)
 	if(slot == user.getBeltSlot())
@@ -254,8 +269,8 @@
 	update_power()
 
 /obj/item/defibrillator/compact/combat
-	name = "combat defibrillator"
-	desc = "A belt-equipped blood-red defibrillator. Can revive through thick clothing, has an experimental self-recharging battery, and can be utilized in combat via applying the paddles in a disarming or aggressive manner."
+	name = "боевой дефибриллятор"
+	desc = "Военный образец дефибриллятора. Его мощные конденсаторы позволяют реанимировать пациента через одежду, а так же он может быть использован в бою в обезоруживающей или агрессивной манере."
 	icon_state = "defibcombat" //needs defib inhand sprites
 	inhand_icon_state = "defibcombat"
 	worn_icon_state = "defibcombat"
@@ -263,6 +278,9 @@
 	safety = FALSE
 	cooldown_duration = 2.5 SECONDS
 	paddle_type = /obj/item/shockpaddles/syndicate
+	paddle_state = "defibcombat-paddles"
+	powered_state = null
+	emagged_state = null
 
 /obj/item/defibrillator/compact/combat/loaded/Initialize()
 	. = ..()
@@ -275,18 +293,19 @@
 		return
 
 /obj/item/defibrillator/compact/combat/loaded/nanotrasen
-	name = "elite Nanotrasen defibrillator"
-	desc = "A belt-equipped state-of-the-art defibrillator. Can revive through thick clothing, has an experimental self-recharging battery, and can be utilized in combat via applying the paddles in a disarming or agressive manner."
+	name = "элитный дефибриллятор NanoTrasen"
+	desc = "Военный образец. Мощные конденсаторы позволяют пробивать легкую одежду, а так же использовать его в бою для разоружения или агрессивного электрошока."
 	icon_state = "defibnt" //needs defib inhand sprites
 	inhand_icon_state = "defibnt"
 	worn_icon_state = "defibnt"
 	paddle_type = /obj/item/shockpaddles/syndicate/nanotrasen
+	paddle_state = "defibnt-paddles"
 
 //paddles
 
 /obj/item/shockpaddles
-	name = "defibrillator paddles"
-	desc = "A pair of plastic-gripped paddles with flat metal surfaces that are used to deliver powerful electric shocks."
+	name = "электроды дефибриллятора"
+	desc = "Пара токопроводящих электродов."
 	icon = 'icons/obj/defib.dmi'
 	icon_state = "defibpaddles0"
 	inhand_icon_state = "defibpaddles0"
@@ -644,7 +663,7 @@
 	update_icon()
 
 /obj/item/shockpaddles/cyborg
-	name = "cyborg defibrillator paddles"
+	name = "кибернетические электроды дефибриллятора"
 	icon = 'icons/obj/defib.dmi'
 	icon_state = "defibpaddles0"
 	inhand_icon_state = "defibpaddles0"
@@ -663,8 +682,8 @@
 	. = ..()
 
 /obj/item/shockpaddles/syndicate
-	name = "syndicate defibrillator paddles"
-	desc = "A pair of paddles used to revive deceased operatives. They possess both the ability to penetrate armor and to deliver powerful or disabling shocks offensively."
+	name = "электроды дефибриллятора Синдиката"
+	desc = "Военный образец. Мощные конденсаторы позволяют пробивать легкую одежду, а так же использовать его в бою для разоружения или агрессивного электрошока."
 	combat = TRUE
 	icon = 'icons/obj/defib.dmi'
 	icon_state = "syndiepaddles0"
@@ -672,8 +691,8 @@
 	base_icon_state = "syndiepaddles"
 
 /obj/item/shockpaddles/syndicate/nanotrasen
-	name = "elite nanotrasen defibrillator paddles"
-	desc = "A pair of paddles used to revive deceased ERT members. They possess both the ability to penetrate armor and to deliver powerful or disabling shocks offensively."
+	name = "электроды элитного дефибриллятора NanoTrasen"
+	desc = "Военный образец. Мощные конденсаторы позволяют пробивать легкую одежду, а так же использовать его в бою для разоружения или агрессивного электрошока."
 	icon_state = "ntpaddles0"
 	inhand_icon_state = "ntpaddles0"
 	base_icon_state = "ntpaddles"

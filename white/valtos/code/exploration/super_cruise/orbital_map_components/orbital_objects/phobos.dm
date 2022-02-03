@@ -3,8 +3,10 @@
 /datum/orbital_object/z_linked/phobos
 	name = "Озон"
 	mass = 50000
-	radius = 300
+	radius = 350
 	static_object = TRUE
+	render_mode = RENDER_MODE_PLANET
+	priority = 20
 
 /datum/orbital_object/z_linked/phobos/New()
 	. = ..()

@@ -3,8 +3,8 @@
 #define CELL_POWER_DRAIN 750
 
 /obj/item/stock_parts/cell
-	name = "power cell"
-	desc = "A rechargeable electrochemical power cell."
+	name = "базовая батарея"
+	desc = "Перезаряжаемый электрохимический элемент питания, вмещающий 1 МДж энергии."
 	icon = 'white/valtos/icons/power.dmi'
 	icon_state = "cell"
 	inhand_icon_state = "cell"
@@ -53,16 +53,31 @@
 	UnregisterSignal(reagents, list(COMSIG_REAGENTS_NEW_REAGENT, COMSIG_REAGENTS_ADD_REAGENT, COMSIG_REAGENTS_DEL_REAGENT, COMSIG_REAGENTS_REM_REAGENT, COMSIG_PARENT_QDELETING))
 	return NONE
 
-/obj/item/stock_parts/cell/update_overlays()
+/**
+ * supply own icon file if your cell uses different overlays.
+ * upper_charge_percent - charge % above which cell shows the "fully charged" overlay.
+ * lower_charge_percent - charge % below which cell shows no overlay.
+ * Inbetween those the cell shows the default blinking yellow overlay.
+ * If you want to have more overlays, call it as ..(override = TRUE) to not get any of the default cell overlays, including wires for grown cells.
+ **/
+/obj/item/stock_parts/cell/update_overlays(icon_file = FALSE, lower_charge_percent = 0.01, upper_charge_percent = 0.995, override = FALSE)
 	. = ..()
-	if(grown_battery)
-		. += mutable_appearance('white/valtos/icons/power.dmi', "grown_wires")
-	if(charge < 0.01)
+	if(override)
 		return
-	else if(charge/maxcharge >=0.995)
-		. += mutable_appearance('white/valtos/icons/power.dmi', "cell-o2")
+
+	if(!icon_file)
+		icon_file = 'white/valtos/icons/power.dmi'
+
+	if(grown_battery)
+		. += mutable_appearance(icon_file, "grown_wires")
+
+	if(charge/maxcharge < lower_charge_percent)
+		return
+
+	if(charge/maxcharge >= upper_charge_percent)
+		. += mutable_appearance(icon_file, "cell-o2")
 	else
-		. += mutable_appearance('white/valtos/icons/power.dmi', "cell-o1")
+		. += mutable_appearance(icon_file, "cell-o1")
 
 /obj/item/stock_parts/cell/proc/percent()		// return % charge of cell
 	return 100*charge/maxcharge
@@ -254,15 +269,16 @@
 	maxcharge = 2000
 
 /obj/item/stock_parts/cell/high
-	name = "high-capacity power cell"
+	name = "батарея увеличенной емкости"
+	desc = "Перезаряжаемый электрохимический элемент питания, вмещающий 10 МДж энергии."
 	icon_state = "hcell"
 	maxcharge = 10000
 	custom_materials = list(/datum/material/glass=60)
 	chargerate = 1500
 
 /obj/item/stock_parts/cell/high/plus
-	name = "high-capacity power cell+"
-	desc = "Where did these come from?"
+	name = "батарея увеличенной емкости+"
+	desc = "Усовершенстованный перезаряжаемый электрохимический элемент питания, вмещающий 15 МДж энергии."
 	icon_state = "h+cell"
 	maxcharge = 15000
 	chargerate = 2250
@@ -274,7 +290,8 @@
 	update_icon()
 
 /obj/item/stock_parts/cell/super
-	name = "super-capacity power cell"
+	name = "батарея сверхувеличенной емкости"
+	desc = "Усовершенстованный перезаряжаемый электрохимический элемент питания, вмещающий 20 МДж энергии."
 	icon_state = "scell"
 	maxcharge = 20000
 	custom_materials = list(/datum/material/glass=300)
@@ -287,7 +304,8 @@
 	update_icon()
 
 /obj/item/stock_parts/cell/hyper
-	name = "hyper-capacity power cell"
+	name = "батарея гиперувеличенной емкости"
+	desc = "Усовершенстованный перезаряжаемый электрохимический элемент питания, вмещающий 30 МДж энергии."
 	icon_state = "hpcell"
 	maxcharge = 30000
 	custom_materials = list(/datum/material/glass=400)
@@ -300,8 +318,8 @@
 	update_icon()
 
 /obj/item/stock_parts/cell/bluespace
-	name = "bluespace power cell"
-	desc = "A rechargeable transdimensional power cell."
+	name = "блюспейс батарея"
+	desc = "Экспериментальный перезаряжаемый межпространственный элемент питания, вмещающий 40 МДж энергии."
 	icon_state = "bscell"
 	maxcharge = 40000
 	custom_materials = list(/datum/material/glass=600)
@@ -381,7 +399,7 @@
 	charge = clamp((charge-(10000/severity)),0,maxcharge)
 
 /obj/item/stock_parts/cell/emergency_light
-	name = "miniature power cell"
+	name = "миниатюрная батарея"
 	desc = "A tiny power cell with a very low power capacity. Used in light fixtures to power them in the event of an outage."
 	maxcharge = 120 //Emergency lights use 0.2 W per tick, meaning ~10 minutes of emergency power from a cell
 	custom_materials = list(/datum/material/glass = 20)

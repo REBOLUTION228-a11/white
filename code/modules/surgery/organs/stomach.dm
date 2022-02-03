@@ -194,7 +194,7 @@
 	milk_burn_healing = 0
 
 /obj/item/organ/stomach/ethereal
-	name = "биологическая батарейка"
+	name = "Биохимическая батарея"
 	icon_state = "stomach-p" //Welp. At least it's more unique in functionaliy.
 	desc = "Кристаллический орган, хранящий электрический заряд эфирных существ."
 	var/crystal_charge = ETHEREAL_CHARGE_FULL
@@ -250,7 +250,7 @@
 	maxHealth = 2 * STANDARD_ORGAN_THRESHOLD
 	disgust_metabolism = 3
 	emp_vulnerability = 20
-	metabolism_efficiency = 0.1
+	metabolism_efficiency = 0.01
 
 /obj/item/organ/stomach/cybernetic/emp_act(severity)
 	. = ..()

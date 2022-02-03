@@ -1,8 +1,9 @@
 /datum/orbital_object/z_linked/beacon
 	name = "Неопознанный Сигнал"
 	mass = 0
-	radius = 30
+	radius = 10
 	can_dock_anywhere = TRUE
+	render_mode = RENDER_MODE_BEACON
 	//The attached event
 	var/datum/ruin_event/ruin_event
 
@@ -20,7 +21,7 @@
 /datum/orbital_object/z_linked/beacon/post_map_setup()
 	//Orbit around the systems sun
 	var/datum/orbital_map/linked_map = SSorbits.orbital_maps[orbital_map_index]
-	set_orbitting_around_body(linked_map.center, 4000 + 250 * linked_z_level[1].z_value)
+	set_orbitting_around_body(linked_map.center, 2000 + 25 * linked_z_level[1].z_value)
 
 /datum/orbital_object/z_linked/beacon/weak
 	name = "Слабый Сигнал"
@@ -31,10 +32,11 @@
 
 /datum/orbital_object/z_linked/beacon/ruin/asteroid
 	name = "Астероид"
+	render_mode = RENDER_MODE_DEFAULT
 
 /datum/orbital_object/z_linked/beacon/ruinasteroid/New()
 	. = ..()
-	radius = rand(30, 70)
+	radius = rand(5, 15)
 
 /datum/orbital_object/z_linked/beacon/ruin/asteroid/assign_z_level()
 	var/datum/space_level/assigned_space_level = SSzclear.get_free_z_level()
@@ -46,7 +48,7 @@
 	//Orbit around the systems central gravitional body
 	//Pack closely together to make an asteriod belt.
 	var/datum/orbital_map/linked_map = SSorbits.orbital_maps[orbital_map_index]
-	set_orbitting_around_body(linked_map.center, 1200 + 20 * rand(-10, 10))
+	set_orbitting_around_body(linked_map.center, 800 + 20 * rand(-19, 19))
 
 //====================
 // Regular Ruin Z-levels
@@ -72,7 +74,7 @@
 /datum/orbital_object/z_linked/beacon/ruin/spaceruin/post_map_setup()
 	//Orbit around the systems sun
 	var/datum/orbital_map/linked_map = SSorbits.orbital_maps[orbital_map_index]
-	set_orbitting_around_body(linked_map.center, 4000 + 250 * rand(4, 20))
+	set_orbitting_around_body(linked_map.center, 2000 + 25 * rand(40, 20))
 
 //====================
 // Random-Ruin z-levels
@@ -97,7 +99,7 @@
 /datum/orbital_object/z_linked/beacon/ruin/post_map_setup()
 	//Orbit around the systems sun
 	var/datum/orbital_map/linked_map = SSorbits.orbital_maps[orbital_map_index]
-	set_orbitting_around_body(linked_map.center, 4000 + 250 * rand(4, 20))
+	set_orbitting_around_body(linked_map.center, 2000 + 25 * rand(40, 20))
 
 
 //====================

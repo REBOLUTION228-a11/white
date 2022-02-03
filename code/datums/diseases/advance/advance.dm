@@ -18,11 +18,11 @@
 
 /datum/disease/advance
 	name = "Неизвестно" // We will always let our Virologist name our disease.
-	desc = "An engineered disease which can contain a multitude of symptoms."
-	form = "Advance Disease" // Will let med-scanners know that this disease was engineered.
-	agent = "advance microbes"
+	desc = "Может иметь множество симптомов."
+	form = "Спроектированное заболевание" // Will let med-scanners know that this disease was engineered.
+	agent = "спроектированные микробы"
 	max_stages = 5
-	spread_text = "Unknown"
+	spread_text = "Неизвестно"
 	viable_mobtypes = list(/mob/living/carbon/human)
 
 	// NEW VARS
@@ -267,22 +267,22 @@
 	switch(spread_id)
 		if(DISEASE_SPREAD_NON_CONTAGIOUS)
 			spread_flags = DISEASE_SPREAD_NON_CONTAGIOUS
-			spread_text = "None"
+			spread_text = "Нет"
 		if(DISEASE_SPREAD_SPECIAL)
 			spread_flags = DISEASE_SPREAD_SPECIAL
-			spread_text = "None"
+			spread_text = "Нет"
 		if(DISEASE_SPREAD_BLOOD)
 			spread_flags = DISEASE_SPREAD_BLOOD
-			spread_text = "Blood"
+			spread_text = "Кровеносное"
 		if(DISEASE_SPREAD_CONTACT_FLUIDS)
 			spread_flags = DISEASE_SPREAD_BLOOD | DISEASE_SPREAD_CONTACT_FLUIDS
-			spread_text = "Fluids"
+			spread_text = "Жидкостное"
 		if(DISEASE_SPREAD_CONTACT_SKIN)
 			spread_flags = DISEASE_SPREAD_BLOOD | DISEASE_SPREAD_CONTACT_FLUIDS | DISEASE_SPREAD_CONTACT_SKIN
-			spread_text = "On contact"
+			spread_text = "При контакте"
 		if(DISEASE_SPREAD_AIRBORNE)
 			spread_flags = DISEASE_SPREAD_BLOOD | DISEASE_SPREAD_CONTACT_FLUIDS | DISEASE_SPREAD_CONTACT_SKIN | DISEASE_SPREAD_AIRBORNE
-			spread_text = "Airborne"
+			spread_text = "Воздушное"
 
 /datum/disease/advance/proc/SetSeverity(level_sev)
 
@@ -303,7 +303,7 @@
 		if(6 to INFINITY)
 			severity = DISEASE_SEVERITY_BIOHAZARD
 		else
-			severity = "Unknown"
+			severity = "Неизвестно"
 
 
 // Will generate a random cure, the more resistance the symptoms have, the harder the cure.
@@ -362,7 +362,7 @@
 				L += "[S.id]N"
 			else
 				L += S.id
-		L = sortList(L) // Sort the list so it doesn't matter which order the symptoms are in.
+		L = sort_list(L) // Sort the list so it doesn't matter which order the symptoms are in.
 		var/result = jointext(L, ":")
 		id = result
 	return id
@@ -388,7 +388,7 @@
 /datum/disease/advance/proc/NeuterSymptom(datum/symptom/S)
 	if(!S.neutered)
 		S.neutered = TRUE
-		S.name += " (neutered)"
+		S.name += " (стерилизованный)"
 		S.OnRemove(src)
 
 /*
@@ -451,7 +451,7 @@
 	symptoms += SSdisease.list_symptoms.Copy()
 	do
 		if(user)
-			var/symptom = input(user, "Choose a symptom to add ([i] remaining)", "Choose a Symptom") in sortList(symptoms, /proc/cmp_typepaths_asc)
+			var/symptom = input(user, "Какой симптом добавим ([i] осталось)", "Выбор симптома") in sort_list(symptoms, /proc/cmp_typepaths_asc)
 			if(isnull(symptom))
 				return
 			else if(istext(symptom))
@@ -465,21 +465,21 @@
 
 	if(D.symptoms.len > 0)
 
-		var/new_name = stripped_input(user, "Name your new disease.", "New Name")
+		var/new_name = stripped_input(user, "Имя новой болячки.", "Новое имя")
 		if(!new_name)
 			return
 		D.Refresh()
 		D.AssignName(new_name)	//Updates the master copy
 		D.name = new_name //Updates our copy
 
-		var/list/targets = list("Random")
+		var/list/targets = list("Случайный")
 		targets += sortNames(GLOB.human_list)
-		var/target = input(user, "Pick a viable human target for the disease.", "Disease Target") as null|anything in targets
+		var/target = input(user, "Выбираем человеков в качестве цели.", "Заразить цель") as null|anything in targets
 
 		var/mob/living/carbon/human/H
 		if(!target)
 			return
-		if(target == "Random")
+		if(target == "Случайный")
 			for(var/human in shuffle(GLOB.human_list))
 				H = human
 				var/found = FALSE
@@ -489,13 +489,13 @@
 					found = H.ForceContractDisease(D)
 					break
 				if(!found)
-					to_chat(user, "Could not find a valid target for the disease.")
+					to_chat(user, "Нет подходящих целей.")
 		else
 			H = target
 			if(istype(H) && D.infectable_biotypes & H.mob_biotypes)
 				H.ForceContractDisease(D)
 			else
-				to_chat(user, "Target could not be infected. Check mob biotype compatibility or resistances.")
+				to_chat(user, "Цель не может быть заражена.")
 				return
 
 		message_admins("[key_name_admin(user)] has triggered a custom virus outbreak of [D.admin_details()] in [ADMIN_LOOKUPFLW(H)]")

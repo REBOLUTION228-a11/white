@@ -6,11 +6,12 @@
 	faction = list(ROLE_ALIEN)
 	sight = SEE_MOBS
 	see_in_dark = 4
-	verb_say = "hisses"
+	verb_say = "шипит"
 	initial_language_holder = /datum/language_holder/alien
 	bubble_icon = "alien"
 	type_of_meat = /obj/item/food/meat/slab/xeno
 	blocks_emissive = EMISSIVE_BLOCK_UNIQUE
+	ventcrawler = VENTCRAWLER_ALWAYS
 
 	var/obj/item/card/id/wear_id = null
 	var/has_fine_manipulation = 0

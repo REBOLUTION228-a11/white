@@ -40,8 +40,10 @@
 	cam_screen.del_on_map_removal = FALSE
 	cam_screen.screen_loc = "[map_name]:1,1"
 	cam_plane_masters = list()
-	for(var/plane in subtypesof(/atom/movable/screen/plane_master))
-		var/atom/movable/screen/instance = new plane()
+	for(var/plane in subtypesof(/atom/movable/screen/plane_master) - /atom/movable/screen/plane_master/blackness)
+		var/atom/movable/screen/plane_master/instance = new plane()
+		if(instance.blend_mode_override)
+			instance.blend_mode = instance.blend_mode_override
 		instance.assigned_map = map_name
 		instance.del_on_map_removal = FALSE
 		instance.screen_loc = "[map_name]:CENTER"
@@ -80,6 +82,8 @@
 			playsound(src, 'sound/machines/terminal_on.ogg', 25, FALSE)
 			use_power(active_power_usage)
 		// Register map objects
+		if(!user?.client)
+			return
 		user.client.register_map_obj(cam_screen)
 		for(var/plane in cam_plane_masters)
 			user.client.register_map_obj(plane)
@@ -87,6 +91,11 @@
 		// Open UI
 		ui = new(user, src, "CameraConsole", name)
 		ui.open()
+
+/obj/machinery/computer/security/ui_status(mob/user)
+	if(!in_range(user, src) && !isobserver(user))
+		return UI_CLOSE
+	return ..()
 
 /obj/machinery/computer/security/ui_data()
 	var/list/data = list()
@@ -209,7 +218,7 @@
 	name = "security camera monitor"
 	desc = "An old TV hooked into the station's camera network."
 	icon_state = "television"
-	icon_keyboard = "no_keyboard"
+	icon_keyboard = null
 	icon_screen = "detective_tv"
 	pass_flags = PASSTABLE
 
@@ -252,6 +261,7 @@
 	desc = "Used for watching an empty arena."
 	icon = 'icons/obj/stationobjs.dmi'
 	icon_state = "telescreen"
+	icon_keyboard = null
 	layer = SIGN_LAYER
 	network = list("thunder")
 	density = FALSE
@@ -264,14 +274,13 @@
 		icon_state += "b"
 
 /obj/machinery/computer/security/telescreen/entertainment
-	name = "entertainment monitor"
-	desc = "Damn, they better have the /tg/ channel on these things."
+	name = "экран развлечений"
+	desc = "Лучшее шоу, которое только можно увидеть."
 	icon = 'icons/obj/status_display.dmi'
 	icon_state = "entertainment_blank"
 	network = list("thunder")
 	density = FALSE
 	circuit = null
-	interaction_flags_atom = NONE  // interact() is called by BigClick()
 	var/icon_state_off = "entertainment_blank"
 	var/icon_state_on = "entertainment"
 
@@ -304,10 +313,10 @@
 /obj/machinery/computer/security/telescreen/entertainment/proc/notify(on)
 	if(on && icon_state == icon_state_off)
 		say(pick(
-			"Feats of bravery live now at the thunderdome!",
-			"Two enter, one leaves! Tune in now!",
-			"Violence like you've never seen it before!",
-			"Spears! Camera! Action! LIVE NOW!"))
+			"Цирк в эфире, все сюда!",
+			"Двое входит, один выходит! Смотри сейчас!",
+			"Насилие, которое вы ещё не видели ранее!",
+			"Копья! Камера! Мотор! ЭФИР НАЧАЛСЯ!"))
 		icon_state = icon_state_on
 	else
 		icon_state = icon_state_off

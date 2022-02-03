@@ -1,17 +1,3 @@
-#define NANO_ARMOR "armor"
-#define NANO_CLOAK "cloak"
-#define NANO_SPEED "speed"
-#define NANO_STRENGTH "strength"
-#define NANO_NONE "none"
-#define NANO_JUMP_USE 30
-#define NANO_CHARGE_DELAY 20
-#define NANO_EMP_CHARGE_DELAY 45
-
-#define POWER_PUNCH "QQQ"
-#define HEAD_EXPLOSION "SSSS"
-#define MARTIALART_NANOSUIT "nanosuit strength"
-#define TRAIT_TACRELOAD "tac_reload_trait"
-
 /datum/action/item_action/dusting_implant
 	check_flags =  NONE
 	name = "Activate Dusting Implant"
@@ -1181,13 +1167,6 @@
 		if("strength")
 			toggle_mode(NANO_STRENGTH)
 			return
-
-/datum/radial_menu/extract_image(E)
-	var/mutable_appearance/MA = new /mutable_appearance(E)
-	if(MA)
-		MA.layer = ABOVE_HUD_LAYER
-		MA.appearance_flags |= RESET_TRANSFORM | RESET_ALPHA
-	return MA
 
 //Nanosuit uplink item, available in all traitor rounds and nuke.
 /datum/uplink_item/dangerous/nanosuit

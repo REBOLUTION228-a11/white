@@ -63,7 +63,7 @@ GLOBAL_LIST_INIT(metal_recipes, list ( \
 	new/datum/stack_recipe("каркас канистры", /obj/structure/canister_frame/machine/frame_tier_0, 5, time = 8, one_per_turf = TRUE, on_floor = TRUE), \
 	null, \
 	new/datum/stack_recipe("плитка для пола", /obj/item/stack/tile/plasteel, 1, 4, 20), \
-	new/datum/stack_recipe("железный стержень", /obj/item/stack/rods, 1, 2, 60), \
+	new/datum/stack_recipe("желез. стержень", /obj/item/stack/rods, 1, 2, 60), \
 	null, \
 	new/datum/stack_recipe("каркас стены", /obj/structure/girder, 2, time = 40, one_per_turf = TRUE, on_floor = TRUE, trait_booster = TRAIT_QUICK_BUILD, trait_modifier = 0.75), \
 	null, \
@@ -256,7 +256,7 @@ GLOBAL_LIST_INIT(wood_recipes, list ( \
 	singular_name = "деревянная доска"
 	icon_state = "sheet-wood"
 	inhand_icon_state = "sheet-wood"
-	icon = 'icons/obj/stack_objects.dmi'
+	icon = 'white/valtos/icons/items.dmi'
 	mats_per_unit = list(/datum/material/wood=MINERAL_MATERIAL_AMOUNT)
 	sheettype = "wood"
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 50, ACID = 0)
@@ -282,7 +282,18 @@ GLOBAL_LIST_INIT(wood_recipes, list ( \
 
 GLOBAL_LIST_INIT(bamboo_recipes, list ( \
 	new/datum/stack_recipe("ловушка волчья яма ", /obj/structure/punji_sticks, 5, time = 30, one_per_turf = TRUE, on_floor = TRUE), \
-	new/datum/stack_recipe("распылитель", /obj/item/gun/syringe/blowgun, 10, time = 70), \
+	new/datum/stack_recipe("бамбуковое копьё", /obj/item/spear/bamboospear, 25, time = 90), \
+	new/datum/stack_recipe("духовая трубка", /obj/item/gun/syringe/blowgun, 10, time = 70), \
+	new/datum/stack_recipe("примитивный шприц", /obj/item/reagent_containers/syringe/crude, 5, time = 10), \
+	null, \
+	new/datum/stack_recipe("бамбуковый стул", /obj/structure/chair/stool/bamboo, 2, time = 10, one_per_turf = TRUE, on_floor = TRUE), \
+	new/datum/stack_recipe("бамбуковый пол", /obj/item/stack/tile/bamboo, 1, 4, 20), \
+	null, \
+	new/datum/stack_recipe_list("бамбуковая скамья", list(
+		new /datum/stack_recipe("бамбуковая скамья (центр)", /obj/structure/chair/sofa/bamboo, 3, time = 10, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("бамбуковая скамья (левая)", /obj/structure/chair/sofa/bamboo/left, 3, time = 10, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("бамбуковая скамья (правая)", /obj/structure/chair/sofa/bamboo/right, 3, time = 10, one_per_turf = TRUE, on_floor = TRUE)
+		)),	\
 	))
 
 /obj/item/stack/sheet/mineral/bamboo
@@ -292,6 +303,7 @@ GLOBAL_LIST_INIT(bamboo_recipes, list ( \
 	icon_state = "sheet-bamboo"
 	inhand_icon_state = "sheet-bamboo"
 	icon = 'icons/obj/stack_objects.dmi'
+	sheettype = "bamboo"
 	mats_per_unit = list(/datum/material/bamboo = MINERAL_MATERIAL_AMOUNT)
 	throwforce = 15
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 50, ACID = 0)
@@ -299,6 +311,7 @@ GLOBAL_LIST_INIT(bamboo_recipes, list ( \
 	merge_type = /obj/item/stack/sheet/mineral/bamboo
 	grind_results = list(/datum/reagent/cellulose = 10)
 	material_type = /datum/material/bamboo
+	walltype = /turf/closed/wall/mineral/bamboo
 
 /obj/item/stack/sheet/mineral/bamboo/get_main_recipes()
 	. = ..()
@@ -595,7 +608,7 @@ GLOBAL_LIST_INIT(bronze_recipes, list ( \
 	singular_name = "лист латуни"
 	icon_state = "sheet-brass"
 	inhand_icon_state = "sheet-brass"
-	icon = 'icons/obj/stack_objects.dmi'
+	icon = 'white/valtos/icons/items.dmi'
 	mats_per_unit = list(/datum/material/bronze = MINERAL_MATERIAL_AMOUNT)
 	lefthand_file = 'icons/mob/inhands/misc/sheets_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/misc/sheets_righthand.dmi'
@@ -740,6 +753,7 @@ new /datum/stack_recipe("paper frame door", /obj/structure/mineral_door/paperfra
 	name = "листы мяса"
 	desc = "Чье-то окровавленное мясо, спресованное в неплохой твердый лист."
 	singular_name = "лист мяса"
+	icon = 'white/valtos/icons/items.dmi'
 	icon_state = "sheet-meat"
 	material_flags = MATERIAL_COLOR
 	mats_per_unit = list(/datum/material/meat = MINERAL_MATERIAL_AMOUNT)

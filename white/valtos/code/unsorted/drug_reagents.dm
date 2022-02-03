@@ -1,4 +1,3 @@
-#define BADTRIP_COOLDOWN 180
 /datum/reagent/drug/burpinate
     name = "Burpinate"
     description = "Они называют меня газообразной глиной."
@@ -261,7 +260,7 @@
 
 /datum/reagent/drug/grape_blast/proc/end_bad_trip(mob/living/carbon/human/H)
 	bad_trip = FALSE
-	badtrip_cooldown = world.time + BADTRIP_COOLDOWN
+	badtrip_cooldown = world.time + 3 MINUTES
 	H.visible_message(span_notice("[H] похоже, успокаивается."))
 	H.emote("me", 1, pick("делает глубокий вдох", "расслабляется"))
 
@@ -499,7 +498,6 @@
 	desc = "<big>АААААААААААААААААААААААА!!!</big>"
 	image_icon = 'white/valtos/icons/lifeweb/water.dmi'
 	image_state = "water0"
-	image_layer = BYOND_LIGHTING_LAYER
 	var/triggered_shit = FALSE
 
 /obj/effect/hallucination/simple/water/New(turf/location_who_cares_fuck, mob/living/carbon/C, forced = TRUE)
@@ -543,7 +541,6 @@
 		"ashroom", "cshroom", "eshroom", "fshroom", "amanita", "gshroom", "bshroom", "dshroom", \
 		"bezglaznik", "krovnik", "pumpkin", "rice", "goldenapple", "gryab", "curer", "otorvyannik", \
 		"glig", "beet", "turnip")
-	image_layer = BYOND_LIGHTING_LAYER
 
 /obj/effect/hallucination/simple/ovoshi/New(turf/location_who_cares_fuck, mob/living/carbon/C, forced = TRUE, list/phrases = list())
 	image_state = pick(states)
@@ -581,7 +578,6 @@
 
 /atom/movable/screen/fullscreen/labeb
 	icon = 'white/valtos/icons/ruzone_went_up.dmi'
-	layer = SPLASHSCREEN_LAYER
 	plane = SPLASHSCREEN_PLANE
 	screen_loc = "CENTER-7,SOUTH"
 	icon_state = ""
@@ -753,4 +749,4 @@
 
 /datum/chemical_reaction/labebium
 	results = list(/datum/reagent/drug/labebium = 1)
-	required_reagents = list(/datum/reagent/toxin/poo = 8, /datum/reagent/drug/pupupipi = 1)
+	required_reagents = list(/datum/reagent/consumable/ethanol/boyarka = 8, /datum/reagent/drug/pupupipi = 1)

@@ -37,6 +37,10 @@
 			reagents.clear_reagents()
 		else
 			if(M != user)
+				if(M.hydration >= HYDRATION_LEVEL_OVERHYDRATED)
+					M.visible_message(span_danger("[user] не может больше напоить [M] содержимым [src.name]."), \
+					span_userdanger("[user] больше не может напоить меня содержимым [src.name]."))
+					return
 				M.visible_message(span_danger("[user] пытается напоить [M] из [src].") , \
 							span_userdanger("[user] пытается напоить меня из [src]."))
 				if(!do_mob(user, M))
@@ -47,6 +51,9 @@
 							span_userdanger("[user] поит меня чем-то из [src]."))
 				log_combat(user, M, "fed", reagents.log_list())
 			else
+				if(user.hydration >= HYDRATION_LEVEL_OVERHYDRATED)
+					to_chat(M, span_warning("В меня больше не лезет содержимое [src.name]!"))
+					return
 				to_chat(user, span_notice("Делаю глоток из [src]."))
 
 			for(var/datum/reagent/R in reagents.reagent_list)
@@ -91,6 +98,8 @@
 		var/trans = reagents.trans_to(target, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Переливаю [trans] единиц в [target]."))
 
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
+
 	else if(target.is_drainable()) //A dispenser. Transfer FROM it TO us.
 		if(!target.reagents.total_volume)
 			to_chat(user, span_warning("[target] пуст и не может быть заполнен!"))
@@ -102,6 +111,8 @@
 
 		var/trans = target.reagents.trans_to(src, amount_per_transfer_from_this, transfered_by = user)
 		to_chat(user, span_notice("Наполняю [src] [trans] единицами из [target]."))
+
+		playsound(get_turf(user), pick(WATER_FLOW_MINI), 50, TRUE)
 
 	else if(reagents.total_volume)
 		if(user.a_intent == INTENT_HARM)
@@ -204,9 +215,8 @@
 	fill_icon_thresholds = list(0, 1, 10, 25, 35, 50, 60, 80, 100)
 
 /obj/item/reagent_containers/glass/beaker/noreact
-	name = "химический стакан криостазиса"
-	desc = "Химический стакан криостазиса, позволяющий хранить химикаты \
-		не начиная реакцию. Вместимость до 50 единиц."
+	name = "криостатический химический стакан"
+	desc = "Химический стакан криостазиса, позволяющий хранить химикаты не начиная реакцию. Вместимость до 50 единиц."
 	icon_state = "beakernoreact"
 	custom_materials = list(/datum/material/iron=3000)
 	reagent_flags = OPENCONTAINER | NO_REACT
@@ -214,10 +224,8 @@
 	amount_per_transfer_from_this = 10
 
 /obj/item/reagent_containers/glass/beaker/bluespace
-	name = "химический стакан блюспейс"
-	desc = "химический стакан разработанный с использованием экспериментальной блюспейс технологии \
-		and Element Cuban combined with the Compound Pete. Can hold up to \
-		300 units."
+	name = "блюспейс химический стакан"
+	desc = "химический стакан разработанный с использованием экспериментальной блюспейс технологии, вмещает до 300 единиц."
 	icon_state = "beakerbluespace"
 	custom_materials = list(/datum/material/glass = 5000, /datum/material/plasma = 3000, /datum/material/diamond = 1000, /datum/material/bluespace = 1000)
 	volume = 300

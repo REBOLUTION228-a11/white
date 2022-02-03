@@ -4,8 +4,8 @@
 	//The blackbox required to recover.
 	var/obj/item/blackbox/objective/linked_blackbox
 	//Relatively easy mission.
-	min_payout = 5 * CARGO_CRATE_VALUE
-	max_payout = 10 * CARGO_CRATE_VALUE
+	min_payout = 1 * CARGO_CRATE_VALUE
+	max_payout = 5 * CARGO_CRATE_VALUE
 
 /datum/orbital_objective/recover_blackbox/generate_objective_stuff(turf/chosen_turf)
 	generated = TRUE
@@ -41,7 +41,7 @@
 
 /obj/item/blackbox/objective/examine(mob/user)
 	. = ..()
-	. += "<hr><span class='notice'>Активируй это в руке <b>на мостике</b> станции, чтобы отправить Нанотрейзен нужные данные и завершить контракт.</span>"
+	. += "<hr><span class='notice'>Активируй это в руке <b>на мостике</b> станции, чтобы отправить NanoTrasen нужные данные и завершить контракт.</span>"
 
 /datum/component/recoverable
 	var/recovered = FALSE

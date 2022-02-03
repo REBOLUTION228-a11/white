@@ -47,7 +47,9 @@
 	belt = /obj/item/storage/belt/security/omon
 	id = /obj/item/card/id/advanced/centcom
 
-	implants = list(/obj/item/implant/sound_implant)
+	id_trim = /datum/id_trim/centcom/omon
+
+	implants = list(/obj/item/implant/sound_implant, /obj/item/implant/mindshield)
 
 /datum/outfit/omon/pre_equip(mob/living/carbon/human/H)
 	if (prob(10))
@@ -85,7 +87,9 @@
 	belt = /obj/item/storage/belt/military/army/omon
 	id = /obj/item/card/id/advanced/centcom
 
-	implants = list(/obj/item/implant/sound_implant)
+	id_trim = /datum/id_trim/centcom/omon/leader
+
+	implants = list(/obj/item/implant/sound_implant, /obj/item/implant/mindshield)
 
 /datum/outfit/omon/leader/pre_equip(mob/living/carbon/human/H)
 	back = /obj/item/gun/ballistic/automatic/aksu74

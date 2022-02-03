@@ -134,6 +134,7 @@
 //"entered-[blood_state]-[dir_of_image]"
 //or: "exited-[blood_state]-[dir_of_image]"
 GLOBAL_LIST_EMPTY(bloody_footprints_cache)
+GLOBAL_LIST_EMPTY(snowy_footprints_cache)
 
 //Bloody shoes/footprints
 #define BLOODY_FOOTPRINT_BASE_ALPHA 20 /// Minimum alpha of footprints
@@ -244,7 +245,7 @@ GLOBAL_LIST_INIT(ghost_others_options, list(GHOST_OTHERS_SIMPLE, GHOST_OTHERS_DE
 #define ORBITRON	"Orbitron"
 #define SHARE		"Share Tech Mono"
 
-GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
+GLOBAL_LIST_INIT(pda_styles, sort_list(list(MONO, VT, ORBITRON, SHARE)))
 
 /////////////////////////////////////
 // atom.appearence_flags shortcuts //
@@ -505,11 +506,6 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define OK_ART 20
 #define GOOD_ART 25
 #define GREAT_ART 50
-
-// possible bitflag return values of intercept_zImpact(atom/movable/AM, levels = 1) calls
-#define FALL_INTERCEPTED		(1<<0) //Stops the movable from falling further and crashing on the ground
-#define FALL_NO_MESSAGE			(1<<1) //Used to suppress the "[A] falls through [old_turf]" messages where it'd make little sense at all, like going downstairs.
-#define FALL_STOP_INTERCEPTING	(1<<2) //Used in situations where halting the whole "intercept" loop would be better, like supermatter dusting (and thus deleting) the atom.
 
 //Religion
 ///role below priests, for losing most powers of priests but still being holy.

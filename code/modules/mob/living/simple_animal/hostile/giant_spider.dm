@@ -40,15 +40,15 @@
 	icon_living = "guard"
 	icon_dead = "guard_dead"
 	mob_biotypes = MOB_ORGANIC|MOB_BUG
-	speak_emote = list("chitters")
-	emote_hear = list("chitters")
+	speak_emote = list("трепещет")
+	emote_hear = list("трепещет")
 	speak_chance = 5
 	speed = 0
 	turns_per_move = 5
 	see_in_dark = 4
 	butcher_results = list(/obj/item/food/meat/slab/spider = 2, /obj/item/food/spiderleg = 8)
-	response_help_continuous = "pets"
-	response_help_simple = "pet"
+	response_help_continuous = "гладит"
+	response_help_simple = "гладит"
 	response_disarm_continuous = "gently pushes aside"
 	response_disarm_simple = "gently push aside"
 	initial_language_holder = /datum/language_holder/spider
@@ -86,6 +86,10 @@
 	. = ..()
 	lay_web = new
 	lay_web.Grant(src)
+	if(poison_per_bite)
+		AddElement(/datum/element/venomous, poison_type, poison_per_bite)
+	AddElement(/datum/element/nerfed_pulling, GLOB.typecache_general_bad_things_to_easily_move)
+	AddElement(/datum/element/prevent_attacking_of_types, GLOB.typecache_general_bad_hostile_attack_targets, "this tastes awful!")
 
 /mob/living/simple_animal/hostile/poison/giant_spider/Login()
 	. = ..()
@@ -129,7 +133,7 @@
 	health = 50
 	melee_damage_lower = 15
 	melee_damage_upper = 20
-	poison_per_bite = 10
+	poison_per_bite = 5
 	move_to_delay = 5
 	speed = -0.1
 
@@ -249,7 +253,7 @@
 	health = 40
 	melee_damage_lower = 5
 	melee_damage_upper = 5
-	poison_per_bite = 6
+	poison_per_bite = 5
 	move_to_delay = 4
 	poison_type = /datum/reagent/toxin/venom
 	speed = -0.5

@@ -60,7 +60,6 @@
 	name = "beam of solar energy"
 	icon_state = "solar_beam"
 	icon = 'icons/effects/beam.dmi'
-	layer = LIGHTING_LAYER
 	duration = 5
 	randomdir = FALSE
 
@@ -94,7 +93,7 @@
 	return ..()
 
 /datum/status_effect/seedling_beam_indicator/tick()
-	var/target_angle = Get_Angle(owner, target)
+	var/target_angle = get_angle(owner, target)
 	var/matrix/final = matrix()
 	final.Turn(target_angle)
 	seedling_screen_object.transform = final

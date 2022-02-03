@@ -1,11 +1,5 @@
 //DEFINITIONS FOR ASSET DATUMS START HERE.
 
-/datum/asset/simple/tgui_common
-	keep_local_name = TRUE
-	assets = list(
-		"tgui-common.bundle.js" = file("tgui/public/tgui-common.bundle.js"),
-	)
-
 /datum/asset/simple/tgui
 	keep_local_name = TRUE
 	assets = list(
@@ -173,18 +167,18 @@
 
 /datum/asset/simple/namespaced/tgfont
 	assets = list(
-		"tgfont.eot" = file("tgui/packages/tgfont/dist/tgfont.eot"),
-		"tgfont.woff2" = file("tgui/packages/tgfont/dist/tgfont.woff2"),
+		"tgfont.eot" = file("tgui/packages/tgfont/static/tgfont.eot"),
+		"tgfont.woff2" = file("tgui/packages/tgfont/static/tgfont.woff2"),
 	)
 	parents = list(
-		"tgfont.css" = file("tgui/packages/tgfont/dist/tgfont.css"),
+		"tgfont.css" = file("tgui/packages/tgfont/static/tgfont.css"),
 	)
 
 /datum/asset/spritesheet/chat
 	name = "chat"
 
 /datum/asset/spritesheet/chat/register()
-	InsertAll("emoji", 'icons/emoji.dmi')
+	InsertAll("emoji", EMOJI_SET)
 	// pre-loading all lanugage icons also helps to avoid meta
 	InsertAll("language", 'icons/misc/language.dmi')
 	// catch languages which are pulling icons from another file
@@ -532,27 +526,17 @@
 	..()
 
 /datum/asset/simple/portraits
-	var/tab = "use subtypes of this please"
 	assets = list()
 
 /datum/asset/simple/portraits/New()
-	if(!SSpersistence.paintings || !SSpersistence.paintings[tab] || !length(SSpersistence.paintings[tab]))
+	if(!length(SSpersistent_paintings.paintings))
 		return
-	for(var/p in SSpersistence.paintings[tab])
-		var/list/portrait = p
-		var/png = "data/paintings/[tab]/[portrait["md5"]].png"
+	for(var/datum/painting/portrait as anything in SSpersistent_paintings.paintings)
+		var/png = "data/paintings/images/[portrait.md5].png"
 		if(fexists(png))
-			assets[portrait["title"]] = png
+			var/asset_name = "paintings_[portrait.md5]"
+			assets[asset_name] = png
 	..() //this is where it registers all these assets we added to the list
-
-/datum/asset/simple/portraits/library
-	tab = "library"
-
-/datum/asset/simple/portraits/library_secure
-	tab = "library_secure"
-
-/datum/asset/simple/portraits/library_private
-	tab = "library_private"
 
 /datum/asset/simple/safe
 	assets = list(

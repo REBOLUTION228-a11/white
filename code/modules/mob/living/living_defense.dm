@@ -19,6 +19,7 @@
 			to_chat(src, span_notice("[absorb_text]"))
 		else
 			to_chat(src, span_notice("Броня поглотила удар!"))
+		playsound(src, "ricochet_armor", 60)
 	else
 		if(soften_text)
 			to_chat(src, span_warning("[soften_text]"))
@@ -53,19 +54,14 @@
 
 	SEND_SIGNAL(src, COMSIG_ATOM_BULLET_ACT, P, def_zone)
 
-//	if(isliving(P.firer))
-//		var/mob/living/L = P.firer
-//		lastattacker = L.real_name
-//		if(L.ckey)
-//			lastattackerckey = L.ckey
-
 	if(isliving(P.firer))
 		lastattackermob = P.firer
 
 	if(!P.nodamage && on_hit_state != BULLET_ACT_BLOCK)
-		apply_damage(P.damage, P.damage_type, def_zone, armor, wound_bonus=P.wound_bonus, bare_wound_bonus=P.bare_wound_bonus, sharpness = P.sharpness)
+		var/attack_direction = get_dir(P.starting, src)
+		apply_damage(P.damage, P.damage_type, def_zone, armor, wound_bonus=P.wound_bonus, bare_wound_bonus=P.bare_wound_bonus, sharpness = P.sharpness, attack_direction = attack_direction)
 		apply_effects(P.stun, P.knockdown, P.unconscious, P.irradiate, P.slur, P.stutter, P.eyeblur, P.drowsy, armor, P.stamina, P.jitter, P.paralyze, P.immobilize)
-		if(P.dismemberment)
+		if(P.dismemberment && (P.damage_type == BRUTE || P.damage_type == BURN))
 			check_projectile_dismemberment(P, def_zone)
 	return on_hit_state ? BULLET_ACT_HIT : BULLET_ACT_BLOCK
 
@@ -102,7 +98,7 @@
 						span_userdanger("В <b>меня</b> попадает [thrown_item.name]!"))
 		if(!thrown_item.throwforce)
 			return
-		var/armor = run_armor_check(zone, MELEE, "Моя броня отражает попадание в [ru_parse_zone(parse_zone(zone))].", "Моя броня смягчает попадание в [ru_parse_zone(parse_zone(zone))].", thrown_item.armour_penetration)
+		var/armor = run_armor_check(zone, MELEE, "Броня отражает попадание в [ru_parse_zone(parse_zone(zone))].", "Броня смягчает попадание в [ru_parse_zone(parse_zone(zone))].", thrown_item.armour_penetration)
 		apply_damage(thrown_item.throwforce, thrown_item.damtype, zone, armor, sharpness = thrown_item.get_sharpness(), wound_bonus = (nosell_hit * CANT_WOUND))
 		if(QDELETED(src)) //Damage can delete the mob.
 			return

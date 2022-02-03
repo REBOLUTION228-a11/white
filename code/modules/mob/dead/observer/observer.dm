@@ -8,7 +8,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	desc = "Это призрак. Бу!" //jinkies!
 	icon = 'icons/mob/mob.dmi'
 	icon_state = "ghost"
-	layer = GHOST_LAYER
 	stat = DEAD
 	density = FALSE
 	see_invisible = SEE_INVISIBLE_OBSERVER
@@ -61,6 +60,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	// of the mob
 	var/deadchat_name
 	var/datum/spawners_menu/spawners_menu
+	var/datum/minigames_menu/minigames_menu
 
 /mob/dead/observer/Initialize()
 	set_invisibility(GLOB.observer_default_invisibility)
@@ -68,7 +68,8 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	add_verb(src, list(
 		/mob/dead/observer/proc/dead_tele,
 		/mob/dead/observer/proc/open_spawners_menu,
-		/mob/dead/observer/proc/tray_view))
+		/mob/dead/observer/proc/tray_view,
+		/mob/dead/observer/proc/open_minigames_menu))
 
 	if(icon_state in GLOB.ghost_forms_with_directions_list)
 		ghostimage_default = image(src.icon,src,src.icon_state + "_nodir")
@@ -148,10 +149,9 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	show_data_huds()
 	data_huds_on = 1
 
-	overlay_fullscreen("noise", /atom/movable/screen/fullscreen/noisescreen)
-
-	if(fexists("data/custom_ghosts/[ckey].dmi"))
-		swap_icons()
+	spawn(10)
+		if(fexists("data/custom_ghosts/[ckey].dmi"))
+			swap_icons()
 
 	SSpoints_of_interest.make_point_of_interest(src)
 
@@ -182,6 +182,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	updateallghostimages()
 
 	QDEL_NULL(spawners_menu)
+	QDEL_NULL(minigames_menu)
 	return ..()
 
 /*
@@ -382,6 +383,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	client.view_size.setDefault(getScreenSize(client.prefs.widescreenpref))//Let's reset so people can't become allseeing gods
 	client.view = "[client.prefs.widescreenwidth]x15"
 	SStgui.on_transfer(src, mind.current) // Transfer NanoUIs.
+	if(mind.current.stat == DEAD && SSlag_switch.measures[DISABLE_DEAD_KEYLOOP])
+		to_chat(src, span_warning("Чтобы покинуть тело используй кнопку Призрак."))
 	mind.current.key = key
 	mind.current.client.init_verbs()
 	return TRUE
@@ -536,6 +539,10 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set name = "Радиус обзора"
 	set desc = "Change your view range."
 
+	if(SSlag_switch.measures[DISABLE_GHOST_ZOOM_TRAY] && !client?.holder)
+		to_chat(usr, span_notice("Запрещено."))
+		return
+
 	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(client.view_size.getView() == client.view_size.default)
 		var/list/views = list()
@@ -550,6 +557,11 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/add_view_range(input as num)
 	set name = "Add View Range"
 	set hidden = TRUE
+
+	if(SSlag_switch.measures[DISABLE_GHOST_ZOOM_TRAY] && !client?.holder)
+		to_chat(usr, span_notice("Запрещено."))
+		return
+
 	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(input)
 		client.rescale_view(input, 0, ((max_view*2)+1) - 15)
@@ -603,7 +615,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 /mob/dead/observer/update_sight()
 	if(client)
-		ghost_others = client.prefs.ghost_others //A quick update just in case this setting was changed right before calling the proc
+		ghost_others = client.prefs?.ghost_others //A quick update just in case this setting was changed right before calling the proc
 
 	if (!ghostvision)
 		see_invisible = SEE_INVISIBLE_LIVING
@@ -976,12 +988,31 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	spawners_menu.ui_interact(src)
 
+/mob/dead/observer/proc/open_minigames_menu()
+	set name = "Мини-игры"
+	set desc = "See all currently available minigames"
+	set category = "Призрак"
+	if(!client)
+		return
+	if(!isobserver(src))
+		to_chat(usr, span_warning("Нужно быть призраком для этого!"))
+		return
+	if(!minigames_menu)
+		minigames_menu = new(src)
+
+	minigames_menu.ui_interact(src)
+
 /mob/dead/observer/proc/tray_view()
 	set category = "Призрак"
 	set name = " 🔄 T-ray зрение"
 	set desc = "Toggles a view of sub-floor objects"
 
 	var/static/t_ray_view = FALSE
+
+	if(SSlag_switch.measures[DISABLE_GHOST_ZOOM_TRAY] && !client?.holder && !t_ray_view)
+		to_chat(usr, span_notice("Запрещено."))
+		return
+
 	t_ray_view = !t_ray_view
 
 	var/list/t_ray_images = list()

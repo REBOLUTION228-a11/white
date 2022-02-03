@@ -28,26 +28,61 @@
 /obj/forge
 	name = "кузница"
 	desc = "Нагревает различные штуки, но реже всего слитки."
-	icon = 'white/valtos/icons/dwarfs/forge.dmi'
+	icon = 'white/kacherkin/icons/dwarfs/obj/forge.dmi'
 	icon_state = "forge_on"
 	light_range = 9
 	light_color = "#BB661E"
 	density = TRUE
 	anchored = TRUE
+	var/fuel = 60
+	var/fuel_consumption = 1
+	var/list/fuel_values = list(/obj/item/stack/sheet/mineral/coal = 10, /obj/item/stack/sheet/mineral/wood = 5)
+	var/busy_heating = FALSE
+
+/obj/forge/Initialize(mapload)
+	. = ..()
+	flick("forge_start", src)
+	START_PROCESSING(SSprocessing, src)
+
+/obj/forge/Destroy(force)
+	. = ..()
+	STOP_PROCESSING(SSprocessing, src)
+
+/obj/forge/process(delta_time)
+	if(fuel >= fuel_consumption)
+		fuel-=fuel_consumption
+	else
+		fuel = 0
+		if(icon_state != "forge_off")
+			icon_state = "forge_off"
+			flick("forge_shutdown", src)
 
 /obj/forge/attackby(obj/item/I, mob/living/user, params)
 
 	if(user.a_intent == INTENT_HARM)
 		return ..()
-
-	if(istype(I, /obj/item/blacksmith/tongs))
+	if(I.type in fuel_values)
+		var/obj/item/stack/S = I
+		src.visible_message(span_notice("[user] добавляет [S] в [src]."), span_notice("Добавляю [S] в [src]."))
+		fuel+=S.amount*100
+		qdel(S)
+		if(icon_state != "forge_on")
+			icon_state = "forge_on"
+			flick("forge_start", src)
+	else if(istype(I, /obj/item/blacksmith/tongs))
 		if(I.contents.len)
-			if(istype(I.contents[I.contents.len], /obj/item/blacksmith/ingot))
-				var/obj/item/blacksmith/ingot/N = I.contents[I.contents.len]
-				N.heattemp = 350
-				I.icon_state = "tongs_hot"
-				to_chat(user, span_notice("Нагреваю болванку как могу."))
+			if(!fuel)
+				to_chat(user, span_notice("Нет топлива."))
 				return
+			if(istype(I.contents[I.contents.len], /obj/item/blacksmith/ingot))
+				if(!busy_heating)
+					busy_heating = TRUE
+					if(do_after(user, 10, src))
+						var/obj/item/blacksmith/ingot/N = I.contents[I.contents.len]
+						N.heattemp = 350
+						I.icon_state = "tongs_hot"
+						to_chat(user, span_notice("Нагреваю болванку как могу."))
+					busy_heating = FALSE
 		else
 			to_chat(user, span_warning("Ты ебанутый?"))
 			return
@@ -161,8 +196,8 @@
 /obj/anvil/fullsteel
 	name = "тяжёлая наковальня"
 	desc = "Не сдвинуть. Совсем."
-	icon = 'white/valtos/icons/objects.dmi'
-	icon_state = "anvil_full"
+	icon = 'white/kacherkin/icons/dwarfs/obj/objects.dmi'
+	icon_state = "old_anvil_full"
 
 /obj/anvil/Initialize()
 	. = ..()

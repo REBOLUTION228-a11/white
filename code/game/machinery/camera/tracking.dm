@@ -53,7 +53,7 @@
 		else
 			track.others[name] = WEAKREF(L)
 
-	var/list/targets = sortList(track.humans) + sortList(track.others)
+	var/list/targets = sort_list(track.humans) + sort_list(track.others)
 
 	return targets
 
@@ -69,7 +69,8 @@
 
 	var/datum/weakref/target = (isnull(track.humans[target_name]) ? track.others[target_name] : track.humans[target_name])
 
-	ai_actual_track(target.resolve())
+	if(target)
+		ai_actual_track(target.resolve())
 
 /mob/living/silicon/ai/proc/ai_actual_track(mob/living/target)
 	if(!istype(target))

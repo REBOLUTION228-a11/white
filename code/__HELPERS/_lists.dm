@@ -19,6 +19,8 @@
 ///returns L[I] if L exists and I is a valid index of L, runtimes if L is not a list
 #define LAZYACCESS(L, I) (L ? (isnum(I) ? (I > 0 && I <= length(L) ? L[I] : null) : L[I]) : null)
 #define LAZYSET(L, K, V) if(!L) { L = list(); } L[K] = V;
+///Sets the length of a lazylist
+#define LAZYSETLEN(L, V) if (!L) { L = list(); } L.len = V;
 #define LAZYLEN(L) length(L)
 ///Sets a list to null
 #define LAZYNULL(L) L = null
@@ -147,6 +149,11 @@
 			return TRUE
 	return FALSE
 
+/// Return either pick(list) or null if list is not of type /list or is empty
+/proc/safepick(list/L)
+	if(LAZYLEN(L))
+		return pick(L)
+
 //Checks for specific types in specifically structured (Assoc "type" = TRUE) lists ('typecaches')
 #define is_type_in_typecache(A, L) (A && length(L) && L[(ispath(A) ? A : A:type)])
 
@@ -154,25 +161,22 @@
 /proc/typecache_filter_list(list/atoms, list/typecache)
 	RETURN_TYPE(/list)
 	. = list()
-	for(var/thing in atoms)
-		var/atom/A = thing
-		if (typecache[A.type])
-			. += A
+	for(var/atom/atom_checked as anything in atoms)
+		if (typecache[atom_checked.type])
+			. += atom_checked
 
 /proc/typecache_filter_list_reverse(list/atoms, list/typecache)
 	RETURN_TYPE(/list)
 	. = list()
-	for(var/thing in atoms)
-		var/atom/A = thing
-		if(!typecache[A.type])
-			. += A
+	for(var/atom/atom_checked as anything in atoms)
+		if(!typecache[atom_checked.type])
+			. += atom_checked
 
 /proc/typecache_filter_multi_list_exclusion(list/atoms, list/typecache_include, list/typecache_exclude)
 	. = list()
-	for(var/thing in atoms)
-		var/atom/A = thing
-		if(typecache_include[A.type] && !typecache_exclude[A.type])
-			. += A
+	for(var/atom/atom_checked as anything in atoms)
+		if(typecache_include[atom_checked.type] && !typecache_exclude[atom_checked.type])
+			. += atom_checked
 
 //Like typesof() or subtypesof(), but returns a typecache instead of a list
 /proc/typecacheof(path, ignore_root_path, only_root_path = FALSE)
@@ -371,10 +375,10 @@
 	return sortTim(L, order >= 0 ? /proc/cmp_records_asc : /proc/cmp_records_dsc)
 
 //any value in a list
-/proc/sortList(list/L, cmp=/proc/cmp_text_asc)
+/proc/sort_list(list/L, cmp=/proc/cmp_text_asc)
 	return sortTim(L.Copy(), cmp)
 
-//uses sortList() but uses the var's name specifically. This should probably be using mergeAtom() instead
+//uses sort_list() but uses the var's name specifically. This should probably be using mergeAtom() instead
 /proc/sortNames(list/L, order=1)
 	return sortTim(L.Copy(), order >= 0 ? /proc/cmp_name_asc : /proc/cmp_name_dsc)
 

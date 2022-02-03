@@ -148,7 +148,13 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		if(DEAD)
 			say_dead(original_message)
 			return
-
+/*
+	if(client && SSlag_switch.measures[SLOWMODE_SAY] && !HAS_TRAIT(src, TRAIT_BYPASS_MEASURES) && !forced && src == usr)
+		if(!COOLDOWN_FINISHED(client, say_slowmode))
+			to_chat(src, span_warning("Сообщение не было отправлено из-за ограничений. Подождите [SSlag_switch.slowmode_cooldown/10] секунд перед отправкой нового.\n\"[message]\""))
+			return
+		COOLDOWN_START(client, say_slowmode, SSlag_switch.slowmode_cooldown)
+*/
 	if(!can_speak_basic(original_message, ignore_spam, forced))
 		return
 
@@ -316,9 +322,9 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 				continue
 			if(get_dist(M, src) > 7 || M.z != z) //they're out of range of normal hearing
 				if(eavesdrop_range)
-					if(!(M.client.prefs.chat_toggles & CHAT_GHOSTWHISPER)) //they're whispering and we have hearing whispers at any range off
+					if(!(M.client.prefs?.chat_toggles & CHAT_GHOSTWHISPER)) //they're whispering and we have hearing whispers at any range off
 						continue
-				else if(!(M.client.prefs.chat_toggles & CHAT_GHOSTEARS)) //they're talking normally and we have hearing at any range off
+				else if(!(M.client.prefs?.chat_toggles & CHAT_GHOSTEARS)) //they're talking normally and we have hearing at any range off
 					continue
 			listening |= M
 			the_dead[M] = TRUE
@@ -341,7 +347,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	//speech bubble
 	var/list/speech_bubble_recipients = list()
 	for(var/mob/M in listening)
-		if(M.client)
+		if(M.client || (SSlag_switch.measures[DISABLE_RUNECHAT] && !HAS_TRAIT(src, TRAIT_BYPASS_MEASURES)))
 			speech_bubble_recipients.Add(M.client)
 	var/image/I = image('icons/mob/talk.dmi', src, "[bubble_type][say_test(message)]", FLY_LAYER)
 	INVOKE_ASYNC(GLOBAL_PROC, /.proc/flick_overlay, I, speech_bubble_recipients, 30)
@@ -400,6 +406,9 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 
 	if(stuttering)
 		message = stutter(message)
+
+	if(fucking_anime_girl_noises_oh_nya)
+		message = ddlc_text(message)
 
 	if(cultslurring && slurring)
 		message = cultslur(message)

@@ -6,10 +6,9 @@
 	item_flags = NOBLUDGEON
 	var/obj/machinery/machine //what machine we're currently hacking.
 
-/obj/item/pai_cable/machine/Destroy()
+/obj/item/pai_cable/Destroy()
 	machine = null
 	return ..()
-
 
 /obj/item/pai_cable/proc/plugin(obj/machinery/M, mob/living/user)
 	if(!user.transferItemToLoc(src, M))

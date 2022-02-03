@@ -344,6 +344,11 @@
 ///called on /living, when pull is attempted, but before it completes, from base of [/mob/living/start_pulling]: (atom/movable/thing, force)
 #define COMSIG_LIVING_TRY_PULL "living_try_pull"
 	#define COMSIG_LIVING_CANCEL_PULL (1 << 0)
+/// Called from /mob/living/update_pull_movespeed
+#define COMSIG_LIVING_UPDATING_PULL_MOVESPEED "living_updating_pull_movespeed"
+/// Called from /mob/living/PushAM -- Called when this mob is about to push a movable, but before it moves
+/// (aotm/movable/being_pushed)
+#define COMSIG_LIVING_PUSHING_MOVABLE "living_pushing_movable"
 ///from base of [/atom/proc/interact]: (mob/user)
 #define COMSIG_ATOM_UI_INTERACT "atom_ui_interact"
 ///called on /living when attempting to pick up an item, from base of /mob/living/put_in_hand_check(): (obj/item/I)
@@ -487,6 +492,10 @@
 #define COMSIG_MOVABLE_UPDATE_GLIDE_SIZE "movable_glide_size"
 ///Called when a movable is hit by a plunger in layer mode, from /obj/item/plunger/attack_obj()
 #define COMSIG_MOVABLE_CHANGE_DUCT_LAYER "movable_change_duct_layer"
+/// from /mob/living/can_z_move, sent to whatever the mob is buckled to. Only ridable movables should be ridden up or down btw.
+#define COMSIG_BUCKLED_CAN_Z_MOVE "ridden_pre_can_z_move"
+	#define COMPONENT_RIDDEN_STOP_Z_MOVE 1
+	#define COMPONENT_RIDDEN_ALLOW_Z_MOVE 2
 
 // /mob signals
 
@@ -518,6 +527,10 @@
 	#define COMSIG_MOB_CLIENT_BLOCK_PRE_MOVE COMPONENT_MOVABLE_BLOCK_PRE_MOVE
 /// From base of /client/Move()
 #define COMSIG_MOB_CLIENT_MOVED "mob_client_moved"
+/// From base of /client/proc/change_view() (mob/source, new_size)
+#define COMSIG_MOB_CLIENT_CHANGE_VIEW "mob_client_change_view"
+/// From base of /mob/proc/reset_perspective() (mob/source)
+#define COMSIG_MOB_RESET_PERSPECTIVE "mob_reset_perspective"
 
 ///from base of obj/allowed(mob/M): (/obj) returns bool, if TRUE the mob has id access to the obj
 #define COMSIG_MOB_ALLOWED "mob_allowed"
@@ -864,6 +877,14 @@
 #define COMSIG_ARMOR_PLATED "armor_plated"
 ///Called when an item gets recharged by the ammo powerup
 #define COMSIG_ITEM_RECHARGED "item_recharged"
+///Called when an item is being offered, from [/obj/item/proc/on_offered(mob/living/carbon/offerer)]
+#define COMSIG_ITEM_OFFERING "item_offering"
+	///Interrupts the offer proc
+	#define COMPONENT_OFFER_INTERRUPT (1<<0)
+///Called when an someone tries accepting an offered item, from [/obj/item/proc/on_offer_taken(mob/living/carbon/offerer, mob/living/carbon/taker)]
+#define COMSIG_ITEM_OFFER_TAKEN "item_offer_taken"
+	///Interrupts the offer acceptance
+	#define COMPONENT_OFFER_TAKE_INTERRUPT (1<<0)
 
 ///from base of [/obj/item/proc/tool_check_callback]: (mob/living/user)
 #define COMSIG_TOOL_IN_USE "tool_in_use"
@@ -985,6 +1006,11 @@
 
 ///called from /obj/effect/proc_holder/spell/perform (src)
 #define COMSIG_MOB_CAST_SPELL "mob_cast_spell"
+
+// /obj/item/camera signals
+
+///from /obj/item/camera/captureimage(): (atom/target, mob/user)
+#define COMSIG_CAMERA_IMAGE_CAPTURED "camera_image_captured"
 
 // /obj/item/grenade signals
 
@@ -1283,6 +1309,8 @@
 #define COMSIG_ITEM_ATTACK_QDELETED "item_attack_qdeleted"
 ///from base of atom/attack_hand(): (mob/user, modifiers)
 #define COMSIG_MOB_ATTACK_HAND "mob_attack_hand"
+//from base of turf/attack_hand(): (mob/user, modifiers)
+#define COMSIG_MOB_ATTACK_HAND_TURF "mob_attack_hand_turf"
 ///from base of /obj/item/attack(): (mob/M, mob/user)
 #define COMSIG_MOB_ITEM_ATTACK "mob_item_attack"
 ///from base of obj/item/afterattack(): (atom/target, mob/user, proximity_flag, click_parameters)

@@ -129,6 +129,7 @@
 
 /obj/machinery/power/am_control_unit/process()
 	if(exploding)
+		GLOB.is_engine_sabotaged = TRUE
 		explosion(get_turf(src),8,12,18,12)
 		if(src)
 			qdel(src)
@@ -142,7 +143,7 @@
 
 	if(!fueljar)//No fuel but we are on, shutdown
 		toggle_power()
-		playsound(src.loc, 'sound/machines/buzz-two.ogg', 50, 0)
+		playsound(src.loc, 'white/valtos/sounds/error2.ogg', 50, 0)
 		return
 
 	add_avail(stored_power)

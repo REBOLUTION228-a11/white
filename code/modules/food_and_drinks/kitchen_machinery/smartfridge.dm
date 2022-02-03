@@ -41,9 +41,7 @@
 		. += "<hr><span class='notice'>Дисплей: This unit can hold a maximum of <b>[max_n_of_items]</b> items.</span>"
 
 /obj/machinery/smartfridge/update_icon_state()
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
 	if(!machine_stat)
-		SSvis_overlays.add_vis_overlay(src, icon, "smartfridge-light-mask", EMISSIVE_LAYER, EMISSIVE_PLANE, dir, alpha)
 		if (visible_contents)
 			switch(contents.len)
 				if(0)
@@ -59,7 +57,10 @@
 	else
 		icon_state = "[initial(icon_state)]-off"
 
-
+/obj/machinery/smartfridge/update_overlays()
+	. = ..()
+	if(!machine_stat)
+		. += mutable_appearance(icon, "smartfridge-light-mask", 0, EMISSIVE_PLANE, alpha)
 
 /*******************
 *   Item Adding
@@ -184,7 +185,7 @@
 				listofitems[md5name]["amount"]++	// The good news is, #30519 made smartfridge UIs non-auto-updating
 			else
 				listofitems[md5name] = list("name" = O.name, "type" = O.type, "amount" = 1)
-	sortList(listofitems)
+	sort_list(listofitems)
 
 	.["contents"] = listofitems
 	.["name"] = name

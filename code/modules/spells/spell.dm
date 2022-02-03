@@ -149,6 +149,8 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 
 	var/centcom_cancast = TRUE //Whether or not the spell should be allowed on z2
 
+	var/atom/movable/screen/cooldown_overlay/cooldown_overlay
+
 	action_icon = 'icons/mob/actions/actions_spells.dmi'
 	action_icon_state = "spell_default"
 	action_background_icon_state = "bg_spell"
@@ -304,15 +306,18 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	return TRUE
 
 /obj/effect/proc_holder/spell/proc/start_recharge()
+	cooldown_overlay = start_cooldown(action.button, world.time + charge_max)
 	recharging = TRUE
 
 /obj/effect/proc_holder/spell/process(delta_time)
 	if(recharging && charge_type == "recharge" && (charge_counter < charge_max))
 		charge_counter += delta_time * 10
+		cooldown_overlay?.tick()
 		if(charge_counter >= charge_max)
 			action.UpdateButtonIcon()
 			charge_counter = charge_max
 			recharging = FALSE
+			QDEL_NULL(cooldown_overlay)
 
 /obj/effect/proc_holder/spell/proc/perform(list/targets, recharge = TRUE, mob/user = usr) //if recharge is started is important for the trigger spells
 	before_cast(targets)
@@ -523,7 +528,7 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	dummy.pass_flags |= PASSTABLE
 	var/turf/previous_step = get_turf(A)
 	var/first_step = TRUE
-	for(var/turf/next_step as anything in (getline(A, B) - previous_step))
+	for(var/turf/next_step as anything in (get_line(A, B) - previous_step))
 		if(first_step)
 			for(var/obj/blocker in previous_step)
 				if(!blocker.density || !(blocker.flags_1 & ON_BORDER_1))

@@ -2,7 +2,7 @@
 #define WELDER_FUEL_BURN_INTERVAL 26
 /obj/item/weldingtool
 	name = "сварочный аппарат"
-	desc = "Сварка стандартного исполнения, предоставленная компанией Нанотрейзен."
+	desc = "Сварка стандартного исполнения, предоставленная компанией NanoTrasen."
 	icon = 'white/valtos/icons/items.dmi'
 	lefthand_file = 'white/valtos/icons/lefthand.dmi'
 	righthand_file = 'white/valtos/icons/righthand.dmi'
@@ -315,7 +315,7 @@
 		return ""
 
 /obj/item/weldingtool/largetank
-	name = "индустриальная сварка"
+	name = "индустриальный сварочный аппарат"
 	desc = "Сварочный аппарат немного большего размера с большим баком."
 	icon_state = "indwelder"
 	max_fuel = 40
@@ -325,9 +325,9 @@
 	return
 
 /obj/item/weldingtool/largetank/cyborg
-	name = "интегрированный сварочный инструмент"
+	name = "интегрированный сварочный аппарат"
 	desc = "Усовершенствованный сварочный аппарат, предназначенный для использования в роботизированных системах. Специальная рамка удваивает скорость сварки."
-	icon = 'icons/obj/items_cyborg.dmi'
+	icon = 'white/Feline/icons/cyber_arm_tools.dmi'
 	icon_state = "indwelder_cyborg"
 	toolspeed = 0.5
 
@@ -338,7 +338,7 @@
 
 
 /obj/item/weldingtool/mini
-	name = "аварийный сварочный инструмент"
+	name = "аварийный сварочный аппарат"
 	desc = "Миниатюрный сварочный аппарат, используемый в чрезвычайных ситуациях."
 	icon_state = "miniwelder"
 	inhand_icon_state = "miniwelder"
@@ -353,7 +353,7 @@
 	return
 
 /obj/item/weldingtool/abductor
-	name = "чужеродная сварка"
+	name = "инопланетная сварка"
 	desc = "Инопланетный сварочный инструмент. Какое бы топливо он ни использовал, оно у него никогда не заканчивается."
 	icon = 'icons/obj/abductor.dmi'
 	icon_state = "welder"
@@ -368,7 +368,7 @@
 	..()
 
 /obj/item/weldingtool/hugetank
-	name = "модернизированный сварочный инструмент"
+	name = "модернизированный сварочный аппарат"
 	desc = "Модернизированная сварка на базе промышленного сварщика."
 	icon_state = "upindwelder"
 	inhand_icon_state = "upindwelder"
@@ -376,8 +376,8 @@
 	custom_materials = list(/datum/material/iron=70, /datum/material/glass=120)
 
 /obj/item/weldingtool/experimental
-	name = "экспериментальный сварочный инструмент"
-	desc = "Экспериментальный сварочный аппарат, способный генерировать топливо и менее вредный для глаз."
+	name = "экспериментальный сварочный аппарат"
+	desc = "Экспериментальный сварочный аппарат, способный самостоятельно генерировать топливо и менее вредный для глаз."
 	icon_state = "exwelder"
 	inhand_icon_state = "exwelder"
 	max_fuel = 40

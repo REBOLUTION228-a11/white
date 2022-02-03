@@ -382,7 +382,7 @@
 
 //BUCKLE HOOKS
 
-/obj/machinery/power/emitter/prototype/unbuckle_mob(mob/living/buckled_mob,force = 0)
+/obj/machinery/power/emitter/prototype/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	playsound(src,'sound/mecha/mechmove01.ogg', 50, TRUE)
 	manual = FALSE
 	for(var/obj/item/I in buckled_mob.held_items)
@@ -510,12 +510,12 @@
 			user.pixel_x = 8
 			user.pixel_y = -12
 
-	E.last_projectile_params = calculate_projectile_angle_and_pixel_offsets(user, clickparams)
+	E.last_projectile_params = calculate_projectile_angle_and_pixel_offsets(user, null, clickparams)
 
 	if(E.charge >= 10 && world.time > delay)
 		E.charge -= 10
 		E.fire_beam(user)
 		delay = world.time + 10
 	else if (E.charge < 10)
-		playsound(src,'sound/machines/buzz-sigh.ogg', 50, TRUE)
+		playsound(src,'white/valtos/sounds/error1.ogg', 50, TRUE)
 

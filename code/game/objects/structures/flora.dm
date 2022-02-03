@@ -317,9 +317,20 @@
 	var/trimmable = TRUE
 	var/list/static/random_plant_states
 
+/obj/item/kirbyplants/equipped(mob/living/user)
+	var/image/I = image(icon = 'icons/obj/flora/plants.dmi' , icon_state = src.icon_state, loc = user)
+	I.copy_overlays(src)
+	I.override = 1
+	add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/everyone, "sneaking_mission", I)
+	I.layer = ABOVE_MOB_LAYER
+	..()
+
+/obj/item/kirbyplants/dropped(mob/living/user)
+	..()
+	user.remove_alt_appearance("sneaking_mission")
+
 /obj/item/kirbyplants/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/tactical)
 	AddComponent(/datum/component/two_handed, require_twohands=TRUE, force_unwielded=10, force_wielded=10)
 	AddComponent(/datum/component/beauty, 500)
 
@@ -407,9 +418,12 @@
 	/// Amount of the itemstack to drop
 	var/mineAmount = 20
 
+	var/randomize_icon = TRUE
+
 /obj/structure/flora/rock/Initialize()
 	. = ..()
-	icon_state = "[icon_state][rand(1,3)]"
+	if(randomize_icon)
+		icon_state = "[icon_state][rand(1,3)]"
 
 /obj/structure/flora/rock/attackby(obj/item/W, mob/user, params)
 	if(!mineResult || W.tool_behaviour != TOOL_MINING)

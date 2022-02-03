@@ -55,6 +55,9 @@
 /area/shuttle/pirate
 	name = "Пиратский шаттл"
 	requires_power = TRUE
+	static_lighting = TRUE
+	base_lighting_alpha = 255
+	base_lighting_color = COLOR_WHITE
 
 /area/shuttle/pirate/flying_dutchman
 	name = "Flying Dutchman"
@@ -223,6 +226,17 @@
 /area/shuttle/exploration
 	name = "Шаттл Рейнджеров"
 	requires_power = TRUE
+	ambientsounds = RANGERS_AMB
+
+/area/shuttle/exploration/play_ambience(client/C)
+
+	if(!C?.mob)
+		return
+
+	C.played = FALSE
+	C.mob.stop_sound_channel(CHANNEL_AMBIENCE)
+
+	. = ..()
 
 /area/shuttle/custom
 	name = "DIY-шаттл"

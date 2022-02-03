@@ -109,6 +109,9 @@
 		qdel(query_build_ban_cache)
 
 /datum/admins/proc/ban_panel(player_key, player_ip, player_cid, role, duration = 1440, applies_to_admins, reason, edit_id, page, admin_key)
+	if (duration == BAN_PANEL_PERMANENT)
+		duration = null
+
 	var/panel_height = 620
 	if(edit_id)
 		panel_height = 240
@@ -275,7 +278,7 @@
 			output += "</div></div>"
 		//departments/groups that don't have command staff would throw a javascript error since there's no corresponding reference for toggle_head()
 		var/list/headless_job_lists = list("Silicon" = GLOB.nonhuman_positions,
-										"Abstract" = list("Appearance", "Emote", "Deadchat", "OOC"))
+										"Abstract" = list("Appearance", "Emote", "Deadchat", "OOC", "Urgent Adminhelp"))
 		for(var/department in headless_job_lists)
 			output += "<div class='column'><label class='rolegroup [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
 			break_counter = 0
@@ -288,16 +291,44 @@
 				"}
 				break_counter++
 			output += "</div></div>"
-		var/list/long_job_lists = list("Service" = GLOB.service_positions,
-									"Ghost and Other Roles" = list(ROLE_BRAINWASHED, ROLE_DEATHSQUAD, ROLE_DRONE, ROLE_LAVALAND, ROLE_MIND_TRANSFER, ROLE_POSIBRAIN, ROLE_SENTIENCE, ROLE_ICECREAM),
-									"Antagonist Positions" = list(ROLE_ABDUCTOR, ROLE_ALIEN, ROLE_BLOB,
-									ROLE_BROTHER, ROLE_CHANGELING, ROLE_CULTIST, ROLE_DEVIL,
-									ROLE_INTERNAL_AFFAIRS, ROLE_MALF,
-									ROLE_MONKEY, ROLE_NINJA, ROLE_OPERATIVE,
-									ROLE_SERVANT_OF_RATVAR,
-									ROLE_OVERTHROW, ROLE_REV, ROLE_REVENANT,
-									ROLE_REV_HEAD, ROLE_SYNDICATE,
-									ROLE_TRAITOR, ROLE_WIZARD, ROLE_HIVE , ROLE_HERETIC)) //ROLE_REV_HEAD is excluded from this because rev jobbans are handled by ROLE_REV
+		var/list/long_job_lists = list(
+			"Ghost and Other Roles" = list(
+				ROLE_PAI,
+				ROLE_BRAINWASHED,
+				ROLE_DEATHSQUAD,
+				ROLE_DRONE,
+				ROLE_LAVALAND,
+				ROLE_MIND_TRANSFER,
+				ROLE_POSIBRAIN,
+				ROLE_SENTIENCE,
+				ROLE_ICECREAM,
+			),
+			"Antagonist Positions" = list(
+				ROLE_ABDUCTOR,
+				ROLE_ALIEN,
+				ROLE_BLOB,
+				ROLE_BROTHER,
+				ROLE_CHANGELING,
+				ROLE_CULTIST,
+				ROLE_DEVIL,
+				ROLE_FAMILIES,
+				ROLE_HERETIC,
+				ROLE_HIVE,
+				ROLE_INTERNAL_AFFAIRS,
+				ROLE_MALF,
+				ROLE_MONKEY,
+				ROLE_NINJA,
+				ROLE_OPERATIVE,
+				ROLE_SERVANT_OF_RATVAR,
+				ROLE_OVERTHROW,
+				ROLE_REV,
+				ROLE_REVENANT,
+				ROLE_REV_HEAD,
+				ROLE_SYNDICATE,
+				ROLE_TRAITOR,
+				ROLE_WIZARD,
+			),
+		)
 		for(var/department in long_job_lists)
 			output += "<div class='column'><label class='rolegroup long [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
 			break_counter = 0
@@ -546,24 +577,26 @@
 	var/datum/admin_help/AH = admin_ticket_log(player_ckey, msg)
 	//var/appeal_url = "No ban appeal url set!"
 	//appeal_url = CONFIG_GET(string/banappeals)
-	var/is_admin = FALSE
+	//var/is_admin = FALSE
 	if(C)
 		build_ban_cache(C)
+		to_chat(C, span_boldannounce("Сработала защита от детей. Этот раунд - последний."))
 		//to_chat(C, span_boldannounce("You have been [applies_to_admins ? "admin " : ""]banned by [usr.client.key] from [roles_to_ban[1] == "Server" ? "the server" : " Roles: [roles_to_ban.Join(", ")]"].\nReason: [reason]</span><br><span class='danger'>This ban is [isnull(duration) ? "permanent." : "temporary, it will be removed in [time_message]."] The round ID is [GLOB.round_id].</span><br><span class='danger'>To appeal this ban go to [appeal_url]"))
-		if(GLOB.admin_datums[C.ckey] || GLOB.deadmins[C.ckey])
-			is_admin = TRUE
-		if(roles_to_ban[1] == "Server" && (!is_admin || (is_admin && applies_to_admins)))
-			qdel(C)
+		//if(GLOB.admin_datums[C.ckey] || GLOB.deadmins[C.ckey])
+		//	is_admin = TRUE
+		//if(roles_to_ban[1] == "Server" && (!is_admin || (is_admin && applies_to_admins)))
+		//	qdel(C)
 	if(roles_to_ban[1] == "Server" && AH)
 		AH.Resolve()
 	for(var/client/i in GLOB.clients - C)
 		if(i.address == player_ip || i.computer_id == player_cid)
 			build_ban_cache(i)
+			to_chat(i, span_boldannounce("Сработала защита от детей. Этот раунд - последний."))
 			//to_chat(i, span_boldannounce("You have been [applies_to_admins ? "admin " : ""]banned by [usr.client.key] from [roles_to_ban[1] == "Server" ? "the server" : " Roles: [roles_to_ban.Join(", ")]"].\nReason: [reason]</span><br><span class='danger'>This ban is [isnull(duration) ? "permanent." : "temporary, it will be removed in [time_message]."] The round ID is [GLOB.round_id].</span><br><span class='danger'>To appeal this ban go to [appeal_url]"))
-			if(GLOB.admin_datums[i.ckey] || GLOB.deadmins[i.ckey])
-				is_admin = TRUE
-			if(roles_to_ban[1] == "Server" && (!is_admin || (is_admin && applies_to_admins)))
-				qdel(i)
+			//if(GLOB.admin_datums[i.ckey] || GLOB.deadmins[i.ckey])
+			//	is_admin = TRUE
+			//if(roles_to_ban[1] == "Server" && (!is_admin || (is_admin && applies_to_admins)))
+			//	qdel(i)
 
 /datum/admins/proc/unban_panel(player_key, admin_key, player_ip, player_cid, page = 0)
 	if(!check_rights(R_BAN))

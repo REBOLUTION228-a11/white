@@ -379,6 +379,9 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	name = "Коридоры: Шаттл прибытия"
 	icon_state = "entry"
 
+/area/hallway/secondary/entry/south
+	name = "Коридоры: Южное прибытие"
+
 /area/hallway/secondary/service
 	name = "Коридоры: Обслуга"
 	icon_state = "hall_service"
@@ -465,6 +468,48 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	icon_state = "dorms"
 	area_flags = VALID_TERRITORY | BLOBS_ALLOWED | UNIQUE_AREA
 
+/area/commons/dorms/one
+	name = "Комната: Первая"
+
+/area/commons/dorms/two
+	name = "Комната: Вторая"
+
+/area/commons/dorms/three
+	name = "Комната: Третья"
+
+/area/commons/dorms/four
+	name = "Комната: Четвёртая"
+
+/area/commons/dorms/five
+	name = "Комната: Пятая"
+
+/area/commons/dorms/six
+	name = "Комната: Шестая"
+
+/area/commons/dorms/seven
+	name = "Комната: Седьмая"
+
+/area/commons/dorms/eight
+	name = "Комната: Восьмая"
+
+/area/commons/dorms/nine
+	name = "Комната: Девятая"
+
+/area/commons/dorms/ten
+	name = "Комната: Десятая"
+
+/area/commons/dorms/cabin/one
+	name = "Кабина дорм: Первая"
+
+/area/commons/dorms/cabin/two
+	name = "Кабина дорм: Вторая"
+
+/area/commons/dorms/cabin/three
+	name = "Кабина дорм: Третья"
+
+/area/commons/dorms/cabin/four
+	name = "Кабина дорм: Четвертая"
+
 /area/commons/dorms/barracks
 	name = "Зона отдыха: Бараки"
 
@@ -518,6 +563,9 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	name = "Зона отдыха: Женская раздевалка"
 	icon_state = "locker_female"
 
+/area/commons/spacepod_docks
+	name = "Прибытие: Точка посадки спейсподов"
+	icon_state = "locker_female" // впадлу иконку пилить
 
 /area/commons/fitness/recreation
 	name = "Зона отдыха"
@@ -548,6 +596,10 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	mood_message = span_nicegreen("Обожаю отдохнуть в баре!\n")
 	airlock_wires = /datum/wires/airlock/service
 	sound_environment = SOUND_AREA_WOODFLOOR
+
+/area/service/bar/Initialize(mapload)
+	. = ..()
+	GLOB.bar_areas += src
 
 /area/service/bar/atrium
 	name = "Зона отдыха: Атриум"
@@ -1001,7 +1053,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 /area/security/prison
 	name = "Тюрьма"
 	icon_state = "sec_prison"
-	mood_bonus = -16
+	mood_bonus = -0.5
 	mood_message = span_danger("Я здесь точно сгнию...\n")
 
 /area/security/prison/toilet //radproof
@@ -1352,6 +1404,12 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 
 /area/commons/vacant_room/commissary/second
 	name = "Нижний магазин"
+
+/area/commons/vacant_room/commissary/third
+	name = "Дополнительный магазин"
+
+/area/commons/vacant_room/commissary/fourth
+	name = "Интересный магазин"
 
 //AI
 

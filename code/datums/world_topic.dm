@@ -149,7 +149,7 @@
 	.["version"] = GLOB.game_version
 	.["mode"] = GLOB.master_mode
 	.["respawn"] = config ? !CONFIG_GET(flag/norespawn) : FALSE
-	.["enter"] = GLOB.enter_allowed
+	.["enter"] = !LAZYACCESS(SSlag_switch.measures, DISABLE_NON_OBSJOBS)
 	.["vote"] = CONFIG_GET(flag/allow_vote_mode)
 	.["ai"] = CONFIG_GET(flag/allow_ai)
 	.["host"] = world.host ? world.host : null
@@ -282,7 +282,8 @@
 
 	admin_ticket_log(recipient, "<font color='blue'>PM From [s_admin]: [keywordparsedmsg]</font>")
 	//Im fucking cumming
-	SEND_SOUND(recipient, sound(pick('white/fogmann/APM/APM1.ogg', 'white/fogmann/APM/APM2.ogg', 'white/fogmann/APM/APM3.ogg', 'white/fogmann/APM/APM4.ogg', 'white/fogmann/APM/APM5.ogg', 'white/fogmann/APM/APM6.ogg')))
+	//SEND_SOUND(recipient, sound(pick('white/fogmann/APM/APM1.ogg', 'white/fogmann/APM/APM2.ogg', 'white/fogmann/APM/APM3.ogg', 'white/fogmann/APM/APM4.ogg', 'white/fogmann/APM/APM5.ogg', 'white/fogmann/APM/APM6.ogg')))
+	SEND_SOUND(recipient, sound('sound/effects/adminhelp.ogg'))
 	log_admin_private("PM: IRC -> [r_ckey]: [sanitize(msg)]")
 	for(var/client/X in GLOB.admins)
 		to_chat(X, "<font color='blue'><B>PM: DISCORD([s_admin]) -&gt; [key_name(recipient, X, 0)]</B> [keywordparsedmsg]</font>")

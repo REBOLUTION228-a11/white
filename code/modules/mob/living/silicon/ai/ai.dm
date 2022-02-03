@@ -30,6 +30,7 @@
 	mob_size = MOB_SIZE_LARGE
 	radio = /obj/item/radio/headset/silicon/ai
 	can_buckle_to = FALSE
+	native_fov = null
 	var/battery = 200 //emergency power if the AI's APC is off
 	var/list/network = list("ss13")
 	var/obj/machinery/camera/current
@@ -586,7 +587,7 @@
 			for(var/i in C.network)
 				cameralist[i] = i
 	var/old_network = network
-	network = input(U, "Which network would you like to view?") as null|anything in sortList(cameralist)
+	network = input(U, "Which network would you like to view?") as null|anything in sort_list(cameralist)
 
 	if(!U.eyeobj)
 		U.view_core()
@@ -611,7 +612,7 @@
 	if(incapacitated())
 		return
 	var/list/ai_emotions = list("Very Happy", "Happy", "Neutral", "Unsure", "Confused", "Sad", "BSOD", "Blank", "Problems?", "Awesome", "Facepalm", "Thinking", "Friend Computer", "Dorfy", "Blue Glow", "Red Glow")
-	var/emote = input("Please, select a status!", "AI Status", null, null) in sortList(ai_emotions)
+	var/emote = input("Please, select a status!", "AI Status", null, null) in sort_list(ai_emotions)
 	for (var/each in GLOB.ai_status_displays) //change status of displays
 		var/obj/machinery/status_display/ai/M = each
 		M.emotion = emote
@@ -643,7 +644,7 @@
 				personnel_list["[t.fields["name"]]: [t.fields["rank"]]"] = t.fields["image"]//Pull names, rank, and image.
 
 			if(personnel_list.len)
-				input = input("Select a crew member:") as null|anything in sortList(personnel_list)
+				input = input("Select a crew member:") as null|anything in sort_list(personnel_list)
 				var/icon/character_icon = personnel_list[input]
 				if(character_icon)
 					qdel(holo_icon)//Clear old icon so we're not storing it in memory.
@@ -668,7 +669,7 @@
 			"spider" = 'icons/mob/animal.dmi'
 			)
 
-			input = input("Please select a hologram:") as null|anything in sortList(icon_list)
+			input = input("Please select a hologram:") as null|anything in sort_list(icon_list)
 			if(input)
 				qdel(holo_icon)
 				switch(input)
@@ -689,7 +690,7 @@
 				"clock" = 'icons/mob/ai.dmi'
 				)
 
-			input = input("Please select a hologram:") as null|anything in sortList(icon_list)
+			input = input("Please select a hologram:") as null|anything in sort_list(icon_list)
 			if(input)
 				qdel(holo_icon)
 				switch(input)
@@ -915,10 +916,10 @@
 
 	if(!istype(apc) || QDELETED(apc) || apc.machine_stat & BROKEN)
 		to_chat(src, span_danger("Hack aborted. The designated APC no longer exists on the power network."))
-		playsound(get_turf(src), 'sound/machines/buzz-two.ogg', 50, TRUE, ignore_walls = FALSE)
+		playsound(get_turf(src), 'white/valtos/sounds/error2.ogg', 50, TRUE, ignore_walls = FALSE)
 	else if(apc.aidisabled)
 		to_chat(src, span_danger("Hack aborted. [apc] is no longer responding to our systems."))
-		playsound(get_turf(src), 'sound/machines/buzz-sigh.ogg', 50, TRUE, ignore_walls = FALSE)
+		playsound(get_turf(src), 'white/valtos/sounds/error1.ogg', 50, TRUE, ignore_walls = FALSE)
 	else
 		malf_picker.processing_time += 10
 
@@ -1010,7 +1011,7 @@
 		target_ai = src //cheat! just give... ourselves as the spawned AI, because that's technically correct
 
 /mob/living/silicon/ai/proc/camera_visibility(mob/camera/ai_eye/moved_eye)
-	GLOB.cameranet.visibility(moved_eye, client, all_eyes, USE_STATIC_OPAQUE)
+	GLOB.cameranet.visibility(moved_eye, client, all_eyes, TRUE)
 
 /mob/living/silicon/ai/forceMove(atom/destination)
 	. = ..()
@@ -1021,11 +1022,15 @@
 	set name = "Выше"
 	set category = "IC"
 
-	if(zMove(UP, TRUE))
+	if(eyeobj.zMove(UP, z_move_flags = ZMOVE_FEEDBACK))
 		to_chat(src, span_notice("Поднимаюсь на уровень выше."))
 
-/mob/living/silicon/ai/zMove(dir, feedback = FALSE)
-	. = eyeobj.zMove(dir, feedback)
+/mob/living/silicon/ai/down()
+	set name = "Ниже"
+	set category = "IC"
+
+	if(eyeobj.zMove(DOWN, z_move_flags = ZMOVE_FEEDBACK))
+		to_chat(src, span_notice("Опускаюсь на уровень ниже."))
 
 
 /// Proc to hook behavior to the changes of the value of [aiRestorePowerRoutine].

@@ -215,6 +215,8 @@
 	stat_allowed = HARD_CRIT
 
 /datum/emote/living/gasp/get_sound(mob/living/user)
+	if(ismonkey(user))
+		return
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		if(!H.mind || !H.mind.miming)
@@ -287,9 +289,23 @@
 	key = "kiss"
 	ru_name = "поцеловать"
 	key_third_person = "kisses"
-	message = "отправляет воздушный поцелуй."
-	message_param = "отправляет воздушный поцелуй %t."
 	emote_type = EMOTE_AUDIBLE
+
+/datum/emote/living/kiss/run_emote(mob/living/user, params, type_override, intentional)
+	. = ..()
+	if(!.)
+		return
+	var/kiss_type = /obj/item/kisser
+
+	if(HAS_TRAIT(user, TRAIT_KISS_OF_DEATH))
+		kiss_type = /obj/item/kisser/death
+
+	var/obj/item/kiss_blower = new kiss_type(user)
+	if(user.put_in_hands(kiss_blower))
+		to_chat(user, span_notice("Готовлю свою руку для воздушного поцелуя."))
+	else
+		qdel(kiss_blower)
+		to_chat(user, span_warning("Не могу пока целовать!"))
 
 /datum/emote/living/laugh
 	key = "laugh"
@@ -707,7 +723,7 @@
 			if(P.can_run_emote(user, status_check = FALSE , intentional = TRUE))
 				keys += P.key
 
-	keys = sortList(keys)
+	keys = sort_list(keys)
 
 	for(var/emote in keys)
 		if(LAZYLEN(message) > 1)

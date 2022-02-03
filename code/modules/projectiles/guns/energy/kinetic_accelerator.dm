@@ -27,7 +27,7 @@
 
 	var/recharge_timerid
 
-/obj/item/gun/energy/kinetic_accelerator/makeJamming()
+/obj/item/gun/energy/kinetic_accelerator/make_jamming()
 	return
 
 /obj/item/gun/energy/kinetic_accelerator/examine(mob/user)
@@ -170,7 +170,7 @@
 	..()
 	if(loc && istype(loc, /obj/item/gun/energy/kinetic_accelerator))
 		var/obj/item/gun/energy/kinetic_accelerator/KA = loc
-		KA.modify_projectile(BB)
+		KA.modify_projectile(loaded_projectile)
 
 //Projectiles
 /obj/projectile/kinetic

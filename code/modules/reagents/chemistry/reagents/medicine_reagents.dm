@@ -405,7 +405,7 @@
 	reagent_state = LIQUID
 	color = "#DCDCDC"
 	metabolization_rate = 0.25 * REAGENTS_METABOLISM
-	overdose_threshold = 30
+	overdose_threshold = 60
 	var/healing = 0.5
 	ph = 2
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
@@ -469,9 +469,9 @@
 	..()
 
 /datum/reagent/medicine/pen_acid
-	name = "Диэтилентриаминпентауксусная кислота"
+	name = "Пентетовая кислота"
 	enname = "Pentetic Acid"
-	description = "Reduces massive amounts of radiation and toxin damage while purging other chemicals from the body."
+	description = "ДТПА, она же диэтилентриаминпентауксусная кислота. Вещество выводящее из тела токсины, радиацию и химикаты."
 	reagent_state = LIQUID
 	color = "#E6FFF0"
 	metabolization_rate = 0.5 * REAGENTS_METABOLISM

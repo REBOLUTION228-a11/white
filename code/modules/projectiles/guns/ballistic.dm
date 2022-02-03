@@ -109,7 +109,7 @@
 	update_icon()
 	//RegisterSignal(src, COMSIG_ITEM_RECHARGED, .proc/instant_reload)
 
-/obj/item/gun/ballistic/makeJamming()
+/obj/item/gun/ballistic/make_jamming()
 	AddElement(/datum/element/jamming, 0.5)
 
 /obj/item/gun/ballistic/add_weapon_description()
@@ -300,7 +300,7 @@
 		return
 	if (istype(A, /obj/item/ammo_casing) || istype(A, /obj/item/ammo_box))
 		if (bolt_type == BOLT_TYPE_NO_BOLT || internal_magazine)
-			if (chambered && !chambered.BB)
+			if (chambered && !chambered.loaded_projectile)
 				chambered.forceMove(drop_location())
 				chambered = null
 			var/num_loaded = magazine?.attackby(A, user, params, TRUE)
@@ -404,7 +404,7 @@
 				user.dropItemToGround(src, TRUE)
 				return
 			flip_cooldown = (world.time + 30)
-			user.visible_message(span_notice("[user] spins the [src] around their finger by the trigger. ThatвЂ™s pretty badass."))
+			user.visible_message(span_notice("[user] spins the [src] around their finger by the trigger. That's pretty badass."))
 			playsound(src, 'sound/items/handling/ammobox_pickup.ogg', 20, FALSE)
 	if(!internal_magazine && magazine)
 		if(!magazine.ammo_count())
@@ -473,7 +473,7 @@
 #define BRAINS_BLOWN_THROW_SPEED 1
 /obj/item/gun/ballistic/suicide_act(mob/user)
 	var/obj/item/organ/brain/B = user.getorganslot(ORGAN_SLOT_BRAIN)
-	if (B && chambered && chambered.BB && can_trigger_gun(user) && !chambered.BB.nodamage)
+	if (B && chambered && chambered.loaded_projectile && can_trigger_gun(user) && !chambered.loaded_projectile.nodamage)
 		user.visible_message(span_suicide("[user] is putting the barrel of [src] in [user.ru_ego()] mouth. It looks like [user.p_theyre()] trying to commit suicide!"))
 		sleep(25)
 		if(user.is_holding(src))
@@ -540,7 +540,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 /obj/item/gun/ballistic/proc/blow_up(mob/user)
 	. = FALSE
 	for(var/obj/item/ammo_casing/AC in magazine.stored_ammo)
-		if(AC.BB)
+		if(AC.loaded_projectile)
 			process_fire(user, user, FALSE)
 			. = TRUE
 

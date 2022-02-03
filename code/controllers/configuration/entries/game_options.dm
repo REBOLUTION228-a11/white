@@ -204,6 +204,10 @@
 
 /datum/config_entry/number/commendations
 	integer = FALSE
+	deprecated_by = /datum/config_entry/number/commendation_percent_poll
+
+/datum/config_entry/number/commendation_percent_poll
+	integer = FALSE
 
 /datum/config_entry/flag/emojis
 
@@ -417,3 +421,5 @@
 
 /datum/config_entry/flag/sdql_spells
 	config_entry_value = TRUE  //похуй ебал конфиги
+
+/datum/config_entry/flag/native_fov

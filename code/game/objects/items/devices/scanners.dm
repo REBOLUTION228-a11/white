@@ -19,7 +19,7 @@ GENE SCANNER
 #define SCANNER_VERBOSE 	1
 
 /obj/item/t_scanner
-	name = "анализатор Т-луч"
+	name = "терагерцовый сканер"
 	desc = "Терагерцовый излучатель лучей и просто сканнер, который подсвечивает провода и трубы под полом."
 	custom_price = PAYCHECK_ASSISTANT * 0.7
 	icon = 'white/valtos/icons/items.dmi'
@@ -229,7 +229,7 @@ GENE SCANNER
 					if(TRAUMA_RESILIENCE_LOBOTOMY)
 						trauma_desc += "глубокого "
 					if(TRAUMA_RESILIENCE_WOUND)
-						trauma_desc += "переломов "
+						trauma_desc += "травматического "
 					if(TRAUMA_RESILIENCE_MAGIC, TRAUMA_RESILIENCE_ABSOLUTE)
 						trauma_desc += "вечного "
 				trauma_desc += B.scan_desc
@@ -383,10 +383,10 @@ GENE SCANNER
 		var/list/wounded_parts = C.get_wounded_bodyparts()
 		for(var/i in wounded_parts)
 			var/obj/item/bodypart/wounded_part = i
-			render_list += "<span class='alert ml-1'><b>Warning: Physical trauma[LAZYLEN(wounded_part.wounds) > 1? "s" : ""] detected in [wounded_part.name]</b>"
+			render_list += "<span class='alert ml-1'><b>Внимание: [LAZYLEN(wounded_part.wounds) > 1? "Обнаружены физические травмы" : "Обнаружена физическая травма"] в [wounded_part.name]</b>"
 			for(var/k in wounded_part.wounds)
 				var/datum/wound/W = k
-				render_list += "<div class='ml-2'>Type: [W.name]\nSeverity: [W.severity_text()]\nRecommended Treatment: [W.treat_text]</div>\n" // less lines than in woundscan() so we don't overload people trying to get basic med info
+				render_list += "<div class='ml-2'>Тип: [W.name]\nТяжесть: [W.severity_text()]</div>\n" // \nRecommended Treatment: [W.treat_text] выкинул рекомендованное лечение - слишком громоздко,less lines than in woundscan() so we don't overload people trying to get basic med info
 			render_list += "</span>"
 
 	for(var/thing in M.diseases)
@@ -539,7 +539,7 @@ GENE SCANNER
 		to_chat(user, span_warning("<b>[src.name]</b> displays an eerily high-definition frowny face, chastizing you for asking it for too much encouragement."))
 		greedy = TRUE
 	else
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 50, FALSE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 50, FALSE)
 		if(isliving(user))
 			var/mob/living/L = user
 			to_chat(L, span_warning("<b>[src.name]</b> makes a disappointed buzz and pricks your finger for being greedy. Ow!"))
@@ -551,7 +551,7 @@ GENE SCANNER
 	user.visible_message(span_notice("[user] scans [patient] for serious injuries.") , span_notice("You scan [patient] for serious injuries."))
 
 	if(!istype(patient))
-		playsound(src, 'sound/machines/buzz-sigh.ogg', 30, TRUE)
+		playsound(src, 'white/valtos/sounds/error1.ogg', 30, TRUE)
 		to_chat(user, span_notice("<b>[src.name]</b> makes a sad buzz and briefly displays a frowny face, indicating it can't scan [patient]."))
 		return
 
@@ -559,7 +559,7 @@ GENE SCANNER
 
 /obj/item/analyzer
 	desc = "Ручной анализатор, который сканирует состояние воздуха в помещении. ПКМ, чтобы использовать барометр."
-	name = "анализатор"
+	name = "газоанализатор"
 	custom_price = PAYCHECK_ASSISTANT * 0.9
 	icon = 'white/valtos/icons/items.dmi'
 	lefthand_file = 'white/valtos/icons/lefthand.dmi'
@@ -844,7 +844,7 @@ GENE SCANNER
 		to_chat(user, span_info("Не обнаружено нанитов в пациенте."))
 
 /obj/item/sequence_scanner
-	name = "анализатор генетического кода"
+	name = "анализатор ДНК"
 	icon = 'icons/obj/device.dmi'
 	icon_state = "gene"
 	inhand_icon_state = "healthanalyzer"
@@ -911,7 +911,7 @@ GENE SCANNER
 	for(var/A in buffer)
 		options += get_display_name(A)
 
-	var/answer = input(user, "Analyze Potential", "Sequence Analyzer")  as null|anything in sortList(options)
+	var/answer = input(user, "Analyze Potential", "Sequence Analyzer")  as null|anything in sort_list(options)
 	if(answer && ready && user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 		var/sequence
 		for(var/A in buffer) //this physically hurts but i dont know what anything else short of an assoc list

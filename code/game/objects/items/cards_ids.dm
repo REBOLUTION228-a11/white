@@ -554,9 +554,10 @@
 	var/list/msg = list("<span class='notice'><i>Осматриваю <b>[src]</b> ближе и вижу следующее...</i></span><hr>")
 
 	if(registered_age)
-		msg += "Владелец карты в возрасте <b>[registered_age]</b> лет. [(registered_age < AGE_MINOR) ? "Тут есть голографическая полоса, которая гласит <b><span class='danger'>'СТАЖИРОВКА: НЕ ПРОДАВАТЬ АЛКОГОЛЬ ИЛИ ТАБАК'</span></b> в самом низу карты." : ""]"
+		msg += "Владелец карты имеет возраст <b>[registered_age]</b> лет. [(registered_age < AGE_MINOR) ? "Тут есть голографическая полоса, которая гласит <b><span class='danger'>'СТАЖИРОВКА: НЕ ПРОДАВАТЬ АЛКОГОЛЬ ИЛИ ТАБАК'</span></b> в самом низу карты." : ""]"
 	if(mining_points)
-		msg += "Вау, здесь же есть [mining_points] шахтёрских очков на разные штуки из шахтёрского инвентаря."
+		msg += "\nВау, здесь же есть [mining_points] шахтёрских очков на разные штуки из шахтёрского инвентаря."
+	msg += "<hr>"
 	if(registered_account)
 		msg += "Привязанный аккаунт принадлежит '[registered_account.account_holder]' и сообщает о балансе в размере <b>[registered_account.account_balance] кредит[get_num_string(registered_account.account_balance)]</b>."
 		if(registered_account.account_job)
@@ -795,45 +796,12 @@
 	registered_age = null
 
 /obj/item/card/id/advanced/gold/captains_spare/trap
-	desc = "Запасная ID-карта самого Верховного Лорда. К ней привязана какая-то микросхема..."
-	anchored = TRUE
-	var/first_try = TRUE
+	name = "запасная ID-карта приколиста"
+	desc = "К ней привязана какая-то блюспейс-микросхема..."
 
-/obj/item/card/id/advanced/gold/captains_spare/trap/attackby(obj/item/I, mob/user, params)
-	if(I.tool_behaviour == TOOL_WIRECUTTER && first_try)
-		to_chat(user, span_notice("Начинаю обезвреживать карту. (это займёт примерно одну минуту и нужно не шевелиться)"))
-		if(do_after(user, 30 SECONDS, target = src) && first_try)
-			to_chat(user, span_notice("Карта разминирована."))
-			first_try = FALSE
-			anchored = FALSE
-			if(prob(10))
-				priority_announce("Кто-то пытается украсть капитанскую карту. Остановите [user.ru_ego()]!", title = "Кража", sound = 'white/valtos/sounds/che.ogg')
-	else
-		return ..()
-
-/obj/item/card/id/advanced/gold/captains_spare/trap/attack_hand(mob/user)
+/obj/item/card/id/advanced/gold/captains_spare/trap/Initialize(mapload)
 	. = ..()
-	if(.)
-		return
-	if(iscarbon(user) && first_try && !HAS_TRAIT(user, TRAIT_DISK_VERIFIER))
-		var/mob/living/carbon/C = user
-		to_chat(C, span_warning("Пытаюсь подобрать карту... Что может пойти не тка~"))
-		if(do_after(C, 10, target = src) && first_try)
-			to_chat(C, span_userdanger("КАРТА БЫЛА ЗАМИНИРОВАНА!"))
-			electrocute_mob(user, get_area(src))
-			playsound(loc, 'sound/weapons/slice.ogg', 25, TRUE, -1)
-			var/which_hand = BODY_ZONE_L_ARM
-			if(!(C.active_hand_index % 2))
-				which_hand = BODY_ZONE_R_ARM
-			var/obj/item/bodypart/chopchop = C.get_bodypart(which_hand)
-			chopchop.dismember()
-			C.gain_trauma(/datum/brain_trauma/magic/stalker)
-			first_try = FALSE
-			anchored = FALSE
-	else if (HAS_TRAIT(user, TRAIT_DISK_VERIFIER))
-		to_chat(user, span_notice("Карта разминирована."))
-		first_try = FALSE
-		anchored = FALSE
+	AddComponent(/datum/component/areabound)
 
 /obj/item/card/id/advanced/gold/captains_spare/update_label() //so it doesn't change to Captain's ID card (Captain) on a sneeze
 	if(registered_name == "Captain")
@@ -1020,6 +988,7 @@
 /obj/item/card/id/advanced/chameleon
 	name = "карта агента"
 	desc = "Невероятно продвинутая ID-карта. Достаточно всего лишь дотронуться этой картой до другой и доступ будет скопирован."
+	trim = /datum/id_trim/chameleon
 	wildcard_slots = WILDCARD_LIMIT_CHAMELEON
 
 	/// Have we set a custom name and job assignment, or will we use what we're given when we chameleon change?
@@ -1029,8 +998,9 @@
 	/// Weak ref to the ID card we're currently attempting to steal access from.
 	var/datum/weakref/theft_target
 
-/obj/item/card/id/advanced/chameleon/Initialize()
+/obj/item/card/id/advanced/chameleon/Initialize(mapload)
 	. = ..()
+
 	var/datum/action/item_action/chameleon/change/id/chameleon_card_action = new(src)
 	chameleon_card_action.chameleon_type = /obj/item/card/id/advanced
 	chameleon_card_action.chameleon_name = "ID-карта"
@@ -1040,16 +1010,16 @@
 	theft_target = null
 	. = ..()
 
-/obj/item/card/id/advanced/chameleon/afterattack(obj/item/O, mob/user, proximity)
+/obj/item/card/id/advanced/chameleon/afterattack(atom/target, mob/user, proximity)
 	if(!proximity)
 		return
-	if(istype(O, /obj/item/card/id))
-		theft_target = WEAKREF(O)
+
+	if(istype(target, /obj/item/card/id))
+		theft_target = WEAKREF(target)
 		ui_interact(user)
 		return
 
 	return ..()
-
 
 /obj/item/card/id/advanced/chameleon/pre_attack_secondary(atom/target, mob/living/user, params)
 	// If we're attacking a human, we want it to be covert. We're not ATTACKING them, we're trying
@@ -1113,6 +1083,33 @@
 	data["accessFlags"] = SSid_access.flags_by_access
 	return data
 
+/obj/item/card/id/advanced/chameleon/ui_host(mob/user)
+	// Hook our UI to the theft target ID card for UI state checks.
+	return theft_target?.resolve()
+
+/obj/item/card/id/advanced/chameleon/ui_state(mob/user)
+	return GLOB.always_state
+
+/obj/item/card/id/advanced/chameleon/ui_status(mob/user)
+	var/target = theft_target?.resolve()
+
+	if(!target)
+		return UI_CLOSE
+
+	var/status = min(
+		ui_status_user_strictly_adjacent(user, target),
+		ui_status_user_is_advanced_tool_user(user),
+		max(
+			ui_status_user_is_conscious_and_lying_down(user),
+			ui_status_user_is_abled(user, target),
+		),
+	)
+
+	if(status < UI_INTERACTIVE)
+		return UI_CLOSE
+
+	return status
+
 /obj/item/card/id/advanced/chameleon/ui_data(mob/user)
 	var/list/data = list()
 
@@ -1120,7 +1117,7 @@
 
 	var/list/regions = list()
 
-	var/obj/item/card/id/target_card = theft_target?.resolve()
+	var/obj/item/card/id/target_card = theft_target.resolve()
 	if(target_card)
 		var/list/tgui_region_data = SSid_access.all_region_access_tgui
 		for(var/region in SSid_access.station_regions)
@@ -1129,7 +1126,7 @@
 	data["accesses"] = regions
 	data["ourAccess"] = access
 	data["ourTrimAccess"] = trim ? trim.access : list()
-	data["theftAccess"] = target_card ? target_card.access.Copy() : list()
+	data["theftAccess"] = target_card.access.Copy()
 	data["wildcardSlots"] = wildcard_slots
 	data["selectedList"] = access
 	data["trimAccess"] = list()
@@ -1221,7 +1218,7 @@
 							trim_list[fake_trim_name] = trim_path
 
 					var/selected_trim_path
-					selected_trim_path = input("Какой же образ мы выберем.\nЗаметка: это не добавит доступа.", "Модификация карты", selected_trim_path) as null|anything in sortList(trim_list, /proc/cmp_typepaths_asc)
+					selected_trim_path = input("Какой же образ мы выберем.\nЗаметка: это не добавит доступа.", "Модификация карты", selected_trim_path) as null|anything in sort_list(trim_list, /proc/cmp_typepaths_asc)
 					if(selected_trim_path)
 						SSid_access.apply_trim_to_chameleon_card(src, trim_list[selected_trim_path])
 
@@ -1231,7 +1228,10 @@
 
 				var/new_age = input(user, "Выберем же возраст:\n([AGE_MIN]-[AGE_MAX])", "Возраст агента") as num|null
 				if(new_age)
-					registered_age = max(round(text2num(new_age)), 0)
+					registered_age = round(new_age)
+
+				if(tgui_alert(user, "Активировать подмену ID-карты в кошельке, позволяя этой карте занять видимый слот идентификатора в кошельках?", "Подменяем...", list("Да", "Нет")) == "Да")
+					ADD_TRAIT(src, TRAIT_MAGNETIC_ID_CARD, CHAMELEON_ITEM_TRAIT)
 
 				update_label()
 				update_icon()
@@ -1252,8 +1252,9 @@
 			if(forged)
 				registered_name = initial(registered_name)
 				assignment = initial(assignment)
-				SSid_access.remove_trim_from_card(src)
-				log_game("[key_name(user)] has reset [initial(name)] named \"[src]\" to default.")
+				SSid_access.remove_trim_from_chameleon_card(src)
+				REMOVE_TRAIT(src, TRAIT_MAGNETIC_ID_CARD, CHAMELEON_ITEM_TRAIT)
+				log_game("[key_name(user)] has reset \the [initial(name)] named \"[src]\" to default.")
 				update_label()
 				update_icon()
 				forged = FALSE

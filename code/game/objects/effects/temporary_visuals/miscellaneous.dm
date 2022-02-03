@@ -278,6 +278,7 @@
 	icon = 'icons/mob/mob.dmi'
 	duration = 15
 
+
 /obj/effect/temp_visual/gib_animation/Initialize(mapload, gib_icon)
 	icon_state = gib_icon // Needs to be before ..() so icon is correct
 	. = ..()
@@ -317,6 +318,13 @@
 	layer = ABOVE_ALL_MOB_LAYER
 	duration = 4
 
+/obj/effect/temp_visual/lance_impact
+	name = "lance impact"
+	icon = 'white/valtos/icons/objects.dmi'
+	icon_state = "lanceimpact"
+	layer = ABOVE_ALL_MOB_LAYER
+	duration = 8
+
 /obj/effect/temp_visual/explosion
 	name = "explosion"
 	icon = 'icons/effects/96x96.dmi'
@@ -331,10 +339,14 @@
 
 /obj/effect/temp_visual/blob
 	name = "blob"
-	icon_state = "blob_attack"
+	icon_state = "blob_act"
 	alpha = 140
 	randomdir = 0
 	duration = 6
+
+/obj/effect/temp_visual/blob/New(loc, ...)
+	icon = GLOB.blob_current_icon
+	. = ..()
 
 /obj/effect/temp_visual/desynchronizer
 	name = "desynchronizer field"
@@ -394,6 +406,7 @@
 	icon = 'icons/mob/animal.dmi'
 	icon_state = "heart"
 	duration = 25
+	plane = ABOVE_GAME_PLANE
 
 /obj/effect/temp_visual/heart/Initialize(mapload)
 	. = ..()

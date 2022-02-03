@@ -442,7 +442,7 @@ This section is for the crystal stabilizer item and the crystal from the closed 
 */
 /obj/item/crystal_stabilizer
 	name = "Стабилизатор Суперматерии"
-	desc = "Used when the Supermatter Matrix is starting to reach the destruction point."
+	desc = "Используется, когда Матрица Сверхматерии начинает достигать точки разрушения."
 	icon = 'icons/obj/supermatter.dmi'
 	icon_state = "stabilizer"
 	slot_flags = ITEM_SLOT_BACK
@@ -650,8 +650,8 @@ This section is for the crystal monsters variations
 	gender = NEUTER
 	mob_biotypes = MOB_MINERAL|MOB_HUMANOID
 	turns_per_move = 1
-	speak_emote = list("resonates")
-	emote_see = list("resonates")
+	speak_emote = list("резонирует")
+	emote_see = list("резонирует")
 	a_intent = INTENT_HARM
 	minbodytemp = 0
 	maxbodytemp = 1500

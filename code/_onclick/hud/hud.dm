@@ -73,6 +73,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	var/atom/movable/screen/tooltip
 	var/atom/movable/screen/wanted/wanted_lvl
 	var/atom/movable/screen/spacesuit
+	var/atom/movable/screen/station_height/station_height
+	var/atom/movable/screen/station_height_bg/station_height_bg
 	// subtypes can override this to force a specific UI style
 	var/ui_style
 
@@ -81,14 +83,19 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 
 	if (!ui_style)
 		// will fall back to the default if any of these are null
-		ui_style = ui_style2icon(owner.client && owner.client.prefs && owner.client.prefs.UI_style)
+		ui_style = ui_style2icon(owner?.client?.prefs?.UI_style)
 
 	hide_actions_toggle = new
 	hide_actions_toggle.InitialiseIcon(src)
-	if(mymob?.client)
-		hide_actions_toggle.locked = mymob.client.prefs.buttons_locked
+	if(mymob?.client && hide_actions_toggle)
+		hide_actions_toggle.locked = mymob.client.prefs?.buttons_locked
 
 	hand_slots = list()
+
+	for(var/mytype in subtypesof(/atom/movable/screen/plane_master))
+		var/atom/movable/screen/plane_master/instance = new mytype()
+		plane_masters["[instance.plane]"] = instance
+		instance.backdrop(mymob)
 
 	tooltip = new /atom/movable/screen/tooltip()
 	tooltip?.hud = src
@@ -96,13 +103,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 		tooltip?.screen_loc = "SOUTH+1,CENTER-4:16"
 	infodisplay += tooltip
 
-	for(var/mytype in subtypesof(/atom/movable/screen/plane_master))
-		var/atom/movable/screen/plane_master/instance = new mytype()
-		plane_masters["[instance.plane]"] = instance
-		instance.backdrop(mymob)
-
 	for(var/mytype in subtypesof(/atom/movable/plane_master_controller))
-		var/atom/movable/plane_master_controller/controller_instance = new mytype(src)
+		var/atom/movable/plane_master_controller/controller_instance = new mytype(null, src)
 		plane_master_controllers[controller_instance.name] = controller_instance
 
 	owner.overlay_fullscreen("see_through_darkness", /atom/movable/screen/fullscreen/see_through_darkness)

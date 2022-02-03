@@ -168,7 +168,7 @@ SUBSYSTEM_DEF(shuttle)
 
 /datum/controller/subsystem/shuttle/proc/block_recall(lockout_timer)
 	if(adminEmergencyNoRecall)
-		priority_announce("Ошибка!", "Блокировка приёмника шаттла", 'sound/misc/announce_dig.ogg')
+		priority_announce("Ошибка!", "Блокировка приёмника шаттла", 'white/valtos/sounds/trevoga2.ogg')
 		addtimer(CALLBACK(src, .proc/unblock_recall), lockout_timer)
 		return
 	emergencyNoRecall = TRUE
@@ -176,7 +176,7 @@ SUBSYSTEM_DEF(shuttle)
 
 /datum/controller/subsystem/shuttle/proc/unblock_recall()
 	if(adminEmergencyNoRecall)
-		priority_announce("Ошибка!", "Блокировка приёмника шаттла", 'sound/misc/announce_dig.ogg')
+		priority_announce("Ошибка!", "Блокировка приёмника шаттла", 'white/valtos/sounds/trevoga2.ogg')
 		return
 	emergencyNoRecall = FALSE
 
@@ -293,7 +293,7 @@ SUBSYSTEM_DEF(shuttle)
 
 	if(!admiral_message)
 		admiral_message = pick(GLOB.admiral_messages)
-	var/intercepttext = "<font size = 3><b>Обновление Нанотрейзен</b>: Запрос шаттла.</font><hr>\
+	var/intercepttext = "<font size = 3><b>Обновление NanoTrasen</b>: Запрос шаттла.</font><hr>\
 						Для предъявления по месту требования:<br><br>\
 						Мы приняли к сведению ситуацию по [station_name()] и подошли \
 						к выводу о том, что это не является основанием для отказа от данной станции.<br>\
@@ -413,13 +413,13 @@ SUBSYSTEM_DEF(shuttle)
 		emergency.sound_played = FALSE
 		priority_announce("Обнаружены враждебные элементы. \
 			Вылет отложен на неопределенный срок в ожидании \
-			разрешения конфликта.", null, 'sound/misc/notice1.ogg', "Срочное сообщение")
+			разрешения конфликта.", null, 'sound/misc/notice1.ogg', "Priority")
 	if(!emergencyNoEscape && (emergency.mode == SHUTTLE_STRANDED))
 		emergency.mode = SHUTTLE_DOCKED
 		emergency.setTimer(emergencyDockTime)
 		priority_announce("Враждебные элементы устранены. \
 			У вас есть 3 минуты, чтобы сесть на эвакуационный шаттл.",
-			null, ANNOUNCER_SHUTTLEDOCK, "Срочное сообщение")
+			null, ANNOUNCER_SHUTTLEDOCK, "Priority")
 
 //try to move/request to dockHome if possible, otherwise dockAway. Mainly used for admin buttons
 /datum/controller/subsystem/shuttle/proc/toggleShuttle(shuttleId, dockHome, dockAway, timed)
@@ -834,7 +834,7 @@ SUBSYSTEM_DEF(shuttle)
 
 		templates[S.port_id]["templates"] += list(L)
 
-	data["templates_tabs"] = sortList(data["templates_tabs"])
+	data["templates_tabs"] = sort_list(data["templates_tabs"])
 
 	data["existing_shuttle"] = null
 

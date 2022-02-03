@@ -17,10 +17,14 @@
 /// The dimensions of the chat message icons
 #define CHAT_MESSAGE_ICON_SIZE 9
 
+///Base layer of chat elements
+#define CHAT_LAYER 1
+///Highest possible layer of chat elements
+#define CHAT_LAYER_MAX 2
 /// Maximum precision of float before rounding errors occur (in this context)
-#define CHAT_LAYER_Z_STEP			0.0001
+#define CHAT_LAYER_Z_STEP 0.0001
 /// The number of z-layer 'slices' usable by the chat message layering
-#define CHAT_LAYER_MAX_Z			(CHAT_LAYER_MAX - CHAT_LAYER) / CHAT_LAYER_Z_STEP
+#define CHAT_LAYER_MAX_Z (CHAT_LAYER_MAX - CHAT_LAYER) / CHAT_LAYER_Z_STEP
 
 /**
  * # Chat Message Overlay
@@ -234,6 +238,8 @@
  * * spans - Additional classes to be added to the message
  */
 /mob/proc/create_chat_message(atom/movable/speaker, datum/language/message_language, raw_message, list/spans, runechat_flags = NONE)
+	if(SSlag_switch.measures[DISABLE_RUNECHAT] && !HAS_TRAIT(speaker, TRAIT_BYPASS_MEASURES))
+		return
 	// Ensure the list we are using, if present, is a copy so we don't modify the list provided to us
 	spans = spans ? spans.Copy() : list()
 

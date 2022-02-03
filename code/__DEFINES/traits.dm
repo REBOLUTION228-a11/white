@@ -301,6 +301,8 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_WEAK_SOUL "weak_soul"
 /// Prevents mob from riding mobs when buckled onto something
 #define TRAIT_CANT_RIDE "cant_ride"
+/// Prevents a mob from being unbuckled, currently only used to prevent people from falling over on the tram
+#define TRAIT_CANNOT_BE_UNBUCKLED "cannot_be_unbuckled"
 /// from heparin, makes open bleeding wounds rapidly spill more blood
 #define TRAIT_BLOODY_MESS "bloody_mess"
 /// from coagulant reagents, this doesn't affect the bleeding itself but does affect the bleed warning messages
@@ -311,6 +313,8 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_ANTENNAE "antennae"
 /// Blowing kisses actually does damage to the victim
 #define TRAIT_KISS_OF_DEATH "kiss_of_death"
+/// Used to activate french kissing
+#define TRAIT_GARLIC_BREATH "kiss_of_garlic_death"
 /// Used on limbs in the process of turning a human into a plasmaman while in plasma lava
 #define TRAIT_PLASMABURNT "plasma_burnt"
 /// Addictions don't tick down, basically they're permanently addicted
@@ -666,7 +670,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 /// Trait applied to brain mobs when they lack external aid for locomotion, such as being inside a mech.
 #define BRAIN_UNAIDED "brain-unaided"
 /// Trait applied by element
-#define ELEMENT_TRAIT "element_trait"
+#define ELEMENT_TRAIT(source) "element_trait_[source]"
 /// Trait granted by [/obj/item/clothing/head/helmet/space/hardsuit/berserker]
 #define BERSERK_TRAIT "berserk_trait"
 /// Trait granted by [/obj/item/rod_of_asclepius]

@@ -257,7 +257,7 @@
 		if(!check)
 			break
 		T = check
-	return (getline(src, T) - get_turf(src))
+	return (get_line(src, T) - get_turf(src))
 
 /**
  * Spawns fire at each position in a line from the source to the target.
@@ -515,7 +515,6 @@
 	light_range = 10
 	anchored = TRUE
 	density = FALSE
-	layer = MASSIVE_OBJ_LAYER
 	/// The amount of time the rift has charged for.
 	var/time_charged = 0
 	/// The maximum charge the rift can have.
@@ -650,6 +649,8 @@
 		to_chat(user, span_warning("The rift already summoned enough carp!"))
 		return FALSE
 	var/mob/living/simple_animal/hostile/carp/newcarp = new /mob/living/simple_animal/hostile/carp(loc)
+	newcarp.AddElement(/datum/element/nerfed_pulling, GLOB.typecache_general_bad_things_to_easily_move)
+	newcarp.AddElement(/datum/element/prevent_attacking_of_types, GLOB.typecache_general_bad_hostile_attack_targets, "this tastes awful!")
 	newcarp.key = user.key
 	var/datum/antagonist/space_dragon/S = dragon.mind.has_antag_datum(/datum/antagonist/space_dragon)
 	if(S)

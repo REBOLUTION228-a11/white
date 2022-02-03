@@ -27,7 +27,7 @@
 	var/phase = 1
 	var/list/introduced = list()
 	var/speen = FALSE
-	var/speenrange = 7
+	var/speenrange = 4
 	var/obj/savedloot = null
 	var/charging = FALSE
 	var/chargetiles = 0
@@ -66,7 +66,7 @@
 			if(!(M in introduced) && (stat != DEAD))
 				introduction(M)
 
-/mob/living/simple_animal/hostile/megafauna/sans/apply_damage(damage = 0,damagetype = BRUTE, def_zone = null, blocked = FALSE, forced = FALSE, spread_damage = FALSE, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE) //skyrat edit
+/mob/living/simple_animal/hostile/megafauna/sans/apply_damage(damage = 0,damagetype = BRUTE, def_zone = null, blocked = FALSE, forced = FALSE, spread_damage = FALSE, wound_bonus = 0, bare_wound_bonus = 0, sharpness = NONE, attack_direction = null) //skyrat edit
 	if(speen)
 		visible_message("<span class='danger'>[capitalize(src.name)] уворачивается всех входящих атак!")
 		step(src, pick(GLOB.cardinals))
@@ -219,7 +219,7 @@
 	var/list/hit_things = list()
 	for(var/turf/T in speenturfs)
 		src.dir = get_dir(src, T)
-		for(var/turf/U in (getline(src, T) - get_turf(src)))
+		for(var/turf/U in (get_line(src, T) - get_turf(src)))
 			var/obj/effect/temp_visual/bone/bonk = new /obj/effect/temp_visual/bone(U)
 			QDEL_IN(bonk, 1.25)
 			for(var/mob/living/M in U)

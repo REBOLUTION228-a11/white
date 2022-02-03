@@ -2,7 +2,7 @@
  * Photo
  */
 /obj/item/photo
-	name = "photo"
+	name = "фото"
 	icon = 'icons/obj/items_and_weapons.dmi'
 	icon_state = "photo"
 	inhand_icon_state = "paper"
@@ -10,9 +10,8 @@
 	resistance_flags = FLAMMABLE
 	max_integrity = 50
 	grind_results = list(/datum/reagent/iodine = 4)
-	material_flags = MATERIAL_NO_EFFECTS
 	var/datum/picture/picture
-	var/scribble		//Scribble on the back.
+	var/scribble //Scribble on the back.
 
 /obj/item/photo/Initialize(mapload, datum/picture/P, datum_name = TRUE, datum_desc = TRUE)
 	set_picture(P, datum_name, datum_desc, TRUE)
@@ -22,14 +21,14 @@
 	if(!istype(P))
 		return
 	picture = P
-	update_icon()
+	update_icon_state()
 	if(P.caption)
 		scribble = P.caption
 	if(setname && P.picture_name)
 		if(name_override)
 			name = P.picture_name
 		else
-			name = "photo - [P.picture_name]"
+			name = "фото - [P.picture_name]"
 	if(setdesc && P.picture_desc)
 		desc = P.picture_desc
 
@@ -43,12 +42,14 @@
 
 /obj/item/photo/update_icon_state()
 	if(!istype(picture) || !picture.picture_image)
-		return
+		return ..()
 	var/icon/I = picture.get_small_icon(initial(icon_state))
-	overlays += I
+	if(I)
+		icon = I
+	return ..()
 
 /obj/item/photo/suicide_act(mob/living/carbon/user)
-	user.visible_message(span_suicide("[user] is taking one last look at <b>[src.name]</b>! It looks like [user.p_theyre()] giving in to death!"))//when you wanna look at photo of waifu one last time before you die...
+	user.visible_message(span_suicide("[user] is taking one last look at \the [src]! It looks like [user.p_theyre()] giving in to death!"))//when you wanna look at photo of waifu one last time before you die...
 	if (user.gender == MALE)
 		playsound(user, 'sound/voice/human/manlaugh1.ogg', 50, TRUE)//EVERY TIME I DO IT MAKES ME LAUGH
 	else if (user.gender == FEMALE)
@@ -63,9 +64,9 @@
 		return
 	if(istype(P, /obj/item/pen) || istype(P, /obj/item/toy/crayon))
 		if(!user.is_literate())
-			to_chat(user, span_notice("You scribble illegibly on [src]!"))
+			to_chat(user, span_notice("Царапаю [src]!"))
 			return
-		var/txt = stripped_input(user, "What would you like to write on the back?", "Photo Writing", "", 128)
+		var/txt = stripped_input(user, "Что же мы напишем?", "Фотописательство", "", 128)
 		if(txt && user.canUseTopic(src, BE_CLOSE))
 			scribble = txt
 	else
@@ -77,29 +78,29 @@
 	if(in_range(src, user) || isobserver(user))
 		show(user)
 	else
-		. += "<hr><span class='warning'>You need to get closer to get a good look at this photo!</span>"
+		. += span_warning("<hr>Стоит подойти поближе!")
 
 /obj/item/photo/proc/show(mob/user)
 	if(!istype(picture) || !picture.picture_image)
-		to_chat(user, span_warning("[capitalize(src.name)] seems to be blank..."))
+		to_chat(user, span_warning("[src] пустая..."))
 		return
 	user << browse_rsc(picture.picture_image, "tmp_photo.png")
-	user << browse("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>[name]</title></head>" \
+	user << browse("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>[name]</title></head>" \
 		+ "<body style='overflow:hidden;margin:0;text-align:center'>" \
 		+ "<img src='tmp_photo.png' width='480' style='-ms-interpolation-mode:nearest-neighbor' />" \
-		+ "[scribble ? "<br>Written on the back:<br><i>[scribble]</i>" : ""]"\
+		+ "[scribble ? "<br>На обороте написано:<br><i>[scribble]</i>" : ""]"\
 		+ "</body></html>", "window=photo_showing;size=480x608")
 	onclose(user, "[name]")
 
 /obj/item/photo/verb/rename()
-	set name = "Rename photo"
+	set name = "Переименовать фотографию"
 	set category = "Объект"
 	set src in usr
 
-	var/n_name = stripped_input(usr, "What would you like to label the photo?", "Photo Labelling", "", MAX_NAME_LEN)
+	var/n_name = stripped_input(usr, "Как мы назовём нашу фотографию?", "Фотографирование", "", MAX_NAME_LEN)
 	//loc.loc check is for making possible renaming photos in clipboards
 	if(n_name && (loc == usr || loc.loc && loc.loc == usr) && usr.stat == CONSCIOUS && !usr.incapacitated())
-		name = "photo[(n_name ? text("- '[n_name]'") : null)]"
+		name = "фото[(n_name ? text("- '[n_name]'") : null)]"
 	add_fingerprint(usr)
 
 /obj/item/photo/old

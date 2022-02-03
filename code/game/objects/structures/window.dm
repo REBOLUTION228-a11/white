@@ -14,6 +14,8 @@
 	CanAtmosPass = ATMOS_PASS_PROC
 	rad_insulation = RAD_VERY_LIGHT_INSULATION
 	pass_flags_self = PASSGLASS
+	flags_ricochet = RICOCHET_HARD
+	receive_ricochet_chance_mod = 0.5
 	var/ini_dir = null
 	var/state = WINDOW_OUT_OF_FRAME
 	var/reinf = FALSE
@@ -29,13 +31,12 @@
 	var/knocksound = 'sound/effects/Glassknock.ogg'
 	var/bashsound = 'sound/effects/Glassbash.ogg'
 	var/hitsound = 'sound/effects/Glasshit.ogg'
-	flags_ricochet = RICOCHET_HARD
-	receive_ricochet_chance_mod = 0.5
+	/// If some inconsiderate jerk has had their blood spilled on this window, thus making it cleanable
+	var/bloodied = FALSE
 
 
 /obj/structure/window/examine(mob/user)
 	. = ..()
-	. += "<hr>"
 	if(reinf)
 		if(anchored && state == WINDOW_SCREWED_TO_FRAME)
 			. += span_notice("Окно <b>прикручено</b> к рамке.")
@@ -472,15 +473,15 @@
 	. = ..()
 	switch(state)
 		if(RWINDOW_SECURE)
-			. += "<hr><span class='notice'>Окно прикручено одноразовыми винтами. Придётся <b>нагреть их</b>, чтобы получить хоть какой-то шанс выкрутить их обратно.</span>"
+			. += span_notice("Окно прикручено одноразовыми винтами. Придётся <b>нагреть их</b>, чтобы получить хоть какой-то шанс выкрутить их обратно.")
 		if(RWINDOW_BOLTS_HEATED)
-			. += "<hr><span class='notice'>Винтики раскалены до бела, похоже можно <b>открутить их</b> прямо сейчас.</span>"
+			. += span_notice("Винтики раскалены до бела, похоже можно <b>открутить их</b> прямо сейчас.")
 		if(RWINDOW_BOLTS_OUT)
-			. += "<hr><span class='notice'>Винтики удалены и теперь окно можно <b>подпереть</b> сквозь доступную щель.</span>"
+			. += span_notice("Винтики удалены и теперь окно можно <b>подпереть</b> сквозь доступную щель.")
 		if(RWINDOW_POPPED)
-			. += "<hr><span class='notice'>Основная плита вышла из рамки и стали видны прутья, которые можно <b>откусить</b>.</span>"
+			. += span_notice("Основная плита вышла из рамки и стали видны прутья, которые можно <b>откусить</b>.")
 		if(RWINDOW_BARS_CUT)
-			. += "<hr><span class='notice'>Основная плита отделена от рамки и теперь её удерживает только несколько <b>болтов</b>.</span>"
+			. += span_notice("Основная плита отделена от рамки и теперь её удерживает только несколько <b>болтов</b>.")
 
 /obj/structure/window/reinforced/spawner/east
 	dir = EAST
@@ -594,7 +595,6 @@
 
 /obj/structure/window/plasma/reinforced/examine(mob/user)
 	. = ..()
-	. += "<hr>"
 	switch(state)
 		if(RWINDOW_SECURE)
 			. += "<hr><span class='notice'>Окно прикручено одноразовыми винтами. Придётся <b>нагреть их</b>, чтобы получить хоть какой-то шанс выкрутить их обратно.</span>"

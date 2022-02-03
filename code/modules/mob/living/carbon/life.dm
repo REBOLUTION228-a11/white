@@ -344,13 +344,16 @@
 	return
 
 /mob/living/carbon/proc/handle_hydration(delta_time, times_fired)
-	hydration -= HYDRATION_LOSS_PER_LIFE
+	return
 
-	if(hydration <= HYDRATION_LEVEL_DEHYDRATED)
-		if(DT_PROB(5, delta_time))
-			emote("plot")
-			adjustToxLoss(1)
-			adjustStaminaLoss(5)
+/mob/living/carbon/human/handle_hydration(delta_time, times_fired)
+
+	if((NOBLOOD in dna.species.species_traits) || HAS_TRAIT(src, TRAIT_NOBLEED) || (HAS_TRAIT(src, TRAIT_FAKEDEATH)))
+		hydration = HYDRATION_LEVEL_START_MIN
+		return
+	if(hydration < HYDRATION_LEVEL_MIN_CAP)
+		hydration = HYDRATION_LEVEL_MIN_CAP
+	hydration -= HYDRATION_LOSS_PER_LIFE
 
 /mob/living/carbon/proc/handle_bodyparts(delta_time, times_fired)
 	var/stam_regen = FALSE

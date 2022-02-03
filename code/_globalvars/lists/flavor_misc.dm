@@ -7,6 +7,7 @@ GLOBAL_LIST_EMPTY(facial_hairstyles_list)	//stores /datum/sprite_accessory/facia
 GLOBAL_LIST_EMPTY(facial_hairstyles_male_list)	//stores only hair names
 GLOBAL_LIST_EMPTY(facial_hairstyles_female_list)	//stores only hair names
 GLOBAL_LIST_EMPTY(hair_gradients_list) //stores /datum/sprite_accessory/hair_gradient indexed by name
+GLOBAL_LIST_EMPTY(facial_hair_gradients_list) //stores /datum/sprite_accessory/facial_hair_gradient indexed by name
 	//Underwear
 GLOBAL_LIST_EMPTY(underwear_list)		//stores /datum/sprite_accessory/underwear indexed by name
 GLOBAL_LIST_EMPTY(underwear_m)	//stores only underwear name
@@ -94,13 +95,14 @@ GLOBAL_LIST_INIT(ghost_forms_with_directions_list, list(
 
 GLOBAL_LIST_INIT(ghost_forms_with_accessories_list, list("ghost")) //stores the ghost forms that support hair and other such things
 
-GLOBAL_LIST_INIT(ai_core_display_screens, sortList(list(
+GLOBAL_LIST_INIT(ai_core_display_screens, sort_list(list(
 	":thinking:",
 	"Alien",
 	"Angel",
 	"Banned",
 	"Bliss",
 	"Blue",
+	"Cat",
 	"Clown",
 	"Database",
 	"Dorf",
@@ -147,7 +149,7 @@ GLOBAL_LIST_INIT(ai_core_display_screens, sortList(list(
 			return "ai-portrait" //just take this until they decide
 		return "ai-[lowertext(input)]"
 
-GLOBAL_LIST_INIT(security_depts_prefs, sortList(list(SEC_DEPT_RANDOM, SEC_DEPT_NONE, SEC_DEPT_ENGINEERING, SEC_DEPT_MEDICAL, SEC_DEPT_SCIENCE, SEC_DEPT_SUPPLY)))
+GLOBAL_LIST_INIT(security_depts_prefs, sort_list(list(SEC_DEPT_RANDOM, SEC_DEPT_NONE, SEC_DEPT_ENGINEERING, SEC_DEPT_MEDICAL, SEC_DEPT_SCIENCE, SEC_DEPT_SUPPLY)))
 
 	//Backpacks
 #define GBACKPACK "Grey Backpack"

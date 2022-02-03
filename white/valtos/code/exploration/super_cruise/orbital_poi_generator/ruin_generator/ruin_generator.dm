@@ -24,11 +24,12 @@
 		_generate_space_ruin(center_x, center_y, center_z, border_x, border_y, linked_objective, forced_decoration, ruin_event, allowed_flags)
 	catch(var/exception/e)
 		message_admins("Space ruin failed to generate!")
-		stack_trace("Space ruin failed to generate! [e] on [e.file]:[e.line]")
+		log_runtime("Space ruin failed to generate! [e] on [e.file]:[e.line]")
 	space_level.generating = FALSE
 
 /proc/_generate_space_ruin(center_x, center_y, center_z, border_x, border_y, datum/orbital_objective/linked_objective, forced_decoration, datum/ruin_event/ruin_event, allowed_flags = RUIN_PART_DEFAULT)
-	SSair.disable_atmos_in_z(center_z)
+
+	SSair.pause_z(center_z)
 
 	//Try and catch errors so that critical actions (unpausing the Z atmos) can happen.
 	log_mapping("Generating random ruin at [center_x], [center_y], [center_z]")
@@ -203,9 +204,9 @@
 		SSmapping.loading_ruins = TRUE
 		CHECK_TICK
 		try
-			ruin_part.load(locate(ruin_offset_x + 1, ruin_offset_y + 1, center_z), FALSE)
+			ruin_part.load(locate(ruin_offset_x + 1, ruin_offset_y + 1, center_z), FALSE, FALSE)
 		catch(var/exception/e)
-			stack_trace("Run time in space ruin generation ([ruin_part.name]) [e] on [e.file]:[e.line]")
+			log_runtime("Run time in space ruin generation ([ruin_part.name]) [e] on [e.file]:[e.line]")
 		CHECK_TICK
 		SSmapping.loading_ruins = FALSE
 		//Simulate spawning
@@ -394,6 +395,8 @@
 		SSorbits.ruin_events += ruin_event
 
 	SSzclear.nullspaced_mobs.Cut()
+
+	SSair.unpause_z(center_z)
 
 	log_mapping("Finished generating ruin at [center_x], [center_y], [center_z]")
 

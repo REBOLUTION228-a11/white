@@ -92,6 +92,8 @@
 
 /datum/config_entry/flag/log_pda	// log pda messages
 
+/datum/config_entry/flag/log_uplink // log uplink/spellbook/codex ciatrix purchases and refundss
+
 /datum/config_entry/flag/log_telecomms	// log telecomms messages
 
 /datum/config_entry/flag/log_twitter	// log certain expliotable parrots and other such fun things in a JSON file of twitter valid phrases.
@@ -305,6 +307,11 @@
 	integer = FALSE
 
 /datum/config_entry/flag/maprotation
+
+/datum/config_entry/number/auto_lag_switch_pop //Number of clients at which drastic lag mitigation measures kick in
+	config_entry_value = null
+	min_val = 0
+
 
 /datum/config_entry/number/panic_bunker_cap
 	config_entry_value = 75
@@ -533,3 +540,18 @@
 /datum/config_entry/flag/this_shit_is_stable
 
 /datum/config_entry/flag/df_enabled
+
+/datum/config_entry/number/urgent_ahelp_cooldown
+	default = 300
+
+/datum/config_entry/string/urgent_ahelp_message
+	default = "This ahelp is urgent!"
+
+/datum/config_entry/string/urgent_ahelp_user_prompt
+	default = "There are no admins currently on. Do not press the button below if your ahelp is a joke, a request or a question. Use it only for cases of obvious grief."
+
+/datum/config_entry/string/adminhelp_webhook_url
+
+/datum/config_entry/string/adminhelp_webhook_pfp
+
+/datum/config_entry/string/adminhelp_webhook_name

@@ -18,7 +18,7 @@
 /obj/machinery/vendor/proc/RedeemVoucherRanger(obj/item/rangers_voucher/voucher, mob/redeemer)
 	var/items = list("Набор экипировки рейнджера-медика", "Набор экипировки рейнджера-инженера", "Набор экипировки рейнджера-боевика")
 
-	var/selection = input(redeemer, "Выберите специализацию", "Ваучер будет погашен") as null|anything in sortList(items)
+	var/selection = input(redeemer, "Выберите специализацию", "Ваучер будет погашен") as null|anything in sort_list(items)
 	if(!selection || !Adjacent(redeemer) || QDELETED(voucher) || voucher.loc != redeemer)
 		return
 	var/drop_location = drop_location()
@@ -84,6 +84,7 @@
 		/obj/item/retractor = 1,
 		/obj/item/circular_saw = 1,
 		/obj/item/bonesetter = 1,
+		/obj/item/blood_filter = 1,
 		/obj/item/cautery = 1)
 	generate_items_inside(items_inside,src)
 
@@ -137,7 +138,7 @@
 
 /obj/item/gun/energy/laser/rangers
 	name = "Экспериментальная лазерная пушка"
-	desc = "Неожиданный результат экспериментов НТ в области увеличения энергоячеек. Боезапас винтовки был удвоен, но из за особенностей энергораспределения поражающая мощность понизилась. Однако был обнаружен полезный побочный эффект: нестабильное излучение оказывает чрезвычайно разрушительный эффект на нервную систему примитивных форм жизни. Предоставлена корпусу рейнджеров на полевые испытания."
+	desc = "Неожиданный результат экспериментов NT в области увеличения энергоячеек. Боезапас винтовки был удвоен, но из за особенностей энергораспределения поражающая мощность понизилась. Однако был обнаружен полезный побочный эффект: нестабильное излучение оказывает чрезвычайно разрушительный эффект на нервную систему примитивных форм жизни. Предоставлена корпусу рейнджеров на полевые испытания."
 	icon = 'white/Feline/icons/weapon_rangers.dmi'
 	icon_state = "rangerlaser"
 	charge_sections = 8

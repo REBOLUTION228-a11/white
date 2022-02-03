@@ -33,8 +33,8 @@
 	availability_prob = 50
 
 /datum/blackmarket_item/clothing/full_spacesuit_set
-	name = "Устаревший космический костюм НТ"
-	desc = "Космический костюм НТ устаревшего вида"
+	name = "Устаревший космический костюм NT"
+	desc = "Космический костюм NT устаревшего вида"
 	item = /obj/item/storage/box
 
 	price_min = 100
@@ -335,7 +335,7 @@
 	availability_prob = 50
 
 /datum/blackmarket_item/clothing/jackboots
-	name = "Военный ботинки"
+	name = "Ботинки"
 	desc = "jackass"
 	item = /obj/item/clothing/shoes/jackboots
 

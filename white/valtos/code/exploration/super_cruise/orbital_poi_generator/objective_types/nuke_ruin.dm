@@ -5,8 +5,8 @@
 	var/obj/machinery/nuclearbomb/decomission/nuclear_bomb
 	var/obj/item/disk/nuclear/decommission/nuclear_disk
 	//Relatively easy mission.
-	min_payout = 8 * CARGO_CRATE_VALUE
-	max_payout = 20 * CARGO_CRATE_VALUE
+	min_payout = 4 * CARGO_CRATE_VALUE
+	max_payout = 2 * CARGO_CRATE_VALUE
 
 /datum/orbital_objective/nuclear_bomb/generate_objective_stuff(turf/chosen_turf)
 	generated = TRUE
@@ -37,7 +37,7 @@
 
 /obj/item/disk/nuclear/decommission
 	name = "устаревший диск ядерной аутентификации"
-	desc = "Старый, изношенный диск, используемый в устаревшей ядерной боеголовке X-7. Нанотрейзен больше не использует эту модель аутентификации из-за ее плохой безопасности."
+	desc = "Старый, изношенный диск, используемый в устаревшей ядерной боеголовке X-7. NanoTrasen больше не использует эту модель аутентификации из-за ее плохой безопасности."
 	fake = TRUE
 
 /obj/item/disk/nuclear/decommission/ComponentInitialize()
@@ -46,8 +46,6 @@
 //==============
 //The bomb
 //==============
-
-GLOBAL_LIST_EMPTY(decomission_bombs)
 
 /obj/machinery/nuclearbomb/decomission
 	desc = "Ядерная бомба для уничтожения станций. Использует старую версию дисков ядерной аутентификации."
@@ -64,9 +62,10 @@ GLOBAL_LIST_EMPTY(decomission_bombs)
 	GLOB.decomission_bombs += src
 	r_code = "[rand(10000, 99999)]"
 	print_command_report("Код взрыва ядерной бомбы: [r_code]")
-	var/obj/structure/closet/supplypod/bluespacepod/pod = new()
-	pod.explosionSize = list(0,0,0,4)
-	new /obj/effect/pod_landingzone(get_turf(src), pod)
+	var/obj/structure/closet/supplypod/pod = podspawn(list(
+		"target" = get_turf(src),
+		"path" = /obj/structure/closet/supplypod/box
+	))
 	forceMove(pod)
 
 /obj/machinery/nuclearbomb/decomission/Destroy()

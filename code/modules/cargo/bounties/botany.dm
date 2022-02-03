@@ -28,7 +28,7 @@
 	name = "золотых яблок"
 	wanted_types = list(/obj/item/food/grown/apple/gold)
 	multiplier = 4
-	foodtype = "вкусный дессерт"
+	foodtype = "вкусный десерт"
 
 /datum/bounty/item/botany/banana
 	name = "бананов"
@@ -122,7 +122,7 @@
 	multiplier = 2
 
 /datum/bounty/item/botany/citrus_lemon
-	name = "лемона"
+	name = "лимона"
 	wanted_types = list(/obj/item/food/grown/citrus/lemon)
 	foodtype = "вкусный сорбет"
 	multiplier = 2
@@ -130,7 +130,7 @@
 /datum/bounty/item/botany/citrus_oranges
 	name = "апельсина"
 	wanted_types = list(/obj/item/food/grown/citrus/orange)
-	bonus_desc = "Не отправлять лемоны и лаймы." //I vanted orahnge!
+	bonus_desc = "Не отправлять лимоны и лаймы." //I vanted orahnge!
 	foodtype = "вкусный сорбет"
 	multiplier = 2
 
@@ -155,14 +155,14 @@
 /datum/bounty/item/botany/watermelon
 	name = "арбуза"
 	wanted_types = list(/obj/item/food/grown/watermelon)
-	foodtype = "вкусный дессерт"
+	foodtype = "вкусный десерт"
 	multiplier = 2
 
 /datum/bounty/item/botany/watermelon_holy
 	name = "святого арбуза"
 	wanted_types = list(/obj/item/food/grown/holymelon)
 	multiplier = 8
-	foodtype = "вкусный дессерт"
+	foodtype = "вкусный десерт"
 
 /datum/bounty/item/botany/glowshroom
 	name = "светящегося гриба"
@@ -212,8 +212,8 @@
 	name = "овса"
 	wanted_types = list(/obj/item/food/grown/oat)
 	multiplier = 2
-	foodtype = "партия овсянки"
-//	bonus_desc = "Squats and oats. We're all out of oats."
+	foodtype = "партия овса"
+	bonus_desc = "Squats and oats. We're all out of oats."
 
 /*
 /datum/bounty/item/botany/bonfire
@@ -231,7 +231,7 @@
 /datum/bounty/item/botany/forgetmenot
 	name = "Forget-Me-Nots"
 	description = "Commander Zot has his eyes on Quartermaster Maya. Send a shipment of forget-me-nots - her favorite flower - and he'll happily reward you."
-	reward = 7000
+	reward = 100
 	required_count = 3
 	wanted_types = list(/obj/item/food/grown/poppy/geranium/forgetmenot)
 	format_exception = TRUE
@@ -239,7 +239,7 @@
 /datum/bounty/item/botany/geranium
 	name = "Geraniums"
 	description = "Commander Zot has the hots for Commander Zena. Send a shipment of geraniums - her favorite flower - and he'll happily reward you."
-	reward = 6000
+	reward = 60
 	required_count = 3
 	wanted_types = list(/obj/item/food/grown/poppy/geranium)
 	format_exception = TRUE
@@ -247,7 +247,7 @@
 /datum/bounty/item/botany/rainbowflowercrown
 	name = "Rainbow Flower Crowns"
 	description = "Central Command is concerned about their intern suicide rate. A shipment of rainbow flower crowns should do nicely to improve morale."
-	reward = 10000
+	reward = 100
 	required_count = 3
 	wanted_types = list(/obj/item/clothing/head/rainbowbunchcrown)
 	format_exception = TRUE

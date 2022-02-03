@@ -241,7 +241,7 @@
 	QDEL_NULL(moth_snack)
 	return ..()
 
-/obj/item/clothing/dropped(mob/user)
+/obj/item/clothing/dropped(mob/living/user)
 	..()
 	if(!istype(user))
 		return
@@ -256,7 +256,7 @@
 					user.vars[variable] = user_vars_remembered[variable]
 		user_vars_remembered = initial(user_vars_remembered) // Effectively this sets it to null.
 
-/obj/item/clothing/equipped(mob/user, slot)
+/obj/item/clothing/equipped(mob/living/user, slot)
 	. = ..()
 	if (!istype(user))
 		return
@@ -273,40 +273,43 @@
 
 /obj/item/clothing/examine(mob/user)
 	. = ..()
+
+	. += "<hr>"
+
 	if(damaged_clothes == CLOTHING_SHREDDED)
-		. += "<hr><span class='warning'><b>Полностью разорвано и требует починки!</b></span>"
+		. += span_warning("<b>Полностью разорвано и требует починки!</b>")
 		return
 
 	switch (max_heat_protection_temperature)
 		if (400 to 1000)
-			. += "\n[capitalize(src.name)] немного защищает от огня."
+			. += span_smallnotice("[capitalize(src.name)] немного защищает от огня.")
 		if (1001 to 1600)
-			. += "\n[capitalize(src.name)] может защитить от огня."
+			. += span_notice("[capitalize(src.name)] может защитить от огня.")
 		if (1601 to 35000)
-			. += "\n[capitalize(src.name)] неплохо защищает от огня."
+			. += span_smalldanger("[capitalize(src.name)] неплохо защищает от огня.")
 
 	for(var/zone in damage_by_parts)
 		var/pct_damage_part = damage_by_parts[zone] / limb_integrity * 100
 		var/zone_name = parse_zone(zone)
 		switch(pct_damage_part)
 			if(100 to INFINITY)
-				. += "\n<span class='warning'><b>[capitalize(zone_name)] бесполезна и требует починки!</b></span>"
+				. += span_smalldanger(span_warning("<b>[capitalize(zone_name)] [src.name] разорвана в клочья!</b>"))
 			if(60 to 99)
-				. += "\n<span class='warning'>[capitalize(zone_name)] достаточно разорвана!</span>"
+				. += span_notice(span_warning("[capitalize(zone_name)] [src.name] сильно потрёпана!"))
 			if(30 to 59)
-				. += "\n<span class='danger'>[capitalize(zone_name)] немного порвана.</span>"
+				. += span_smallnotice(span_danger("[capitalize(zone_name)] [src.name] немного порвана."))
 
 	var/datum/component/storage/pockets = GetComponent(/datum/component/storage)
 	if(pockets)
 		var/list/how_cool_are_your_threads = list("<hr><span class='notice'>")
 		if(pockets.attack_hand_interact)
-			how_cool_are_your_threads += "[src] показывает хранилище при клике.\n"
+			how_cool_are_your_threads += "[capitalize(src.name)] показывает хранилище при клике.\n"
 		else
-			how_cool_are_your_threads += "[src] показывает хранилище при перетягивании на себя.\n"
+			how_cool_are_your_threads += "[capitalize(src.name)] показывает хранилище при перетягивании на себя.\n"
 		if (pockets.can_hold?.len) // If pocket type can hold anything, vs only specific items
-			how_cool_are_your_threads += "[src] может хранить [pockets.max_items] <a href='?src=[REF(src)];show_valid_pocket_items=1'>предметов</a>.\n"
+			how_cool_are_your_threads += "[capitalize(src.name)] может хранить [pockets.max_items] <a href='?src=[REF(src)];show_valid_pocket_items=1'>предметов</a>.\n"
 		else
-			how_cool_are_your_threads += "[src] может хранить [pockets.max_items] [weightclass2text(pockets.max_w_class)] размера или меньше.\n"
+			how_cool_are_your_threads += "[capitalize(src.name)] может хранить [pockets.max_items] [weightclass2text(pockets.max_w_class)] размера или меньше.\n"
 		if(pockets.quickdraw)
 			how_cool_are_your_threads += "Могу быстро вытащить предмет из [src] используя ПКМ.\n"
 		if(pockets.silent)
@@ -458,6 +461,7 @@ BLIND     // can't see anything
 
 /obj/item/clothing/proc/visor_toggling() //handles all the actual toggling of flags
 	up = !up
+	SEND_SIGNAL(src, COMSIG_CLOTHING_VISOR_TOGGLE, up)
 	clothing_flags ^= visor_flags
 	flags_inv ^= visor_flags_inv
 	flags_cover ^= initial(flags_cover)
@@ -469,6 +473,7 @@ BLIND     // can't see anything
 
 /obj/item/clothing/head/helmet/space/plasmaman/visor_toggling() //handles all the actual toggling of flags
 	up = !up
+	SEND_SIGNAL(src, COMSIG_CLOTHING_VISOR_TOGGLE, up)
 	clothing_flags ^= visor_flags
 	flags_inv ^= visor_flags_inv
 	icon_state = "[initial(icon_state)]"

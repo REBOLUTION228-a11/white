@@ -192,7 +192,6 @@
 		if(item_materials[MAT] > max_mat_value)
 			max_mat_value = item_materials[MAT]
 			primary_mat = MAT
-
 	return primary_mat
 
 /**

@@ -11,7 +11,6 @@
 	unwrench_path = /obj/item/clockwork/trap_placer/pressure_sensor
 	component_datum = /datum/component/clockwork_trap/pressure_sensor
 	alpha = 60
-	layer = PRESSURE_PLATE_LAYER
 	max_integrity = 5
 	obj_integrity = 5
 
@@ -20,10 +19,7 @@
 
 /datum/component/clockwork_trap/pressure_sensor/Initialize()
 	. = ..()
-	var/static/list/loc_connections = list(
-		COMSIG_ATOM_ENTERED = .proc/on_entered,
-	)
-	AddElement(/datum/element/connect_loc, parent, loc_connections)
+	RegisterSignal(parent, COMSIG_ATOM_ENTERED, .proc/on_entered)
 
 /datum/component/clockwork_trap/pressure_sensor/proc/on_entered(datum/source, atom/movable/AM)
 	SIGNAL_HANDLER

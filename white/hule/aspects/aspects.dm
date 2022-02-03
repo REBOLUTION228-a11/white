@@ -67,7 +67,7 @@
 
 /datum/round_aspect/weak_walls/run_aspect()
 	for(var/turf/closed/wall/r_wall/RW in world)
-		RW.ChangeTurf(/turf/closed/wall, flags = CHANGETURF_DEFER_CHANGE)
+		RW.ChangeTurf(/turf/closed/wall, flags = CHANGETURF_INHERIT_AIR)
 		CHECK_TICK
 	..()
 
@@ -190,7 +190,7 @@
 
 /datum/round_aspect/prikol/run_aspect()
 	for(var/turf/open/floor/plasteel/floor)
-		if(floor.x % 2 == 0 && floor.y % 2 == 0)
+		if(floor.y % 2 == 0)
 			floor.add_atom_colour(("#FFF200"), WASHABLE_COLOUR_PRIORITY)
 		else
 			floor.add_atom_colour(("#00B7EF"), WASHABLE_COLOUR_PRIORITY)
@@ -275,6 +275,7 @@
 	name = "Fast and Furious"
 	desc = "Люди спешат и не важно куда."
 	weight = 9
+	forbidden = TRUE
 
 /datum/round_aspect/fast_and_furious/run_aspect()
 	CONFIG_SET(number/movedelay/run_delay, 1)
@@ -284,6 +285,7 @@
 	name = "Weak"
 	desc = "Удары стали слабее. Пули мягче. К чему это приведёт?"
 	weight = 6
+	forbidden = TRUE
 
 /datum/round_aspect/weak/run_aspect()
 	CONFIG_SET(number/damage_multiplier, 0.5)
@@ -303,6 +305,7 @@
 	name = "Bloody"
 	desc = "В эту смену любая незначительная травма может оказаться летальной."
 	weight = 6
+	forbidden = TRUE
 
 /datum/round_aspect/bloody/run_aspect()
 	CONFIG_SET(number/damage_multiplier, 3)
@@ -429,15 +432,29 @@
 	name = "Oleg"
 	desc = "Олег."
 	weight = 5
+	forbidden = TRUE
 
 /datum/round_aspect/oleg/run_aspect()
 	SSjob.forced_name = "Олег"
-	spawn(5 SECONDS)
+	spawn(3 SECONDS)
 		for(var/mob/living/carbon/human/H in GLOB.mob_list)
 			H.fully_replace_character_name(H.real_name, "[SSjob.forced_name] \Roman[SSjob.forced_num]")
 			SSjob.forced_num++
 	..()
 
+/datum/round_aspect/grifon_kosmonavtov
+	name = "Grifon Kosmonavtov"
+	desc = "███████ ██████ ███ ███ ███████, █████ ██ ██████████ ███ ███████ █████. █████с █████ёб"
+	weight = 5
+	forbidden = FALSE
+
+/datum/round_aspect/grifon_kosmonavtov/run_aspect()
+	SSjob.forced_name = "TATAR"
+	spawn(3 SECONDS)
+		for(var/mob/living/carbon/human/H in GLOB.mob_list)
+			H.fully_replace_character_name(H.real_name, get_funny_name(3))
+			SSjob.forced_num++
+	..()
 /datum/round_aspect/key
 	name = "Key"
 	desc = "Ключевые события теперь подпитаны правдой."
@@ -459,4 +476,114 @@
 
 /datum/round_aspect/rdmg/run_aspect()
 	GLOB.random_damage_goes_on = TRUE
+	..()
+
+/datum/round_aspect/fireunlock
+	name = "Fireunlock"
+	desc = "Пожарные шлюзы украли!"
+	weight = 3
+	forbidden = TRUE
+
+/datum/round_aspect/fireunlock/run_aspect()
+	for(var/obj/machinery/door/firedoor/F in world)
+		qdel(F)
+	..()
+
+/datum/round_aspect/ihavetwobuttsbutimustseat
+	name = "I Have Two Butts But I must Seat"
+	desc = "Стулья украли!"
+	weight = 5
+
+/datum/round_aspect/ihavetwobuttsbutimustseat/run_aspect()
+	for(var/obj/structure/chair/C in world)
+		qdel(C)
+	..()
+
+/datum/round_aspect/hungry_bin
+	name = "Hungry Bin"
+	desc = "Мусорки проголодались!"
+	weight = 5
+	forbidden = TRUE
+
+/datum/round_aspect/hungry_bin/run_aspect()
+	GLOB.disposals_are_hungry = TRUE
+	..()
+
+/datum/round_aspect/stolen_floor
+	name = "Stolen Floor"
+	desc = "Рабочие забыли положить плитку при строительстве станции."
+	weight = 4
+
+/datum/round_aspect/stolen_floor/run_aspect()
+	for(var/turf/open/floor/P in world)
+		if(!is_station_level(P.z))
+			continue
+		P.ChangeTurf(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
+		CHECK_TICK
+	..()
+
+/datum/round_aspect/strong_floor
+	name = "Strong Floor"
+	desc = "Пол был кем-то укреплён."
+	weight = 3
+
+/datum/round_aspect/strong_floor/run_aspect()
+	for(var/turf/open/floor/P in world)
+		if(!is_station_level(P.z))
+			continue
+		P.PlaceOnTop(/turf/open/floor/engine)
+		CHECK_TICK
+	..()
+
+/datum/round_aspect/are_we_in_dungeon
+	name = "Are We In Dungeon"
+	desc = "В связи с невероятной хрупкостью окон было решено заменить их на стены."
+	weight = 3
+
+/datum/round_aspect/are_we_in_dungeon/run_aspect()
+	for(var/obj/structure/window/W in world)
+		if(!is_station_level(W.z))
+			continue
+		var/turf/TT = get_turf(W)
+		if(TT)
+			if(istype(W, /obj/structure/window/reinforced))
+				TT.PlaceOnTop(/turf/closed/wall/r_wall)
+			else
+				TT.PlaceOnTop(/turf/closed/wall)
+			qdel(W)
+	for(var/obj/structure/grille/G in world)
+		if(!is_station_level(G.z))
+			continue
+		qdel(G)
+		CHECK_TICK
+	..()
+
+/datum/round_aspect/trash
+	name = "Trash"
+	desc = "Субботник начался!"
+	weight = 15
+
+/datum/round_aspect/trash/run_aspect()
+	for(var/turf/open/P in world)
+		if(!is_station_level(P.z))
+			continue
+		if(prob(5))
+			var/pickedtrash = pickweight(pickweight(GLOB.trash_loot))
+			new pickedtrash(P)
+		CHECK_TICK
+	..()
+
+/datum/round_aspect/traitored
+	name = "Traitored"
+	desc = "Кто-то сдал всех предателей!"
+	weight = 15
+
+/datum/round_aspect/traitored/run_aspect()
+	spawn(30 SECONDS)
+		var/list/our_pussies = list()
+		for(var/D in GLOB.antagonists)
+			var/datum/antagonist/A = D
+			if(A?.name && A?.owner)
+				our_pussies += "[A.name] - [A.owner.name] под видом [A.owner.assigned_role].[prob(1) ? " УБЕЙТЕ ЕГО НАХУЙ!" : ""]"
+		priority_announce("Прива, я тут немного собрал для вас имён интересных, надеюсь, они вам понадобятся! Список психов: [english_list(our_pussies)]", sender_override = "Апегио Крысус")
 	..()

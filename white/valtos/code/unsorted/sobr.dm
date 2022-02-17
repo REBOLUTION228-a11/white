@@ -21,6 +21,10 @@
 	leader = TRUE
 	greentext_reward = 20
 
+/datum/antagonist/ert/omon/New()
+	. = ..()
+	name_source = GLOB.last_names_slavic
+
 /datum/antagonist/ert/omon/update_name()
 	if(owner.current.gender == FEMALE)
 		owner.current.fully_replace_character_name(owner.current.real_name,"[pick("Рядовой", "Ефрейтор", "Сержант")] [pick(name_source)]а")
@@ -79,6 +83,7 @@
 
 	uniform = /obj/item/clothing/under/rank/omon/telnajka
 	suit = /obj/item/clothing/suit/armor/bulletproof/omon
+	suit_store = /obj/item/melee/classic_baton/german
 	shoes = /obj/item/clothing/shoes/jackboots
 	gloves = /obj/item/clothing/gloves/fingerless
 	ears = /obj/item/radio/headset/headset_cent/alt
@@ -192,8 +197,8 @@
 
 /obj/item/implant/sound_implant/get_data()
 	var/dat = {"<b>Имплант:</b><BR>
-				<b>Название:</b> Пиздец?<BR>
-				<b>Триггер:</b> Сдохнуть.<BR>
+				<b>Название:</b> Звук смерти.<BR>
+				<b>Триггер:</b> Умереть.<BR>
 				"}
 	return dat
 

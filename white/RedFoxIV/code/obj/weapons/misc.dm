@@ -897,7 +897,7 @@
 				return
 			//inc_metabalance(user, -bet, TRUE, "Оплатил входной билет.")
 			to_chat(user, span_clown("Потеряно [bet] дублей. Оплатил входной билет."))
-			spawn_user()
+			spawn_user(user)
 		return
 
 	var/ghost_role = tgui_alert(usr, "Точно хочешь начать дуэль? (Ты не сможешь вернуться в своё прошлое тело, так что выбирай с умом!)",,list("Да","Нет"))
@@ -906,29 +906,38 @@
 	var/betinput = input("Сколько метакэша готов поставить? (Не меньше 50!)", "1XBET", 50) as num
 	if(betinput < 0)
 		banned_ckeys += user.ckey
-		to_chat(user, "ебать ты умный нахуй")
+		to_chat(user, span_userdanger("ебать ты умный нахуй"))
 	if(betinput < 50)
 		return
 	if(betinput > user.client.mc_cached)
-		to_chat(user, "Где деньги, Лебовски?")
+		to_chat(user, span_notice("Где деньги, Лебовски?"))
 		return
 	if(duel_status != DUEL_NODUEL)
-		to_chat(user, "Ты опоздал, дружок!")
+		to_chat(user, span_notice("Ты опоздал, дружок!"))
 		return
 	bet = betinput
 	duel_status = DUEL_PENDING
 	//inc_metabalance(user, -bet, TRUE, "Оплатил входной билет.")
 	to_chat(user, span_clown("Потеряно [bet] дублей. Оплатил входной билет."))
 	spawn_user(user, bet)
-	to_chat(user, span_notice("Создали предложение о дуэли. Если никто не откликнется за 30 секунд, дуэль будет отменена и вам вернут деньги."))
-	notify_ghosts("[user.name] ([user.ckey]) приглашает всех желающих поучавствовать в дуэли на [bet] метакэша.", source = src, action = NOTIFY_ATTACK, flashwindow = FALSE, ignore_key = POLL_IGNORE_SPLITPERSONALITY)
+	to_chat(user, span_noticealien("Создано предложение о дуэли. Если никто не откликнется за 30 секунд, дуэль будет отменена и вам вернут деньги."))
+	notify_ghosts("[user.name] приглашает всех желающих поучавствовать в дуэли на [bet] метакэша. <a href=?src=[REF(src)];ass=1>(Click to play)</a>", source = src, action = NOTIFY_ORBIT, flashwindow = FALSE, ignore_key = POLL_IGNORE_SPLITPERSONALITY)
 	timeout_timer = addtimer(CALLBACK(src, .proc/timeout), 30 SECONDS, TIMER_STOPPABLE | TIMER_UNIQUE | TIMER_DELETE_ME)
 
+/obj/effect/duel_controller/Topic(href, href_list)
+	. = ..()
+	if(.)
+		return
+	if(href_list["ass"])
+		var/mob/dead/observer/ghost = usr
+		if(istype(ghost))
+			ghost.ManualFollow(src)
+			attack_ghost(ghost)
 
 /obj/effect/duel_controller/proc/spawn_user(mob/user)
-	var/mob/living/carbon/human/H = new(get_turf(src))
+	user.forceMove(get_turf(src))
+	var/mob/living/carbon/human/H = user.change_mob_type(/mob/living/carbon/human, delete_old_mob = TRUE)
 	H.equipOutfit(duel_outfit)
-	H.ckey = user.ckey
 	if(isnull(fighter1))
 		fighter1 = H
 	else
@@ -1391,3 +1400,15 @@ GLOBAL_LIST_EMPTY(assblasted_people)
 	desc = "\"I ain't much for drugs... but hell, when fortune is knockin', ya gotta greet that door with a smile and a nod. Salud!\""
 	list_reagents = list(/datum/reagent/drug/soldier = 15)
 	amount_per_transfer_from_this = 15
+
+
+/mob/living/simple_animal/hostile/pig
+	name = "Свинья"
+	real_name = "Свинья"
+	desc = "Хрюкает."
+	icon = 'white/valtos/icons/animal.dmi'
+	icon_state = "pig"
+	rapid_melee = 10
+	obj_damage = 40
+	melee_damage_lower = 1
+	melee_damage_upper = 2

@@ -22,10 +22,6 @@
 			C.visible_message(span_danger("<B>[capitalize(src.name)] [C] разлетается на кусочки!</B>"))
 	INVOKE_ASYNC(C, /mob.proc/emote, "agony")
 	SEND_SIGNAL(C, COMSIG_ADD_MOOD_EVENT, "dismembered", /datum/mood_event/dismembered)
-	if(detach_limb)
-		playsound(get_turf(C), 'sound/effects/dismember.ogg', 80, TRUE)
-	else
-		playsound(get_turf(C), 'white/valtos/sounds/gibpart.ogg', 80, TRUE)
 
 	drop_limb()
 
@@ -41,10 +37,18 @@
 		return TRUE
 	add_mob_blood(C)
 	C.bleed(rand(20, 40))
+
+	var/obj/item/bodypart/bleeding_chest = C.get_bodypart(BODY_ZONE_CHEST)
+	if(bleeding_chest)
+		bleeding_chest.force_wound_upwards(/datum/wound/slash/critical)
+
 	if(!detach_limb)
+		playsound(get_turf(C), 'white/valtos/sounds/gibpart.ogg', 80, TRUE)
 		new /obj/effect/decal/cleanable/blood/gibs(location, C.get_static_viruses())
+		drop_organs(null, TRUE)
 		qdel(src)
 		return TRUE
+	playsound(get_turf(C), 'sound/effects/dismember.ogg', 80, TRUE)
 	var/direction = pick(GLOB.cardinals)
 	var/t_range = rand(2,max(throw_range/2, 2))
 	var/turf/target_turf = get_turf(src)

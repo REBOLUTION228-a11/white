@@ -45,9 +45,5 @@
 	protection = CONFIG_ENTRY_LOCKED
 
 /datum/config_entry/number/bsql_thread_limit
-	config_entry_value = 50
-	min_val = 1
-
-/datum/config_entry/number/max_concurrent_queries
-	config_entry_value = 25
+	config_entry_value = 250
 	min_val = 1

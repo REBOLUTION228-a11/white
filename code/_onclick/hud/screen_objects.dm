@@ -678,6 +678,8 @@
 
 /atom/movable/screen/splash/New(client/C, visible, use_previous_title) //TODO: Make this use INITIALIZE_IMMEDIATE, except its not easy
 	. = ..()
+	if(!istype(C))
+		return
 
 	holder = C
 
@@ -773,3 +775,8 @@
 	else
 		cooldown.start_cooldown(time, FALSE)
 	return cooldown
+
+/atom/movable/screen/stamina
+	name = "Выносливость"
+	icon_state = "stamina0"
+	screen_loc = ui_stamina

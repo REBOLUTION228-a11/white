@@ -196,7 +196,7 @@
 	armour_penetration = 0
 	sharpness = 5
 
-/obj/item/shovel/spade/wzzz
+/obj/item/shovel/spade/german
 	icon = 'white/Wzzzz/icons/Weea.dmi'
 	icon_state = "german_shovel2"
 	inhand_icon_state = "german_shovel2"

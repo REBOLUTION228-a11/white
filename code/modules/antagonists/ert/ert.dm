@@ -38,10 +38,7 @@
 	name_source = GLOB.last_names
 
 /datum/antagonist/ert/proc/update_name()
-	if(owner.current.gender == FEMALE)
-		owner.current.fully_replace_character_name(owner.current.real_name,"[role] [pick(name_source)]а")
-	else
-		owner.current.fully_replace_character_name(owner.current.real_name,"[role] [pick(name_source)]")
+	owner.current.fully_replace_character_name(owner.current.real_name,"[role] [pick(name_source)]")
 
 /datum/antagonist/ert/security // kinda handled by the base template but here for completion
 

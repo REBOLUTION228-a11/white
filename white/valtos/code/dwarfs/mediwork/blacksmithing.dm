@@ -1,30 +1,3 @@
-/atom/proc/calculate_smithing_stats(multiplier)
-	return
-
-/obj/item/calculate_smithing_stats(multiplier)
-	.=..()
-	force = round(force*multiplier)
-
-/obj/item/pickaxe/calculate_smithing_stats(multiplier)
-	. = ..()
-	force = round(force/2)
-	toolspeed = round(toolspeed/multiplier)
-
-/obj/item/clothing/calculate_smithing_stats(multiplier)
-	. = ..()
-	armor.melee = round(armor.melee*multiplier)
-	armor.bullet = round(armor.bullet*multiplier)
-	armor.laser = round(armor.laser*multiplier)
-	armor.energy = round(armor.energy*multiplier)
-	armor.bomb = round(armor.bomb*multiplier)
-	armor.bio = round(armor.bio*multiplier)
-	armor.rad = round(armor.rad*multiplier)
-	armor.fire = round(armor.fire*multiplier)
-	armor.acid = round(armor.acid*multiplier)
-	armor.magic = round(armor.magic*multiplier)
-	armor.wound = round(armor.wound*multiplier)
-
-
 /obj/forge
 	name = "кузница"
 	desc = "Нагревает различные штуки, но реже всего слитки."
@@ -36,7 +9,7 @@
 	anchored = TRUE
 	var/fuel = 60
 	var/fuel_consumption = 1
-	var/list/fuel_values = list(/obj/item/stack/sheet/mineral/coal = 10, /obj/item/stack/sheet/mineral/wood = 5)
+	var/list/fuel_values = list(/obj/item/stack/sheet/mineral/coal = 15, /obj/item/stack/sheet/mineral/wood = 10)
 	var/busy_heating = FALSE
 
 /obj/forge/Initialize(mapload)
@@ -64,7 +37,7 @@
 	if(I.type in fuel_values)
 		var/obj/item/stack/S = I
 		src.visible_message(span_notice("[user] добавляет [S] в [src]."), span_notice("Добавляю [S] в [src]."))
-		fuel+=S.amount*100
+		fuel+=S.amount*fuel_values[I.type]
 		qdel(S)
 		if(icon_state != "forge_on")
 			icon_state = "forge_on"

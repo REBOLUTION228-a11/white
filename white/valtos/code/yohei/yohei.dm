@@ -97,17 +97,16 @@
 /obj/item/shadowcloak/yohei
 	name = "генератор маскировки"
 	desc = "Делает невидимым на непродолжительное время. Заряжается в темноте."
-	icon = 'icons/obj/clothing/belts.dmi'
-	icon_state = "cloak"
-	worn_icon = 'white/valtos/icons/clothing/mob/belt.dmi'
 	icon = 'white/valtos/icons/clothing/belts.dmi'
+	worn_icon = 'white/valtos/icons/clothing/mob/belt.dmi'
+	icon_state = "cloak"
 	inhand_icon_state = "assaultbelt"
 	worn_icon_state = "cloak"
 	charge = 35
 	max_charge = 35
 
 /obj/item/shadowcloak/yohei/process(delta_time)
-	if(user.get_item_by_slot(ITEM_SLOT_BELT) != src || user.pooed)	
+	if(user.get_item_by_slot(ITEM_SLOT_BELT) != src || user.pooed)
 		Deactivate()
 		return
 	var/turf/T = get_turf(src)

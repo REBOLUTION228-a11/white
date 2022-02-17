@@ -4,37 +4,46 @@ GLOBAL_LIST_INIT(exc_start, world.file2list("cfg/autoeban/exc_start.fackuobema")
 GLOBAL_LIST_INIT(exc_end, world.file2list("cfg/autoeban/exc_end.fackuobema"))
 GLOBAL_LIST_INIT(exc_full, world.file2list("cfg/autoeban/exc_full.fackuobema"))
 
-/proc/proverka_na_detey(var/msg, var/mob/target)
+/proc/check_for_brainrot(var/msg, var/mob/target)
 	if(!target.client)
-		return TRUE
+		return
 	msg = lowertext(msg)
-	for(var/W in GLOB.bad_words)
-		W = lowertext(W)
-		if(findtext_char(msg, W) && isliving(target) && W != "")
-			var/list/ML = splittext(msg, " ")
 
-			if(W in GLOB.exc_start)
-				for(var/WA in ML)
-					if(findtext_char(WA, "[W]") < findtext_char(WA, regex("^[W]")))
-						return TRUE
+	for(var/bad_word in GLOB.bad_words)
+		bad_word = lowertext(bad_word)
+		if(findtext_char(msg, bad_word) && isliving(target) && bad_word != "")
+			var/list/words = splittext(msg, " ")
 
-			if(W in GLOB.exc_end)
-				for(var/WB in ML)
-					if(findtext_char(WB, "[W]") > findtext_char(WB, regex("^[W]")))
-						return TRUE
+			if(bad_word in GLOB.exc_start)
+				for(var/word in words)
+					if(findtext_char(word, "[bad_word]") < findtext_char(word, regex("^[bad_word]")))
+						return
 
-			if(W in GLOB.exc_full)
-				for(var/WC in ML)
-					if(findtext_char(WC, W) && (WC != W))
-						return TRUE
+			if(bad_word in GLOB.exc_end)
+				for(var/word in words)
+					if(findtext_char(word, "[bad_word]") > findtext_char(word, regex("^[bad_word]")))
+						return
 
-			target.overlay_fullscreen("brute", /atom/movable/screen/fullscreen/brute, 6)
-			addtimer(CALLBACK(target, /mob.proc/clear_fullscreen, "brute", 10), 10)
+			if(bad_word in GLOB.exc_full)
+				for(var/word in words)
+					if(findtext_char(word, bad_word) && (word != bad_word))
+						return
+			
 
-			to_chat(target, span_notice("<big>[uppertext(W)]...</big>"))
+			target.client.bad_word_counter += 1
+			to_chat(target, span_boldnotice(target.client.bad_word_counter == 1 ?	 "...Возможно, мне не стоит говорить такие \"смешные\" слова, как \"[uppertext(bad_word)]\"..." : \
+																					"...Чувствую, что мне за \"[uppertext(bad_word)]\" скоро влетит..."))
+			message_admins("[ADMIN_LOOKUPFLW(target)], возможно, насрал на ИЦ словом \"[bad_word]\". Это его [target.client.bad_word_counter]-й раз в этом раунде.<br>(<u>[strip_html(msg)]</u>) [ADMIN_SMITE(target)] [target.client.bad_word_counter > 1 ? "Возможно, он заслужил смайт." : ""]")
+			return
+	return
 
-			SEND_SOUND(target, sound('sound/effects/singlebeat.ogg'))
+/client
+	var/bad_word_counter = 0
 
-			message_admins("[ADMIN_LOOKUPFLW(target)] попытался насрать на ИС словом \"[W]\". ([strip_html(msg)]) [ADMIN_SMITE(target)]")
-			return FALSE
-	return TRUE
+GLOBAL_LIST_INIT(ic_autocorrect, list(	")" = "smile", "(" = "frown", \
+										"))" = "laugh", "((" = "cry", \
+										"лол" = "laugh", "lol" = "laugh", \
+										"лмао" = "laugh", "lmao" = "laugh", \
+										"рофл" = "laugh", "rofl" = "laugh", \
+										"кек" = "giggle", "kek" = "giggle", \
+										"хз" = "shrug", "hz" = "shrug"))

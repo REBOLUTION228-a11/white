@@ -124,6 +124,7 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/load_circuit,
 	/client/proc/change_lobby_music,
 	/client/proc/cmd_admin_toggle_fov,
+	/client/proc/force_say
 	))
 GLOBAL_PROTECT(admin_verbs_fun)
 GLOBAL_LIST_INIT(admin_verbs_spawn, list(/datum/admins/proc/spawn_atom, /datum/admins/proc/podspawn_atom,
@@ -192,7 +193,6 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/map_template_upload,
 	/client/proc/jump_to_ruin,
 	/client/proc/clear_dynamic_transit,
-	/client/proc/run_empty_query,
 	/client/proc/toggle_medal_disable,
 	/client/proc/view_runtimes,
 	/client/proc/pump_random_event,
@@ -400,7 +400,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		ghost.reenter_corpse()
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin Reenter") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	else if(isnewplayer(mob))
-		to_chat(src, "<font color='red'>Error: Aghost: Can't admin-ghost whilst in the lobby. Join or Observe first.</font>", confidential = TRUE)
+		to_chat(src, span_red("Error: Aghost: Can't admin-ghost whilst in the lobby. Join or Observe first."), confidential = TRUE)
 		return FALSE
 	else
 		//ghostize
@@ -520,14 +520,15 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		message_admins("[key_name_admin(usr)] has turned stealth mode [holder.fakekey ? "ON" : "OFF"]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Stealth Mode") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/drop_bomb()
+/client/proc/drop_bomb(turf/epicenter = null in world)
 	set category = "Адм.Веселье"
 	set name = "Drop Bomb"
 	set desc = "Cause an explosion of varying strength at your location."
 
 	var/list/choices = list("Small Bomb (1, 2, 3, 3)", "Medium Bomb (2, 3, 4, 4)", "Big Bomb (3, 5, 7, 5)", "Maxcap", "Custom Bomb")
 	var/choice = tgui_input_list(usr, "What size explosion would you like to produce? NOTE: You can do all this rapidly and in an IC manner (using cruise missiles!) with the Config/Launch Supplypod verb. WARNING: These ignore the maxcap", "Drop Bomb", choices)
-	var/turf/epicenter = mob.loc
+	if(isnull(epicenter))
+		epicenter = mob.loc
 
 	switch(choice)
 		if(null)
@@ -757,10 +758,26 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	var/message = input(usr, "What do you want the message to be?", "Make Sound") as text | null
 	if(!message)
 		return
-	O.say(message)
+	O.say(message, sanitize = FALSE)
+	message = sanitize(message)
 	log_admin("[key_name(usr)] made [O] at [AREACOORD(O)] say \"[message]\"")
 	message_admins(span_adminnotice("[key_name_admin(usr)] made [O] at [AREACOORD(O)]. say \"[message]\""))
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Object Say") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/force_say(mob/M in world)
+	set category = "Адм.Веселье"
+	set name = "Force say"
+	set desc = "Makes a mob say something. Bypasses sanitization, be careful with that."
+	var/speech = input("What will [key_name(M)] say?", "Force speech (WARNING, UNSANITIZED)", "")// Don't need to sanitize, since it does that in say(), we also trust our admins.
+	if(!speech)
+		return
+	M.say(speech, forced = "admin speech", sanitize = FALSE)
+	speech = sanitize(speech)
+	log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
+	message_admins(span_adminnotice("[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]"))
+
+
+
 /client/proc/togglebuildmodeself()
 	set name = "Toggle Build Mode Self"
 	set category = "Адм.События"

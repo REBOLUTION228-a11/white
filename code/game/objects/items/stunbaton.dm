@@ -34,7 +34,7 @@
 	var/stun_sound = 'sound/weapons/egloves.ogg'
 
 	var/confusion_amt = 10
-	var/stamina_loss_amt = 100
+	var/stamina_loss_amt = 55
 	var/apply_stun_delay = 2 SECONDS
 	var/stun_time = 5 SECONDS
 
@@ -97,9 +97,6 @@
 
 /obj/item/melee/baton/loaded //this one starts with a cell pre-installed.
 	preload_cell_type = /obj/item/stock_parts/cell/high
-
-/obj/item/melee/baton/loaded/cyborg_sosal
-	cell_hit_cost = 4000
 
 /obj/item/melee/baton/proc/deductcharge(chrgdeductamt)
 	if(cell)

@@ -19,6 +19,7 @@
 	slowdown = 4
 	mag_type = /obj/item/ammo_box/magazine/internal/boltaction/hecate
 	extra_damage = 45 //удалить при имбовости
+	extra_penetration = 100 //огромное ПТР не может пробить больше одной стенки????????
 	inhand_x_dimension = 1
 	inhand_y_dimension = 1
 

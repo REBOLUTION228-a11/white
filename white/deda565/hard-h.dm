@@ -133,7 +133,7 @@
 	sharpness = SHARP_EDGED
 	block_chance = 20
 	var/obj/item/hockeypack/pack
-	var/wielded = FALSE|
+	var/wielded = FALSE
 
 /obj/item/hockeystick/Initialize()
 	. = ..()

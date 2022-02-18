@@ -1,17 +1,3 @@
-/obj/var/prev_throwforce
-
-/obj/item/var/specthrow_sound
-/obj/item/var/list/specthrow_msg
-/obj/item/var/specthrow_forcemult = 1.0
-/obj/item/var/specthrow_maxwclass = WEIGHT_CLASS_SMALL
-
-/proc/check_reset_throwforce(atom/movable/AM)
-	if(istype(AM, /obj))
-		var/obj/I = AM
-		if(I.prev_throwforce)
-			I.throwforce = I.prev_throwforce
-			I.prev_throwforce = null //я бля надеюсь это нихуя не сломает, надо протестить
-
 /datum/action/item_action/toggle_stick
 	name = "Получить хоккейную клюшку"
 
@@ -41,6 +27,7 @@
 	desc = "Держит в себе и снабжает энергией канадскую клюшку для хоккея, которая способна откидывать людей на 10 метров"
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_bag"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	w_class = WEIGHT_CLASS_BULKY
 	slot_flags = ITEM_SLOT_BACK
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
@@ -143,13 +130,16 @@
 	throw_speed = 4
 	attack_verb_simple = list("smack", "thwack", "bash", "struck", "batter")
 	attack_verb_continuous = list("smacks", "thwacks", "bashes", "strucks", "batters")
-	specthrow_sound = 'sound/weapons/resonator_blast.ogg'
-	specthrow_forcemult = 1.4
-	specthrow_msg = list("chipped", "shot")
 	sharpness = SHARP_EDGED
 	block_chance = 20
 	var/obj/item/hockeypack/pack
 	var/wielded = FALSE
+
+/obj/item/hockeystick/attack(obj/item/target, mob/living/user)
+	. = ..()
+	var/atom/throw_target = get_edge_target_turf(target, user.dir)
+	var/whack_speed = (prob(60) ? 5 : 10)
+	target.throw_at(throw_target, rand(11, 12), whack_speed, user, gentle = TRUE)
 
 /obj/item/hockeystick/Initialize()
 	. = ..()
@@ -231,6 +221,7 @@
 	desc = "Пояс с возможностью создавать голошайбы, которые спобоны сбивать с ног. Имеет карман для двух шайб."
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_belt"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	actions_types = list(/datum/action/item_action/make_puck)
 	var/recharge_time = 100
 	var/charged = TRUE
@@ -317,6 +308,7 @@
 	desc = "Броня, используемая канадцами для хоккея. Защищает тебя от всего, включая твоих врагов."
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_suit"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	allowed = list(/obj/item/tank/internals)
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	cold_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
@@ -335,6 +327,7 @@
 	desc = "Пара вездеходных коньков"
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_shoes"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
 	slowdown = -1
 
@@ -348,6 +341,7 @@
 	desc = "Теперь тебе не сломают нос одной шайбой."
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_mask"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	flags_1 = BLOCK_GAS_SMOKE_EFFECT | MASKINTERNALS
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
 
@@ -361,6 +355,7 @@
 	desc = "Боевой канадский хоккейный шлем, защищающий от всего. Теперь точно нос шайбой не разобьёт."
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_helmet"
+	worn_icon = 'white/deda565/hockeyworn.dmi'
 	armor = list("melee" = 80, "bullet" = 40, "laser" = 80,"energy" = 45, "bomb" = 50, "bio" = 10, "rad" = 0, "fire" = 80, "acid" = 100)
 	cold_protection = HEAD
 	min_cold_protection_temperature = SPACE_HELM_MIN_TEMP_PROTECT

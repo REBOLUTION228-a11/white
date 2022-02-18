@@ -28,4 +28,21 @@
 	ammo_type = /obj/item/ammo_casing/p50
 	caliber = ".50"
 
+/obj/item/gun/ballistic/rifle/boltaction/hecate/afterattack(atom/target, mob/user, flag) //suggestion done
+	. = ..()
+	if(ishuman(user))
+		if(!can_trigger_gun(user))
+			return
+	if(user.gender == "male")
+		return
+	else
+		var/atom/A = get_edge_target_turf(target, get_dir(src, get_step_away(target, src)))
+		var/B = A.setDir(turn(A.dir, 180))
+		var/funnirecoil = 100
+		to_chat(user, span_warning("ВЫ НЕ МОЖЕТЕ СПРАВИТЬСЯ С ОТДАЧЕЙ И УЛЕТАЕТЕ ОТ НЕЁ!"))
+		user.throw_at(B, 256, funnirecoil, user, gentle = FALSE, callback = CALLBACK(user, /mob/living/carbon/human.proc/adjustBruteLoss, 500))
+		return
+
+
+
 

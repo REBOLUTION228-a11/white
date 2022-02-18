@@ -1,5 +1,3 @@
-/atom/movable/var/unlimitedthrow = FALSE
-
 /obj/var/prev_throwforce
 
 /obj/item/var/specthrow_sound
@@ -135,6 +133,7 @@
 	icon_state = "hockeystick0"
 	name = "Канадская хоккейная клюшка"
 	desc = "Канадская клюшка для жестокого спорта, она привязана и получает энергию от рюкзака."
+	icon = 'white/deda565/hippiehockey.dmi'
 	lefthand_file = 'white/deda565/lefthockey.dmi'
 	righthand_file = 'white/deda565/righthockey.dmi'
 	force = 5
@@ -298,7 +297,7 @@
 	desc = "Маленький заряженный диск"
 	icon = 'icons/obj/shields.dmi'
 	icon_state = "eshield"
-	w_class = 1
+	w_class = WEIGHT_CLASS_SMALL
 	force = 3
 	throwforce = 10 //As good as a floor tile, three of these should knock someone out.
 
@@ -316,6 +315,7 @@
 /obj/item/clothing/suit/hippie/hockey
 	name = "Канадский зимний спортивный костюм"
 	desc = "Броня, используемая канадцами для хоккея. Защищает тебя от всего, включая твоих врагов."
+	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_suit"
 	allowed = list(/obj/item/tank/internals)
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
@@ -359,6 +359,7 @@
 /obj/item/clothing/head/hippie/hockey
 	name = "Канадский хоккейный шлем"
 	desc = "Боевой канадский хоккейный шлем, защищающий от всего. Теперь точно нос шайбой не разобьёт."
+	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_helmet"
 	armor = list("melee" = 80, "bullet" = 40, "laser" = 80,"energy" = 45, "bomb" = 50, "bio" = 10, "rad" = 0, "fire" = 80, "acid" = 100)
 	cold_protection = HEAD

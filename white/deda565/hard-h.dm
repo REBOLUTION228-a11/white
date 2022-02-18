@@ -133,13 +133,7 @@
 	sharpness = SHARP_EDGED
 	block_chance = 20
 	var/obj/item/hockeypack/pack
-	var/wielded = FALSE
-
-/obj/item/hockeystick/attack(obj/item/target, mob/living/user)
-	. = ..()
-	var/atom/throw_target = get_edge_target_turf(target, user.dir)
-	var/whack_speed = (prob(60) ? 5 : 10)
-	target.throw_at(throw_target, rand(11, 12), whack_speed, user, gentle = TRUE)
+	var/wielded = FALSE|
 
 /obj/item/hockeystick/Initialize()
 	. = ..()

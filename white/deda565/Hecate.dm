@@ -38,9 +38,10 @@
 	else
 		var/atom/A = get_edge_target_turf(target, get_dir(src, get_step_away(target, src)))
 		var/B = A.setDir(turn(A.dir, 180))
+		var/atom/C = get_edge_target_turf(B)
 		var/funnirecoil = 100
 		to_chat(user, span_warning("ВЫ НЕ МОЖЕТЕ СПРАВИТЬСЯ С ОТДАЧЕЙ И УЛЕТАЕТЕ ОТ НЕЁ!"))
-		user.throw_at(B, 256, funnirecoil, user, gentle = FALSE, callback = CALLBACK(user, /mob/living/carbon/human.proc/adjustBruteLoss, 500))
+		user.throw_at(C, 256, funnirecoil, user, gentle = FALSE, callback = CALLBACK(user, /mob/living/carbon/human.proc/adjustBruteLoss, 500))
 		return
 
 

@@ -17,6 +17,7 @@
 	new /obj/item/clothing/shoes/hippie/hockey(src)
 	new /obj/item/clothing/mask/hippie/hockey(src)
 	new /obj/item/clothing/head/hippie/hockey(src)
+	new /obj/item/autosurgeon/organ/nutriment/plus(src) // а как жрать???
 
 
 #define HOCKEYSTICK_CD	1.3
@@ -169,7 +170,7 @@
 	return ..()
 
 /obj/item/hockeystick/attack(mob/living/target, mob/living/user) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
-
+	. = ..()
 	if(!wielded)
 		return ..()
 
@@ -191,6 +192,18 @@
 
 	return
 
+/obj/item/hockeystick/attack_obj(obj/item/holopuck, mob/living/thrower) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
+	. = ..()
+	if(!wielded)
+		return ..()
+	if(holopuck == /obj/item/holopuck)
+		var/atom/throw_target = get_edge_target_turf(holopuck, get_dir(src, get_step_away(holopuck, src)))
+		holopuck.throw_at(throw_target, 10, 1, launched = TRUE)	//Throws the target 10 tiles
+		playsound(loc, 'sound/weapons/resonator_blast.ogg', 50, 1)
+		return
+	else
+		return
+
 /obj/item/hockeystick/dropped(mob/user) //The Stick is undroppable but just in case they lose an arm better put this here.
 	. = ..()
 	to_chat(user, "<span class='notice'>Палка забирается назад в рюкзак!</span>")
@@ -203,7 +216,7 @@
 	forceMove(pack)
 
 /obj/item/hockeystick/Move()
-	..()
+	. = ..()
 	if(loc != pack.loc)
 		snap_back()
 
@@ -237,6 +250,7 @@
 		ADD_TRAIT(src, TRAIT_NODROP, ABSTRACT_ITEM_TRAIT)
 
 /obj/item/storage/belt/hippie/hockey/item_action_slot_check(slot, mob/user)
+	. = ..()
 	if(slot == user.getBeltSlot())
 		return TRUE
 
@@ -284,9 +298,10 @@
 	icon_state = "eshield"
 	w_class = WEIGHT_CLASS_SMALL
 	force = 3
-	throwforce = 10 //As good as a floor tile, three of these should knock someone out.
+	throwforce = 20 //ДААА ДААЙ БАФФ
 
 /obj/item/holopuck/throw_impact(atom/hit_atom)
+	. = ..()
 	if(..() || !iscarbon(hit_atom))
 		return
 	var/mob/living/carbon/C = hit_atom
@@ -297,6 +312,14 @@
 						"<span class='userdanger'>[C] has been dazed by a holopuck!</span>")
 	qdel(src)
 
+/obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, launched = FALSE)
+	. = ..()
+	if(launched)
+		throwforce = 40
+	else
+		throwforce = 20
+	return
+
 /obj/item/clothing/suit/hippie/hockey
 	name = "Канадский зимний спортивный костюм"
 	desc = "Броня, используемая канадцами для хоккея. Защищает тебя от всего, включая твоих врагов."
@@ -306,10 +329,11 @@
 	allowed = list(/obj/item/tank/internals)
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	cold_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
+	heat_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_TEMP_PROTECT
 	clothing_flags = THICKMATERIAL | STOPSPRESSUREDAMAGE
-	armor = list("melee" = 70, "bullet" = 45, "laser" = 80, "energy" = 45, "bomb" = 75, "bio" = 0, "rad" = 30, "fire" = 80, "acid" = 100)
-	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
+	armor = list(MELEE = 70, BULLET = 45, LASER = 80, ENERGY = 45, BOMB = 75, BIO = 0, RAD = 30, FIRE = 80, ACID = 100, WOUND = 100) //хоккеисту сломали колени
+	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
 
 /obj/item/clothing/suit/hippie/hockey/equipped(mob/user, slot)
 	. = ..()
@@ -322,7 +346,7 @@
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_shoes"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
-	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
+	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
 	slowdown = -1
 
 /obj/item/clothing/shoes/hippie/hockey/equipped(mob/user, slot)
@@ -337,7 +361,7 @@
 	icon_state = "hockey_mask"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
 	flags_1 = BLOCK_GAS_SMOKE_EFFECT | MASKINTERNALS
-	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
+	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
 
 /obj/item/clothing/mask/hippie/hockey/equipped(mob/user, slot)
 	. = ..()
@@ -350,11 +374,12 @@
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_helmet"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
-	armor = list("melee" = 80, "bullet" = 40, "laser" = 80,"energy" = 45, "bomb" = 50, "bio" = 10, "rad" = 0, "fire" = 80, "acid" = 100)
+	armor = list("melee" = 80, "bullet" = 40, "laser" = 80,"energy" = 45, "bomb" = 50, "bio" = 10, "rad" = 0, "fire" = 80, "acid" = 100, "wound" = 100)
 	cold_protection = HEAD
+	heat_protection = HEAD
 	min_cold_protection_temperature = SPACE_HELM_MIN_TEMP_PROTECT
 	clothing_flags = STOPSPRESSUREDAMAGE
-	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF
+	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
 
 /obj/item/clothing/mask/head/hockey/equipped(mob/user, slot)
 	. = ..()

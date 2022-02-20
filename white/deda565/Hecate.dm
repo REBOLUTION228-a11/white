@@ -29,12 +29,15 @@
 	ammo_type = /obj/item/ammo_casing/p50
 	caliber = ".50"
 
+/obj/item/gun/ballistic/rifle/boltaction/hecate/can_shoot()
+	return TRUE
+
 /obj/item/gun/ballistic/rifle/boltaction/hecate/afterattack(atom/target, mob/living/user, flag, params) //suggestion done
 	. = ..()
 	if(user.gender == "male")
 		return
 	else
-		if(can_shoot)
+		if(can_shoot())
 			var/G = get_dir(src, get_step_away(target, src))
 			var/atom/A = get_edge_target_turf(target, REVERSE_DIR(G))
 			var/funnirecoil = 100

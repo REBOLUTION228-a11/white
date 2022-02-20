@@ -1,37 +1,37 @@
 /obj/item/clothing/under/chronos
-	name = "Военный костюм Новой Мекки"
-	desc = "В этом костюме твой дед пиздил унтеров"
+	name = "Р’РѕРµРЅРЅС‹Р№ РєРѕСЃС‚СЋРј РќРѕРІРѕР№ РњРµРєРєРё"
+	desc = "Р’ СЌС‚РѕРј РєРѕСЃС‚СЋРјРµ С‚РІРѕР№ РґРµРґ РїРёР·РґРёР» СѓРЅС‚РµСЂРѕРІ"
 	icon = 'white/kacherkin/icons/station/clothing/uniforms.dmi'
 	worn_icon = 'white/kacherkin/icons/station/clothing/mob/uniforms_mob.dmi'
 	icon_state = "torch"
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS
 
 /obj/item/clothing/head/beret/chronos
-	name = "Военный берет Новой Мекки"
+	name = "Р’РѕРµРЅРЅС‹Р№ Р±РµСЂРµС‚ РќРѕРІРѕР№ РњРµРєРєРё"
 	desc = "But burning those villages, watching those naked peasants cry..."
 	icon = 'white/kacherkin/icons/station/clothing/hats.dmi'
 	worn_icon = 'white/kacherkin/icons/station/clothing/mob/hats_mob.dmi'
 	icon_state = "torch_beret"
 
 /obj/item/clothing/suit/cape/chronos
-	name = "Военный плащ новой Мекки"
-	desc = "Плащ, пахнущий кровью унтеров, солдат из Новой Мекки, а так же шлюхами из лимузина"
+	name = "Р’РѕРµРЅРЅС‹Р№ РїР»Р°С‰ РЅРѕРІРѕР№ РњРµРєРєРё"
+	desc = "РџР»Р°С‰, РїР°С…РЅСѓС‰РёР№ РєСЂРѕРІСЊСЋ СѓРЅС‚РµСЂРѕРІ, СЃРѕР»РґР°С‚ РёР· РќРѕРІРѕР№ РњРµРєРєРё, Р° С‚Р°Рє Р¶Рµ С€Р»СЋС…Р°РјРё РёР· Р»РёРјСѓР·РёРЅР°"
 	icon = 'white/kacherkin/icons/station/clothing/suits.dmi'
 	worn_icon = 'white/kacherkin/icons/station/clothing/mob/suits_mob.dmi'
 	icon_state = "torch_cape"
 	allowed = list(/obj/item/gun, /obj/item/tank/internals)
 
 /datum/gear/uniform/chronos
-	display_name = "Военный костюм Новой Мекки"
+	display_name = "Р’РѕРµРЅРЅС‹Р№ РєРѕСЃС‚СЋРј РќРѕРІРѕР№ РњРµРєРєРё"
 	path = /obj/item/clothing/under/chronos
 	cost = 500
 
 /datum/gear/suit/cape/chronos
-	display_name = "Военный плащ Новой Мекки"
+	display_name = "Р’РѕРµРЅРЅС‹Р№ РїР»Р°С‰ РќРѕРІРѕР№ РњРµРєРєРё"
 	path = /obj/item/clothing/suit/cape/chronos
 	cost = 500
 
 /datum/gear/hat/chronos
-	display_name = "Военный берет Новой Мекки"
+	display_name = "Р’РѕРµРЅРЅС‹Р№ Р±РµСЂРµС‚ РќРѕРІРѕР№ РњРµРєРєРё"
 	path = /obj/item/clothing/head/beret/chronos
 	cost = 500

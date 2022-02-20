@@ -314,7 +314,7 @@
 						"<span class='userdanger'>[C] has been dazed by a holopuck!</span>")
 	qdel(H)
 
-/obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, launched = FALSE)
+/obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, var/launched = FALSE)
 	. = ..()
 	if(launched)
 		throwforce = 40

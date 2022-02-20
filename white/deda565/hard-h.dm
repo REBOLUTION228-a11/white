@@ -24,7 +24,7 @@
 #define PUCK_STUN_AMT	2
 
 /obj/item/hockeypack
-	name = "Рюкзак канаских специальных спортивных сил"
+	name = "Рюкзак канадских специальных спортивных сил"
 	desc = "Держит в себе и снабжает энергией канадскую клюшку для хоккея, которая способна откидывать людей на 10 метров"
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_bag"
@@ -196,7 +196,7 @@
 	. = ..()
 	if(!wielded)
 		return ..()
-	if(holopuck == /obj/item/holopuck)
+	if(istype(holopuck, /obj/item/holopuck))
 		var/obj/item/holopuck/H = holopuck
 		var/atom/throw_target = get_edge_target_turf(holopuck, get_dir(src, get_step_away(holopuck, src)))
 		H.throw_at(throw_target, 10, 1, launched = TRUE)	//Throws the target 10 tiles
@@ -305,14 +305,13 @@
 	. = ..()
 	if(..() || !iscarbon(hit_atom))
 		return
-	var/obj/item/holopuck/H
 	var/mob/living/carbon/C = hit_atom
 	C.apply_effect(PUCK_STUN_AMT, EFFECT_STUN)
 	C.apply_damage((throwforce * 2), STAMINA) //This way the stamina damage is ALSO buffed by special throw items, the hockey stick for example.
 	playsound(src, 'sound/effects/snap.ogg', 50, 1)
 	visible_message("<span class='danger'>[C] has been dazed by a holopuck!</span>", \
 						"<span class='userdanger'>[C] has been dazed by a holopuck!</span>")
-	qdel(H)
+	qdel(src)
 
 /obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, var/launched = FALSE)
 	. = ..()

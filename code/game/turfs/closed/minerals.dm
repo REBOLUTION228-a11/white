@@ -12,6 +12,7 @@
 	opacity = TRUE
 	density = TRUE
 	layer = EDGED_TURF_LAYER
+	plane = GAME_PLANE_UPPER
 	base_icon_state = "smoothrocks"
 	temperature = TCMB
 	var/smooth_icon = 'icons/turf/smoothrocks.dmi'
@@ -48,10 +49,6 @@
 		var/obj/item/stack/ore/the_ore = ore_type
 		scan_state = initial(the_ore.scan_state) // I SAID. SWITCH. TO. IT.
 		mineralType = ore_type // Everything else assumes that this is typed correctly so don't set it to non-ores thanks.
-	if(ispath(ore_type, /obj/item/gem))
-		var/obj/item/gem/G = ore_type
-		scan_state = initial(G.scan_state)
-		mineralType = ore_type
 
 /turf/closed/mineral/get_smooth_underlay_icon(mutable_appearance/underlay_appearance, turf/asking_turf, adjacency_dir)
 	if(turf_type)
@@ -87,13 +84,6 @@
 /turf/closed/mineral/proc/gets_drilled(user, give_exp = FALSE)
 	if (mineralType && (mineralAmt > 0) && ispath(mineralType, /obj/item/stack))
 		new mineralType(src, mineralAmt)
-		SSblackbox.record_feedback("tally", "ore_mined", mineralAmt, mineralType)
-	if(mineralType && ispath(mineralType, /obj/item/gem))
-		var/obj/item/gem/G = new mineralType(src)
-		var/amount = rand(1, G.max_amount)-1
-		if(amount)
-			for(var/i in 1 to amount)
-				new mineralType(src)
 		SSblackbox.record_feedback("tally", "ore_mined", mineralAmt, mineralType)
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
@@ -527,6 +517,7 @@
 /turf/closed/mineral/gibtonite/proc/explosive_reaction(mob/user = null, triggered_by_explosion = 0)
 	if(stage == GIBTONITE_UNSTRUCK)
 		activated_overlay = mutable_appearance('icons/turf/smoothrocks.dmi', "rock_Gibtonite_inactive", ON_EDGED_TURF_LAYER) //shows in gaps between pulses if there are any
+		activated_overlay.plane = GAME_PLANE_UPPER
 		add_overlay(activated_overlay)
 		name = "месторождение гибтонита"
 		desc = "Активный резерв гибтонита. Беги!"

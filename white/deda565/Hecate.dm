@@ -29,9 +29,6 @@
 	ammo_type = /obj/item/ammo_casing/p50
 	caliber = ".50"
 
-/obj/item/gun/ballistic/rifle/boltaction/hecate/can_shoot()
-	return TRUE
-
 /obj/item/gun/ballistic/rifle/boltaction/hecate/afterattack(atom/target, mob/living/user, flag, params) //suggestion done
 	. = ..()
 	if(user.gender == "male")

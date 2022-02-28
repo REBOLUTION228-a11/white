@@ -3,7 +3,7 @@
 	desc = "В этом костюме твой дед пиздил унтеров"
 	icon = 'white/kacherkin/icons/station/clothing/uniforms.dmi'
 	worn_icon = 'white/kacherkin/icons/station/clothing/mob/uniforms_mob.dmi'
-	icon_state = "torch"
+	icon_state = "torch_uniform"
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS
 
 /obj/item/clothing/head/beret/chronos

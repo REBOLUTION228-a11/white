@@ -192,18 +192,16 @@
 
 	return
 
-/obj/item/hockeystick/attack_obj(obj/item/target, mob/living/thrower) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
-	. = ..()
+/obj/item/hockeystick/afterattack(obj/O, mob/living/user) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
 	if(!wielded)
 		return ..()
-	if(istype(target, /obj/item/holopuck))
-		var/obj/item/holopuck/H = target
-		var/atom/throw_target = get_edge_target_turf(target, get_dir(src, get_step_away(target, src)))
-		H.throw_at(throw_target, 10, 1, launched = TRUE)	//Throws the target 10 tiles
+	if(istype(O, /obj/item/holopuck))
+		var/atom/throw_target = get_edge_target_turf(O, get_dir(src, get_step_away(O, src)))
+		O.throw_at(throw_target, 10, 1, launched = TRUE)	//Throws the target 10 tiles
 		playsound(loc, 'sound/weapons/resonator_blast.ogg', 50, 1)
 		return
 	else
-		return
+		return ..()
 
 /obj/item/hockeystick/dropped(mob/user) //The Stick is undroppable but just in case they lose an arm better put this here.
 	. = ..()

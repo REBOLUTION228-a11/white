@@ -197,7 +197,7 @@
 		return ..()
 	if(istype(O, /obj/item/holopuck))
 		var/atom/throw_target = get_edge_target_turf(O, get_dir(src, get_step_away(O, src)))
-		O.throw_at(throw_target, 10, 1, launched = TRUE)	//Throws the target 10 tiles
+		O.throw_at(throw_target, 10, 1, params = TRUE)	//Throws the target 10 tiles
 		playsound(loc, 'sound/weapons/resonator_blast.ogg', 50, 1)
 		return
 	else
@@ -311,9 +311,9 @@
 						"<span class='userdanger'>[C] has been dazed by a holopuck!</span>")
 	qdel(src)
 
-/obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, var/launched = FALSE)
+/obj/item/holopuck/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE, params = FALSE)
 	. = ..()
-	if(launched)
+	if(params)
 		throwforce = 40
 	else
 		throwforce = 20

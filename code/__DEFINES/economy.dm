@@ -1,5 +1,5 @@
 /// Number of paychecks jobs start with at the creation of a new bank account for a player (So at shift-start or game join, but not a blank new account.)
-#define STARTING_PAYCHECKS 3
+#define STARTING_PAYCHECKS 7
 /// How much mail the Economy SS will create per minute, regardless of firing time.
 #define MAX_MAIL_PER_MINUTE 3
 /// Probability of using letters of envelope sprites on all letters.
@@ -7,13 +7,13 @@
 
 //Experimental change: These are subject to tweaking based on the /tg/ economy overhaul.
 //Current design direction: Higher paying jobs are vastly outnumbered by lower paying jobs, so anything above medium hurts inflation, common jobs help inflation
-#define PAYCHECK_PRISONER 5
-#define PAYCHECK_ASSISTANT 10
-#define PAYCHECK_MINIMAL 15
-#define PAYCHECK_EASY 20
-#define PAYCHECK_MEDIUM 30
-#define PAYCHECK_HARD 50
-#define PAYCHECK_COMMAND 70
+#define PAYCHECK_PRISONER 50
+#define PAYCHECK_ASSISTANT 100
+#define PAYCHECK_MINIMAL 150
+#define PAYCHECK_EASY 200
+#define PAYCHECK_MEDIUM 300
+#define PAYCHECK_HARD 500
+#define PAYCHECK_COMMAND 700
 
 #define STATION_TARGET_BUFFER 40
 

@@ -1,15 +1,15 @@
 //Engineering Mesons
 
 #define MODE_NONE ""
-#define MODE_MESON "meson"
-#define MODE_TRAY "t-ray"
-#define MODE_RAD "radiation"
+#define MODE_MESON "Мезонный сканер"
+#define MODE_TRAY "Терагерцовый сканер"
+#define MODE_RAD "Радиационный сканер"
 #define MODE_SHUTTLE "shuttle"
 #define MODE_PIPE_CONNECTABLE "connectable"
 
 /obj/item/clothing/glasses/meson/engine
-	name = "очки инженерного сканера"
-	desc = "Очки, используемые инженерами. Режим Meson Scanner позволяет просматривать основные структурные и рельефные ландшафты сквозь стены, режим T-ray Scanner позволяет видеть объекты под полом, такие как кабели и трубы, а режим Radiation Scanner позволяет видеть объекты, загрязненные излучением."
+	name = "многофункциональные инженерные очки"
+	desc = "Очки, используемые инженерами. Режим <b>Мезонного сканера</b> позволяет просматривать основные структурные и рельефные ландшафты сквозь стены, режим <b>Терагерцового сканера</b> позволяет видеть объекты под полом, такие как кабели и трубы, а режим <b>Радиационного сканера</b> позволяет видеть объекты, загрязненные излучением."
 	icon_state = "trayson-meson"
 	inhand_icon_state = "trayson-meson"
 	actions_types = list(/datum/action/item_action/toggle_mode)
@@ -163,10 +163,26 @@
 				flick_overlay(connection_images[smart][dir2text(direction)], list(user.client), 1.5 SECONDS)
 
 /obj/item/clothing/glasses/meson/engine/update_icon_state()
-	icon_state = inhand_icon_state = "trayson-[mode]"
+	switch(mode)
+		if(MODE_TRAY)
+			icon_state = "trayson-t-ray"
+			inhand_icon_state = "trayson-t-ray"
+			worn_icon_state = "trayson-t-ray"
+		if(MODE_RAD)
+			icon_state = "trayson-radiation"
+			inhand_icon_state = "trayson-radiation"
+			worn_icon_state = "trayson-radiation"
+		if(MODE_MESON)
+			icon_state = "trayson-meson"
+			inhand_icon_state = "trayson-meson"
+			worn_icon_state = "trayson-meson"
+		if(MODE_NONE)
+			icon_state = "trayson-"
+			inhand_icon_state = "trayson-"
+			worn_icon_state = "trayson-"
 
 /obj/item/clothing/glasses/meson/engine/tray //atmos techs have lived far too long without tray goggles while those damned engineers get their dual-purpose gogles all to themselves
-	name = "оптический сканер рентгеновских лучей"
+	name = "Терагерцовые очки"
 	icon_state = "trayson-t-ray"
 	inhand_icon_state = "trayson-t-ray"
 	desc = "Используется инженерным персоналом для наблюдения за объектами под полом, такими как кабели и трубы."

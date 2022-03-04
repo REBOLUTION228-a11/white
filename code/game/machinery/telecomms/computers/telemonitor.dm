@@ -6,10 +6,9 @@
 
 
 /obj/machinery/computer/telecomms/monitor
-	name = "telecommunications monitoring console"
+	name = "консоль мониторинга телекоммуникаций"
+	desc = "Отслеживает параметры телекоммуникационной сети, с которой она синхронизирована."
 	icon_screen = "comm_monitor"
-	desc = "Monitors the details of the telecommunications network it's synced with."
-
 	var/screen = 0				// the screen number:
 	var/list/machinelist = list()	// the machines located by the computer
 	var/obj/machinery/telecomms/SelectedMachine
@@ -54,9 +53,10 @@
 					dat += "<li><a href='?src=[REF(src)];viewmachine=[T.id]'>[REF(T.id)] [T.name]</a> ([T.id])</li>"
 			dat += "</ol>"
 
+	var/datum/browser/popup = new(usr, "comm_monitor", "Player Panel", 575, 400)
+	popup.set_content(dat)
+	popup.open()
 
-
-	user << browse(dat, "window=comm_monitor;size=575x400")
 	onclose(user, "server_control")
 
 	temp = ""

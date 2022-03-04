@@ -14,10 +14,12 @@
 	var/icon_screen = "generic"
 	var/time_to_screwdrive = 20
 	var/authenticated = 0
+	var/clued = FALSE
 
 /obj/machinery/computer/Initialize(mapload, obj/item/circuitboard/C)
 	. = ..()
 
+	AddElement(/datum/element/climbable)
 	power_change()
 
 /obj/machinery/computer/Destroy()
@@ -26,6 +28,14 @@
 /obj/machinery/computer/process()
 	if(machine_stat & (NOPOWER|BROKEN))
 		return FALSE
+	if(clued)
+		for(var/mob/living/carbon/human/H as anything in view(7, get_turf(src)))
+			if(!ishuman(H))
+				continue
+			var/obj/item/organ/heart/heart = H.getorganslot(ORGAN_SLOT_HEART)
+			if(IS_DREAMER(H) || heart?.key_for_dreamer)
+				continue
+			interact(H)
 	return TRUE
 
 /obj/machinery/computer/update_overlays()
@@ -50,6 +60,15 @@
 		set_light(brightness_on)
 
 /obj/machinery/computer/screwdriver_act(mob/living/user, obj/item/I)
+	if(clued)
+		if(!IS_DREAMER(user))
+			return FALSE
+		to_chat(user, span_notice("Убираю ШЕДЕВР..."))
+		clued = FALSE
+		icon_screen = initial(icon_screen)
+		update_icon()
+		interaction_flags_atom |= INTERACT_ATOM_UI_INTERACT
+		return TRUE
 	if(..())
 		return TRUE
 	if(circuit && !(flags_1&NODECONSTRUCT_1))
@@ -115,7 +134,56 @@
 			C.forceMove(loc)
 	qdel(src)
 
+/obj/machinery/computer/can_interact(mob/user)
+	if(clued && ishuman(user) && !IS_DREAMER(user))
+		var/mob/living/carbon/human/H = user
+		var/obj/item/organ/heart/heart = H.getorganslot(ORGAN_SLOT_HEART)
+		if(IS_DREAMER(H) || heart?.key_for_dreamer)
+			return FALSE
+		H.visible_message(span_danger("[H] пялится в экран [src.name] с отвращением!"), span_danger("ЧТО ЭТО ТАКОЕ?!"))
+		H.pointed(src)
+		new /obj/effect/particle_effect/sparks(loc)
+		playsound(src, "sparks", 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+		SEND_SIGNAL(user, COMSIG_ADD_MOOD_EVENT, "dreamer", /datum/mood_event/seen_dream, clued)
+		return FALSE
+	if(..())
+		return TRUE
+
 /obj/machinery/computer/AltClick(mob/user)
 	. = ..()
+	if((IS_DREAMER(user) && !clued))
+		if(!user.CanReach(src))
+			return
+		for(var/i in 1 to 10)
+			new /obj/effect/particle_effect/sparks(loc)
+			playsound(src, "sparks", 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+			if(!do_after(user, (rand(9, 15)), target = src))
+				return
+		clued = tgui_input_list(user, "ВЫБЕРЕМ ЖЕ ШЕДЕВР", "ШЕДЕВР", GLOB.dreamer_clues)
+		if(!clued)
+			return
+		to_chat(user, span_revenbignotice("[clued]... ЭТОТ ШЕДЕВР ДОЛЖНЫ УЗРЕТЬ!"))
+		icon_screen = "clued"
+		update_icon()
+		tgui_id = "DreamerCorruption"
+		interaction_flags_atom &= ~INTERACT_ATOM_UI_INTERACT
+		return
 	if(!user.canUseTopic(src, !issilicon(user)) || !is_operational)
 		return
+
+/obj/machinery/computer/examine(mob/user)
+	. = ..()
+	if(IS_DREAMER(user))
+		. += "<hr>"
+		if(clued)
+			. += span_revenbignotice("Чудо [clued]!")
+		else
+			. += span_revenbignotice("СПРАВА есть АЛЬТЕРНАТИВНЫЙ секрет.")
+	else if (clued)
+		interact(user)
+
+/obj/machinery/computer/interact(mob/user, special_state)
+	if(clued)
+		var/datum/tgui/ui = new(user, src, "DreamerCorruption", IS_DREAMER(user) ? "ШЕДЕВР" : "УЖАС! УЖАС! УЖАС!")
+		ui.open()
+	. = ..()

@@ -529,3 +529,61 @@ a.rs_butt:hover
 	left: 50%;
 	margin-left: -60px;
 }
+
+.csetup_characters {background: #000;padding-bottom: 16px;padding-top: 16px;width: 100%;text-align: center;margin: auto;margin-bottom: 8px;}
+
+.csetup_characters_character {
+
+}
+
+.csetup_occupations {background: #000;width: 100%;text-align: center;margin: auto;margin-bottom: 8px;padding-bottom: 10px;}
+
+.csetup_occupations h2 {
+}
+
+.csetup_occupations_choose {
+}
+
+.csetup_main {margin: auto;display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-evenly;}
+
+.csetup_banned {
+
+}
+
+.csetup_header {font-size: 24px;text-align: center;font-weight: bold;padding: 16px;background: #000;height: 24px;}
+
+.csetup_content {flex: 30%;max-width: 100%;padding: 4px;margin: 8px;background: #050505;}
+
+.csetup_character_node {padding-bottom: 6px;padding-top: 4px;padding-left: 4px;padding-right: 4px;border-bottom: 1px solid #222;border-top: 1px solid #111;}
+
+.csetup_character_label {display: inline-block;font-weight: bold;}
+
+.csetup_character_label::after {content: ":";}
+
+.csetup_character_input {
+	display: inline-block;
+	float: right;
+}
+
+.csetup_character_input span {
+	margin-right: 4px;
+}
+
+
+@media (max-width: 1200px) {
+	.csetup_content {
+		flex: 25%;
+	}
+}
+
+@media (max-width: 900px) {
+	.csetup_content {
+		flex: 33%;
+	}
+}
+
+@media (max-width: 600px) {
+	.csetup_content {
+		flex: 50%;
+	}
+}

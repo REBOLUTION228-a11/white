@@ -55,7 +55,7 @@
 						if(!members.Find(item))
 
 							if(item.parent)
-								var/static/pipenetwarnings = 10
+								var/static/pipenetwarnings = 100
 								if(pipenetwarnings > 0)
 									log_mapping("build_pipeline(): [item.type] added to a pipenet while still having one. (pipes leading to the same spot stacking in one turf) around [AREACOORD(item)].")
 									pipenetwarnings--
@@ -82,7 +82,8 @@
 	other_atmosmch |= C
 	var/datum/gas_mixture/G = C.returnPipenetAir(src)
 	if(!G)
-		stack_trace("addMachineryMember: Null gasmix added to pipeline datum from [C] which is of type [C.type]. Nearby: ([C.x], [C.y], [C.z])")
+		log_runtime("addMachineryMember: Null gasmix added to pipeline datum from [C] which is of type [C.type]. Nearby: ([C.x], [C.y], [C.z])")
+		return
 	other_airs |= G
 
 /datum/pipeline/proc/addMember(obj/machinery/atmospherics/A, obj/machinery/atmospherics/N)

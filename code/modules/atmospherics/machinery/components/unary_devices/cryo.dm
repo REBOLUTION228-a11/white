@@ -18,7 +18,7 @@
 	// and will crop the head off.
 	icon_state = "mask_bg"
 	layer = ABOVE_MOB_LAYER
-	plane = GAME_PLANE_UPPER
+	plane = GRAVITY_PULSE_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	pixel_y = 22
 	appearance_flags = KEEP_TOGETHER
@@ -229,6 +229,9 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 /obj/machinery/atmospherics/components/unary/cryo_cell/process(delta_time)
 	..()
 
+	if(state_open)
+		reagent_transfer = 0
+		return
 	if(!on)
 		return
 	if(!occupant)

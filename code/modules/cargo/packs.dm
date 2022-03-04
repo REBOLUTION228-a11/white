@@ -177,7 +177,7 @@
 	name = "NULL_ENTRY"
 	desc = "(#@&^$THIS PACKAGE CONTAINS 30TC WORTH OF SOME RANDOM SYNDICATE GEAR WE HAD LYING AROUND THE WAREHOUSE. GIVE EM HELL, OPERATIVE@&!*() "
 	hidden = TRUE
-	cost = 2000
+	cost = CARGO_CRATE_VALUE * 2000
 	contains = list()
 	crate_name = "emergency crate"
 	crate_type = /obj/structure/closet/crate/internals
@@ -1460,7 +1460,7 @@
 	desc = "Need to rebuild the ORM but science got annihialted after a bomb test? Buy this for the most advanced parts NT can give you."
 	cost = CARGO_CRATE_VALUE * 3
 	access_view = FALSE
-	contains = list(/obj/item/storage/part_replacer/cargo)
+	contains = list(/obj/item/storage/part_replacer/tier2)
 	crate_name = "\improper RPED crate"
 
 /datum/supply_pack/science/shieldwalls
@@ -2547,6 +2547,9 @@
 	DropPodOnly = TRUE
 	crate_type = null
 	special_pod = /obj/structure/closet/supplypod/bluespacepod
+
+/datum/supply_pack/misc/empty/generate()
+	return null
 
 /datum/supply_pack/misc/religious_supplies
 	name = "Religious Supplies Crate"

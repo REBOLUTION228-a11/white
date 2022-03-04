@@ -32,10 +32,6 @@
 	mood_change = -6
 	timeout = 3 MINUTES
 
-/datum/mood_event/pooed
-	description = "<span class='warning'>Мы в дерьме!</span>\n"
-	mood_change = -12
-
 /datum/mood_event/slipped
 	description = "<span class='warning'>Опять поскальзываюсь. Надо быть аккуратней.</span>\n"
 	mood_change = -6
@@ -361,3 +357,22 @@
 	description = "<span class='warning'>Пришлось убить невиновного...</span>\n"
 	mood_change = -50
 	timeout = 30 MINUTES
+
+/datum/mood_event/seen_dream
+	description = "<span class='revenbignotice'>После увиденного не хочется жить...</span>\n"
+	mood_change = -50
+
+/datum/mood_event/seen_dream/add_effects(dreamer_key)
+	if(!ishuman(owner))
+		qdel(src)
+		return
+	var/mob/living/carbon/human/H = owner
+	var/obj/item/organ/heart/heart = H.getorganslot(ORGAN_SLOT_HEART)
+	if(!heart)
+		return
+	H.emote("agony")
+	heart.key_for_dreamer = dreamer_key
+	SEND_SOUND(H, pick(RANDOM_DREAMER_SOUNDS))
+	if(prob(0.001))
+		description = "<span class='revenbignotice'>КАКОЕ ЧУДО!</span>\n"
+		mood_change = 999

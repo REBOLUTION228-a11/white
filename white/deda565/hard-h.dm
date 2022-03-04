@@ -192,7 +192,7 @@
 
 	return
 
-/obj/item/hockeystick/afterattack(obj/O, mob/living/user) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
+/obj/item/hockeystick/afterattack(obj/item/holopuck/O, mob/living/user) //Sure it's the powerfist code, right down to the sound effect. Gonna be fun though.
 	if(!wielded)
 		return ..()
 	if(istype(O, /obj/item/holopuck))

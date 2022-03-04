@@ -325,11 +325,13 @@
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_suit"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
+	clothing_flags = STOPSPRESSUREDAMAGE
 	allowed = list(/obj/item/tank/internals)
 	body_parts_covered = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	cold_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	heat_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_TEMP_PROTECT
+	max_heat_protection_temperature = SPACE_SUIT_MAX_TEMP_PROTECT
 	clothing_flags = THICKMATERIAL | STOPSPRESSUREDAMAGE
 	armor = list(MELEE = 70, BULLET = 45, LASER = 80, ENERGY = 45, BOMB = 75, BIO = 0, RAD = 30, FIRE = 80, ACID = 100, WOUND = 100) //хоккеисту сломали колени
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
@@ -359,6 +361,8 @@
 	icon = 'white/deda565/hippiehockey.dmi'
 	icon_state = "hockey_mask"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
+	clothing_flags = MASKINTERNALS
+	flags_cover = MASKCOVERSMOUTH
 	flags_1 = BLOCK_GAS_SMOKE_EFFECT | MASKINTERNALS
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
 

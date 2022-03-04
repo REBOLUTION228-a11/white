@@ -335,6 +335,7 @@
 	clothing_flags = THICKMATERIAL | STOPSPRESSUREDAMAGE
 	armor = list(MELEE = 70, BULLET = 45, LASER = 80, ENERGY = 45, BOMB = 75, BIO = 0, RAD = 30, FIRE = 80, ACID = 100, WOUND = 100) //хоккеисту сломали колени
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
+	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 
 /obj/item/clothing/suit/hippie/hockey/equipped(mob/user, slot)
 	. = ..()
@@ -362,9 +363,11 @@
 	icon_state = "hockey_mask"
 	worn_icon = 'white/deda565/hockeyworn.dmi'
 	clothing_flags = MASKINTERNALS
+	visor_flags = MASKINTERNALS
 	flags_cover = MASKCOVERSMOUTH
 	flags_1 = BLOCK_GAS_SMOKE_EFFECT | MASKINTERNALS
 	resistance_flags = INDESTRUCTIBLE | FIRE_PROOF | ACID_PROOF | FREEZE_PROOF
+	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDEFACIALHAIR|HIDESNOUT
 
 /obj/item/clothing/mask/hippie/hockey/equipped(mob/user, slot)
 	. = ..()

@@ -31,7 +31,7 @@
 
 /datum/gear/accessory/cape/chronos
 	display_name = "Военный плащ Новой Мекки"
-	path = /obj/item/clothing/suit/cape/chronos
+	path = /obj/item/clothing/neck/cape/chronos
 	slot = ITEM_SLOT_NECK
 	cost = 500
 

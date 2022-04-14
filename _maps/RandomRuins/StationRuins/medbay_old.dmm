@@ -343,7 +343,7 @@
 /turf/closed/wall,
 /area/medical/cryo)
 "cm" = (
-/obj/structure/chair,
+/obj/structure/chair/sofa/bench/right,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/lobby)
 "cz" = (
@@ -1091,6 +1091,10 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/aft)
+"kl" = (
+/obj/structure/chair/sofa/bench/left,
+/turf/open/floor/plasteel/monofloor/white,
+/area/medical/medbay/lobby)
 "kn" = (
 /obj/structure/bed/roller,
 /obj/effect/turf_decal/tile/blue,
@@ -1315,13 +1319,6 @@
 /area/medical/medbay/lobby)
 "nd" = (
 /obj/item/kirbyplants/random,
-/obj/effect/turf_decal/tile/brown,
-/obj/effect/turf_decal/tile/brown{
-	dir = 4
-	},
-/obj/effect/turf_decal/tile/brown{
-	dir = 8
-	},
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "nn" = (
@@ -1459,10 +1456,6 @@
 	},
 /obj/structure/plasticflaps/opaque,
 /obj/effect/turf_decal/bot,
-/obj/machinery/door/poddoor/preopen{
-	id = "chemistry_shutters2";
-	name = "Chemistry Shutter"
-	},
 /turf/open/floor/plasteel,
 /area/medical/medbay)
 "oD" = (
@@ -1695,7 +1688,8 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2{
 	dir = 4
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/obj/effect/turf_decal/siding/wood,
+/turf/open/floor/wood,
 /area/medical/break_room)
 "rb" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden,
@@ -1914,15 +1908,10 @@
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/storage)
 "tn" = (
-/obj/effect/turf_decal/tile/brown{
-	dir = 4
-	},
-/obj/structure/table/glass,
 /obj/effect/spawner/lootdrop/donkpockets,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/spawner/lootdrop/donkpockets,
-/obj/effect/turf_decal/tile/brown,
-/turf/open/floor/plasteel/white,
+/obj/structure/table,
+/turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "tp" = (
 /obj/machinery/computer/crew,
@@ -2344,10 +2333,6 @@
 /turf/open/floor/plating,
 /area/medical/pharmacy)
 "xu" = (
-/obj/machinery/door/airlock/maintenance{
-	dir = 4;
-	req_access_txt = "12"
-	},
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 9
@@ -2361,7 +2346,15 @@
 /obj/machinery/door/firedoor/border_only{
 	dir = 8
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/obj/machinery/door/airlock/maintenance{
+	dir = 4;
+	name = "Medbay Maintenance";
+	req_access_txt = "5"
+	},
+/obj/effect/turf_decal/siding/wood{
+	dir = 6
+	},
+/turf/open/floor/wood,
 /area/medical/break_room)
 "xx" = (
 /obj/effect/turf_decal/trimline/green/filled/line,
@@ -2531,6 +2524,10 @@
 /obj/machinery/mecha_part_fabricator/med,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/storage)
+"yN" = (
+/obj/structure/chair/sofa/bench,
+/turf/open/floor/plasteel/monofloor/white,
+/area/medical/medbay/lobby)
 "yR" = (
 /obj/structure/table,
 /obj/item/scalpel{
@@ -2611,11 +2608,6 @@
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/lobby)
 "zw" = (
-/obj/machinery/door/airlock/maintenance{
-	dir = 4;
-	name = "Medbay Maintenance";
-	req_access_txt = "5"
-	},
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 9
@@ -2627,6 +2619,13 @@
 	dir = 8
 	},
 /obj/machinery/door/firedoor/border_only{
+	dir = 4
+	},
+/obj/machinery/door/airlock/medical{
+	name = "Break Room";
+	req_access_txt = "5"
+	},
+/obj/effect/turf_decal/siding/wood{
 	dir = 4
 	},
 /turf/open/floor/plasteel/monofloor/white,
@@ -2684,12 +2683,6 @@
 /area/medical/storage)
 "zN" = (
 /obj/machinery/vending/coffee,
-/obj/effect/turf_decal/tile/brown{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/brown{
-	dir = 8
-	},
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "zO" = (
@@ -2786,9 +2779,6 @@
 	},
 /obj/machinery/light,
 /obj/effect/turf_decal/tile/brown,
-/obj/effect/turf_decal/tile/brown{
-	dir = 8
-	},
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "Ao" = (
@@ -3056,7 +3046,8 @@
 	pixel_x = -4;
 	pixel_y = 24
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/obj/effect/turf_decal/siding/wood,
+/turf/open/floor/wood,
 /area/medical/break_room)
 "CY" = (
 /obj/structure/cable,
@@ -3106,6 +3097,9 @@
 	},
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 4
+	},
+/obj/structure/chair/office/light{
+	dir = 1
 	},
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/aft)
@@ -3216,7 +3210,8 @@
 /obj/machinery/light{
 	dir = 1
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/obj/effect/turf_decal/siding/wood,
+/turf/open/floor/wood,
 /area/medical/break_room)
 "Ec" = (
 /obj/machinery/door/airlock/medical/glass{
@@ -3240,13 +3235,6 @@
 	name = "Medbay RC";
 	pixel_x = -30;
 	pixel_y = 3
-	},
-/obj/machinery/button/door{
-	id = "chemistry_shutters2";
-	name = "Chemistry Shutter Control";
-	pixel_x = -24;
-	pixel_y = -9;
-	req_one_access_txt = "69"
 	},
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay)
@@ -3643,6 +3631,11 @@
 /obj/effect/mapping_helpers/dead_body_placer,
 /turf/open/floor/plasteel/monofloor/dark,
 /area/medical/morgue)
+"If" = (
+/obj/machinery/stasis,
+/obj/tacmap/directional/south,
+/turf/open/floor/plasteel,
+/area/medical/medbay)
 "Ig" = (
 /obj/effect/turf_decal/trimline/green/filled/corner{
 	dir = 4
@@ -3671,7 +3664,6 @@
 /obj/structure/chair/sofa/corp/left{
 	dir = 1
 	},
-/obj/effect/turf_decal/tile/brown,
 /obj/effect/turf_decal/tile/brown{
 	dir = 8
 	},
@@ -3819,12 +3811,8 @@
 /turf/open/floor/plasteel/cafeteria,
 /area/command/heads_quarters/cmo)
 "Jl" = (
-/obj/effect/turf_decal/tile/brown,
-/obj/effect/turf_decal/tile/brown{
-	dir = 4
-	},
-/obj/structure/table/glass,
 /obj/machinery/microwave,
+/obj/structure/table,
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "Js" = (
@@ -3984,7 +3972,8 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2{
 	dir = 4
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/obj/effect/turf_decal/siding/wood,
+/turf/open/floor/wood,
 /area/medical/break_room)
 "KZ" = (
 /obj/effect/landmark/start/chemist,
@@ -4777,13 +4766,6 @@
 /area/medical/medbay)
 "So" = (
 /obj/effect/spawner/randomsnackvend,
-/obj/effect/turf_decal/tile/brown,
-/obj/effect/turf_decal/tile/brown{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/brown{
-	dir = 8
-	},
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "Sr" = (
@@ -5027,6 +5009,7 @@
 /obj/effect/turf_decal/trimline/green/filled/line{
 	dir = 9
 	},
+/obj/tacmap/directional/west,
 /turf/open/floor/plasteel/white,
 /area/medical/virology)
 "Ub" = (
@@ -5117,12 +5100,6 @@
 /area/medical/virology)
 "Vf" = (
 /obj/structure/reagent_dispensers/water_cooler,
-/obj/effect/turf_decal/tile/brown{
-	dir = 1
-	},
-/obj/effect/turf_decal/tile/brown{
-	dir = 8
-	},
 /turf/open/floor/carpet/purple,
 /area/medical/break_room)
 "Vg" = (
@@ -5474,14 +5451,13 @@
 /turf/open/floor/plasteel/monofloor/dark,
 /area/medical/surgery)
 "Yd" = (
-/obj/structure/table,
-/obj/item/pen,
 /obj/machinery/requests_console{
 	department = "Medbay";
 	departmentType = 1;
 	name = "Medbay RC";
 	pixel_y = 30
 	},
+/obj/machinery/modular_computer/console/preset/cargochat/medical,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/aft)
 "Yg" = (
@@ -5592,15 +5568,6 @@
 	},
 /turf/open/floor/plasteel,
 /area/medical/cryo)
-"YY" = (
-/obj/effect/spawner/structure/window/reinforced,
-/obj/machinery/door/firedoor,
-/obj/machinery/door/poddoor/preopen{
-	id = "chemistry_shutters2";
-	name = "Chemistry Shutter"
-	},
-/turf/open/floor/plating,
-/area/medical/medbay)
 "Zb" = (
 /obj/machinery/airalarm{
 	pixel_y = 23
@@ -5684,8 +5651,8 @@ Zz
 Zz
 Zz
 Zz
-YY
-YY
+Ps
+Ps
 CB
 oy
 jf
@@ -6054,7 +6021,7 @@ gt
 "}
 (10,1,1) = {"
 VE
-cm
+yN
 ZZ
 DD
 AR
@@ -6096,7 +6063,7 @@ gt
 "}
 (11,1,1) = {"
 VE
-cm
+kl
 ZZ
 UI
 zk
@@ -6110,7 +6077,7 @@ Ps
 yg
 wn
 jK
-yg
+If
 UB
 Ax
 TH

@@ -40,7 +40,7 @@
 
 /datum/station_trait/galactic_grant/on_round_start()
 	var/datum/bank_account/cargo_bank = SSeconomy.get_dep_account(ACCOUNT_CAR)
-	cargo_bank.adjust_money(rand(2000, 5000))
+	cargo_bank.adjust_money(rand(20000, 50000))
 /*
 /datum/station_trait/premium_internals_box
 	name = "Premium internals boxes"
@@ -119,7 +119,7 @@
 	trait_type = STATION_TRAIT_POSITIVE
 	weight = 5
 	show_in_report = TRUE
-	report_message = "Благодаря близости к нашей станции снабжения грузовой шаттл будет быстрее добираться до вашего грузового отдела."
+	report_message = "Благодаря близости к нашей станции снабжения грузовой шаттл будет быстрее добираться до грузового отдела."
 	blacklist = list(/datum/station_trait/slow_shuttle)
 
 /datum/station_trait/quick_shuttle/on_round_start()

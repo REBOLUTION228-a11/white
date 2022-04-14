@@ -159,15 +159,15 @@
 
 /datum/round_aspect/rich
 	name = "Rich"
-	desc = "Экипаж работал усердно в прошлую смену, за что и был награждён премиями в размере 10000 кредитов каждому."
+	desc = "Экипаж работал усердно в прошлую смену, за что и был награждён премиями в размере 100000 кредитов каждому."
 	weight = 24
 
 /datum/round_aspect/rich/run_aspect()
-	SSeconomy.bonus_money = 10000
+	SSeconomy.bonus_money = 100000
 	..()
 	for(var/B in SSeconomy.bank_accounts_by_id)
 		var/datum/bank_account/A = SSeconomy.bank_accounts_by_id[B]
-		A.adjust_money(10000)
+		A.adjust_money(100000)
 
 /datum/round_aspect/drunk
 	name = "Drunk"
@@ -368,7 +368,7 @@
 
 /datum/round_aspect/tts
 	name = "TTS"
-	desc = "В эту смену я не только вижу ваши голоса. Я их слышу."
+	desc = "В эту смену я не только вижу голоса. Я их слышу."
 	weight = 16
 
 /datum/round_aspect/tts/run_aspect()
@@ -399,11 +399,13 @@
 	for(var/I in occupations)
 		var/datum/job/J = I
 		J.total_positions = 750
+		J.spawn_positions = 750
 
 /datum/controller/subsystem/job/proc/DisableAllJobs()
 	for(var/I in occupations)
 		var/datum/job/J = I
 		J.total_positions = 0
+		J.spawn_positions = 0
 
 /datum/round_aspect/emergency_meeting
 	name = "Emergency Meeting"
@@ -584,7 +586,7 @@
 		for(var/D in GLOB.antagonists)
 			var/datum/antagonist/A = D
 			if(A?.name && A?.owner)
-				our_pussies += "[A.name] - [A.owner.name] под видом [A.owner.assigned_role].[prob(1) ? " УБЕЙТЕ ЕГО НАХУЙ!" : ""]"
+				our_pussies += "[A.name] - [A.owner.name] под видом [A.owner.assigned_role][prob(1) ? ". УБЕЙТЕ ЕГО НАХУЙ!" : ""]"
 		priority_announce("Прива, я тут немного собрал для вас имён интересных, надеюсь, они вам понадобятся! Список психов: [english_list(our_pussies)]", sender_override = "Апегио Крысус")
 	..()
 
@@ -592,7 +594,8 @@
 /datum/round_aspect/borderlands
 	name = "Borderlands"
 	desc = "Рабочий, помни! Крики «помогите, у меня внутреннее кровотечение, вызовите врача» мешают твоим товарищам работать."
-	weight = 25
+	weight = 1
+	forbidden = TRUE
 
 /datum/round_aspect/borderlands/run_aspect()
 	GLOB.borderlands_outline_mode = TRUE

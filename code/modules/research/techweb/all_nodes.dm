@@ -119,8 +119,9 @@
 	description = "Basic mechanical, electronic, surgical and botanical tools."
 	design_ids = list("screwdriver", "wrench", "wirecutters", "crowbar", "multitool", "welding_tool", "tscanner", "analyzer", "cable_coil", "pipe_painter", "airlock_painter", "decal_painter",
 					"cultivator", "plant_analyzer", "shovel", "spade", "floor_painter", "hatchet", "secateurs", "mop", "pushbroom", "plunger", "spraycan", "swab", "petri_dish", "normtrash", "handlabel", "paystand",
-					"cable_coil_box", "rcd_ammo", "rcd_ammo_large",	"welding_helmet",	"prox_sensor", "igniter", "condenser", "signaler", "radio_headset", "bounced_radio", "intercom_frame", "infrared_emitter",
-					"timer", "voice_analyser", "light_tube", "light_bulb", "camera_assembly", "newscaster_frame", "bountyboard_frame", "large_welding_tool", "geigercounter", "turret_control","blast")
+					"cable_coil_box", "rcd_ammo", "rcd_ammo_large",	"welding_helmet", "prox_sensor", "prox_sensor2", "igniter", "condenser", "signaler", "radio_headset", "bounced_radio", "intercom_frame", "infrared_emitter",
+					"timer", "voice_analyser", "light_tube", "light_bulb", "camera_assembly", "newscaster_frame", "bountyboard_frame", "large_welding_tool", "geigercounter", "turret_control","blast",
+					"laptop", "tablet")
 
 /datum/techweb_node/basic_circuitry
 	id = "basic_circuitry"
@@ -136,13 +137,17 @@
 		"comp_concat_list",
 		"comp_delay",
 		"comp_direction",
+		"comp_filter_list",
+		"comp_foreach",
 		"comp_get_column",
 		"comp_gps",
 		"comp_health",
 		"comp_hear",
 		"comp_index",
+		"comp_index_assoc",
 		"comp_index_table",
 		"comp_length",
+		"comp_laserpointer",
 		"comp_light",
 		"comp_list_literal",
 		"comp_logic",
@@ -152,6 +157,7 @@
 		"comp_not",
 		"comp_ntnet_receive",
 		"comp_ntnet_send",
+		"comp_pinpointer",
 		"comp_pressuresensor",
 		"comp_radio",
 		"comp_random",
@@ -166,6 +172,7 @@
 		"comp_string_contains",
 		"comp_tempsensor",
 		"comp_textcase",
+		"comp_timepiece",
 		"comp_tonumber",
 		"comp_tostring",
 		"comp_typecast",
@@ -183,7 +190,7 @@
 	display_name = "Биотехнологии"
 	description = "То, что заставляет сердце биться."	//the MC, silly!
 	prereq_ids = list("base")
-	design_ids = list("chem_heater", "chem_master", "chem_dispenser", "pandemic", "defibrillator", "defibmount", "operating", "soda_dispenser", "beer_dispenser", "healthanalyzer", "medigel","genescanner", "med_spray_bottle", "meta_beaker", "chem_pack", "blood_pack", "medical_kiosk", "crewpinpointerprox", "medipen_refiller", "biopsy_tool", "plumbing_rcd_sci", "medbot_carrier")
+	design_ids = list("chem_heater", "chem_master", "chem_dispenser", "pandemic", "defibrillator", "defibmount", "operating", "soda_dispenser", "beer_dispenser", "healthanalyzer", "medigel","genescanner", "med_spray_bottle", "meta_beaker", "chem_pack", "blood_pack", "medical_kiosk", "crewpinpointerprox", "medipen_refiller", "biopsy_tool", "plumbing_rcd_sci", "medbot_carrier", "medipenal")
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 	required_experiments = list(/datum/experiment/scanning/points/slime/calibration)
 
@@ -412,6 +419,7 @@
 	design_ids = list(
 		"bot_shell",
 		"controller_shell",
+		"dispenser_shell",
 		"door_shell",
 		"gun_shell",
 		"money_bot_shell",
@@ -692,7 +700,7 @@
 	display_name = "Mining Technology"
 	description = "Better than Efficiency V."
 	prereq_ids = list("engineering", "basic_plasma")
-	design_ids = list("drill", "superresonator", "triggermod", "damagemod", "cooldownmod", "rangemod", "ore_redemption", "mining_equipment_vendor", "exploration_equipment_vendor", "cargoexpress", "plasmacutter")//e a r l y    g a  m e)
+	design_ids = list("drill", "superresonator", "triggermod", "damagemod", "cooldownmod", "rangemod", "ore_redemption", "mining_equipment_vendor", "exploration_equipment_vendor", "cargoexpress", "plasmacutter", "mecha_kineticgun")//e a r l y    g a  m e)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
 /datum/techweb_node/adv_mining
@@ -947,7 +955,10 @@
 	display_name = "Простые модули экзокостюмов"
 	description = "Системы дополнительного бронирования и вспомогательные энергосистемы."
 	prereq_ids = list("adv_mecha", "bluespace_power")
-	design_ids = list("mech_energy_relay", "mech_ccw_armor", "mech_proj_armor", "mech_generator_nuclear")
+	design_ids = list(
+		"mech_ccw_armor",
+		"mech_proj_armor",
+	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
 /datum/techweb_node/mech_scattershot

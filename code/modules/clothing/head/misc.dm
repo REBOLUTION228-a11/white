@@ -53,14 +53,14 @@
 
 /obj/item/clothing/head/hasturhood
 	name = "капюшон Хастура"
-	desc = "Это <I>невероятно</I> стильно."
+	desc = "<I>Невероятно</I> стильный."
 	icon_state = "hasturhood"
 	flags_inv = HIDEHAIR
 	flags_cover = HEADCOVERSEYES
 
 /obj/item/clothing/head/nursehat
 	name = "шляпа медсестры"
-	desc = "Это позволяет быстро идентифицировать обученный медицинский персонал."
+	desc = "Позволяет быстро идентифицировать обученный медицинский персонал. Ну или проституток.	"
 	icon_state = "nursehat"
 	dynamic_hair_suffix = ""
 
@@ -250,7 +250,7 @@
 	name = "сомбреро"
 	icon_state = "sombrero"
 	inhand_icon_state = "sombrero"
-	desc = "Вы можете практически попробовать фиесту."
+	desc = "Можно практически попробовать фиесту."
 	flags_inv = HIDEHAIR
 
 	dog_fashion = /datum/dog_fashion/head/sombrero
@@ -293,7 +293,7 @@
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 
 /obj/item/clothing/head/cone
-	desc = "Этот конус пытается предупредить вас о чем-то!"
+	desc = "Этот конус пытается вас о чем-то предупредить!"
 	name = "предупреждающий конус"
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "cone"
@@ -477,7 +477,7 @@
 
 /obj/item/clothing/head/intern
 	name = "шляпа интерна"
-	desc = "Ужасная смесь из шапочки и мягкого колпачка зеленого цвета ЦентКома. Вы должны быть в отчаянии от власти над своими сверстниками, чтобы согласиться носить это."
+	desc = "Ужасная смесь из шапочки и мягкого колпачка зеленого цвета ЦентКома. Требуется быть в отчаянии от власти над своими сверстниками, чтобы согласиться носить это."
 	icon_state = "intern_hat"
 	inhand_icon_state = "intern_hat"
 
@@ -500,7 +500,7 @@
 	icon_state = "weddingveil"
 	inhand_icon_state = "weddingveil"
 
-/obj/item/clothing/head/centom_cap
+/obj/item/clothing/head/centcom_cap
 	name = "шляпа офицера ЦентКома"
 	icon_state = "centcom_cap"
 	desc = "На шляпе есть какие-то мутные инициалы, которые уже невозможно прочитать."
@@ -520,8 +520,8 @@
 	ADD_TRAIT(src, TRAIT_NODROP, CURSED_ITEM_TRAIT(type))
 
 /obj/item/clothing/head/rainbowbunchcrown
-	name = "rainbow flower crown"
-	desc = "A flower crown made out of the flowers of the rainbow bunch plant."
+	name = "Радужная цветочная корона"
+	desc = "Цветочная корона, сделанная из разноцветных цветов."
 	dynamic_hair_suffix = ""
 	attack_verb_continuous = list("коронует")
 	attack_verb_simple = list("коронует")
@@ -544,24 +544,24 @@
 			icon_state = "rainbow_bunch_crown_4"
 
 /obj/item/clothing/head/sunflowercrown
-	name = "sunflower crown"
-	desc = "A bright flower crown made out sunflowers that is sure to brighten up anyone's day!"
+	name = "Солнечная цветочная корона"
+	desc = "Яркая цветочная корона из подсолнухов, которая обязательно скрасит любой день!"
 	icon_state = "sunflower_crown"
 	dynamic_hair_suffix = ""
 	attack_verb_continuous = list("коронует")
 	attack_verb_simple = list("коронует")
 
 /obj/item/clothing/head/poppycrown
-	name = "poppy crown"
-	desc = "A flower crown made out of a string of bright red poppies."
+	name = "Алая цветочная корона"
+	desc = "Цветочная корона, сделанная из гирлянды ярко-красных маков."
 	icon_state = "poppy_crown"
 	dynamic_hair_suffix = ""
 	attack_verb_continuous = list("коронует")
 	attack_verb_simple = list("коронует")
 
 /obj/item/clothing/head/lilycrown
-	name = "lily crown"
-	desc = "A leafy flower crown with a cluster of large white lilies at at the front."
+	name = "Невинная цветочная корона"
+	desc = "Покрытая листьями цветочная корона украшенная большими белыми лилиями."
 	icon_state = "lily_crown"
 	dynamic_hair_suffix = ""
 	attack_verb_continuous = list("коронует")

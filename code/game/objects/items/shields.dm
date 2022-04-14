@@ -1,12 +1,14 @@
 /obj/item/shield
 	name = "щит"
 	icon = 'icons/obj/shields.dmi'
-	block_chance = 50
+	block_chance = 75
 	armor = list(MELEE = 50, BULLET = 50, LASER = 50, ENERGY = 0, BOMB = 30, BIO = 0, RAD = 0, FIRE = 80, ACID = 70)
 	var/transparent = FALSE	// makes beam projectiles pass through the shield
 	block_sounds = list('white/valtos/sounds/shieldhit1.wav', 'white/valtos/sounds/shieldhit2.wav')
 
 /obj/item/shield/proc/on_shield_block(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "атаку", damage = 0, attack_type = MELEE_ATTACK)
+	if(damage)
+		owner.adjustStaminaLoss(damage/2)
 	return TRUE
 
 /obj/item/shield/riot
@@ -32,6 +34,12 @@
 /obj/item/shield/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "атаку", final_block_chance = 0, damage = 0, attack_type = MELEE_ATTACK)
 	if(transparent && (hitby.pass_flags & PASSGLASS))
 		return FALSE
+	if(isprojectile(hitby))
+		var/obj/projectile/P = hitby
+		if(!defense_check(get_turf(owner), get_turf(P?.fired_from), owner?.dir))
+			return FALSE
+	else if(!defense_check(get_turf(owner), get_turf(hitby), owner?.dir))
+		return FALSE
 	if(attack_type == THROWN_PROJECTILE_ATTACK)
 		final_block_chance += 30
 	if(attack_type == LEAP_ATTACK)
@@ -39,6 +47,23 @@
 	. = ..()
 	if(.)
 		on_shield_block(owner, hitby, attack_text, damage, attack_type)
+
+/obj/item/shield/proc/defense_check(turf/aloc, turf/bloc, mobdir)
+	. = FALSE
+	switch(mobdir)
+		if (1)
+			if(abs(aloc.x - bloc.x) <= (aloc.y - bloc.y) * -2)
+				. = TRUE
+		if (2)
+			if(abs(aloc.x - bloc.x) <= (aloc.y - bloc.y) * 2)
+				. = TRUE
+		if (4)
+			if(abs(aloc.y - bloc.y) <= (aloc.x - bloc.x) * -2)
+				. = TRUE
+		if (8)
+			if(abs(aloc.y - bloc.y) <= (aloc.x - bloc.x) * 2)
+				. = TRUE
+	return
 
 /obj/item/shield/riot/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/melee/baton))
@@ -97,6 +122,10 @@
 	lefthand_file = 'white/valtos/icons/lefthand.dmi'
 	righthand_file = 'white/valtos/icons/righthand.dmi'
 
+/obj/item/shield/riot/military/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/two_handed, require_twohands=TRUE)
+
 /obj/item/shield/riot/military/pickup(mob/user)
 	. = ..()
 	if(isliving(user))
@@ -119,7 +148,7 @@
 	name = "кевларовый щит"
 	desc = "Крепкий и достаточно лёгкий."
 	force = 8
-	block_chance = 70
+	block_chance = 80
 	transparent = FALSE
 	max_integrity = 250
 	icon_state = "kevlarshield"
@@ -161,7 +190,7 @@
 	righthand_file = 'icons/mob/inhands/equipment/shields_righthand.dmi'
 	custom_materials = list(/datum/material/wood = MINERAL_MATERIAL_AMOUNT * 10)
 	resistance_flags = FLAMMABLE
-	block_chance = 30
+	block_chance = 60
 	transparent = FALSE
 	max_integrity = 55
 	w_class = WEIGHT_CLASS_NORMAL

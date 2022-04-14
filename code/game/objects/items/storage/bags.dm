@@ -33,7 +33,7 @@
 // -----------------------------
 /obj/item/storage/bag/trash
 	name = "мешок для мусора"
-	desc = "Это сверхпрочный черный полимерный материал. Пора выносить мусор!"
+	desc = "Сверхпрочный черный полимерный материал. Пора выносить мусор!"
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "trashbag"
 	inhand_icon_state = "trashbag"
@@ -107,7 +107,7 @@
 // -----------------------------
 
 /obj/item/storage/bag/ore
-	name = "шахтёрская сумка"
+	name = "сумка для руды"
 	desc = "Эту сумку можно использовать для хранения и транспортировки руды."
 	gender = FEMALE
 	icon = 'icons/obj/mining.dmi'
@@ -177,10 +177,10 @@
 	spam_protection = FALSE
 
 /obj/item/storage/bag/ore/cyborg
-	name = "ранец для добычи руды киборга"
+	name = "сумка для руды киборга"
 
 /obj/item/storage/bag/ore/holding //miners, your messiah has arrived
-	name = "блюспейс сумка для добычи руды"
+	name = "бездонная сумка для руды"
 	desc = "Революция в удобстве: этот рюкзак позволяет хранить огромное количество руды. Он оборудован мерами безопасности от сбоев."
 	icon_state = "satchel_bspace"
 
@@ -226,7 +226,7 @@
 /obj/item/storage/bag/plants/portaseeder/verb/dissolve_contents()
 	set name = "Активировать экстракцию семян"
 	set category = "Объект"
-	set desc = "Активируйте, чтобы превратить ваши растения в семена для посадки."
+	set desc = "Активируйте, чтобы превратить растения в семена для посадки."
 	if(usr.incapacitated())
 		return
 	for(var/obj/item/O in contents)
@@ -239,19 +239,22 @@
 // However, making it a storage/bag allows us to reuse existing code in some places. -Sayu
 
 /obj/item/storage/bag/sheetsnatcher
-	name = "sheet snatcher"
-	desc = "A patented Nanotrasen storage system designed for any kind of mineral sheet."
+	name = "сумка для материалов"
+	desc = "Сумка разработанная для шахтеров и строителей, способная хранить до 500 листов различных материалов."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "sheetsnatcher"
 	worn_icon_state = "satchel"
 
-	var/capacity = 300; //the number of sheets it can carry.
+	var/capacity = 500; //the number of sheets it can carry.
 	component_type = /datum/component/storage/concrete/stack
 
 /obj/item/storage/bag/sheetsnatcher/ComponentInitialize()
 	. = ..()
+	AddElement(/datum/element/rad_insulation, 0.01)
 	var/datum/component/storage/concrete/stack/STR = GetComponent(/datum/component/storage/concrete/stack)
 	STR.allow_quick_empty = TRUE
+	STR.max_combined_w_class = 500
+	STR.max_items = 14
 	STR.set_holdable(list(
 			/obj/item/stack/sheet,
 			/obj/item/stack/tile/bronze
@@ -260,21 +263,21 @@
 			/obj/item/stack/sheet/mineral/sandstone,
 			/obj/item/stack/sheet/mineral/wood
 			))
-	STR.max_combined_stack_amount = 300
+	STR.max_combined_stack_amount = 500
 
 // -----------------------------
 //    Sheet Snatcher (Cyborg)
 // -----------------------------
 
 /obj/item/storage/bag/sheetsnatcher/borg
-	name = "sheet snatcher 9000"
-	desc = ""
-	capacity = 500//Borgs get more because >specialization
+	name = "сумка для материалов киборга"
+	desc = "Сумка разработанная для шахтеров и строителей, способная хранить до 1000 листов различных материалов."
+	capacity = 1000//Borgs get more because >specialization
 
 /obj/item/storage/bag/sheetsnatcher/borg/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/concrete/stack/STR = GetComponent(/datum/component/storage/concrete/stack)
-	STR.max_combined_stack_amount = 500
+	STR.max_combined_stack_amount = 1000
 
 // -----------------------------
 //           Book bag
@@ -341,8 +344,8 @@
 	var/list/obj/item/oldContents = contents.Copy()
 	SEND_SIGNAL(src, COMSIG_TRY_STORAGE_QUICK_EMPTY)
 	// Make each item scatter a bit
-	for(var/obj/item/I in oldContents)
-		INVOKE_ASYNC(src, .proc/do_scatter, I)
+	for(var/obj/item/tray_item in oldContents)
+		do_scatter(tray_item)
 
 	if(prob(50))
 		playsound(M, 'sound/items/trayhit1.ogg', 50, TRUE)
@@ -354,11 +357,18 @@
 			M.Paralyze(40)
 	update_icon()
 
-/obj/item/storage/bag/tray/proc/do_scatter(obj/item/I)
-	for(var/i in 1 to rand(1,2))
-		if(I)
-			step(I, pick(NORTH,SOUTH,EAST,WEST))
-			sleep(rand(2,4))
+/obj/item/storage/bag/tray/proc/do_scatter(obj/item/tray_item)
+	var/delay = rand(2,4)
+	var/datum/move_loop/loop = SSmove_manager.move_rand(tray_item, list(NORTH,SOUTH,EAST,WEST), delay, timeout = rand(1, 2) * delay, flags = MOVEMENT_LOOP_START_FAST)
+	//This does mean scattering is tied to the tray. Not sure how better to handle it
+	RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, .proc/change_speed)
+
+/obj/item/storage/bag/tray/proc/change_speed(datum/move_loop/source)
+	SIGNAL_HANDLER
+	var/new_delay = rand(2, 4)
+	var/count = source.lifetime / source.delay
+	source.lifetime = count * new_delay
+	source.delay = new_delay
 
 /obj/item/storage/bag/tray/update_overlays()
 	. = ..()
@@ -392,7 +402,7 @@
 	icon_state = "bag_chem"
 	worn_icon_state = "chembag"
 	desc = "Сумка для хранения таблеток, пластырей и бутылочек."
-	resistance_flags = FLAMMABLE
+	resistance_flags = FIRE_PROOF
 
 /obj/item/storage/bag/chemistry/ComponentInitialize()
 	. = ..()

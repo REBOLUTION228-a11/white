@@ -99,7 +99,7 @@
 //FISH KILL!!
 /obj/item/melee/baseball_bat/hos/holymackerel
 	name = "\"Поддай леща\""
-	desc = "Убийство рыбой - самое унизительное наказание для вашего врага."
+	desc = "Убийство рыбой - самое унизительное наказание для врага."
 	icon_state = "holymackerel"
 	hitsound = 'white/RedFoxIV/sounds/weapons/holy_mackerel.ogg'
 	force = 7
@@ -272,7 +272,7 @@
 	allowed_ckey = "sranklin"
 
 /obj/item/melee/baseball_bat/hos/hrukni/attack(mob/living/target, mob/living/user)
-	.=..()
+	. = ..()
 	target.emote("poo")
 	if(prob(30))
 		to_chat(target, "<span notice='userdanger'>[pick("Врата прорвало!", "Не могу перестать СРАТЬ!")]</span>")

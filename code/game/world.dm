@@ -29,6 +29,8 @@ GLOBAL_VAR(restart_counter)
  *			All atoms in both compiled and uncompiled maps are initialized()
  */
 /world/New()
+	//Keep the auxtools stuff at the top
+	AUXTOOLS_CHECK(AUXMOS)
 
 	if(cs_setup_threads())
 		log_world("CS active!")
@@ -286,15 +288,15 @@ GLOBAL_VAR(restart_counter)
 	if(CONFIG_GET(flag/this_shit_is_stable))
 		shelleo("curl -X POST http://localhost:3636/hard-reboot-white")
 		shelleo("python3 /home/ubuntu/tenebrae/prod/server_white/data/parser.py [GLOB.round_id]")
+	AUXTOOLS_SHUTDOWN(AUXMOS)
 	..()
 
 /world/Del()
-	// memory leaks bad
-	var/num_deleted = 0
-	for(var/datum/gas_mixture/GM)
-		GM.__gasmixture_unregister()
-		num_deleted++
-	log_world("Deallocated [num_deleted] gas mixtures")
+	shutdown_logging() // makes sure the thread is closed before end, else we terminate
+	AUXTOOLS_SHUTDOWN(AUXMOS)
+	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
+	if (debug_server)
+		call(debug_server, "auxtools_shutdown")()
 	..()
 
 /*
@@ -364,8 +366,8 @@ GLOBAL_VAR_INIT(hub_mimic_desc, "GO! GO! GO!")
 	var/s = ""
 
 	if(!GLOB.hub_mimic)
-		s += "<big><b>FDev: White Dream: RU</b> 18+</big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
-		switch(rand(1, 6))
+		s += "<big><b>FDev: NeoWhite Dream: RU</b> 18+</big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
+		switch(rand(1, 7))
 			if(1)
 				s += "<img src='https://assets.station13.ru/l/w7.png'>\n\n"
 				s += "\[<big>CLASSIC STATION</big>"
@@ -384,6 +386,9 @@ GLOBAL_VAR_INIT(hub_mimic_desc, "GO! GO! GO!")
 			if(6)
 				s += "<img src='https://assets.station13.ru/l/w9.png'>\n\n"
 				s += "\[<big>PROBABLY NOT HARAM</big>"
+			if(7)
+				s += "<img src='https://assets.station13.ru/l/wz.png'>\n\n"
+				s += "\[<big>ZA POBEDU!</big>"
 	else
 		s += "<big><b>[GLOB.hub_mimic]: RU</b></big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
 		s += "<img src='https://assets.station13.ru/l/w[rand(4, 8)].gif'>\n\n"

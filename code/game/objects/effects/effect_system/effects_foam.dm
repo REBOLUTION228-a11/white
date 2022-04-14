@@ -50,13 +50,13 @@
 	if(hotspot && istype(T) && T.air)
 		qdel(hotspot)
 		var/datum/gas_mixture/G = T.air
-		if(G.get_moles(/datum/gas/plasma))
-			var/plas_amt = min(30,G.get_moles(/datum/gas/plasma)) //Absorb some plasma
-			G.adjust_moles(/datum/gas/plasma, -plas_amt)
+		if(G.get_moles(GAS_PLASMA))
+			var/plas_amt = min(30,G.get_moles(GAS_PLASMA)) //Absorb some plasma
+			G.adjust_moles(GAS_PLASMA, -plas_amt)
 			absorbed_plasma += plas_amt
 		if(G.return_temperature() > T20C)
 			G.set_temperature(max(G.return_temperature()/2,T20C))
-		T.air_update_turf(FALSE, FALSE)
+		T.air_update_turf()
 
 /obj/effect/particle_effect/foam/firefighting/kill_foam()
 	STOP_PROCESSING(SSfastprocess, src)
@@ -303,7 +303,7 @@
 
 /obj/structure/foamedmetal/Initialize()
 	. = ..()
-	air_update_turf(TRUE, TRUE)
+	air_update_turf(TRUE)
 	if(smoothing_flags & SMOOTH_BITMASK)
 		var/matrix/M = new
 		M.Translate(-7, -7)
@@ -312,7 +312,7 @@
 		icon_state = "[base_icon_state]-[smoothing_junction]"
 
 /obj/structure/foamedmetal/Destroy()
-	air_update_turf(TRUE, FALSE)
+	air_update_turf(TRUE)
 	. = ..()
 
 /obj/structure/foamedmetal/Move()
@@ -361,7 +361,7 @@
 			for(var/obj/effect/hotspot/H in O)
 				qdel(H)
 			for(var/I in G.get_gases())
-				if(I == /datum/gas/oxygen || I == /datum/gas/nitrogen)
+				if(I == GAS_O2 || I == GAS_N2)
 					continue
 				G.set_moles(I, 0)
 			O.air_update_turf()

@@ -1,13 +1,12 @@
 // How much "space" we give the edge of the map
 GLOBAL_LIST_INIT(potentialRandomZlevels, generateMapList(filename = "[global.config.directory]/awaymissionconfig.txt"))
-GLOBAL_VAR_INIT(isGatewayLoaded, TRUE) // sosi
+GLOBAL_VAR_INIT(isGatewayLoaded, FALSE)
 
 /proc/createRandomZlevel()
 	if(GLOB.potentialRandomZlevels && GLOB.potentialRandomZlevels.len)
 		to_chat(world, span_boldannounce("Загружаем дальнюю миссию..."))
 		var/map = pick(GLOB.potentialRandomZlevels)
 		var/lev = load_new_z_level(map, "Away Mission")
-		SSair.disable_atmos_in_z(lev)
 		message_admins(span_boldannounce("Дальняя миссия загружена на уровне: [lev]."))
 
 /obj/effect/landmark/awaystart

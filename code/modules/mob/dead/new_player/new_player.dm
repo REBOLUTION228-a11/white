@@ -49,6 +49,35 @@
 	if(client.interviewee)
 		return FALSE
 
+	if(href_list["violence"] && GLOB.violence_mode_activated)
+		if(href_list["violence"] == "joinmefucker")
+			var/datum/violence_player/VP = GLOB.violence_players?[ckey]
+			if(VP?.role_name)
+				usr << browse(null, "window=violence")
+				AttemptLateSpawn(VP.role_name)
+			else
+				usr << browse(null, "window=violence")
+				var/suggested_team = pick(list("Combantant: Red", "Combantant: Blue"))
+				if(LAZYLEN(GLOB.violence_blue_team) > LAZYLEN(GLOB.violence_red_team))
+					suggested_team = "Combantant: Red"
+				if(LAZYLEN(GLOB.violence_red_team) > LAZYLEN(GLOB.violence_blue_team))
+					suggested_team = "Combantant: Blue"
+				VP.role_name = suggested_team
+				AttemptLateSpawn(suggested_team)
+			return
+		if(GLOB.violence_gear_datums[href_list["violence"]])
+			var/datum/violence_gear/VG = GLOB.violence_gear_datums[href_list["violence"]]
+			var/datum/violence_player/VP = GLOB.violence_players[ckey]
+			if(VP.money >= VG.cost)
+				VP.money -= VG.cost
+				VP.loadout_items += VG
+				SEND_SOUND(usr, pick(list('white/valtos/sounds/coin1.ogg', 'white/valtos/sounds/coin2.ogg', 'white/valtos/sounds/coin3.ogg')))
+				to_chat(usr, span_notice("Куплено <b>[VG.name]</b> за [VG.cost]₽!"))
+			else
+				to_chat(usr, span_boldwarning("Недостаточно средств."))
+			violence_choices()
+		return
+
 	if(href_list["late_join"]) //This still exists for queue messages in chat
 		if(!SSticker?.IsRoundInProgress())
 			to_chat(usr, span_boldwarning("Раунд ещё не начался или уже завершился..."))
@@ -152,6 +181,8 @@
 			return "Твой аккаунт слишком молодой для [jobtitle]."
 		if(JOB_UNAVAILABLE_SLOTFULL)
 			return "[jobtitle] уже достаточно на станции."
+		if(JOB_UNAVAILABLE_LOCKED)
+			return "Нельзя менять команду."
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
@@ -159,7 +190,7 @@
 	if(!job)
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
-		if(job.title == "Assistant")
+		if(job.title == "Assistant" && !GLOB.violence_mode_activated)
 			if(isnum(client.player_age) && client.player_age <= 14) //Newbies can always be assistants
 				return JOB_AVAILABLE
 			for(var/datum/job/J in SSjob.occupations)
@@ -179,6 +210,10 @@
 		return JOB_UNAVAILABLE_GENERIC
 	if(job.metalocked && !(job.type in client.prefs.jobs_buyed))
 		return JOB_UNAVAILABLE_UNBUYED
+	if(GLOB.violence_mode_activated)
+		var/datum/violence_player/VP = GLOB.violence_players?[ckey]
+		if(VP?.role_name != rank)
+			return JOB_UNAVAILABLE_LOCKED
 	return JOB_AVAILABLE
 
 /mob/dead/new_player/proc/AttemptLateSpawn(rank)
@@ -222,7 +257,7 @@
 
 	if(job && !job.override_latejoin_spawn(character))
 		SSjob.SendToLateJoin(character)
-		if(!arrivals_docked)
+		if(!arrivals_docked && !GLOB.violence_mode_activated)
 			var/atom/movable/screen/splash/Spl = new(character.client, TRUE)
 			Spl.Fade(TRUE)
 			character.playsound_local(get_turf(character), 'sound/ai/announcer/hello_crew.ogg', 25)
@@ -328,7 +363,12 @@
 			dat += "</td><td valign='top'>"
 	dat += "</td></tr></table></center>"
 	dat += "</div></div>"
-	var/datum/browser/popup = new(src, "latechoices", "Выбери профессию", 750, 750)
+	var/ww = 750
+	var/hh = 750
+	if(GLOB.violence_mode_activated)
+		ww = 265
+		hh = 300
+	var/datum/browser/popup = new(src, "latechoices", "Выбери профессию", ww, hh)
 	popup.add_stylesheet("playeroptions", 'html/browser/playeroptions.css')
 	popup.set_content(jointext(dat, ""))
 	popup.open(FALSE) // 0 is passed to open so that it doesn't use the onclose() proc

@@ -107,7 +107,7 @@
 		var/total_moles = air_sample.total_moles()
 		if(total_moles)
 			for(var/gas_id in air_sample.get_gases())
-				var/gas_name = GLOB.meta_gas_info[gas_id][META_GAS_NAME]
+				var/gas_name = GLOB.gas_data.names[gas_id]
 				signal.data["gases"][gas_name] = air_sample.get_moles(gas_id) / total_moles * 100
 
 		radio_connection.post_signal(src, signal, filter = RADIO_ATMOSIA)
@@ -167,7 +167,7 @@ GLOBAL_LIST_EMPTY(atmos_air_controllers)
 		ATMOS_GAS_MONITOR_LOOP_DISTRIBUTION = "Distribution Loop",
 		ATMOS_GAS_MONITOR_LOOP_ATMOS_WASTE = "Atmos Waste Loop",
 		ATMOS_GAS_MONITOR_SENSOR_INCINERATOR = "Incinerator Chamber",
-		ATMOS_GAS_MONITOR_SENSOR_TOXINS_LAB = "Toxins Mixing Chamber"
+		ATMOS_GAS_MONITOR_SENSOR_ORDNANCE_LAB = "Toxins Mixing Chamber"
 	)
 	var/list/sensor_information = list()
 	var/datum/radio_frequency/radio_connection
@@ -231,7 +231,7 @@ GLOBAL_LIST_EMPTY(atmos_air_controllers)
 //Toxins mix sensor only
 /obj/machinery/computer/atmos_control/toxinsmix
 	name = "Toxins Mixing Air Control"
-	sensors = list(ATMOS_GAS_MONITOR_SENSOR_TOXINS_LAB = "Toxins Mixing Chamber")
+	sensors = list(ATMOS_GAS_MONITOR_SENSOR_ORDNANCE_LAB = "Toxins Mixing Chamber")
 	circuit = /obj/item/circuitboard/computer/atmos_control/toxinsmix
 
 /////////////////////////////////////////////////////////////

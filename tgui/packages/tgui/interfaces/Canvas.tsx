@@ -15,6 +15,7 @@ type PaintCanvasProps = Partial<{
   imageHeight: number,
   editable: boolean,
   drawing_color: string | null,
+  drawing_alpha: number | null,
 }>;
 
 type PointData = {
@@ -38,6 +39,7 @@ class PaintCanvas extends Component<PaintCanvasProps> {
   onCanvasModified: (data: PointData[]) => void;
   drawing: boolean;
   drawing_color: string;
+  drawing_alpha: number;
 
   constructor(props) {
     super(props);
@@ -111,22 +113,29 @@ class PaintCanvas extends Component<PaintCanvasProps> {
   handleStartDrawing(event : MouseEvent) {
     if (!this.props.editable
        || this.props.drawing_color === undefined
-       || this.props.drawing_color === null) {
+       || this.props.drawing_color === null
+       || this.props.drawing_alpha === undefined
+       || this.props.drawing_alpha === null) {
       return;
     }
     this.modifiedElements = [];
     this.drawing = true;
     this.drawing_color = this.props.drawing_color;
+    this.drawing_alpha = this.props.drawing_alpha;
     const coords = this.eventToCoords(event);
-    this.drawPoint(coords.x, coords.y, this.drawing_color);
+    this.drawPoint(coords.x, coords.y, this.drawing_color, this.drawing_alpha);
   }
 
-  drawPoint(x: number, y: number, color: any) {
+  drawPoint(x: number, y: number, color: any, alpha: any) {
     let p: PointData = { x, y, color: Color.fromHex(color) };
     this.modifiedElements.push(p);
     const canvas = this.canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = color;
+    const hexToRgb = hex =>
+      hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16));
+    ctx.fillStyle = "rgba(" + hexToRgb(color) + ", " + (alpha/255) + ")";
     ctx.fillRect(x, y, 1, 1);
   }
 
@@ -135,7 +144,7 @@ class PaintCanvas extends Component<PaintCanvasProps> {
       return;
     }
     const coords = this.eventToCoords(event);
-    this.drawPoint(coords.x, coords.y, this.drawing_color);
+    this.drawPoint(coords.x, coords.y, this.drawing_color, this.drawing_alpha);
   }
 
   handleEndDrawing(event: MouseEvent) {
@@ -187,6 +196,7 @@ type CanvasData = {
   name: string,
   editable: boolean,
   paint_tool_color: string | null,
+  paint_tool_alpha: number | null,
   author: string | null,
   medium: string | null,
   patron: string | null,
@@ -214,6 +224,7 @@ export const Canvas = (props, context) => {
             width={scaled_width}
             height={scaled_height}
             drawing_color={data.paint_tool_color}
+            drawing_alpha={data.paint_tool_alpha}
             onCanvasModifiedHandler={(changed) => act("paint", { data: toMassPaintFormat(changed) })}
             editable={data.editable}
           />

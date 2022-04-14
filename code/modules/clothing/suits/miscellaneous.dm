@@ -83,7 +83,7 @@
 
 /obj/item/clothing/suit/justice
 	name = "костюм справедливости"
-	desc = "это выглядит довольно смешно" //Needs no fixing
+	desc = "выглядит довольно смешно" //Needs no fixing
 	icon_state = "justice"
 	inhand_icon_state = "justice"
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
@@ -92,7 +92,7 @@
 
 /obj/item/clothing/suit/judgerobe
 	name = "одежда судьи"
-	desc = "Этот халат командует властью."
+	desc = "Халат, командующий властью."
 	icon_state = "judge"
 	inhand_icon_state = "judge"
 	body_parts_covered = CHEST|GROIN|LEGS|ARMS
@@ -256,7 +256,7 @@
 
 /obj/item/clothing/suit/hooded/carp_costume
 	name = "костюм карпа"
-	desc = "Это костюм из «синтетических» карповых чешуек, он пахнет."
+	desc = "Костюм из «синтетических» карповых чешуек. Он пахнет."
 	icon_state = "carp_casual"
 	inhand_icon_state = "labcoat"
 	body_parts_covered = CHEST|GROIN|ARMS
@@ -267,7 +267,7 @@
 
 /obj/item/clothing/head/hooded/carp_hood
 	name = "карповый капюшон"
-	desc = "Капюшон прикреплен к карповому костюму."
+	desc = "Капюшон, прикрепленный к карповому костюму."
 	icon_state = "carp_casual"
 	body_parts_covered = HEAD
 	cold_protection = HEAD
@@ -453,7 +453,7 @@
 
 /obj/item/clothing/suit/jacket/leather/overcoat
 	name = "кожаное пальто"
-	desc = "Это чертовски тонкая шерсть."
+	desc = "Чертовски тонкая шерсть."
 	icon_state = "leathercoat"
 	body_parts_covered = CHEST|GROIN|ARMS|LEGS
 	cold_protection = CHEST|GROIN|ARMS|LEGS
@@ -646,7 +646,7 @@
 	name = "медицинское зимнее пальто"
 	icon_state = "coatmedical"
 	inhand_icon_state = "coatmedical"
-	allowed = list(/obj/item/analyzer, /obj/item/sensor_device, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman)
+	allowed = list(/obj/item/analyzer, /obj/item/sensor_device, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/medbot_carrier, /obj/item/gun/syringe)
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 50, RAD = 0, FIRE = 0, ACID = 45)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/medical
 
@@ -662,7 +662,7 @@
 	name = "научное зимнее пальто"
 	icon_state = "coatscience"
 	inhand_icon_state = "coatscience"
-	allowed = list(/obj/item/analyzer, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/storage/bag/bio)
+	allowed = list(/obj/item/analyzer, /obj/item/stack/medical, /obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray, /obj/item/healthanalyzer, /obj/item/flashlight/pen, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker, /obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/paper, /obj/item/melee/classic_baton/telescopic, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/storage/bag/bio, /obj/item/medbot_carrier, /obj/item/gun/syringe)
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 10, BIO = 0, RAD = 0, FIRE = 0, ACID = 0)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/science
 	species_exception = list(/datum/species/golem)
@@ -676,7 +676,7 @@
 	icon_state = "coatengineer"
 	inhand_icon_state = "coatengineer"
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 20, FIRE = 30, ACID = 45)
-	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/t_scanner, /obj/item/construction/rcd, /obj/item/pipe_dispenser, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/storage/bag/construction)
+	allowed = list(/obj/item/flashlight, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman, /obj/item/t_scanner, /obj/item/construction/rcd, /obj/item/pipe_dispenser, /obj/item/toy, /obj/item/storage/fancy/cigarettes, /obj/item/lighter, /obj/item/storage/bag/construction, /obj/item/storage/bag/sheetsnatcher)
 	hoodtype = /obj/item/clothing/head/hooded/winterhood/engineering
 	species_exception = list(/datum/species/golem/uranium)
 
@@ -784,8 +784,8 @@
 	armor = list(MELEE = 5, BULLET = 0, LASER = -5, ENERGY = -15, BOMB = 10, BIO = 0, RAD = 0, FIRE = 20, ACID = 20)
 
 /obj/item/clothing/suit/ghost_sheet
-	name = "призрачный лист"
-	desc = "Руки плавают сами по себе, поэтому они очень жуткие."
+	name = "саван неприкаянного"
+	desc = "Лучшее в мире привидение - дикое, но симпатичное."
 	icon_state = "ghost_sheet"
 	inhand_icon_state = "ghost_sheet"
 	throwforce = 0
@@ -798,7 +798,7 @@
 
 /obj/item/clothing/suit/ghost_sheet/spooky
 	name = "жуткое приведение"
-	desc = "Это, очевидно, просто простыня, но может примерить?"
+	desc = "Очевидно, просто простыня, но может примерить?"
 	user_vars_to_edit = list("name" = "Жуткий Призрак", "real_name" = "Жуткий Призрак" , "incorporeal_move" = INCORPOREAL_MOVE_BASIC, "appearance_flags" = KEEP_TOGETHER|TILE_BOUND, "alpha" = 150)
 	alternate_worn_layer = ABOVE_BODY_FRONT_LAYER //so the bedsheet goes over everything but fire
 

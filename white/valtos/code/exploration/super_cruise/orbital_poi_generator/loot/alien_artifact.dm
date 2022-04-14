@@ -375,18 +375,16 @@
 /datum/artifact_effect/gas_remove/Initialize(source)
 	. = ..()
 	input = pickweight(valid_inputs)
-	var/datum/gas/temp_gas = new input(src)
-	effect_act_descs = list("рядом с [temp_gas.name]")
-	qdel(temp_gas)
+	effect_act_descs = list("near gas")
 	output = pickweight(valid_outputs)
 
 /datum/artifact_effect/gas_remove/process(delta_time)
 	var/turf/T = get_turf(source_object)
 	var/datum/gas_mixture/air = T.return_air()
-	var/moles = min(air.get_moles(input), 5)
+	var/input_id = initial(input.id)
+	var/moles = min(air.get_moles(input_id), 5)
 	if(moles)
-		air.adjust_moles(input, -moles)
-		air.adjust_moles(output, moles)
+		air.adjust_moles(input_id, -moles)
 
 //===================
 // Recharger

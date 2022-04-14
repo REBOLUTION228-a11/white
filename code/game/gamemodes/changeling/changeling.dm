@@ -1,3 +1,4 @@
+GLOBAL_LIST_INIT(possible_changeling_IDs, list("Альфа","Бета","Гамма","Дельта","Эпсилон","Зета","Ета","Тета","Йота","Каппа","Лямбда","Мю","Ню","Кси","Омикрон","Пи","Ро","Сигма","Тау","Ипсилон","Фи","Чи","Пси","Омега"))
 GLOBAL_LIST_INIT(slots, list("head", "wear_mask", "back", "wear_suit", "w_uniform", "shoes", "belt", "gloves", "glasses", "ears", "wear_id", "s_store"))
 GLOBAL_LIST_INIT(slot2slot, list("head" = ITEM_SLOT_HEAD, "wear_mask" = ITEM_SLOT_MASK, "neck" = ITEM_SLOT_NECK, "back" = ITEM_SLOT_BACK, "wear_suit" = ITEM_SLOT_OCLOTHING, "w_uniform" = ITEM_SLOT_ICLOTHING, "shoes" = ITEM_SLOT_FEET, "belt" = ITEM_SLOT_BELT, "gloves" = ITEM_SLOT_GLOVES, "glasses" = ITEM_SLOT_EYES, "ears" = ITEM_SLOT_EARS, "wear_id" = ITEM_SLOT_ID, "s_store" = ITEM_SLOT_SUITSTORE))
 GLOBAL_LIST_INIT(slot2type, list("head" = /obj/item/clothing/head/changeling, "wear_mask" = /obj/item/clothing/mask/changeling, "back" = /obj/item/changeling, "wear_suit" = /obj/item/clothing/suit/changeling, "w_uniform" = /obj/item/clothing/under/changeling, "shoes" = /obj/item/clothing/shoes/changeling, "belt" = /obj/item/changeling, "gloves" = /obj/item/clothing/gloves/changeling, "glasses" = /obj/item/clothing/glasses/changeling, "ears" = /obj/item/changeling, "wear_id" = /obj/item/changeling/id, "s_store" = /obj/item/changeling))
@@ -10,7 +11,7 @@ GLOBAL_LIST_INIT(slot2type, list("head" = /obj/item/clothing/head/changeling, "w
 	antag_flag = ROLE_CHANGELING
 	false_report_weight = 10
 	restricted_jobs = list("AI", "Cyborg")
-	protected_jobs = list("Prisoner", "Russian Officer", "Hacker", "Trader", "Veteran", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Field Medic")
+	protected_jobs = list("Prisoner", "Russian Officer", "Hacker", "Trader", "Veteran", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Field Medic", "Exploration Crew")
 	required_players = 15
 	required_enemies = 1
 	recommended_enemies = 3
@@ -78,7 +79,7 @@ GLOBAL_LIST_INIT(slot2type, list("head" = /obj/item/clothing/head/changeling, "w
 
 /datum/game_mode/changeling/generate_report()
 	return "Мародеры Горлекса объявили об успешном рейде и уничтожении корабля сдерживания Центрального Командования #S-[rand(1111, 9999)]. На этом корабле находился только один заключенный - \
-			под кодовым названием \"Существо\", и оно было очень адаптивным и чрезвычайно опасным. У нас есть основания полагать, что Существо заключило союз с Синдикатом, и вы должны отметить, что вероятность \
+			под кодовым названием \"Существо\", и оно было очень адаптивным и чрезвычайно опасным. У нас есть основания полагать, что Существо заключило союз с Синдикатом, и требуется отметить, что вероятность \
 			того, что Существо было отправлено на станцию в этом секторе, весьма вероятна. Может быть в облике любого члена экипажа. Никому не доверяйте - подозревайте всех. Не сообщайте об этом экипажу, \
 			поскольку паранойя может распространяться и снизить эффективность рабочих."
 

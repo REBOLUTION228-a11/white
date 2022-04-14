@@ -58,6 +58,20 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	name = "Assistant"
 	icon_state = "Assistant" //icon_state is case sensitive. why are all of these capitalized? because fuck you that's why
 
+/obj/effect/landmark/start/combatant
+	name = "Combantant"
+	icon_state = "Assistant"
+	jobspawn_override = TRUE
+	delete_after_roundstart = FALSE
+
+/obj/effect/landmark/start/combatant/red
+	name = "Combantant: Red"
+	color = "#ff0000"
+
+/obj/effect/landmark/start/combatant/blue
+	name = "Combantant: Blue"
+	color = "#0000ff"
+
 /obj/effect/landmark/start/assistant/override
 	jobspawn_override = TRUE
 	delete_after_roundstart = FALSE
@@ -116,15 +130,8 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	icon_state = "Exploration Crew"
 
 /obj/effect/landmark/start/security_officer
-	name = "Russian Officer"
-	icon_state = "Russian Officer"
-
-/obj/effect/landmark/start/security_officer/New()
-	if (prob(50)) //lazy bitch
-		name = "Security Officer"
-		if (prob(75))
-			name = "Veteran"
-	..()
+	name = "Security Officer"
+	icon_state = "Security Officer"
 
 /obj/effect/landmark/start/botanist
 	name = "Botanist"
@@ -491,4 +498,16 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark/start/new_player)
 
 /obj/effect/landmark/yohei_beacon/Destroy()
 	GLOB.yohei_beacons -= src
+	return ..()
+
+/obj/effect/landmark/bomb_plant_location
+	name = "bomb plant marker"
+	icon_state = "x"
+
+/obj/effect/landmark/bomb_plant_location/New()
+	..()
+	GLOB.violence_bomb_locations += src
+
+/obj/effect/landmark/bomb_plant_location/Destroy()
+	GLOB.violence_bomb_locations -= src
 	return ..()

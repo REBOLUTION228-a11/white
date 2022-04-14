@@ -142,7 +142,7 @@
 			close_animation()
 			sleep(CLOSE_DURATION + 2)
 			if(open_status == STATION_TUBE_CLOSED && pod && pod.loc == loc)
-				pod.follow_tube()
+				pod.follow_tube(src)
 			pod_moving = FALSE
 			return TRUE
 	return FALSE
@@ -171,7 +171,7 @@
 		floor_mixture.archive()
 		pod.air_contents.archive()
 		pod.air_contents.share(floor_mixture, 1) //mix the pod's gas mixture with the tile it's on
-		air_update_turf(FALSE, FALSE)
+		air_update_turf()
 
 /obj/structure/transit_tube/station/init_tube_dirs()
 	switch(dir)
@@ -242,7 +242,7 @@
 	for(var/obj/structure/transit_tube_pod/pod in loc)
 		if(!pod.moving)
 			pod_moving = TRUE
-			pod.follow_tube()
+			pod.follow_tube(src)
 			pod_moving = FALSE
 			return TRUE
 	return FALSE

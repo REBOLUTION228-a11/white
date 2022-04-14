@@ -375,7 +375,7 @@
 	greyscale_config_inhand_left = /datum/greyscale_config/jumpsuit_inhand_left
 	greyscale_config_inhand_right = /datum/greyscale_config/jumpsuit_inhand_right
 	greyscale_config_worn = /datum/greyscale_config/jumpsuit_worn
-	desc = "Это простой комбинезон. На запястье у него есть небольшой циферблат."
+	desc = "Простой комбинезон. На запястье у него есть небольшой циферблат."
 	sensor_mode = SENSOR_OFF //Hey who's this guy on the Syndicate Shuttle??
 	random_sensor = FALSE
 	resistance_flags = NONE
@@ -383,6 +383,13 @@
 	armor = list(MELEE = 10, BULLET = 10, LASER = 10, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 50, ACID = 50)
 
 	var/datum/action/item_action/chameleon/change/chameleon_action
+
+/obj/item/clothing/under/chameleon/envirosuit/ratvar
+	name = "ratvarian engineer's envirosuit"
+	desc = "A tough envirosuit woven from alloy threads. It can take on the appearance of other jumpsuits."
+	icon_state = "engineer_envirosuit"
+	worn_icon = "engineer_envirosuit"
+	inhand_icon_state = "engineer_envirosuit"
 
 /obj/item/clothing/under/chameleon/Initialize()
 	. = ..()
@@ -490,7 +497,7 @@
 
 /obj/item/clothing/head/chameleon
 	name = "серая кепка"
-	desc = "Это бейсболка приятного серого цвета."
+	desc = "Бейсболка приятного серого цвета."
 	icon_state = "greysoft"
 
 	resistance_flags = NONE
@@ -515,6 +522,13 @@
 /obj/item/clothing/head/chameleon/broken/Initialize()
 	. = ..()
 	chameleon_action.emp_randomise(INFINITY)
+
+/obj/item/clothing/head/chameleon/envirohelm/ratvar
+	name = "ratvarian engineer's envirosuit helmet"
+	desc = "A tough envirohelm woven from alloy threads. It can take on the appearance of other headgear."
+	icon_state = "engineer_envirohelm"
+	worn_icon = "engineer_envirohelm"
+	flash_protect = TRUE
 
 /obj/item/clothing/head/chameleon/drone
 	// The camohat, I mean, holographic hat projection, is part of the

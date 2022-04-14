@@ -9,8 +9,8 @@
 	health_doll_icon = "clown" //if >32x32, it will use this generic. for all the huge clown mobs that subtype from this
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	turns_per_move = 5
-	response_disarm_continuous = "gently pushes aside"
-	response_disarm_simple = "gently push aside"
+	response_disarm_continuous = "аккуратно отталкивает"
+	response_disarm_simple = "аккуратно отталкивает"
 	response_harm_continuous = "robusts"
 	response_harm_simple = "robust"
 	speak = list("ХОНК", "Хонк!")
@@ -392,8 +392,8 @@
 	icon_living = "clown_spider"
 	icon_dead = "clown_spider_dead"
 	mob_biotypes = MOB_ORGANIC|MOB_BUG
-	speak_emote = list("трепетает")
-	emote_hear = list("трепетает")
+	speak_emote = list("трепещет")
+	emote_hear = list("трепещет")
 	speak_chance = 5
 	speed = 0
 	turns_per_move = 5
@@ -401,8 +401,8 @@
 	ventcrawler = VENTCRAWLER_ALWAYS
 	response_help_continuous = "гладит"
 	response_help_simple = "гладит"
-	response_disarm_continuous = "gently pushes aside"
-	response_disarm_simple = "gently push aside"
+	response_disarm_continuous = "аккуратно отталкивает"
+	response_disarm_simple = "аккуратно отталкивает"
 	maxHealth = 250
 	health = 250
 	damage_coeff = list(BRUTE = 1, BURN = 1, TOX = 1, CLONE = 1, STAMINA = 1, OXY = 1)

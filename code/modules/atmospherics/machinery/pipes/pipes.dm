@@ -44,13 +44,15 @@
 	if(air_temporary)
 		var/turf/T = loc
 		T.assume_air(air_temporary)
-		air_update_turf(FALSE, FALSE)
+		air_update_turf()
 
 /obj/machinery/atmospherics/pipe/return_air()
-	return parent.air
+	if(parent)
+		return parent.air
 
 /obj/machinery/atmospherics/pipe/return_analyzable_air()
-	return parent.air
+	if(parent)
+		return parent.air
 
 /obj/machinery/atmospherics/pipe/remove_air(amount)
 	return parent.air.remove(amount)
@@ -64,7 +66,8 @@
 		return ..()
 
 /obj/machinery/atmospherics/pipe/returnPipenet()
-	return parent
+	if(parent)
+		return parent.air
 
 /obj/machinery/atmospherics/pipe/setPipenet(datum/pipeline/P)
 	parent = P

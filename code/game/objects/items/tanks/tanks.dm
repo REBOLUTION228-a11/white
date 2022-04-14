@@ -127,7 +127,7 @@
 		var/turf/T = get_turf(src)
 		if(T)
 			T.assume_air(air_contents)
-			air_update_turf(FALSE, FALSE)
+			air_update_turf()
 		playsound(src.loc, 'sound/effects/spray.ogg', 10, TRUE, -3)
 	qdel(src)
 
@@ -205,6 +205,9 @@
 /obj/item/tank/remove_air(amount)
 	return air_contents.remove(amount)
 
+/obj/item/tank/remove_air_ratio(ratio)
+	return air_contents.remove_ratio(ratio)
+
 /obj/item/tank/return_air()
 	return air_contents
 
@@ -217,21 +220,33 @@
 	check_status()
 	return 1
 
+/obj/item/tank/assume_air_moles(datum/gas_mixture/giver, moles)
+	giver.transfer_to(air_contents, moles)
+
+	check_status()
+	return 1
+
+/obj/item/tank/assume_air_ratio(datum/gas_mixture/giver, ratio)
+	giver.transfer_ratio_to(air_contents, ratio)
+
+	check_status()
+	return 1
+
 /obj/item/tank/proc/remove_air_volume(volume_to_return)
 	if(!air_contents)
 		return null
 
 	var/tank_pressure = air_contents.return_pressure()
-	var/actual_distribute_pressure = clamp(tank_pressure, 0, distribute_pressure)
+	if(tank_pressure < distribute_pressure)
+		distribute_pressure = tank_pressure
 
-	var/moles_needed = actual_distribute_pressure*volume_to_return/(R_IDEAL_GAS_EQUATION*air_contents.return_temperature())
+	var/moles_needed = distribute_pressure*volume_to_return/(R_IDEAL_GAS_EQUATION*air_contents.return_temperature())
 
 	return remove_air(moles_needed)
 
 /obj/item/tank/process()
 	//Allow for reactions
-	if(air_contents)
-		air_contents.react()
+	air_contents.react(src)
 	check_status()
 
 /obj/item/tank/proc/check_status()
@@ -289,14 +304,9 @@
 
 /obj/item/tank/rad_act(strength)
 	. = ..()
-	if (air_contents.get_moles(/datum/gas/carbon_dioxide) && air_contents.get_moles(/datum/gas/oxygen))
-		strength = min(strength,air_contents.get_moles(/datum/gas/carbon_dioxide)*1000,air_contents.get_moles(/datum/gas/oxygen)*2000) //Ensures matter is conserved properly
-		air_contents.set_moles(/datum/gas/carbon_dioxide, max(air_contents.get_moles(/datum/gas/carbon_dioxide)-(strength * 0.001),0))
-		air_contents.set_moles(/datum/gas/oxygen, max(air_contents.get_moles(/datum/gas/oxygen)-(strength * 0.0005),0))
-		air_contents.adjust_moles(/datum/gas/pluoxium, strength * 0.004)
-		air_update_turf()
-	if (air_contents.get_moles(/datum/gas/hydrogen))
-		strength = min(strength, air_contents.get_moles(/datum/gas/hydrogen) * 1000)
-		air_contents.set_moles(/datum/gas/hydrogen, max(air_contents.get_moles(/datum/gas/hydrogen) - (strength * 0.001), 0))
-		air_contents.adjust_moles(/datum/gas/tritium, (strength * 0.001))
+	if (air_contents.get_moles(GAS_CO2) && air_contents.get_moles(GAS_O2))
+		strength = min(strength,air_contents.get_moles(GAS_CO2)*1000,air_contents.get_moles(GAS_O2)*2000) //Ensures matter is conserved properly
+		air_contents.set_moles(GAS_CO2, max(air_contents.get_moles(GAS_CO2)-(strength * 0.001),0))
+		air_contents.set_moles(GAS_O2, max(air_contents.get_moles(GAS_O2)-(strength * 0.0005),0))
+		air_contents.adjust_moles(GAS_PLUOXIUM, strength * 0.004)
 		air_update_turf()

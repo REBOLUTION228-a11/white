@@ -154,7 +154,7 @@
 	desc = "Необходима для строительства экзокостюма \"Саванна-Иванов\" - Основной контролер."
 	id = "savannah_ivanov_main"
 	build_path = /obj/item/circuitboard/mecha/savannah_ivanov/main
-	category = list("Модули экзоскелетов")
+	category = list("Модули экзокостюмов")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
 
 /datum/design/board/savannah_ivanov_peri
@@ -162,7 +162,7 @@
 	desc = "Необходима для строительства экзокостюма \"Саванна-Иванов\" - Вспомогательный контролер."
 	id = "savannah_ivanov_peri"
 	build_path = /obj/item/circuitboard/mecha/savannah_ivanov/peripherals
-	category = list("Модули экзоскелетов")
+	category = list("Модули экзокостюмов")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
 
 /datum/design/board/savannah_ivanov_targ
@@ -170,7 +170,7 @@
 	desc = "Необходима для строительства экзокостюма \"Саванна-Иванов\" - Орудийный контролер."
 	id = "savannah_ivanov_targ"
 	build_path = /obj/item/circuitboard/mecha/savannah_ivanov/targeting
-	category = list("Модули экзоскелетов")
+	category = list("Модули экзокостюмов")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
 
 ////////////////////////////////////////
@@ -408,23 +408,12 @@
 	category = list("Модули экзокостюмов")
 	sub_category = list("Системы обслуживания")
 
-/datum/design/mech_energy_relay
-	name = "Энергетическое реле экзокостюма"
-	desc = "Модуль экзокостюма, который по беспроводной сети потребляет энергию из любого доступного канала питания в этом районе. Индекс производительности довольно низкий."
-	id = "mech_energy_relay"
-	build_type = MECHFAB
-	build_path = /obj/item/mecha_parts/mecha_equipment/tesla_energy_relay
-	materials = list(/datum/material/iron=10000,/datum/material/glass =  2000,/datum/material/gold=2000,/datum/material/silver=3000)
-	construction_time = 100
-	category = list("Модули экзокостюмов")
-	sub_category = list("Вспомогательные энергосистемы")
-
 /datum/design/mech_ccw_armor
 	name = "Демпферная броня (ближний бой)"
 	desc = "Усиливает броню экзокостюма против атак ближнего боя. Потребляет энергию для работы."
 	id = "mech_ccw_armor"
 	build_type = MECHFAB
-	build_path = /obj/item/mecha_parts/mecha_equipment/anticcw_armor_booster
+	build_path = /obj/item/mecha_parts/mecha_equipment/armor/anticcw_armor_booster
 	materials = list(/datum/material/iron=20000,/datum/material/silver=5000)
 	construction_time = 100
 	category = list("Модули экзокостюмов")
@@ -435,7 +424,7 @@
 	desc = "Усиливает броню экзокостюма против дальних атак. Полностью блокирует выстрелы из электрошокера. Потребляет энергию для работы."
 	id = "mech_proj_armor"
 	build_type = MECHFAB
-	build_path = /obj/item/mecha_parts/mecha_equipment/antiproj_armor_booster
+	build_path = /obj/item/mecha_parts/mecha_equipment/armor/antiproj_armor_booster
 	materials = list(/datum/material/iron=20000,/datum/material/gold=5000)
 	construction_time = 100
 	category = list("Модули экзокостюмов")
@@ -443,7 +432,7 @@
 
 /datum/design/mech_diamond_drill
 	name = "Алмазный бур экзокостюма"
-	desc = "Оборудование для инженерных и боевых экзоскелетов. Это усовершенствованная версия!"
+	desc = "Оборудование для инженерных и боевых экзокостюмов. Это усовершенствованная версия!"
 	id = "mech_diamond_drill"
 	build_type = MECHFAB
 	build_path = /obj/item/mecha_parts/mecha_equipment/drill/diamonddrill
@@ -451,17 +440,6 @@
 	construction_time = 100
 	category = list("Модули экзокостюмов")
 	sub_category = list("Инженерные системы")
-
-/datum/design/mech_generator_nuclear
-	name = "Ядерный реактор экзокостюма"
-	desc = "Модуль экзокостюма, который вырабатывает энергию, используя уран в качестве топлива. Загрязняет окружающую среду."
-	id = "mech_generator_nuclear"
-	build_type = MECHFAB
-	build_path = /obj/item/mecha_parts/mecha_equipment/generator/nuclear
-	materials = list(/datum/material/iron=10000,/datum/material/glass =  1000,/datum/material/silver=500)
-	construction_time = 100
-	category = list("Модули экзокостюмов")
-	sub_category = list("Вспомогательные энергосистемы")
 
 /datum/design/mech_plasma_cutter
 	name = "Тяжелый плазменный резак 217-Д"
@@ -473,6 +451,16 @@
 	construction_time = 100
 	category = list("Модули экзокостюмов")
 	sub_category = list("Инженерные системы")
+
+/datum/design/mecha_kineticgun
+	name = "Шахтерский экзокостюм (Прото-кинетический Аксселератор)"
+	desc = "Установленный на экзокостюме аксселератор, наносящий повышенный урон при низком давлении. Питание от бортового источника позволяет ему проецироваться дальше, чем ручная версия."
+	id = "mecha_kineticgun"
+	build_type = MECHFAB
+	build_path = /obj/item/mecha_parts/mecha_equipment/weapon/energy/mecha_kineticgun
+	materials = list(/datum/material/iron = 8000, /datum/material/glass = 1000)
+	construction_time = 100
+	category = list("Модули экзокостюмов")
 
 /datum/design/mech_lmg
 	name = "Легкий пулемет Ультра АК-2"

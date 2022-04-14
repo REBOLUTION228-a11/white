@@ -207,7 +207,7 @@
 	name = "Охранник Инвизиторов"
 
 	suit = /obj/item/clothing/suit/space/hardsuit/ert/paranormal/inquisitor
-	suit_store = /obj/item/tank/internals/tactical/e_gun_taser //тактик
+	suit_store = /obj/item/tank/internals/tactical/e_gun_taser
 
 	backpack_contents = list(/obj/item/storage/box/survival/engineer=1,
 		/obj/item/storage/box/handcuffs=1,

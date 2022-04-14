@@ -67,6 +67,8 @@
 		/obj/item/assembly/signaler,
 		/obj/item/lightreplacer,
 		/obj/item/construction/rcd,
+		/obj/item/construction/rld,
+		/obj/item/rcd_ammo,
 		/obj/item/pipe_dispenser,
 		/obj/item/inducer,
 		/obj/item/plunger,
@@ -302,6 +304,8 @@
 		/obj/item/analyzer,
 		/obj/item/extinguisher/mini,
 		/obj/item/forcefield_projector,
+		/obj/item/construction/rld,
+		/obj/item/rcd_ammo,
 		/obj/item/radio,
 		/obj/item/clothing/gloves,
 		/obj/item/resonator,
@@ -334,6 +338,7 @@
 		/obj/item/t_scanner/adv_mining_scanner,
 		/obj/item/reagent_containers/pill,
 		/obj/item/storage/pill_bottle,
+		/obj/item/reagent_containers/medigel,
 		/obj/item/stack/ore,
 		/obj/item/reagent_containers/food/drinks,
 		/obj/item/organ/regenerative_core,
@@ -511,6 +516,17 @@
 		/obj/item/ammo_box/magazine/wt550m9 = 4,
 	), src)
 
+/obj/item/storage/belt/military/assault/rockets
+	name = "ракетопояс"
+
+/obj/item/storage/belt/military/assault/rockets/PopulateContents()
+	new /obj/item/ammo_casing/caseless/rocket/hedp(src)
+	new /obj/item/ammo_casing/caseless/rocket/hedp(src)
+	new /obj/item/ammo_casing/caseless/rocket(src)
+	new /obj/item/ammo_casing/caseless/rocket(src)
+	new /obj/item/ammo_casing/caseless/rocket(src)
+	new /obj/item/ammo_casing/caseless/rocket(src)
+
 /obj/item/storage/belt/grenade
 	name = "пояс гренадёра"
 	desc = "Пояс хранящий гранаты. Бабах."
@@ -632,8 +648,8 @@
 		))
 
 /obj/item/storage/belt/fannypack
-	name = "поясная сумка"
-	desc = "Придурковатая поясная сумка для хранения мелких вещей."
+	name = "Барсетка"
+	desc = "Эй! Это не косметичка - это мужская сумка!."
 	icon_state = "fannypack_leather"
 	inhand_icon_state = "fannypack_leather"
 	worn_icon_state = "fannypack_leather"

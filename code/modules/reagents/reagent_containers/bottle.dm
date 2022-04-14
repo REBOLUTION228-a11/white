@@ -23,7 +23,7 @@
 
 /obj/item/reagent_containers/glass/bottle/toxin
 	name = "флакон с токсином"
-	desc = "Маленький флакон, наполненный токсинами. Не пить, отравлено."
+	desc = "Маленький флакон, наполненный токсинами. Не пить, высокотоксичен."
 	list_reagents = list(/datum/reagent/toxin = 30)
 
 /obj/item/reagent_containers/glass/bottle/cyanide

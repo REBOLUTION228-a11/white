@@ -198,7 +198,7 @@
 
 /datum/design/night_vision_goggles
 	name = "Очки с ПНВ"
-	desc = "Вы можете полностью видеть в темноте сейчас!"
+	desc = "Можно полностью видеть в темноте сейчас!"
 	id = "night_visision_goggles"
 	build_type = PROTOLATHE | MECHFAB
 	construction_time = 40
@@ -372,7 +372,7 @@
 
 /datum/design/plasticducky
 	name = "Резиновая уточка"
-	desc = "Это дешевая пластиковая подделка вашей любимой игрушки для ванны."
+	desc = "Дешевая пластиковая подделка вашей любимой игрушки для ванны."
 	id = "plasticducky"
 	build_type = PROTOLATHE | MECHFAB
 	construction_time = 40
@@ -386,7 +386,7 @@
 	id = "pneumatic_seal"
 	build_type = PROTOLATHE | MECHFAB
 	construction_time = 40
-	materials = list(/datum/material/iron = 20000, /datum/material/plasma = 10000)
+	materials = list(/datum/material/iron = 10000, /datum/material/glass = 2000)
 	build_path = /obj/item/door_seal
 	category = list("Снаряжение", "Инженерное снаряжение")
 	sub_category = list("Экипировка")
@@ -409,7 +409,7 @@
 
 /datum/design/normtrash
 	name = "Мешок для мусора"
-	desc = "Это сверхпрочный черный полимерный материал. Пора выносить мусор!"
+	desc = "Сверхпрочный черный полимерный материал. Пора выносить мусор!"
 	id = "normtrash"
 	build_type = PROTOLATHE | MECHFAB
 	construction_time = 40
@@ -774,7 +774,7 @@
 
 /datum/design/holosign/restaurant
 	name = "Голопроектор свободного места ресторана"
-	desc = "Используйте это, чтобы пометить места для гостей вашего ресторана!"
+	desc = "Используйте это, чтобы пометить места для гостей ресторана!"
 	id = "holosignrestaurant"
 	build_type = PROTOLATHE | MECHFAB
 	construction_time = 40

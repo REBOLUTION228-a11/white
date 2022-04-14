@@ -125,7 +125,7 @@
 	..()
 	if(magazine)
 		icon_state = "m41a2"
-		if(magazine.ammo_count() <= 0)
+		if(magazine.ammo_count() == 0)
 			icon_state = "m41a2_nm"
 	else
 		icon_state = "m41a2_e"
@@ -142,7 +142,7 @@
 // обновляем иконку при отсутствии патрон
 /obj/item/ammo_box/magazine/m41a/caseless/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "m41a2_e"
 	else
 		icon_state = "m41a2"
@@ -183,7 +183,7 @@
 	icon = 'white/rebolution228/icons/weapons/rguns.dmi'
 	icon_state = "asval"
 	inhand_icon_state = "asval"
-	selector_switch_icon = TRUE
+	selector_switch_icon = FALSE
 	lefthand_file = 'white/rebolution228/icons/weapons/guns_inhand_left.dmi'
 	righthand_file = 'white/rebolution228/icons/weapons/guns_inhand_right.dmi'
 	worn_icon = 'white/rebolution228/icons/weapons/guns_back.dmi'
@@ -223,7 +223,7 @@
 // обновляем иконку у магазина
 /obj/item/ammo_box/magazine/asval/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "asval_e"
 	else
 		icon_state = "asval"
@@ -247,7 +247,7 @@
 	icon = 'white/rebolution228/icons/weapons/rguns.dmi'
 	icon_state = "ak74m"
 	inhand_icon_state = "ak74m"
-	selector_switch_icon = TRUE
+	selector_switch_icon = FALSE
 	lefthand_file = 'white/rebolution228/icons/weapons/guns_inhand_left.dmi'
 	righthand_file = 'white/rebolution228/icons/weapons/guns_inhand_right.dmi'
 	worn_icon = 'white/rebolution228/icons/weapons/guns_back.dmi'
@@ -301,7 +301,7 @@
 // обновление спрайта магазина при отсутствии патрон в нем
 /obj/item/ammo_box/magazine/ak74m/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "ak74m_e"
 	else
 		icon_state = "ak74m"
@@ -326,11 +326,6 @@
 	icon_state = "ak74mgl"
 	inhand_icon_state = "ak74mgl"
 	worn_icon_state = "ak74mgl_back"
-// создаем гранатомет гп25
-/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/gp25
-	fire_sound = 'white/rebolution228/sounds/weapons/fire_m41agrenadelauncher.ogg'
-	mag_type = /obj/item/ammo_box/magazine/internal/grenadelauncher/gp25
-
 //  добавляем гранатомет к оружию
 /obj/item/gun/ballistic/automatic/ak74m/gp25/Initialize()
 	. = ..()
@@ -343,13 +338,7 @@
 	else
 		return ..()
 
-// создаем магазин для гранатомета 2
-/obj/item/ammo_box/magazine/internal/grenadelauncher/gp25
-	name = "ebalo"
-	ammo_type = /obj/item/ammo_casing/a40mm/vog25
-	caliber = "40mmvog"
-	max_ammo = 1
-//  гильзу посылаем нахуй
+//  гильзу посылаем 
 /obj/item/gun/ballistic/automatic/ak74m/gp25/attackby(obj/item/A, mob/user, params)
 	if(istype(A, /obj/item/ammo_casing))
 		if(istype(A, underbarrel.magazine.ammo_type))
@@ -357,29 +346,7 @@
 			underbarrel.attackby(A, user, params)
 	else
 		..()
-// выстрел вог25
-/obj/item/ammo_casing/a40mm/vog25
-	name = "Выстрел ВОГ-25"
-	desc = "Бум."
-	caliber = "40mmvog"
-	icon = 'white/rebolution228/icons/weapons/rammo.dmi'
-	icon_state = "vog25"
-	projectile_type = /obj/projectile/bullet/vog25
-// проджектайл гп25
-/obj/projectile/bullet/vog25
-	name = "40mm round VOG"
-	icon = 'white/rebolution228/icons/weapons/projectile.dmi'
-	icon_state = "vog25"
-	damage = 150
-// настройки взрыва
-/obj/projectile/bullet/vog25/on_hit(atom/target, blocked = FALSE)
-	..()
-	explosion(target, 0, 2, 3, 4, flame_range = 4)
-	return BULLET_ACT_HIT
-// гильзу опять нахуй посылаем
-/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/gp25/afterattack()
-	. = ..()
-	magazine.get_round(FALSE)
+
 // даем возможность менять режимы стрельбы
 /obj/item/gun/ballistic/automatic/ak74m/gp25/burst_select()
 	var/mob/living/carbon/human/user = usr
@@ -400,6 +367,42 @@
 	playsound(user, 'white/rebolution228/sounds/weapons/dryfire1.ogg', 100, TRUE)
 	update_icon()
 	return
+
+// создаем гранатомет гп25
+/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/gp25
+	fire_sound = 'white/rebolution228/sounds/weapons/fire_m41agrenadelauncher.ogg'
+	mag_type = /obj/item/ammo_box/magazine/internal/grenadelauncher/gp25
+
+// гильзу опять нахуй посылаем
+/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/gp25/afterattack()
+	. = ..()
+	magazine.get_round(FALSE)
+
+// создаем магазин для гранатомета 2
+/obj/item/ammo_box/magazine/internal/grenadelauncher/gp25
+	name = "ebalo"
+	ammo_type = /obj/item/ammo_casing/a40mm/vog25
+	caliber = "40mmvog"
+	max_ammo = 1
+// выстрел вог25
+/obj/item/ammo_casing/a40mm/vog25
+	name = "Выстрел ВОГ-25"
+	desc = "Бум."
+	caliber = "40mmvog"
+	icon = 'white/rebolution228/icons/weapons/rammo.dmi'
+	icon_state = "vog25"
+	projectile_type = /obj/projectile/bullet/vog25
+// проджектайл гп25
+/obj/projectile/bullet/vog25
+	name = "40mm round VOG"
+	icon = 'white/rebolution228/icons/weapons/projectile.dmi'
+	icon_state = "vog25"
+	damage = 150
+// настройки взрыва
+/obj/projectile/bullet/vog25/on_hit(atom/target, blocked = FALSE)
+	..()
+	explosion(target, 0, 2, 3, 4, flame_range = 4)
+	return BULLET_ACT_HIT
 
 
 ///////////////////////////////////////////  HS 010 SMG
@@ -471,7 +474,7 @@
 
 /obj/item/ammo_box/magazine/hs010/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "hs010ammo_e"
 	else
 		icon_state = "hs010ammo"
@@ -486,7 +489,7 @@
 // пуля
 /obj/projectile/bullet/c25mm
 	name = "2,5мм пуля"
-	damage = 7
+	damage = 14
 	armour_penetration = 0
 	wound_bonus = 2
 // коробка с патронами
@@ -533,7 +536,7 @@
 	icon = 'white/rebolution228/icons/weapons/rguns.dmi'
 	icon_state = "aksu74"
 	inhand_icon_state = "aksu74"
-	selector_switch_icon = TRUE
+	selector_switch_icon = FALSE
 	lefthand_file = 'white/rebolution228/icons/weapons/guns_inhand_left.dmi'
 	righthand_file = 'white/rebolution228/icons/weapons/guns_inhand_right.dmi'
 	worn_icon = 'white/rebolution228/icons/weapons/guns_back.dmi'
@@ -566,7 +569,7 @@
 
 /obj/item/ammo_box/magazine/ak74m/orange/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "ak74_e"
 	else
 		icon_state = "ak74"
@@ -618,6 +621,8 @@
 	internal_magazine = FALSE
 	tac_reloads = FALSE
 	can_suppress = FALSE
+	flags_1 = CONDUCT_1
+	slot_flags = ITEM_SLOT_BACK
 
 	var/list/saigashoot = list('white/rebolution228/sounds/weapons/saiga_shoot1.ogg',
 							'white/rebolution228/sounds/weapons/saiga_shoot2.ogg',
@@ -653,7 +658,250 @@
 
 /obj/item/ammo_box/magazine/saiga/update_icon()
 	..()
-	if(ammo_count() <= 0)
+	if(ammo_count() == 0)
 		icon_state = "saigamag_e"
 	else
 		icon_state = "saigamag"
+
+//SAR-62L
+/obj/item/gun/ballistic/automatic/laser/sar62l
+	name = "NT SAR-62L"
+	desc = "Тяжеломодифицированный и новейший образец лазерной штурмовой винтовки, созданный на базе её огнестрельного аналога. \
+			Предназначен для ведения боев в городских условиях. \
+			Использует специальные магазинные энергоячейки для питания."
+
+	icon = 'white/rebolution228/icons/weapons/rguns.dmi'
+	icon_state = "sar62l"
+	lefthand_file = 'white/rebolution228/icons/weapons/guns_inhand_left.dmi'
+	righthand_file = 'white/rebolution228/icons/weapons/guns_inhand_right.dmi'
+	inhand_icon_state = "sar62l"
+	worn_icon = 'white/rebolution228/icons/weapons/guns_back.dmi'
+	worn_icon_state = "sar62l_back"
+
+	w_class = WEIGHT_CLASS_BULKY
+	mag_type = /obj/item/ammo_box/magazine/recharge/sar62l
+	mag_display_ammo = FALSE
+	can_suppress = FALSE
+	casing_ejector = FALSE
+	selector_switch_icon = FALSE
+	mag_display = TRUE
+	actions_types = list(/datum/action/item_action/toggle_firemode)
+	slot_flags = ITEM_SLOT_BACK
+	recoil = 0.4
+	burst_size = 3
+	fire_delay = 1.6
+
+	fire_sound = 'white/rebolution228/sounds/weapons/F_LASER1.ogg'
+	rack_sound = 'white/rebolution228/sounds/weapons/laser_rack.ogg'
+	eject_sound = 'white/rebolution228/sounds/weapons/laser_magout.ogg'
+	eject_empty_sound = 'white/rebolution228/sounds/weapons/laser_magout.ogg'
+	load_sound = 'white/rebolution228/sounds/weapons/laser_magout.ogg'
+	load_empty_sound = 'white/rebolution228/sounds/weapons/laser_magin.ogg'
+
+	var/list/lasershoot = list('white/rebolution228/sounds/weapons/F_LASER1.ogg',
+							'white/rebolution228/sounds/weapons/F_LASER2.ogg',
+							'white/rebolution228/sounds/weapons/F_LASER3.ogg',
+							'white/rebolution228/sounds/weapons/F_LASER4.ogg')
+
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/process_chamber()
+	. = ..()
+	fire_sound = pick(lasershoot)
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/update_overlays()
+	. = ..()
+	if(magazine)
+		if(magazine.ammo_count() == 0)
+			. += "[icon_state]_mag_empty"
+		else
+			. += "[icon_state]_mag"
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/update_icon_updates_onmob)
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/update_icon_state()
+	inhand_icon_state = "[initial(icon_state)][magazine ? "[magazine.ammo_count() == 0 ? "_empty" : ""]" : "_nmag"]"
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/burst_select()
+	var/mob/living/carbon/human/user = usr
+	switch(select)
+		if(0)
+			select = 1
+			burst_size = initial(burst_size)
+			fire_delay = initial(fire_delay)
+			to_chat(user, span_notice("Выбран: ОЧЕРЕДЬ."))
+		if(1)
+			select = 0
+			burst_size = 1
+			fire_delay = 0
+			to_chat(user, span_notice("Выбран: ПОЛУАВТОМАТ."))
+
+	playsound(user, 'white/rebolution228/sounds/weapons/firemode_laser.ogg', 100, FALSE)
+	update_icon()
+	for(var/X in actions)
+		var/datum/action/A = X
+		A.UpdateButtonIcon()
+
+/obj/item/ammo_box/magazine/recharge/sar62l
+	name = "энергоячейка (SAR-62L)"
+	desc = "Энергоячейка для лазерного автомата SAR-62L. Вмещает максимум 21 заряд."
+	icon = 'white/rebolution228/icons/weapons/rammo.dmi'
+	icon_state = "energycell"
+	ammo_type = /obj/item/ammo_casing/caseless/laser/sar62l
+	caliber = "laser"
+	max_ammo = 21
+
+/obj/item/ammo_box/magazine/recharge/sar62l/update_desc()
+	. = ..()
+	desc = "[initial(desc)] <span class='notice'>Осталось ещё [stored_ammo.len] зарядов.</span>"
+
+/obj/item/ammo_box/magazine/recharge/sar62l/update_icon()
+	. = .. ()
+	if(ammo_count() == 0)
+		icon_state = "energycell_e"
+	else
+		icon_state = "energycell"
+
+/obj/item/ammo_box/magazine/recharge/sar62l/attack_self()
+	return
+
+/obj/item/ammo_casing/caseless/laser/sar62l
+	name = "гильза лазера"
+	desc = "Такого быть не должно."
+	caliber = "laser"
+	icon_state = null
+	slot_flags = null
+	projectile_type = /obj/projectile/beam/sar62l
+	fire_sound = 'sound/weapons/laser.ogg'
+	firing_effect_type = /obj/effect/temp_visual/dir_setting/firing_effect/energy
+
+/obj/item/ammo_casing/caseless/laser/sar62l/dropped() // yeah.....
+	. = ..()
+	addtimer(CALLBACK(src, .proc/floor_vanish), 1)
+
+/obj/item/ammo_casing/caseless/laser/sar62l/proc/floor_vanish()
+	if(isturf(loc))
+		qdel(src)
+
+/obj/projectile/beam/sar62l
+	name = "лазерный луч"
+	icon = 'white/rebolution228/icons/weapons/projectile.dmi'
+	icon_state = "sar62_laser"
+	pass_flags = PASSTABLE | PASSGLASS | PASSGRILLE
+	damage = 20
+	damage_type = BURN
+	hitsound = 'white/rebolution228/sounds/weapons/effects/laser_hit1.ogg'
+	hitsound_wall = 'white/rebolution228/sounds/weapons/effects/laser_hit_wall.ogg'
+	flag = LASER
+	eyeblur = 2
+	impact_effect_type = /obj/effect/temp_visual/impact_effect/green_laser
+	light_system = MOVABLE_LIGHT
+	light_range = 2
+	light_power = 1
+	light_color = "#2DE02D"
+	ricochets_max = 50
+	ricochet_chance = 80
+	reflectable = REFLECT_NORMAL
+	wound_bonus = -10
+	armour_penetration = 15
+	bare_wound_bonus = 10
+
+/obj/projectile/beam/sar62l/on_hit()
+	. = ..()
+	var/sound/hitsound = list('white/rebolution228/sounds/weapons/effects/laser_hit1.ogg',
+							'white/rebolution228/sounds/weapons/effects/laser_hit2.ogg',
+							'white/rebolution228/sounds/weapons/effects/laser_hit3.ogg')
+	playsound(loc, pick(hitsound), 50)
+
+
+
+// SAR-62L ГП
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/gp
+	name = "NT SAR-62LGP"
+	desc = "Тяжеломодифицированный и новейший образец лазерной штурмовой винтовки, созданный на базе её огнестрельного аналога. \
+			Предназначен для ведения боев в городских условиях. \
+			Использует специальные магазинные энергоячейки для питания. \
+			Этот оснащён подствольным гранатомётом."
+
+	icon_state = "sar62lgp"
+	inhand_icon_state = "sar62lgp"
+	worn_icon_state = "sar62lgp_back"
+	var/obj/item/gun/ballistic/revolver/grenadelauncher/underbarrel
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/gp/Initialize()
+	. = ..()
+	underbarrel = new /obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/sar62l
+	update_icon()
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/gp/afterattack(atom/target, mob/living/user, flag, params)
+	if(select == 2)
+		underbarrel.afterattack(target, user, flag, params)
+	else
+		return ..()
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/gp/attackby(obj/item/A, mob/user, params)
+	if(istype(A, /obj/item/ammo_casing))
+		if(istype(A, underbarrel.magazine.ammo_type))
+			underbarrel.attack_self(user)
+			underbarrel.attackby(A, user, params)
+	else
+		..()
+
+/obj/item/gun/ballistic/automatic/laser/sar62l/gp/burst_select()
+	var/mob/living/carbon/human/user = usr
+	switch(select)
+		if(0)
+			select = 1
+			burst_size = initial(burst_size)
+			fire_delay = initial(fire_delay)
+			to_chat(user, span_notice("Выбран: ОЧЕРЕДЬ."))
+		if(1)
+			select = 2
+			to_chat(user, span_notice("Выбран: ПОДСТВОЛЬНЫЙ ГРАНАТОМЕТ."))
+		if(2)
+			select = 0
+			burst_size = 1
+			fire_delay = 0
+			to_chat(user, span_notice("Выбран: ПОЛУАВТОМАТ."))
+	playsound(user, 'white/rebolution228/sounds/weapons/firemode_laser.ogg', 100, FALSE)
+	update_icon()
+	return
+
+//
+/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/sar62l
+	name = "ГП-693М2"
+	fire_sound = 'white/rebolution228/sounds/weapons/fire_m41agrenadelauncher.ogg'
+	mag_type = /obj/item/ammo_box/magazine/internal/grenadelauncher/vg240
+
+/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/sar62l/afterattack()
+	. = ..()
+	magazine.get_round(FALSE)
+
+/obj/item/ammo_box/magazine/internal/grenadelauncher/vg240
+	name = "внутренний магазин подствольного гранатомёта"
+	ammo_type = /obj/item/ammo_casing/a40mm/vg240
+	caliber = "40mmvg"
+	max_ammo = 1
+
+/obj/item/ammo_casing/a40mm/vg240
+	name = "ВПГ-240"
+	desc = "Гранатометный противопехотный выстрел 40мм калибра. Применяется против тяжелобронированных противников."
+	caliber = "40mmvg"
+	icon = 'white/rebolution228/icons/weapons/rammo.dmi'
+	icon_state = "vg-240"
+	projectile_type = /obj/projectile/bullet/vg240
+
+/obj/projectile/bullet/vg240
+	name = "снаряд ВПГ-240"
+	icon = 'white/rebolution228/icons/weapons/projectile.dmi'
+	icon_state = "vg240"
+	damage = 165
+
+/obj/projectile/bullet/vg240/on_hit(atom/target, blocked = FALSE)
+	..()
+	explosion(target, 0, 2, 3, 4, flame_range = 6)
+	return BULLET_ACT_HIT
+
+//

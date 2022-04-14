@@ -17,8 +17,8 @@
 
 	var/scrubbing = SCRUBBING //0 = siphoning, 1 = scrubbing
 
-	var/filter_types = list(/datum/gas/carbon_dioxide)
-	var/volume_rate = 200
+	var/filter_types = list(GAS_CO2, GAS_BZ)
+	var/volume_rate = 2000
 	var/widenet = FALSE //is this scrubber acting on the 3x3 area around it.
 	var/list/turf/adjacent_turfs = list()
 
@@ -30,13 +30,9 @@
 	pipe_state = "scrubber"
 
 /obj/machinery/atmospherics/components/unary/vent_scrubber/New()
+	..()
 	if(!id_tag)
-		id_tag = SSnetworks.assign_random_name()
-	. = ..()
-	for(var/f in filter_types)
-		if(istext(f))
-			filter_types -= f
-			filter_types += gas_id2path(f)
+		id_tag = assign_uid_vents()
 
 /obj/machinery/atmospherics/components/unary/vent_scrubber/Destroy()
 	var/area/scrub_area = get_area(src)
@@ -83,9 +79,8 @@
 		return FALSE
 
 	var/list/f_types = list()
-	for(var/path in GLOB.meta_gas_info)
-		var/list/gas = GLOB.meta_gas_info[path]
-		f_types += list(list("gas_id" = gas[META_GAS_ID], "gas_name" = gas[META_GAS_NAME], "enabled" = (path in filter_types)))
+	for(var/id in GLOB.gas_data.names)
+		f_types += list(list("gas_id" = GLOB.gas_data.ids[id], "gas_name" = id, "enabled" = (id in filter_types)))
 
 	var/datum/signal/signal = new(list(
 		"tag" = id_tag,
@@ -127,44 +122,28 @@
 	if(!nodes[1] || !on)
 		on = FALSE
 		return FALSE
-	scrub(loc, delta_time)
+	scrub(loc)
 	if(widenet)
 		for(var/turf/tile in adjacent_turfs)
-			scrub(tile, delta_time)
+			scrub(tile)
 	return TRUE
 
-/obj/machinery/atmospherics/components/unary/vent_scrubber/scrub(turf/tile, delta_time = 0.5)
+/obj/machinery/atmospherics/components/unary/vent_scrubber/scrub(turf/open/tile)
 	if(!istype(tile))
 		return FALSE
 	var/datum/gas_mixture/environment = tile.return_air()
 	var/datum/gas_mixture/air_contents = airs[1]
 
-	if(air_contents?.return_pressure() >= 50 * ONE_ATMOSPHERE)
+	if(air_contents.return_pressure() >= 50 * ONE_ATMOSPHERE || !islist(filter_types))
 		return FALSE
 
 	if(scrubbing & SCRUBBING)
-		var/transfer_moles = min(1, volume_rate/environment.return_volume())*environment.total_moles()
-		//Take a gas sample
-		var/datum/gas_mixture/removed = tile.remove_air(transfer_moles)
-		//Nothing left to remove from the tile
-		if(isnull(removed))
-			return FALSE
-
-		removed.scrub_into(air_contents, filter_types)
-
-		//Remix the resulting gases
-		tile.assume_air(removed)
+		environment.scrub_into(air_contents, volume_rate/environment.return_volume(), filter_types)
 		tile.air_update_turf()
 
 	else //Just siphoning all air
-
-		var/transfer_moles = environment.total_moles()*(volume_rate/environment.return_volume())
-
-		var/datum/gas_mixture/removed = tile.remove_air(transfer_moles)
-		if(!air_contents)
-			stack_trace("Блядь! Скраббер пытается сифонить несуществующий воздух. Скраббер: [src], тайл: [tile], координаты: [COORD(src)].")
-		air_contents.merge(removed)
-		tile.air_update_turf(FALSE, FALSE)
+		environment.transfer_ratio_to(air_contents, volume_rate/environment.return_volume())
+		tile.air_update_turf()
 
 	update_parents()
 
@@ -212,12 +191,12 @@
 		investigate_log(" was toggled to [scrubbing ? "scrubbing" : "siphon"] mode by [key_name(signal_sender)]",INVESTIGATE_ATMOS)
 
 	if("toggle_filter" in signal.data)
-		filter_types ^= gas_id2path(signal.data["toggle_filter"])
+		filter_types ^= signal.data["toggle_filter"]
 
 	if("set_filters" in signal.data)
 		filter_types = list()
 		for(var/gas in signal.data["set_filters"])
-			filter_types += gas_id2path(gas)
+			filter_types += gas
 
 	if("init" in signal.data)
 		name = signal.data["init"]

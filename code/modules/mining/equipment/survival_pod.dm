@@ -187,6 +187,10 @@
 	icon = 'icons/obj/lavaland/survival_pod.dmi'
 	icon_state = "bed"
 
+/obj/structure/bed/double/pod
+	icon = 'icons/obj/lavaland/survival_pod.dmi'
+	icon_state = "bed_double"
+
 //Survival Storage Unit
 /obj/machinery/smartfridge/survival_pod
 	name = "survival pod storage"
@@ -261,10 +265,10 @@
 
 /obj/structure/fans/Initialize(mapload)
 	. = ..()
-	air_update_turf(TRUE, TRUE)
+	air_update_turf(TRUE)
 
 /obj/structure/fans/Destroy()
-	air_update_turf(TRUE, FALSE)
+	air_update_turf(TRUE)
 	. = ..()
 //Invisible, indestructible fans
 /obj/structure/fans/tiny/invisible

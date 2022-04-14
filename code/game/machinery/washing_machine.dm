@@ -127,6 +127,31 @@ GLOBAL_LIST_INIT(dye_registry, list(
 		DYE_SYNDICATE = /obj/item/bedsheet/syndie,
 		DYE_CENTCOM = /obj/item/bedsheet/centcom
 	),
+		DYE_REGISTRY_DOUBLE_BEDSHEET = list(
+		DYE_RED = /obj/item/bedsheet/red/double,
+		DYE_ORANGE = /obj/item/bedsheet/orange/double,
+		DYE_YELLOW = /obj/item/bedsheet/yellow/double,
+		DYE_GREEN = /obj/item/bedsheet/green/double,
+		DYE_BLUE = /obj/item/bedsheet/blue/double,
+		DYE_PURPLE = /obj/item/bedsheet/purple/double,
+		DYE_BLACK = /obj/item/bedsheet/black/double,
+		DYE_WHITE = /obj/item/bedsheet/double,
+		DYE_RAINBOW = /obj/item/bedsheet/rainbow/double,
+		DYE_MIME = /obj/item/bedsheet/mime/double,
+		DYE_CLOWN = /obj/item/bedsheet/clown/double,
+		DYE_CHAP = /obj/item/bedsheet/chaplain/double,
+		DYE_QM = /obj/item/bedsheet/qm/double,
+		DYE_LAW = /obj/item/bedsheet/black/double,
+		DYE_CAPTAIN = /obj/item/bedsheet/captain/double,
+		DYE_HOP = /obj/item/bedsheet/hop/double,
+		DYE_HOS = /obj/item/bedsheet/hos/double,
+		DYE_CE = /obj/item/bedsheet/ce/double,
+		DYE_RD = /obj/item/bedsheet/rd/double,
+		DYE_CMO = /obj/item/bedsheet/cmo/double,
+		DYE_COSMIC = /obj/item/bedsheet/cosmos/double,
+		DYE_SYNDICATE = /obj/item/bedsheet/syndie/double,
+		DYE_CENTCOM = /obj/item/bedsheet/centcom/double
+	),
 	DYE_LAWYER_SPECIAL = list(
 		DYE_COSMIC = /obj/item/clothing/under/rank/civilian/lawyer/galaxy,
 		DYE_SYNDICATE = /obj/item/clothing/under/rank/civilian/lawyer/galaxy/red
@@ -150,7 +175,7 @@ GLOBAL_LIST_INIT(dye_registry, list(
 	if(!busy)
 		. += "<hr><span class='notice'><b>ПКМ</b> it to start a wash cycle.</span>"
 
-/obj/machinery/washing_machine/AltClick(mob/user)
+/obj/machinery/washing_machine/attack_hand_secondary(mob/user, modifiers)
 	if(!user.canUseTopic(src, !issilicon(user)))
 		return
 	if(busy)
@@ -164,10 +189,12 @@ GLOBAL_LIST_INIT(dye_registry, list(
 	busy = TRUE
 	update_icon()
 	addtimer(CALLBACK(src, .proc/wash_cycle), 60)
-
 	playsound(get_turf(src), 'white/valtos/sounds/wm.ogg', 80, TRUE)
-
 	START_PROCESSING(SSfastprocess, src)
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+/obj/machinery/washing_machine/attack_ai_secondary(mob/user, modifiers)
+	return attack_hand_secondary(user, modifiers)
 
 /obj/machinery/washing_machine/process(delta_time)
 	if(!busy)

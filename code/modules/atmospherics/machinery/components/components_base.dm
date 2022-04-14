@@ -150,7 +150,7 @@
 				continue
 			to_release.merge(air.remove(shared_loss))
 		T.assume_air(to_release)
-		air_update_turf(FALSE, FALSE)
+		air_update_turf()
 
 /obj/machinery/atmospherics/components/proc/safe_input(title, text, default_set)
 	var/new_value = input(usr,text,title,default_set) as num|null
@@ -169,10 +169,9 @@
 	for(var/i in 1 to device_type)
 		var/datum/pipeline/parent = parents[i]
 		if(!parent)
-			WARNING("Component is missing a pipenet! Rebuilding...")
-			build_network()
-		else
-			parent.update = 1
+			SSair.add_to_rebuild_queue(src)
+			continue
+		parent.update = TRUE
 
 /obj/machinery/atmospherics/components/returnPipenets()
 	. = list()

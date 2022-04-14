@@ -23,7 +23,7 @@
 
 /obj/item/storage/box
 	name = "коробка"
-	desc = "Это просто обычная коробка."
+	desc = "Просто обычная коробка."
 	icon_state = "box"
 	inhand_icon_state = "syringe_kit"
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
@@ -216,8 +216,8 @@
 	new /obj/item/reagent_containers/syringe/bluespace(src)
 
 /obj/item/storage/box/medipens
-	name = "коробка МедиПенов"
-	desc = "Коробка, полная адреналином МедиПенов."
+	name = "коробка медипенов"
+	desc = "Коробка, полная адреналином медипенов."
 	illustration = "epipen"
 
 /obj/item/storage/box/medipens/PopulateContents()
@@ -226,7 +226,7 @@
 
 /obj/item/storage/box/medipens/utility
 	name = "набор стимуляторов"
-	desc = "Коробка с несколькими стимуляторами для экономичного майнера."
+	desc = "Коробка с несколькими стимуляторами для экономичного шахтёра."
 	illustration = "epipen"
 
 /obj/item/storage/box/medipens/utility/PopulateContents()
@@ -283,7 +283,7 @@
 
 /obj/item/storage/box/flashbangs
 	name = "коробка светошумовых гранат (ВНИМАНИЕ)"
-	desc = "<B>ВНИМАНИЕ: эти устройства чрезвычайно опасны и могут вызвать слепоту или глухоту при повторном использовании.</B>"
+	desc = "<B>ВНИМАНИЕ: Гранаты чрезвычайно опасны и могут вызвать слепоту или глухоту при многократном использовании.</B>"
 	icon_state = "secbox"
 	illustration = "flashbang"
 
@@ -293,7 +293,7 @@
 
 /obj/item/storage/box/stingbangs
 	name = "коробка стингбэнгов (ВНИМАНИЕ)"
-	desc = "<B>ВНИМАНИЕ: эти устройства чрезвычайно опасны и могут вызвать слепоту или глухоту при повторном использовании.</B>"
+	desc = "<B>ВНИМАНИЕ: Гранаты чрезвычайно опасны и могут привести к тяжелым травмам или смерти при повторном использовании.</B>"
 	icon_state = "secbox"
 	illustration = "flashbang"
 
@@ -303,7 +303,7 @@
 
 /obj/item/storage/box/flashes
 	name = "коробка вспышек"
-	desc = "<B>Внимание: Вспышки могут нанести серьёзный урон глазам, требуются защитные очки</B>"
+	desc = "<B>ВНИМАНИЕ: Вспышки могут вызвать серьезные повреждения глаз, необходимо использовать защитные очки.</B>"
 	icon_state = "secbox"
 	illustration = "flash"
 
@@ -313,7 +313,7 @@
 
 /obj/item/storage/box/wall_flash
 	name = "комплект настенной вспышки"
-	desc = "В этой коробке находится все необходимое для настенной вспышки. <B> ВНИМАНИЕ: вспышки могут серьезно повредить глаза, требуются защитные очки.</B>"
+	desc = "Эта коробка содержит все необходимое для создания настенной вспышки. <B> ВНИМАНИЕ: Вспышки могут вызвать серьезные повреждения глаз, необходимо использовать защитные очки.</B>"
 	icon_state = "secbox"
 	illustration = "flash"
 
@@ -333,7 +333,7 @@
 
 /obj/item/storage/box/teargas
 	name = "ящик со слезоточивым газом (ВНИМАНИЕ)"
-	desc = "<B>ВНИМАНИЕ: Эти устройства чрезвычайно опасны и могут вызвать слепоту и раздражение кожи.</B>"
+	desc = "<B>ВНИМАНИЕ: Гранаты чрезвычайно опасны и могут вызвать слепоту и раздражение кожи.</B>"
 	icon_state = "secbox"
 	illustration = "grenade"
 
@@ -342,8 +342,8 @@
 		new /obj/item/grenade/chem_grenade/teargas(src)
 
 /obj/item/storage/box/emps
-	name = "ящик с ЕМП гранатами"
-	desc = "Ящик с 5 ЕМП гранатами."
+	name = "коробка с ЭМИ гранатами"
+	desc = "Простая коробка с 5 ЭМИ гранатами."
 	illustration = "emp"
 
 /obj/item/storage/box/emps/PopulateContents()
@@ -352,7 +352,7 @@
 
 /obj/item/storage/box/trackimp
 	name = "комплект отслеживающих имплантов"
-	desc = "Коробка с приспособлениями для отслеживания отморозков."
+	desc = "Коробка с приспособлениями для отслеживания подонков."
 	icon_state = "secbox"
 	illustration = "implant"
 
@@ -450,7 +450,7 @@
 	name = "коробка донк-покетов"
 	desc = "<B>Инструкция:</B><I>Нагрейте в микроволновой печи. Продукт остынет, если его не съесть в течение семи минут.</I>"
 	icon_state = "donkpocketbox"
-	illustration=null
+	illustration = null
 	var/donktype = /obj/item/food/donkpocket
 
 /obj/item/storage/box/donkpockets/PopulateContents()
@@ -567,7 +567,7 @@
 
 /obj/item/storage/box/prisoner
 	name = "коробка с идентификаторами для заключенных"
-	desc = "Уберите их последнее достоинство, их имя."
+	desc = "Лишите их последнего клочка достоинства - их имени."
 	icon_state = "secbox"
 	illustration = "id"
 
@@ -681,7 +681,7 @@
 
 /obj/item/storage/box/snappops
 	name = "коробка бахающих фантиков"
-	desc = "Восемь фантиков веселья! Возраст от 8 лет и старше. Не подходит для детей."
+	desc = "Восемь фантиков веселья! От 8 лет и старше. Не подходит для детей."
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "spbox"
 
@@ -696,7 +696,7 @@
 
 /obj/item/storage/box/matches
 	name = "спичечный коробок"
-	desc = "Маленькая коробочка почти, но не совсем плазменных премиальных спичек."
+	desc = "Маленькая коробочка Почти, Но Не Совсем Плазменных Премиальных Спичек."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "matchbox"
 	inhand_icon_state = "zippo"
@@ -1120,7 +1120,7 @@
 
 /obj/item/storage/box/plastic
 	name = "пластиковая коробка"
-	desc = "Это прочный пластиковый корпус."
+	desc = "Прочная пластиковая коробка."
 	icon_state = "plasticbox"
 	foldable = null
 	illustration = "writing"
@@ -1189,7 +1189,7 @@
 
 /obj/item/storage/box/gum/nicotine
 	name = "упаковка никотиновой жевательной резинки"
-	desc = "Разработан, чтобы помочь избавиться от никотиновой зависимости и оральной фиксации одновременно, не разрушая при этом ваши легкие. Со вкусом мяты!"
+	desc = "Разработан, чтобы помочь избавиться от никотиновой зависимости и оральной фиксации одновременно, не разрушая при этом легкие. Со вкусом мяты!"
 	icon_state = "bubblegum_nicotine"
 	custom_premium_price = PAYCHECK_EASY * 1.5
 
@@ -1207,7 +1207,7 @@
 /obj/item/storage/box/gum/happiness/Initialize()
 	. = ..()
 	if (prob(25))
-		desc += "Вы можете смутно разобрать слово «Гемопагоприл», которое когда-то было нацарапано на нем."
+		desc += "Можно смутно разобрать слово «Гемопагоприл», которое когда-то было нацарапано на нем."
 
 /obj/item/storage/box/gum/happiness/PopulateContents()
 	for(var/i in 1 to 4)
@@ -1215,7 +1215,7 @@
 
 /obj/item/storage/box/gum/bubblegum
 	name = "упаковка жевательной резинки"
-	desc = "Упаковка, по всей видимости, полностью демоническая. Вы чувствуете, что даже открыть это было бы грехом."
+	desc = "Упаковка, по всей видимости, полностью демоническая. Чувствую, что даже открыть это было бы грехом."
 	icon_state = "bubblegum_bubblegum"
 
 /obj/item/storage/box/gum/bubblegum/PopulateContents()

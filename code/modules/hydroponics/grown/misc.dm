@@ -59,10 +59,10 @@
 		return
 
 	var/datum/gas_mixture/stank = new
-	stank.set_moles(/datum/gas/miasma, (yield + 6)*3.5*MIASMA_CORPSE_MOLES*delta_time) // this process is only being called about 2/7 as much as corpses so this is 12-32 times a corpses
+	stank.set_moles(GAS_MIASMA, (yield + 6)*3.5*MIASMA_CORPSE_MOLES*delta_time) // this process is only being called about 2/7 as much as corpses so this is 12-32 times a corpses
 	stank.set_temperature(T20C) // without this the room would eventually freeze and miasma mining would be easier
 	T.assume_air(stank)
-	T.air_update_turf(FALSE, FALSE)
+	T.air_update_turf()
 
 //Galaxy Thistle
 /obj/item/seeds/galaxythistle
@@ -94,7 +94,7 @@
 /obj/item/food/grown/galaxythistle
 	seed = /obj/item/seeds/galaxythistle
 	name = "Головка космополоха"
-	desc = "Это колючая гроздь цветов напоминает о высоких горах."
+	desc = "Колючая гроздь цветов, напоминающая о высоких горах."
 	icon_state = "galaxythistle"
 	bite_consumption_mod = 3
 	foodtypes = VEGETABLES

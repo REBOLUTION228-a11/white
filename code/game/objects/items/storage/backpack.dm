@@ -113,13 +113,13 @@
 
 /obj/item/storage/backpack/cultpack
 	name = "рюкзак для трофеев"
-	desc = "Он полезен как для переноски дополнительного снаряжения, так и для гордого декларирования вашего безумия."
+	desc = "Он полезен как для переноски дополнительного снаряжения, так и для гордого декларирования безумия."
 	icon_state = "cultpack"
 	inhand_icon_state = "backpack"
 
 /obj/item/storage/backpack/clown
 	name = "Giggles von Honkerton"
-	desc = "Это рюкзак, сделанный Хонком!."
+	desc = "Рюкзак, сделанный Хонком!"
 	icon_state = "clownpack"
 	inhand_icon_state = "clownpack"
 
@@ -137,32 +137,32 @@
 
 /obj/item/storage/backpack/medic
 	name = "медицинский рюкзак"
-	desc = "Это рюкзак, специально разработанный для использования в стерильных условиях."
+	desc = "Рюкзак, специально разработанный для использования в стерильных условиях."
 	icon_state = "medicalpack"
 	inhand_icon_state = "medicalpack"
 
 /obj/item/storage/backpack/security
 	name = "рюкзак офицера"
-	desc = "Это очень прочный рюкзак."
+	desc = "Очень прочный рюкзак."
 	icon_state = "securitypack"
 	inhand_icon_state = "securitypack"
 
 /obj/item/storage/backpack/captain
 	name = "капитанский рюкзак"
-	desc = "Это специальный рюкзак, сделанный исключительно для офицеров NanoTrasen."
+	desc = "Специальный рюкзак, сделанный исключительно для офицеров NanoTrasen."
 	icon_state = "captainpack"
 	inhand_icon_state = "captainpack"
 
 /obj/item/storage/backpack/industrial
 	name = "промышленный рюкзак"
-	desc = "Это жесткий рюкзак для повседневной работы на станции."
+	desc = "Жесткий рюкзак для повседневной работы на станции."
 	icon_state = "engiepack"
 	inhand_icon_state = "engiepack"
 	resistance_flags = FIRE_PROOF
 
 /obj/item/storage/backpack/botany
 	name = "ботанический рюкзак"
-	desc = "Это рюкзак из натуральных волокон."
+	desc = "Рюкзак из натуральных волокон."
 	icon_state = "botpack"
 	inhand_icon_state = "botpack"
 
@@ -234,7 +234,7 @@
 
 /obj/item/storage/backpack/satchel/leather
 	name = "кожаная сумка"
-	desc = "Это очень модная сумка из тонкой кожи."
+	desc = "Очень модная сумка из тонкой кожи."
 	icon_state = "satchel"
 	inhand_icon_state = "satchel"
 
@@ -345,11 +345,42 @@
 	icon_state = "duffel"
 	inhand_icon_state = "duffel"
 	slowdown = 1
+	var/static/mutable_appearance/duffel_anti_slow_overlay = mutable_appearance('white/Feline/icons/duffel_anti_slow.dmi', "duffel_overlay", LYING_MOB_LAYER)
 
 /obj/item/storage/backpack/duffelbag/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
 	STR.max_combined_w_class = 30
+
+////	Модернизация дюфелей	////
+
+/obj/item/storage/backpack/duffelbag/attackby(obj/item/W, mob/user, params)
+	if(istype(W, /obj/item/duffel_anti_slow) && slowdown > 0)
+		if(slowdown > 0)
+			slowdown = 0
+			playsound(user, 'sound/items/equip/toolbelt_equip.ogg', 100, TRUE)
+			to_chat(user, span_notice("Прикрепляю разгрузочно-подвесную систему к [src]."))
+			add_overlay(duffel_anti_slow_overlay)
+			qdel(W)
+		else
+			to_chat(user, span_warning("[src] уже достаточно удобно сидит на спине и не нуждается в модернизации."))
+	else
+		. = ..()
+/obj/item/duffel_anti_slow
+	name = "разгрузочная система для сумок"
+	desc = "Разгрузочно-подвесная система для больших вещмешков, равномерно распределяющая вес и тем самым снижая нагрузку на пользователя."
+	icon = 'white/Feline/icons/duffel_anti_slow.dmi'
+	icon_state = "duffel_upgrade"
+
+/datum/crafting_recipe/duffel_anti_slow
+	name = "Разгрузочная система для сумок"
+	result =  /obj/item/duffel_anti_slow
+	time = 80
+	reqs = list(/obj/item/stack/sheet/durathread = 2, /obj/item/stack/sheet/cloth = 4, /obj/item/stack/cable_coil = 10)
+	tool_behaviors = list(TOOL_WIRECUTTER, TOOL_SCREWDRIVER)
+	category = CAT_CLOTHING
+
+////	////	////	////	////
 
 /obj/item/storage/backpack/duffelbag/cursed
 	name = "living duffel bag"

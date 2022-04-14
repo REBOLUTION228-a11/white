@@ -102,8 +102,8 @@
 	icon_state = "cloak"
 	inhand_icon_state = "assaultbelt"
 	worn_icon_state = "cloak"
-	charge = 35
-	max_charge = 35
+	charge = 200
+	max_charge = 200
 
 /obj/item/shadowcloak/yohei/process(delta_time)
 	var/turf/T = get_turf(src)
@@ -113,6 +113,7 @@
 			charge = max(0, charge - 25 * delta_time)//Quick decrease in light
 		else
 			charge = min(max_charge, charge + 30 * delta_time) //Charge in the dark
+		animate(user, alpha = clamp(255 - charge, 0, 255), time = 10)
 
 /obj/item/gun/ballistic/automatic/pistol/fallout/yohei9mm
 	name = "пистолет Тиберия"
@@ -123,8 +124,8 @@
 	fire_sound = 'white/valtos/sounds/fallout/gunsounds/9mm/9mm2.ogg'
 	w_class = WEIGHT_CLASS_NORMAL
 	fire_delay = 4
-	extra_damage = 30
-	extra_penetration = 25
+	extra_damage = 5
+
 
 #define MODE_PAINKILLER "болеутоляющее"
 #define MODE_OXYLOSS "кислородное голодание"
@@ -434,7 +435,7 @@
 		for(var/mob/living/carbon/human/H in action_guys)
 			inc_metabalance(H, current_task.prize, reason = "Задание выполнено.")
 			var/obj/item/card/id/cardid = H.get_idcard(FALSE)
-			cardid?.registered_account?.adjust_money(rand(500, 1000))
+			cardid?.registered_account?.adjust_money(rand(5000, 10000))
 		qdel(current_task)
 
 		var/datum/yohei_task/new_task = pick(possible_tasks)
@@ -539,6 +540,7 @@
 	icon_state = "dk_yellow"
 	parallax_movedir = NORTH
 	area_flags = BLOBS_ALLOWED | UNIQUE_AREA | BLOCK_SUICIDE | NOTELEPORT
+	ambientsounds = YOHEI
 
 /obj/item/card/id/yohei
 	name = "странная карточка"
@@ -555,7 +557,7 @@
 	. = ..()
 	var/datum/bank_account/bank_account = new /datum/bank_account(name)
 	registered_account = bank_account
-	registered_account.adjust_money(1200)
+	registered_account.adjust_money(12000)
 
 /obj/item/card/id/yohei/update_label()
 	if(assigned_by)
@@ -596,8 +598,20 @@
 	death = FALSE
 	var/req_sum = 500
 
+/obj/effect/mob_spawn/human/donate/vv_edit_var(var_name, var_value)
+	if (var_name == NAMEOF(src, req_sum))
+		return FALSE
+	. = ..()
+
 /obj/effect/mob_spawn/human/donate/attack_ghost(mob/user)
-	if(check_donations(user?.ckey) >= req_sum)
+	if(check_donations_avail(user?.ckey) >= req_sum)
+		var/datum/donator/D = get_donator(user.ckey)
+		D.money -= req_sum
+		var/client/C = user.client
+		if(C?.prefs)
+			hairstyle =  C.prefs.hairstyle
+			facial_hairstyle = C.prefs.facial_hairstyle
+			skin_tone = C.prefs.skin_tone
 		. = ..()
 	else
 		to_chat(user, span_warning("Эта роль требует <b>[req_sum]</b> донат-поинтов для доступа."))
@@ -642,20 +656,12 @@
 		if("Разведчик")
 			outfit = /datum/outfit/yohei/prospector
 			assignedrole = "Yohei: Prospector"
-	if(user.ckey)
-		var/datum/donator/D = get_donator(user.ckey)
-		if(D && D.money >= 1250)
-			D.money -= 1250
-			var/client/C = GLOB.directory[user.ckey]
-			if(C?.prefs)
-				hairstyle =  C.prefs.hairstyle
-				facial_hairstyle = C.prefs.facial_hairstyle
-				skin_tone = C.prefs.skin_tone
-		else
-			to_chat(user, span_userdanger("Сработала защита от детей. Этот раунд последний."))
 	. = ..()
 
 /obj/effect/mob_spawn/human/donate/yohei/special(mob/living/carbon/human/H)
+	if(SSticker.mode.config_tag == "extended" || SSticker.mode.config_tag == "teaparty")
+		to_chat(H, span_userdanger("Так как в этом мире насилия не существует, кодекс запрещает мне проявлять враждебность ко всем живым существам."))
+		ADD_TRAIT(H, TRAIT_PACIFISM, "yohei")
 	var/newname = sanitize_name(reject_bad_text(stripped_input(H, "Меня когда-то звали [H.name]. Пришло время снова сменить прозвище?", "Прозвище", H.name, MAX_NAME_LEN)))
 	if (!newname)
 		return
@@ -807,7 +813,7 @@
 				   /obj/item/storage/firstaid/tactical = 3)
 	armor = list(MELEE = 100, BULLET = 100, LASER = 100, ENERGY = 100, BOMB = 0, BIO = 0, RAD = 0, FIRE = 100, ACID = 50)
 	resistance_flags = INDESTRUCTIBLE
-	default_price = CARGO_CRATE_VALUE * 3.5
-	extra_price = CARGO_CRATE_VALUE * 10
+	default_price = CARGO_CRATE_VALUE * 9.5
+	extra_price = CARGO_CRATE_VALUE * 40
 	payment_department = ACCOUNT_TRA
 	light_mask = "yohei-light-mask"

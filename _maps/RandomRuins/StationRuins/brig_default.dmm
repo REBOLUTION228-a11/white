@@ -235,6 +235,11 @@
 	pixel_y = -2
 	},
 /obj/item/gun/energy/e_gun/dragnet,
+/obj/item/stack/sheet/plasteel_armor_plate{
+	amount = 6
+	},
+/obj/item/full_armor_upgrade,
+/obj/item/full_armor_upgrade,
 /turf/open/floor/plasteel/dark,
 /area/ai_monitored/security/armory)
 "bX" = (
@@ -509,6 +514,9 @@
 /obj/structure/closet/secure_closet/contraband/armory,
 /obj/effect/spawner/lootdrop/maintenance/three,
 /obj/effect/spawner/lootdrop/armory_contraband/metastation,
+/obj/machinery/light{
+	dir = 8
+	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/ai_monitored/security/armory)
 "cH" = (
@@ -942,6 +950,7 @@
 	dir = 4
 	},
 /obj/machinery/camera/autoname,
+/obj/tacmap/directional/north,
 /turf/open/floor/plasteel,
 /area/security/main)
 "dU" = (
@@ -1037,8 +1046,7 @@
 "en" = (
 /obj/machinery/door/airlock/security/glass{
 	name = "Equipment Room";
-	req_access_txt = "1";
-	security_level = 6
+	req_access_txt = "1"
 	},
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
@@ -1244,6 +1252,10 @@
 	dir = 4
 	},
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer4,
+/obj/machinery/light{
+	dir = 1;
+	pixel_y = 0
+	},
 /turf/open/floor/plasteel,
 /area/security/main)
 "eP" = (
@@ -1677,7 +1689,7 @@
 /obj/machinery/door/airlock/security/glass{
 	name = "Brig Control";
 	req_access_txt = "3";
-	security_level = 6
+	security_level = 0
 	},
 /obj/structure/cable,
 /obj/machinery/door/firedoor/border_only{
@@ -1975,6 +1987,9 @@
 /obj/effect/turf_decal/tile/red{
 	dir = 8
 	},
+/obj/structure/sign/picture_frame/showroom/four{
+	pixel_y = -32
+	},
 /turf/open/floor/plasteel,
 /area/security/main)
 "gq" = (
@@ -2013,7 +2028,6 @@
 /turf/open/floor/plasteel,
 /area/security/main)
 "gt" = (
-/obj/structure/filingcabinet,
 /obj/structure/extinguisher_cabinet{
 	pixel_x = 5;
 	pixel_y = -32
@@ -2021,6 +2035,9 @@
 /obj/effect/turf_decal/tile/red,
 /obj/effect/turf_decal/tile/red{
 	dir = 8
+	},
+/obj/machinery/modular_computer/console/preset/cargochat/security{
+	dir = 1
 	},
 /turf/open/floor/plasteel,
 /area/security/main)
@@ -2038,6 +2055,8 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 5
 	},
+/obj/structure/filingcabinet,
+/obj/machinery/light,
 /turf/open/floor/plasteel,
 /area/security/main)
 "gv" = (
@@ -2172,7 +2191,7 @@
 /obj/machinery/door/airlock/security/glass{
 	name = "Brig Control";
 	req_access_txt = "3";
-	security_level = 6
+	security_level = 0
 	},
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -2187,8 +2206,7 @@
 /obj/machinery/door/airlock/security{
 	name = "Security Office";
 	req_access_txt = null;
-	req_one_access_txt = "1;4";
-	security_level = 6
+	req_one_access_txt = "1;4"
 	},
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -2283,6 +2301,7 @@
 /obj/effect/turf_decal/tile/red{
 	dir = 1
 	},
+/obj/tacmap/directional/north,
 /turf/open/floor/plasteel,
 /area/security/brig)
 "hl" = (
@@ -2551,6 +2570,7 @@
 /obj/effect/turf_decal/tile/red{
 	dir = 8
 	},
+/obj/machinery/light,
 /turf/open/floor/plasteel,
 /area/security/brig)
 "hU" = (
@@ -2699,8 +2719,7 @@
 /obj/machinery/door/airlock/security/glass{
 	id_tag = "innerbrig";
 	name = "Brig";
-	req_access_txt = "63";
-	security_level = 6
+	req_access_txt = "63"
 	},
 /turf/open/floor/plasteel,
 /area/security/brig)
@@ -2721,8 +2740,7 @@
 /obj/machinery/door/airlock/security/glass{
 	id_tag = "innerbrig";
 	name = "Brig";
-	req_access_txt = "63";
-	security_level = 6
+	req_access_txt = "63"
 	},
 /turf/open/floor/plasteel,
 /area/security/brig)
@@ -3254,8 +3272,7 @@
 /obj/machinery/door/airlock/security/glass{
 	id_tag = "outerbrig";
 	name = "Brig";
-	req_access_txt = "63";
-	security_level = 6
+	req_access_txt = "63"
 	},
 /turf/open/floor/plasteel,
 /area/security/brig)
@@ -3329,8 +3346,7 @@
 /obj/machinery/door/airlock/security/glass{
 	id_tag = "outerbrig";
 	name = "Brig";
-	req_access_txt = "63";
-	security_level = 6
+	req_access_txt = "63"
 	},
 /obj/effect/turf_decal/tile/red{
 	dir = 1
@@ -3446,6 +3462,19 @@
 	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/command/heads_quarters/hos)
+"GE" = (
+/obj/effect/turf_decal/tile/red{
+	dir = 1
+	},
+/obj/effect/turf_decal/tile/red{
+	dir = 4
+	},
+/obj/machinery/light{
+	dir = 1;
+	pixel_y = 0
+	},
+/turf/open/floor/plasteel,
+/area/security/brig)
 "Hn" = (
 /obj/structure/table,
 /obj/item/stack/package_wrap,
@@ -3459,8 +3488,7 @@
 /obj/structure/disposalpipe/segment,
 /obj/machinery/door/airlock/command{
 	name = "Head of Security's Office";
-	req_access_txt = "58";
-	security_level = 6
+	req_access_txt = "58"
 	},
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
@@ -4930,7 +4958,7 @@ ff
 eC
 ff
 eC
-gU
+GE
 hv
 hS
 ez
@@ -5326,7 +5354,7 @@ fl
 fL
 gj
 eC
-gU
+GE
 hv
 iL
 ir

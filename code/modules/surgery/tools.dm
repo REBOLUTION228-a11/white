@@ -296,7 +296,7 @@
 	return
 
 /obj/item/surgical_processor //allows medical cyborgs to scan and initiate advanced surgeries
-	name = "Хирургический процессор"
+	name = "хирургический процессор"
 	desc = "Устройство для сканирования и запуска операций с диска или операционного компьютера."
 	icon = 'icons/obj/device.dmi'
 	icon_state = "spectrometer"

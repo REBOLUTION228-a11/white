@@ -14,7 +14,7 @@
 	var/mob/living/carbon/human/H = user
 	if(H.mind?.miming)
 		return
-	if(ishumanbasic(H) || isfelinid(H))
+	if(ishumanbasic(H) || isfelinid(H) || ismoth(H) || islizard(H))
 		if(user.gender == FEMALE)
 			return pick('white/rebolution228/sounds/emotes/female_crying01.ogg',\
 						'white/rebolution228/sounds/emotes/female_crying02.ogg',\
@@ -144,20 +144,23 @@
 					'sound/creatures/monkey/monkey_screech_5.ogg',\
 					'sound/creatures/monkey/monkey_screech_6.ogg',\
 					'sound/creatures/monkey/monkey_screech_7.ogg')
-	if(user.gender == FEMALE)
-		return pick('white/valtos/sounds/emotes/agony_female_1.ogg',\
-					'white/valtos/sounds/emotes/agony_female_2.ogg',\
-					'white/valtos/sounds/emotes/agony_female_3.ogg')
-	else
-		return pick('white/valtos/sounds/emotes/agony_male_1.ogg',\
-					'white/valtos/sounds/emotes/agony_male_2.ogg',\
-					'white/valtos/sounds/emotes/agony_male_3.ogg',\
-					'white/valtos/sounds/emotes/agony_male_4.ogg',\
-					'white/valtos/sounds/emotes/agony_male_5.ogg',\
-					'white/valtos/sounds/emotes/agony_male_6.ogg',\
-					'white/valtos/sounds/emotes/agony_male_7.ogg',\
-					'white/valtos/sounds/emotes/agony_male_8.ogg',\
-					'white/valtos/sounds/emotes/agony_male_9.ogg')
+	if(ishumanbasic(H) || isfelinid(H))		
+		if(user.gender == FEMALE)
+			return pick('white/valtos/sounds/emotes/agony_female_1.ogg',\
+						'white/valtos/sounds/emotes/agony_female_2.ogg',\
+						'white/valtos/sounds/emotes/agony_female_3.ogg')
+		else
+			return pick('white/valtos/sounds/emotes/agony_male_1.ogg',\
+						'white/valtos/sounds/emotes/agony_male_2.ogg',\
+						'white/valtos/sounds/emotes/agony_male_3.ogg',\
+						'white/valtos/sounds/emotes/agony_male_4.ogg',\
+						'white/valtos/sounds/emotes/agony_male_5.ogg',\
+						'white/valtos/sounds/emotes/agony_male_6.ogg',\
+						'white/valtos/sounds/emotes/agony_male_7.ogg',\
+						'white/valtos/sounds/emotes/agony_male_8.ogg',\
+						'white/valtos/sounds/emotes/agony_male_9.ogg')
+	else if(ismoth(H))
+		return 'sound/voice/moth/scream_moth.ogg'
 
 
 /datum/emote/living/carbon/human/pale

@@ -45,6 +45,7 @@
 
 	var/list/spell_list = list() // Wizard mode & "Give Spell" badmin button.
 
+	var/linglink
 	var/datum/martial_art/martial_art
 	var/static/default_martial_art = new/datum/martial_art
 	var/miming = FALSE // Mime's vow of silence
@@ -502,7 +503,7 @@
 		to_chat(recipient, "<i>[output]</i>")
 
 /datum/mind/Topic(href, href_list)
-	if(!check_rights(R_ADMIN))
+	if(!check_rights(R_FUN))
 		return
 
 	var/self_antagging = usr == current

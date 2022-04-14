@@ -368,11 +368,11 @@ This section is for the destabilized SM
 		return
 
 	if(!removed || !removed.total_moles() || isspaceturf(loc_turf))
-		removed.adjust_moles(/datum/gas/bz, 0.5)
-	removed.adjust_moles(/datum/gas/bz, 15.5)
-	removed.adjust_moles(/datum/gas/miasma, 5.5)
+		removed.adjust_moles(GAS_BZ, 0.5)
+	removed.adjust_moles(GAS_BZ, 15.5)
+	removed.adjust_moles(GAS_MIASMA, 5.5)
 	env.merge(removed)
-	air_update_turf(FALSE, FALSE)
+	air_update_turf()
 
 /obj/machinery/destabilized_crystal/attackby(obj/item/W, mob/living/user, params)
 	if(!istype(user))
@@ -504,7 +504,7 @@ This section is for the crystal portals variations
 */
 /obj/structure/crystal_portal
 	name = "crystal portal"
-	desc = "Этого тут не должно быть."
+	desc = "<font size=+4>Если вы видите это, то немедленно пишите анпедал на пидораса, что вызвал эту хуйню.</font>"
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "anom"
 	color = COLOR_SILVER

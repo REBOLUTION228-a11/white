@@ -1,24 +1,25 @@
 /obj/item/pinpointer/nuke
+	name = "пинпоинтер"
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 	var/mode = TRACK_NUKE_DISK
 
 /obj/item/pinpointer/nuke/examine(mob/user)
 	. = ..()
 	. += "<hr>"
-	var/msg = "Its tracking indicator reads "
+	var/msg = "Его индикатор пишет: "
 	switch(mode)
 		if(TRACK_NUKE_DISK)
-			msg += "\"nuclear_disk\"."
+			msg += "\"ядерный_диск\"."
 		if(TRACK_MALF_AI)
 			msg += "\"01000001 01001001\"."
 		if(TRACK_INFILTRATOR)
 			msg += "\"vasvygengbefuvc\"."
 		else
-			msg = "Its tracking indicator is blank."
+			msg = "Его индикатор пустой."
 	. += msg
 	for(var/obj/machinery/nuclearbomb/bomb in GLOB.machines)
 		if(bomb.timing)
-			. += "\nExtreme danger. Arming signal detected. Time remaining: [bomb.get_time_left()]."
+			. += "\nЭкстремальная опасность. Обнаружен сигнал активации ядерного устройства. Оставшееся время: [bomb.get_time_left()]."
 
 /obj/item/pinpointer/nuke/process()
 	..()
@@ -30,7 +31,7 @@
 					playsound(src, 'sound/items/nuke_toy_lowpower.ogg', 50, FALSE)
 					if(isliving(loc))
 						var/mob/living/L = loc
-						to_chat(L, span_userdanger("Your [name] vibrates and lets out a tinny alarm. Uh oh."))
+						to_chat(L, span_userdanger("Мой [name] вибрирует и издает звонкий сигнал тревоги. Ой-ой."))
 
 /obj/item/pinpointer/nuke/scan_for_target()
 	target = null
@@ -54,19 +55,19 @@
 /obj/item/pinpointer/nuke/proc/switch_mode_to(new_mode)
 	if(isliving(loc))
 		var/mob/living/L = loc
-		to_chat(L, span_userdanger("Your [name] beeps as it reconfigures it's tracking algorithms."))
+		to_chat(L, span_userdanger("Мой [name] подает звуковой сигнал, перенастраивая алгоритмы слежения."))
 		playsound(L, 'sound/machines/triple_beep.ogg', 50, TRUE)
 	mode = new_mode
 	scan_for_target()
 
 /obj/item/pinpointer/nuke/syndicate // Syndicate pinpointers automatically point towards the infiltrator once the nuke is active.
-	name = "syndicate pinpointer"
-	desc = "A handheld tracking device that locks onto certain signals. It's configured to switch tracking modes once it detects the activation signal of a nuclear device."
+	name = "пинпоинтер синдиката"
+	desc = "Портативное устройство слежения, которое фиксирует определенные сигналы. Оно настроено на переключение режимов слежения после обнаружения сигнала активации ядерного устройства."
 	icon_state = "pinpointer_syndicate"
 
 /obj/item/pinpointer/syndicate_cyborg // Cyborg pinpointers just look for a random operative.
-	name = "cyborg syndicate pinpointer"
-	desc = "An integrated tracking device, jury-rigged to search for living Syndicate operatives."
+	name = "пинпоинтер киборга синдиката"
+	desc = "Встроенное устройство слежения, сконструированное для поиска живых оперативников Синдиката."
 	flags_1 = NONE
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 

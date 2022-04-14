@@ -217,7 +217,9 @@
 
 /turf/open/floor/plating/asteroid/snow/centcom
 	initial_gas_mix = FROZEN_ATMOS
-	temperature = 180
+	initial_temperature = 180
 
 /turf/open/floor/plating/asteroid/snow/centcom/New()
 	return
+
+/turf/open/floor/plating/asteroid/no_generation	//	Турф без генерации

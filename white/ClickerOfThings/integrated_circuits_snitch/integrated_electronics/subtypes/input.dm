@@ -585,20 +585,29 @@
 /obj/item/integrated_circuit_old/input/yoheidetector
 	complexity = 18
 	name = "Yohei Finder"
-	desc = "Так уж получилось, что технология маскировки попала в общество. Теперь любой может дистанционно взорвать батарейку генератора маскировки."
-	extended_desc = "Подрывает невидимых пидоров. Что ещё надо для жизни?"
-	activators = list("remove kebab" = IC_PINTYPE_PULSE_IN)
+	desc = "Так уж получилось, что Йохеи попали в общество. Теперь любой может дистанционно подсветить Йохея."
+	extended_desc = "Показывает наёмников. Что ещё надо для жизни?"
+	activators = list("locate" = IC_PINTYPE_PULSE_IN, "found" = IC_PINTYPE_PULSE_OUT, "not found" = IC_PINTYPE_PULSE_OUT)
+	outputs = list("located ref" = IC_PINTYPE_LIST)
 	power_draw_per_use = 120
 	spawn_flags = IC_SPAWN_DEFAULT | IC_SPAWN_RESEARCH
 
 /obj/item/integrated_circuit_old/input/yoheidetector/do_work()
-	var/list/nearby_things = range(8, get_turf(src))
+	var/datum/integrated_io/O = outputs[1]
+	O.data = null
+	var/list/valid_things = list()
+	var/list/nearby_things = range(10, get_turf(src))
 	for(var/mob/living/carbon/human/H in nearby_things)
-		if(istype(H.belt, /obj/item/shadowcloak/yohei))
-			qdel(H.belt)
-			H.gib(TRUE, TRUE, TRUE)
-			explosion(get_turf(H), 0, 1, 2, 3, flame_range = 2)
-			
+		if(HAS_TRAIT(H, TRAIT_YOHEI))
+			valid_things.Add(WEAKREF(H))
+	if(valid_things.len)
+		O.data = valid_things
+		O.push_data()
+		activate_pin(2)
+	else
+		O.push_data()
+		activate_pin(3)
+
 /obj/item/integrated_circuit_old/input/advanced_locator_list
 	complexity = 6
 	name = "list advanced locator"
@@ -1258,7 +1267,7 @@
 	var/list/gas_names = list()
 	var/list/gas_amounts = list()
 	for(var/id in air_contents.get_gases())
-		var/name = GLOB.meta_gas_info[id][META_GAS_NAME]
+		var/name = GLOB.gas_data.names[id]
 		var/amt = round(air_contents.get_moles(id), 0.001)
 		gas_names.Add(name)
 		gas_amounts.Add(amt)

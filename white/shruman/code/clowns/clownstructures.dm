@@ -27,7 +27,7 @@
 	icon = 'icons/obj/device.dmi'
 	resistance_flags = ACID_PROOF|FIRE_PROOF
 	var/spawn_temp = T20C
-	var/spawn_id = /datum/gas/nitrous_oxide
+	var/spawn_id = GAS_NITROUS
 	var/spawn_mol = MOLES_CELLSTANDARD * 0.005
 
 /obj/structure/fleshbuilding/clownatmos/Initialize()
@@ -42,7 +42,7 @@
 	merger.set_moles(spawn_id, spawn_mol)
 	merger.set_temperature(spawn_temp)
 	O.assume_air(merger)
-	O.air_update_turf(TRUE, FALSE)
+	O.air_update_turf(TRUE)
 
 
 

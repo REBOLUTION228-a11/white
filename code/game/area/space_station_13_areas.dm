@@ -325,22 +325,110 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	name = "Коридоры: Северные"
 	icon_state = "hallF"
 
+/area/hallway/primary/fore/to_brig
+	name = "Коридоры: К бригу"
+	icon_state = "hallF1"
+
+/area/hallway/primary/fore/brig_enter
+	name = "Коридоры: Бриг вход"
+	icon_state = "hallF2"
+
 /area/hallway/primary/starboard
 	name = "Коридоры: Восточные"
 	icon_state = "hallS"
+
+/area/hallway/primary/starboard/medbay
+	name = "Коридоры: Медблок"
+	icon_state = "hallS1"
+
+/area/hallway/primary/starboard/botan
+	name = "Коридоры: Ботаника"
+	icon_state = "hallS2"
+
+/area/hallway/primary/starboard/rnd
+	name = "Коридоры: РнД"
+	icon_state = "hallS3"
+
+/area/hallway/primary/starboard/low_level_service
+	name = "Коридоры, низ: сервис"
+	icon_state = "hallSL1"
 
 /area/hallway/primary/port
 	name = "Коридоры: Западные"
 	icon_state = "hallP"
 
+/area/hallway/primary/port/to_arrival
+	name = "Коридоры: К прибытию"
+	icon_state = "hallP1"
+
+/area/hallway/primary/port/vault
+	name = "Коридоры: Ваулт"
+	icon_state = "hallP2"
+
 /area/hallway/primary/central
 	name = "Коридоры: Центральные"
 	icon_state = "hallC"
 
+/area/hallway/primary/central/north
+	name = "Коридоры: Центр, Север"
+	icon_state = "hallC1"
+
+/area/hallway/primary/central/west
+	name = "Коридоры: Центр, Запад"
+	icon_state = "hallC2"
+
+/area/hallway/primary/central/south
+	name = "Коридоры: Центр, Юг"
+	icon_state = "hallC3"
+
+/area/hallway/primary/central/east
+	name = "Коридоры: Центр, Восток"
+	icon_state = "hallC4"
+
+/area/hallway/primary/central/low_level_eva
+	name = "Коридоры, низ: ЕВА"
+	icon_state = "hallCL1"
+
+/area/hallway/primary/central/low_level_centre
+	name = "Коридоры, низ: Центр"
+	icon_state = "hallCL2"
+
 /area/hallway/primary/upper
 	name = "Коридоры: Верхние центральные"
 	icon_state = "hallC"
+// this one used at blueshift
+/area/hallway/primary/blueshift/plasmaman
+	name = "Коридоры: Магазин плазмаменов"
+	icon_state = "hallC" // mnee
 
+/area/commons/dorms/sauna
+	name = "Зона отдыха: Сауна" // pohui
+
+/area/maintenance/department/electrical/two
+	name = "Техтоннели: Второе обслуживание"
+
+/area/security/prison/sauna
+	name = "Тюрьма: Сауна"
+
+/area/maintenance/port/central/west
+	name = "Техтоннели: Центральные-западные"
+	icon_state = "maintcentral"
+
+/area/maintenance/port/central/north
+	name = "Техтоннели: Центральные-северные"
+
+/area/maintenance/port/northwest
+	name = "Техтоннели: Северо-западные"
+
+/area/maintenance/port/southwest
+	name = "Техтоннели: Юго-западные"
+
+/area/maintenance/port/north
+	name = "Техтоннели: Северные"
+
+/area/maintenance/starboard/engineering
+	name = "Техтоннели: Двигатель"
+//
 /area/hallway/primary/tram
 	name = "Коридоры: Метро"
 
@@ -372,15 +460,36 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	icon_state = "escape"
 
 /area/hallway/secondary/exit/departure_lounge
-	name = "Коридоры: Зал ожидания"
+	name = "Коридоры, Эвакуация"
 	icon_state = "escape_lounge"
 
+/area/hallway/secondary/exit/departure_lounge/botan
+	name = "Коридоры, низ: Ботаника"
+	icon_state = "escape_lounge"
+
+/area/hallway/secondary/exit/departure_lounge/shop
+	name = "Коридоры, низ: Магазин"
+	icon_state = "escape_lounge2"
+
+/area/hallway/secondary/exit/departure_lounge/cryo
+	name = "Коридоры, низ: Криокапсулы"
+	icon_state = "escape_lounge3"
+
 /area/hallway/secondary/entry
-	name = "Коридоры: Шаттл прибытия"
-	icon_state = "entry"
+	name = "Прибытие: Шаттл"
+	icon_state = "entry1"
+
+/area/hallway/secondary/entry/public
+	name = "Прибытие: Публичный док"
+	icon_state = "entry2"
 
 /area/hallway/secondary/entry/south
-	name = "Коридоры: Южное прибытие"
+	name = "Прибытие: Южный коридор"
+	icon_state = "entry3"
+
+/area/hallway/secondary/entry/south_hall
+	name = "Прибытие: Южный зал"
+	icon_state = "entry4"
 
 /area/hallway/secondary/service
 	name = "Коридоры: Обслуга"
@@ -573,7 +682,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 
 /area/commons/cryopods
 	name = "Криоподы"
-	icon_state = "cryopod"
+	icon_state = "cryo"
 
 /area/service/cafeteria
 	name = "Зона отдыха: Кафетерий"
@@ -733,7 +842,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	sound_environment = SOUND_AREA_LARGE_ENCLOSED
 
 /area/engineering/engine_smes
-	name = "Инженерный: СНМЭ"
+	name = "Инженерный: СМЕСы"
 	icon_state = "engine_smes"
 
 /area/engineering/main
@@ -741,12 +850,17 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	icon_state = "engine"
 
 /area/engineering/atmos
-	name = "Инженерный: Атмосферный отдел"
-	icon_state = "atmos"
+	name = "Инженерный: АТМОС"
+	icon_state = "atmos1"
 	area_flags = CULT_PERMITTED
 
+/area/engineering/atmos/project
+	name = "Инженерный: Атмос: Проект"
+	icon_state = "atmos1"
+
 /area/engineering/atmos/upper
-	name = "Инженерный: Верхний атмосферный отдел"
+	name = "Инженерный: АТМОС залл"
+	icon_state = "atmos2"
 
 /area/engineering/atmospherics_engine
 	name = "Инженерный: Атмосферный двигатель"
@@ -757,6 +871,10 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 /area/engineering/engine_room //donut station specific
 	name = "Инженерный: Машинное отделение"
 	icon_state = "atmos_engine"
+
+/area/engineering/manufactory
+	name = "Инженерный: Фабрика"
+	icon_state = "fabrica"
 
 /area/engineering/lobby
 	name = "Инженерный: Лобби"
@@ -804,6 +922,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	ambience_index = AMBIENCE_ENGI
 	airlock_wires = /datum/wires/airlock/engineering
 	sound_environment = SOUND_AREA_SPACE
+	base_lighting_alpha = 255
 
 /area/solars/fore
 	name = "Солнечные панели: Северные"
@@ -1229,12 +1348,15 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 
 /area/cargo/exploration_prep
 	name = "Снабжение: Подготовка рейнджеров"
-	icon_state = "mining"
+	icon_state = "rangers_prep"
 
 /area/cargo/exploration_dock
 	name = "Снабжение: Док рейнджеров"
-	icon_state = "mining"
+	icon_state = "rangers_dock"
 
+/area/cargo/exploration_mission
+	name = "Снабжение: Миссия рейнджеров"
+	icon_state = "rangers_mission"
 //Science
 
 /area/science

@@ -82,6 +82,11 @@
 	id = "comp_index"
 	build_path = /obj/item/circuit_component/index
 
+/datum/design/component/index_assoc
+	name = "Index Associative List Component"
+	id = "comp_index_assoc"
+	build_path = /obj/item/circuit_component/index/assoc_string
+
 /datum/design/component/length
 	name = "Длина"
 	id = "comp_length"
@@ -111,6 +116,16 @@
 	name = "Динамик"
 	id = "comp_speech"
 	build_path = /obj/item/circuit_component/speech
+
+/datum/design/component/laserpointer
+	name = "Лазерная указка"
+	id = "comp_laserpointer"
+	build_path = /obj/item/circuit_component/laserpointer
+
+/datum/design/component/timepiece
+	name = "Timepiece Component"
+	id = "comp_timepiece"
+	build_path = /obj/item/circuit_component/timepiece
 
 /datum/design/component/tostring
 	name = "В строку"
@@ -262,6 +277,11 @@
 	id = "comp_typecast"
 	build_path = /obj/item/circuit_component/typecast
 
+/datum/design/component/pinpointer
+	name = "Proximity Pinpointer Component"
+	id = "comp_pinpointer"
+	build_path = /obj/item/circuit_component/pinpointer
+
 /datum/design/component/bci
 	category = list("Схемотехника", "BCI Components", "Интегральные схемы")
 	sub_category = list("Интерфейс Человек-Машина (ИЧМ)")
@@ -290,6 +310,17 @@
 	name = "Оверлей счетчика"
 	id = "comp_counter_overlay"
 	build_path = /obj/item/circuit_component/counter_overlay
+
+/datum/design/component/foreach
+	name = "For Each Component"
+	id = "comp_foreach"
+	build_path = /obj/item/circuit_component/foreach
+
+/datum/design/component/filter_list
+	name = "Filter List Component"
+	id = "comp_filter_list"
+	build_path = /obj/item/circuit_component/foreach
+
 
 /datum/design/compact_remote_shell
 	name = "Пульт"
@@ -401,6 +432,18 @@
 	category = list("Схемотехника", "Оболочки", "Интегральные схемы")
 	sub_category = list("Оболочки")
 
+/datum/design/dispenser_shell
+	name = "Dispenser Shell"
+	desc = "A dispenser shell that can dispense items."
+	id = "dispenser_shell"
+	materials = list(
+		/datum/material/glass = 5000,
+		/datum/material/iron = 15000,
+	)
+	build_path = /obj/item/shell/dispenser
+	build_type = PROTOLATHE | COMPONENT_PRINTER
+	category = list("Схемотехника", "Оболочки")
+
 /datum/design/bci_shell
 	name = "Интерфейс человек-компьютер (ИЧМ)"
 	desc = "Имплантат, который может быть помещен в голову пользователя для отправки управляющих сигналов."
@@ -438,3 +481,62 @@
 	construction_time = 40
 	category = list("Схемотехника", "Ядро", "Интегральные схемы")
 	sub_category = list("Машины")
+
+/datum/design/assembly_shell
+	name = "Assembly Shell"
+	desc = "An assembly shell that can be attached to wires and other assemblies."
+	id = "assembly_shell"
+	materials = list(/datum/material/glass = 2000, /datum/material/iron = 5000)
+	build_path = /obj/item/assembly/wiremod
+	build_type = PROTOLATHE | COMPONENT_PRINTER
+	category = list("Схемотехника", "Оболочки")
+
+// Circuit Spellbook designs - necessary to be printable in the debug component printer
+/datum/design/circuit_spellbook
+	name = "Circuit Spellbook (Generic)"
+	desc = "A spellbook shell that allows the behavior of the granted spell to be programmed using a circuit."
+	id = "circuit_spellbook_generic"
+	materials = list(/datum/material/iron = 1)
+	build_type = COMPONENT_PRINTER
+	build_path = /obj/item/book/granter/spell/circuit
+	category = list("Админ", "Оболочки")
+
+/datum/design/circuit_spellbook/targeted
+	name = "Circuit Spellbook (Targeted)"
+	id = "circuit_spellbook_targeted"
+	build_path = /obj/item/book/granter/spell/circuit/targeted
+
+/datum/design/circuit_spellbook/aoe_turf
+	name = "Circuit Spellbook (AoE)"
+	id = "circuit_spellbook_aoe"
+	build_path = /obj/item/book/granter/spell/circuit/aoe_turf
+
+/datum/design/circuit_spellbook/self
+	name = "Circuit Spellbook (Self)"
+	id = "circuit_spellbook_self"
+	build_path = /obj/item/book/granter/spell/circuit/self
+
+/datum/design/circuit_spellbook/pointed
+	name = "Circuit Spellbook (Pointed)"
+	id = "circuit_spellbook_pointed"
+	build_path = /obj/item/book/granter/spell/circuit/pointed
+
+/datum/design/circuit_spellbook/aimed
+	name = "Circuit Spellbook (Aimed)"
+	id = "circuit_spellbook_aimed"
+	build_path = /obj/item/book/granter/spell/circuit/aimed
+
+/datum/design/circuit_spellbook/cone
+	name = "Circuit Spellbook (Cone)"
+	id = "circuit_spellbook_cone"
+	build_path = /obj/item/book/granter/spell/circuit/cone
+
+/datum/design/circuit_spellbook/cone/staggered
+	name = "Circuit Spellbook (Staggered Cone)"
+	id = "circuit_spellbook_cone_staggered"
+	build_path = /obj/item/book/granter/spell/circuit/cone/staggered
+
+/datum/design/circuit_spellbook/touch
+	name = "Circuit Spellbook (Touch)"
+	id = "circuit_spellbook_touch"
+	build_path = /obj/item/book/granter/spell/circuit/touch

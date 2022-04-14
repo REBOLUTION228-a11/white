@@ -18,13 +18,20 @@
 	var/on = FALSE
 	var/direction = PUMP_OUT
 	var/target_pressure = ONE_ATMOSPHERE
+	///Associated sound loop, plays when the pump is on
+	var/datum/looping_sound/pump/soundloop
 
 	volume = 1000
+
+/obj/machinery/portable_atmospherics/pump/Initialize(mapload)
+	. = ..()
+	soundloop = new(src)
 
 /obj/machinery/portable_atmospherics/pump/Destroy()
 	var/turf/T = get_turf(src)
 	T.assume_air(air_contents)
-	air_update_turf(FALSE, FALSE)
+	air_update_turf()
+	QDEL_NULL(soundloop)
 	return ..()
 
 /obj/machinery/portable_atmospherics/pump/update_icon_state()
@@ -60,9 +67,14 @@
 		sending = (holding ? air_contents : T.return_air())
 		receiving = (holding ? holding.air_contents : air_contents)
 
+	var/output_starting_pressure = receiving.return_pressure()
 
-	if(sending.pump_gas_to(receiving, target_pressure) && !holding)
-		air_update_turf(FALSE, FALSE) // Update the environment if needed.
+	if((sending.total_moles() > 0) && (sending.return_temperature() > 0))
+		var/pressure_delta = target_pressure - output_starting_pressure
+		var/transfer_moles = pressure_delta * receiving.return_volume() / (sending.return_temperature() * R_IDEAL_GAS_EQUATION)
+
+		if(sending.transfer_to(receiving, transfer_moles) && !holding)
+			air_update_turf() // Update the environment if needed.
 
 /obj/machinery/portable_atmospherics/pump/emp_act(severity)
 	. = ..()
@@ -83,6 +95,7 @@
 			if(on)
 				on = FALSE
 				update_icon()
+				soundloop.stop()
 		else if(on && holding && direction == PUMP_OUT)
 			investigate_log("[key_name(user)] started a transfer into [holding].", INVESTIGATE_ATMOS)
 
@@ -120,14 +133,18 @@
 	switch(action)
 		if("power")
 			on = !on
-			if(on && !holding)
-				var/plasma = air_contents.get_moles(/datum/gas/plasma)
-				var/n2o = air_contents.get_moles(/datum/gas/nitrous_oxide)
-				if(n2o || plasma)
-					message_admins("[ADMIN_LOOKUPFLW(usr)] turned on a pump that contains [n2o ? "N2O" : ""][n2o && plasma ? " & " : ""][plasma ? "Plasma" : ""] at [ADMIN_VERBOSEJMP(src)]")
-					log_admin("[key_name(usr)] turned on a pump that contains [n2o ? "N2O" : ""][n2o && plasma ? " & " : ""][plasma ? "Plasma" : ""] at [AREACOORD(src)]")
-			else if(on && direction == PUMP_OUT)
-				investigate_log("[key_name(usr)] started a transfer into [holding].", INVESTIGATE_ATMOS)
+			if(on)
+				if(!holding)
+					var/plasma = air_contents.get_moles(GAS_PLASMA)
+					var/n2o = air_contents.get_moles(GAS_NITROUS)
+					if(n2o || plasma)
+						message_admins("[ADMIN_LOOKUPFLW(usr)] turned on a pump that contains [n2o ? "N2O" : ""][n2o && plasma ? " & " : ""][plasma ? "Plasma" : ""] at [ADMIN_VERBOSEJMP(src)]")
+						log_admin("[key_name(usr)] turned on a pump that contains [n2o ? "N2O" : ""][n2o && plasma ? " & " : ""][plasma ? "Plasma" : ""] at [AREACOORD(src)]")
+				else if(direction == PUMP_OUT)
+					investigate_log("[key_name(usr)] started a transfer into [holding].", INVESTIGATE_ATMOS)
+				soundloop.start()
+			else
+				soundloop.stop()
 			. = TRUE
 		if("direction")
 			if(direction == PUMP_OUT)

@@ -286,9 +286,9 @@
 	suffix = "clown"
 	name = "Snappop(tm)!"
 	description = "Привет дети и взрослые! \
-	Вы устали от СКУЧНЫХ и НУДНЫХ поездок на шатле после того как вы эвакуировались из-за, наверняка, УТОМИТЕЛЬНЫХ причин. В таком случае закажи Snappop(tm) уже сегодня! \
+	Устали от СКУЧНЫХ и НУДНЫХ поездок на шатле после того как эвакуировались из-за, наверняка, УТОМИТЕЛЬНЫХ причин. В таком случае закажи Snappop(tm) уже сегодня! \
 	У нас куча веселых занятий для всех, доступ во все кабины и никакого скучного брига безопасности! Бу! Играйте в переодевание со своими друзьями! \
-	Соберите все простыни раньше вашего соседа! Узнайте, наблюдает ли за вами ИИ  с помощью нашего ожидающего патента изобретения \"Пикающий ТОМ: Многоинструментальный ИИ Детектор\" или, если коротко, ПИИИТОР. \
+	Соберите все простыни раньше соседа! Узнайте, наблюдает ли за вами ИИ  с помощью нашего ожидающего патента изобретения \"Пикающий ТОМ: Многоинструментальный ИИ Детектор\" или, если коротко, ПИИИТОР. \
 	Веселой поездки!"
 	admin_notes = "Brig is replaced by anchored greentext book surrounded by lavaland chasms, stationside door has been removed to prevent accidental dropping. No brig."
 	credit_cost = CARGO_CRATE_VALUE * 16
@@ -340,7 +340,7 @@
 	description = "Looks like this shuttle may have wandered into the darkness between the stars on route to the station. Let's not think too hard about where all the bodies came from."
 	admin_notes = "Contains real cult ruins, mob eyeballs, and inactive constructs. Cult mobs will automatically be sentienced by fun balloon. \
 	Cloning pods in 'medbay' area are showcases and nonfunctional."
-	credit_cost = 667 ///The joke is the number so no defines
+	credit_cost = 6667 ///The joke is the number so no defines
 
 /datum/map_template/shuttle/emergency/narnar/prerequisites_met()
 	return SSshuttle.shuttle_purchase_requirements_met[SHUTTLE_UNLOCK_NARNAR]

@@ -3,7 +3,7 @@
  */
 /obj/machinery/atmospherics/components/unary/hypertorus/core
 	name = "Термоядерный реактор - Ядро"
-	desc = "Это ядро термоядерного реактора, передовая технология для точной настройки протекания реакции внутри машины. Он имеет ввод-вывод для охлаждения газов."
+	desc = "Ядро термоядерного реактора, передовая технология для точной настройки протекания реакции внутри машины. Он имеет ввод-вывод для охлаждения газов."
 	icon = 'icons/obj/atmospherics/components/hypertorus.dmi'
 	icon_state = "core_off"
 	circuit = /obj/item/circuitboard/machine/HFR_core
@@ -49,7 +49,7 @@
 	var/datum/gas_mixture/moderator_internal
 	///Set the filtering list of the waste remove
 	var/list/moderator_scrubbing = list(
-		/datum/gas/helium,
+		GAS_HELIUM,
 		)
 	///Set the amount of moles per tick should be removed from the moderator by filtering
 	var/moderator_filtering_rate = 100

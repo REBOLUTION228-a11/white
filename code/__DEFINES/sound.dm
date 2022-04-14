@@ -13,7 +13,8 @@
 #define CHANNEL_TTS_ANNOUNCER 1013
 #define CHANNEL_BATTLETENSION 1012
 #define CHANNEL_RUINATION_OST 1011
-#define CHANNEL_TTS_AVAILABLE 1010
+#define CHANNEL_VIOLENCE_MODE 1010
+#define CHANNEL_TTS_AVAILABLE 1009
 #define CHANNEL_BOOMBOX_AVAILABLE 800
 #define CHANNEL_WIND_AVAILABLE 780
 #define CHANNEL_HIGHEST_AVAILABLE 770
@@ -40,18 +41,15 @@
 
 //Ambience types
 
-#define GENERIC list('sound/ambience/white/ambi2.ogg',\
+#define GENERIC list('sound/ambience/white/ambi1.ogg',\
+					'sound/ambience/white/ambi2.ogg',\
 					'sound/ambience/white/ambi3.ogg',\
 					'sound/ambience/white/ambi4.ogg',\
 					'sound/ambience/white/ambi5.ogg',\
 					'sound/ambience/white/ambi6.ogg',\
 					'sound/ambience/white/ambi7.ogg',\
 					'sound/ambience/white/ambi8.ogg',\
-					'sound/ambience/white/ambi9.ogg',\
-					'sound/ambience/white/ambi10.ogg',\
-					'sound/ambience/white/ambi12.ogg',\
-					'sound/ambience/white/ambi13.ogg',\
-					'white/valtos/sounds/prison/amb8.ogg')
+					'sound/ambience/white/ambi9.ogg')
 
 #define HOLY list('sound/ambience/white/ambichurch1.ogg')
 
@@ -62,7 +60,6 @@
 #define RUINS list('sound/ambience/white/ambidanger1.ogg',\
 				'sound/ambience/white/ambidanger2.ogg',\
 				'sound/ambience/white/ambi1.ogg',\
-				'sound/ambience/white/ambi11.ogg',\
 				'sound/ambience/white/ambi3.ogg')
 
 #define ENGINEERING list('sound/ambience/white/ambieng1.ogg',\
@@ -70,7 +67,6 @@
 
 #define MINING list('sound/ambience/white/ambidanger1.ogg',\
 					'sound/ambience/white/ambidanger2.ogg',\
-					'sound/ambience/white/ambi12.ogg',\
 					'white/valtos/sounds/prison/amb6.ogg')
 
 #define MEDICAL list('sound/ambience/white/ambimed1.ogg',\
@@ -88,8 +84,9 @@
 						'sound/ambience/white/ambimaint2.ogg')
 
 #define AWAY_MISSION list('sound/ambience/white/ambidanger2.ogg',\
-						'sound/ambience/white/ambidanger3.ogg',\
-						'sound/ambience/white/ambi12.ogg')
+						'sound/ambience/white/ambidanger3.ogg')
+
+#define YOHEI list('sound/ambience/white/ambiyohei.ogg')
 
 #define REEBE list('sound/ambience/ambireebe1.ogg',\
 				'sound/ambience/ambireebe2.ogg',\
@@ -281,6 +278,7 @@
 
 
 ///Announcer audio keys
+#define ANNOUNCER_COMMANDREPORT "announcer_commandreport"
 #define ANNOUNCER_AIMALF "announcer_aimalf"
 #define ANNOUNCER_ALIENS "announcer_aliens"
 #define ANNOUNCER_ANIMES "announcer_animes"
@@ -301,6 +299,7 @@
 
 /// Global list of all of our announcer keys.
 GLOBAL_LIST_INIT(announcer_keys, list(
+	ANNOUNCER_COMMANDREPORT,
 	ANNOUNCER_AIMALF,
 	ANNOUNCER_ALIENS,
 	ANNOUNCER_ANIMES,
@@ -319,3 +318,35 @@ GLOBAL_LIST_INIT(announcer_keys, list(
 	ANNOUNCER_SPANOMALIES,
 	ANNOUNCER_WAR,
 ))
+
+/// List of all of our sound keys.
+#define SFX_BODYFALL "bodyfall"
+#define SFX_BULLET_MISS "bullet_miss"
+#define SFX_CAN_OPEN "can_open"
+#define SFX_CLOWN_STEP "clown_step"
+#define SFX_DESECRATION "desecration"
+#define SFX_EXPLOSION "explosion"
+#define SFX_EXPLOSION_CREAKING "explosion_creaking"
+#define SFX_HISS "hiss"
+#define SFX_HONKBOT_E "honkbot_e"
+#define SFX_HULL_CREAKING "hull_creaking"
+#define SFX_HYPERTORUS_CALM "hypertorus_calm"
+#define SFX_HYPERTORUS_MELTING "hypertorus_melting"
+#define SFX_IM_HERE "im_here"
+#define SFX_LAW "law"
+#define SFX_PAGE_TURN "page_turn"
+#define SFX_PUNCH "punch"
+#define SFX_REVOLVER_SPIN "revolver_spin"
+#define SFX_RICOCHET "ricochet"
+#define SFX_RUSTLE "rustle"
+#define SFX_SHATTER "shatter"
+#define SFX_SM_CALM "sm_calm"
+#define SFX_SM_DELAM "sm_delam"
+#define SFX_SPARKS "sparks"
+#define SFX_SUIT_STEP "suit_step"
+#define SFX_SWING_HIT "swing_hit"
+#define SFX_TERMINAL_TYPE "terminal_type"
+#define SFX_WARPSPEED "warpspeed"
+#define SFX_CRUNCHY_BUSH_WHACK "crunchy_bush_whack"
+#define SFX_TREE_CHOP "tree_chop"
+#define SFX_ROCK_TAP "rock_tap"

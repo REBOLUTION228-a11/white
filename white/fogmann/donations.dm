@@ -285,6 +285,7 @@ GLOBAL_LIST_INIT(donations_list, list(
 		new /datum/donate_info("CoomCamera™",				/obj/item/camera/coom,							300)
 	)
 ))
+GLOBAL_PROTECT(donations_list)
 
 /datum/donate_info
 	var/name
@@ -323,6 +324,7 @@ GLOBAL_LIST_INIT(donations_list, list(
 
 GLOBAL_LIST_EMPTY(donate_icon_cache)
 GLOBAL_LIST_EMPTY(donators)
+GLOBAL_PROTECT(donators)
 
 #define DONATIONS_SPAWN_WINDOW 6000
 
@@ -448,6 +450,7 @@ GLOBAL_LIST_EMPTY(donators)
 	return GLOB.donate_icon_cache[P.path_to]
 
 GLOBAL_VAR_INIT(ohshitfuck, FALSE)
+GLOBAL_PROTECT(ohshitfuck)
 
 /proc/load_donator(ckey)
 	if(!SSdbcore.IsConnected())
@@ -473,6 +476,14 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 		return D.maxmoney
 	return FALSE
 
+/proc/check_donations_avail(ckey)
+	if (!GLOB.donators[ckey])
+		return FALSE
+	var/datum/donator/D = GLOB.donators[ckey]
+	if(D)
+		return D.money
+	return FALSE
+
 /proc/get_donator(ckey)
 	if (!GLOB.donators[ckey])
 		return FALSE
@@ -488,13 +499,15 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 	if(!check_rights_for(src, R_SECURED))
 		return
 
-	var/which_one = tgui_input_list(src, "ОООХ", "ОБОЖАЮ ЧЛЕН В ЖОПЕ ПО УТРАМ", list("furfag", "tailfag"))
+	var/which_one = tgui_input_list(src, "ОООХ", "ОБОЖАЮ ЧЛЕН В ЖОПЕ ПО УТРАМ", list("furfag", "tailfag", "phoenix"))
 	var/list/lte_nuclear_war = list()
 
 	if(which_one == "furfag")
 		lte_nuclear_war = GLOB.custom_race_donations
 	else if (which_one == "tailfag")
 		lte_nuclear_war = GLOB.custom_tails_donations
+	else if (which_one == "phoenix")
+		lte_nuclear_war = GLOB.phoenix_donations
 	else
 		return
 
@@ -504,7 +517,7 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 		return
 
 	if(fuckoboingo == "ADD SOMEONE")
-		var/motherlover = input(src, "Separator is - | Sample: ckey-race", "some big ass")
+		var/motherlover = input(src, "Separator is - | Sample: ckey-id", "some big ass")
 
 		if(!motherlover)
 			return
@@ -512,19 +525,30 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 		var/list/fucktorio = splittext_char(motherlover, "-")
 
 		if(length(fucktorio?[1]) && length(fucktorio?[2]))
-			LAZYADDASSOCLIST(lte_nuclear_war, ckey(fucktorio[1]), fucktorio[2])
-			message_admins("[key_name_admin(src)] открывает [fucktorio[1]] доступ к [fucktorio[2]].")
+			if(which_one == "phoenix")
+				if(lte_nuclear_war[ckey(fucktorio[1])])
+					lte_nuclear_war[ckey(fucktorio[1])] = fucktorio[2]
+				else
+					LAZYADDASSOC(lte_nuclear_war, ckey(fucktorio[1]), text2num(fucktorio[2]))
+				message_admins("[key_name_admin(src)] устанавливает [fucktorio[1]] количество перерождений на [fucktorio[2]].")
+			else
+				LAZYADDASSOCLIST(lte_nuclear_war, ckey(fucktorio[1]), fucktorio[2])
+				message_admins("[key_name_admin(src)] открывает [fucktorio[1]] доступ к [fucktorio[2]].")
 	else
-		var/list/temp_list = list()
-		for(var/fucker in lte_nuclear_war)
-			if(fucker != fuckoboingo)
-				continue
-			temp_list += lte_nuclear_war[fucker]
-		var/fuckate = tgui_input_list(src, "AHH", "DIGGER", sort_list(temp_list))
-		if(!fuckate)
-			return
-		LAZYREMOVEASSOC(lte_nuclear_war, fuckoboingo, fuckate)
-		message_admins("[key_name_admin(src)] удаляет у [fuckoboingo] доступ к [fuckate].")
+		if(which_one == "phoenix")
+			var/list/temp_list = list()
+			for(var/fucker in lte_nuclear_war)
+				if(fucker != fuckoboingo)
+					continue
+				temp_list += lte_nuclear_war[fucker]
+			var/fuckate = tgui_input_list(src, "AHH", "DIGGER", sort_list(temp_list))
+			if(!fuckate)
+				return
+			LAZYREMOVEASSOC(lte_nuclear_war, fuckoboingo, fuckate)
+			message_admins("[key_name_admin(src)] удаляет у [fuckoboingo] доступ к [fuckate].")
+		else
+			LAZYREMOVE(lte_nuclear_war, fuckoboingo)
+			message_admins("[key_name_admin(src)] удаляет у [fuckoboingo] доступ к фениксу.")
 
 	if(which_one == "furfag")
 		GLOB.custom_race_donations = lte_nuclear_war
@@ -532,6 +556,9 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 	else if (which_one == "tailfag")
 		GLOB.custom_tails_donations = lte_nuclear_war
 		save_tails_donations()
+	else if (which_one == "phoenix")
+		GLOB.phoenix_donations = lte_nuclear_war
+		save_phoenix_donations()
 	return
 
 /proc/load_race_donations()
@@ -542,6 +569,12 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 
 /proc/load_tails_donations()
 	var/json_file = file("data/donations/tails.json")
+	if(!fexists(json_file))
+		return
+	return json_decode(file2text(json_file))
+
+/proc/load_phoenix_donations()
+	var/json_file = file("data/donations/phoenix.json")
 	if(!fexists(json_file))
 		return
 	return json_decode(file2text(json_file))
@@ -568,5 +601,20 @@ GLOBAL_VAR_INIT(ohshitfuck, FALSE)
 
 	WRITE_FILE(json_file, json_encode(GLOB.custom_tails_donations))
 
+/proc/save_phoenix_donations()
+	if(IsAdminAdvancedProcCall())
+		message_admins("[key_name_admin(usr)] сосёт хуй и лижет яйца.")
+		return
+
+	var/json_file = file("data/donations/phoenix.json")
+
+	fdel(json_file)
+
+	WRITE_FILE(json_file, json_encode(GLOB.phoenix_donations))
+
 GLOBAL_LIST_INIT(custom_race_donations,  load_race_donations())
+GLOBAL_PROTECT(custom_race_donations)
 GLOBAL_LIST_INIT(custom_tails_donations, load_tails_donations())
+GLOBAL_PROTECT(custom_tails_donations)
+GLOBAL_LIST_INIT(phoenix_donations, load_phoenix_donations())
+GLOBAL_PROTECT(phoenix_donations)

@@ -38,7 +38,7 @@
 	var/detail_color = COLOR_ASSEMBLY_ORANGE
 
 /obj/item/card/data/Initialize()
-	.=..()
+	. = ..()
 	update_icon()
 
 /obj/item/card/data/update_overlays()
@@ -1280,7 +1280,7 @@
 
 /obj/item/card/id/advanced/simple_bot
 	name = "простая ID-карта робота"
-	desc = "Внутренняя идентификационная карта, используемая неразумными машинами на станции. Вы должны сообщить об этом кодеру, если вы его держите."
+	desc = "Внутренняя идентификационная карта, используемая неразумными машинами на станции. Требуется сообщить об этом кодеру, если вы его держите."
 	wildcard_slots = WILDCARD_LIMIT_ADMIN
 
 /obj/item/card/id/red

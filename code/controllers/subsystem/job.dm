@@ -210,7 +210,7 @@ SUBSYSTEM_DEF(job)
 			if(AssignRole(player, job.title))
 				return TRUE
 
-/datum/controller/subsystem/job/proc/ResetOccupations()
+/datum/controller/subsystem/job/proc/ResetOccupations(faction = "Station")
 	JobDebug("Occupations reset.")
 	for(var/i in GLOB.new_player_list)
 		var/mob/dead/new_player/player = i
@@ -218,7 +218,7 @@ SUBSYSTEM_DEF(job)
 			player.mind.assigned_role = null
 			player.mind.special_role = null
 			SSpersistence.antag_rep_change[player.ckey] = 0
-	SetupOccupations()
+	SetupOccupations(faction)
 	unassigned = list()
 	return
 
@@ -708,10 +708,18 @@ SUBSYSTEM_DEF(job)
 		destination = arrivals_turfs[1]
 		destination.JoinPlayerHere(M, FALSE)
 		return TRUE
-	else
-		var/msg = "Unable to send mob [M] to late join!"
-		message_admins(msg)
-		CRASH(msg)
+
+	for(var/_sloc in GLOB.start_landmarks_list)
+		var/obj/effect/landmark/start/sloc = _sloc
+		if(sloc.name != M.job)
+			continue
+		sloc.JoinPlayerHere(M, FALSE)
+		message_admins("!! [M] входит в игру в зоне [get_area(M)].")
+		return TRUE
+
+	var/msg = "Unable to send mob [M] to late join!"
+	message_admins(msg)
+	CRASH(msg)
 
 
 ///////////////////////////////////
@@ -813,3 +821,25 @@ SUBSYSTEM_DEF(job)
 			id_card.add_wildcards(list(ACCESS_CAPTAIN), mode=FORCE_ADD_ALL)
 
 	assigned_captain = TRUE
+
+/datum/controller/subsystem/job/proc/SetJobPositions(job_path, total, spawn_pos, wipe_current = FALSE)
+	for(var/I in occupations)
+		var/datum/job/J = I
+		if(istype(J, job_path))
+			J.total_positions = total
+			J.spawn_positions = spawn_pos
+			if(wipe_current)
+				J.current_positions = 0
+
+/datum/controller/subsystem/job/proc/AddJobPositions(job_path, total, spawn_pos)
+	for(var/I in occupations)
+		var/datum/job/J = I
+		if(istype(J, job_path))
+			J.total_positions = total
+			J.spawn_positions = spawn_pos
+
+/datum/controller/subsystem/job/proc/GetJobPositions(job_path)
+	for(var/I in occupations)
+		var/datum/job/J = I
+		if(istype(J, job_path))
+			return J.spawn_positions

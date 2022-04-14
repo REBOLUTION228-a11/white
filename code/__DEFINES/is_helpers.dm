@@ -34,6 +34,8 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 
 #define isclosedturf(A) (istype(A, /turf/closed))
 
+#define isnogenerationturf(A) (istype(A, /turf/open/floor/plating/asteroid/no_generation))
+
 #define isindestructiblewall(A) (istype(A, /turf/closed/indestructible))
 
 #define iswallturf(A) (istype(A, /turf/closed/wall))
@@ -249,5 +251,6 @@ GLOBAL_LIST_INIT(book_types, typecacheof(list(
 #define is_shadow_or_thrall(M) (is_thrall(M) || is_shadow(M))
 
 #define isIPC(A) (is_species(A, /datum/species/ipc))
+#define isandroid(A) (is_species(A, /datum/species/android))
 
 #define isspacepod(A) (istype(A, /obj/spacepod))

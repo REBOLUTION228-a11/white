@@ -64,6 +64,9 @@
 		if(!IS_DREAMER(user))
 			return FALSE
 		to_chat(user, span_notice("Убираю ШЕДЕВР..."))
+		for(var/obj/item/fuck in src)
+			fuck.forceMove(drop_location())
+		cut_overlays()
 		clued = FALSE
 		icon_screen = initial(icon_screen)
 		update_icon()
@@ -138,7 +141,7 @@
 	if(clued && ishuman(user) && !IS_DREAMER(user))
 		var/mob/living/carbon/human/H = user
 		var/obj/item/organ/heart/heart = H.getorganslot(ORGAN_SLOT_HEART)
-		if(IS_DREAMER(H) || heart?.key_for_dreamer)
+		if(heart?.key_for_dreamer)
 			return FALSE
 		H.visible_message(span_danger("[H] пялится в экран [src.name] с отвращением!"), span_danger("ЧТО ЭТО ТАКОЕ?!"))
 		H.pointed(src)
@@ -154,6 +157,22 @@
 	if((IS_DREAMER(user) && !clued))
 		if(!user.CanReach(src))
 			return
+		var/list/temp_list = list()
+		temp_list += GLOB.dreamer_current_recipe
+		var/list/get_list = list()
+		for(var/atom/movable/AM in range(1, src))
+			for(var/t_type in GLOB.dreamer_current_recipe)
+				if(istype(AM, t_type))
+					temp_list -= t_type
+					get_list += AM
+		if(temp_list.len)
+			var/list/req_list = list()
+			for(var/itype in temp_list)
+				var/obj/item/req = new itype
+				req_list += req.name
+				qdel(req)
+			to_chat(user, span_revenbignotice("Для этого шедевра потребуется [english_list(req_list)]. Пока есть только [english_list(get_list)]"))
+			return
 		for(var/i in 1 to 10)
 			new /obj/effect/particle_effect/sparks(loc)
 			playsound(src, "sparks", 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
@@ -162,6 +181,17 @@
 		clued = tgui_input_list(user, "ВЫБЕРЕМ ЖЕ ШЕДЕВР", "ШЕДЕВР", GLOB.dreamer_clues)
 		if(!clued)
 			return
+		GLOB.dreamer_current_recipe = get_random_organ_list(5)
+		for(var/obj/item/I in get_list)
+			I.forceMove(src)
+			var/mutable_appearance/wish = mutable_appearance(I.icon, I.icon_state, layer + 0.01)
+			wish.pixel_x = rand(-16, 16)
+			wish.pixel_y = pick(-16, 16)
+			add_overlay(wish)
+		var/icon/blood_splatter_icon = icon(icon, icon_state, dir, 1)
+		blood_splatter_icon.Blend("#fff", ICON_ADD)
+		blood_splatter_icon.Blend(icon('icons/effects/blood.dmi', "itemblood"), ICON_MULTIPLY)
+		add_overlay(blood_splatter_icon)
 		to_chat(user, span_revenbignotice("[clued]... ЭТОТ ШЕДЕВР ДОЛЖНЫ УЗРЕТЬ!"))
 		icon_screen = "clued"
 		update_icon()

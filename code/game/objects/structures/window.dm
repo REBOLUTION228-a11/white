@@ -60,7 +60,7 @@
 		state = RWINDOW_SECURE
 
 	ini_dir = dir
-	air_update_turf(TRUE, TRUE)
+	air_update_turf(TRUE)
 
 	if(fulltile)
 		setDir()
@@ -77,7 +77,7 @@
 	)
 
 	if (flags_1 & ON_BORDER_1)
-		AddElement(/datum/element/connect_loc, loc_connections)
+		AddComponent(/datum/component/connect_loc_behalf, src, loc_connections)
 
 /obj/structure/window/ComponentInitialize()
 	. = ..()
@@ -235,7 +235,7 @@
 
 /obj/structure/window/set_anchored(anchorvalue)
 	..()
-	air_update_turf(TRUE, anchorvalue)
+	air_update_turf(anchorvalue)
 	update_nearby_icons()
 
 /obj/structure/window/proc/check_state(checked_state)
@@ -312,7 +312,7 @@
 	return TRUE
 
 /obj/structure/window/proc/after_rotation(mob/user,rotation_type)
-	air_update_turf(TRUE, FALSE)
+	air_update_turf(TRUE)
 	ini_dir = dir
 	add_fingerprint(user)
 
@@ -326,7 +326,7 @@
 
 /obj/structure/window/Destroy()
 	set_density(FALSE)
-	air_update_turf(TRUE, FALSE)
+	air_update_turf(TRUE)
 	update_nearby_icons()
 	return ..()
 

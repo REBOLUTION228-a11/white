@@ -77,7 +77,7 @@
 
 /mob/living/simple_animal/pet/cat/space
 	name = "Космокот"
-	desc = "Это кот... в космосе!"
+	desc = "Кот... в космосе!"
 	icon_state = "spacecat"
 	icon_living = "spacecat"
 	icon_dead = "spacecat_dead"
@@ -88,7 +88,7 @@
 
 /mob/living/simple_animal/pet/cat/breadcat
 	name = "Хлеб"
-	desc = "Это кот... не хлеб!"
+	desc = "Кот... не хлеб!"
 	icon_state = "breadcat"
 	icon_living = "breadcat"
 	icon_dead = "breadcat_dead"
@@ -285,7 +285,7 @@
 	if(!stat && !resting && !buckled)
 		turns_since_scan++
 		if(turns_since_scan > 5)
-			walk_to(src, 0)
+			SSmove_manager.stop_looping(src)
 			turns_since_scan = 0
 			if((movement_target) && !(isturf(movement_target.loc) || ishuman(movement_target.loc) ))
 				movement_target = null
@@ -299,7 +299,7 @@
 						break
 			if(movement_target)
 				stop_automated_movement = 1
-				walk_to(src,movement_target,0,3)
+				SSmove_manager.move_to(src, movement_target, 0, 3)
 
 /mob/living/simple_animal/pet/cat/jerry //Holy shit we left jerry on donut ~ Arcane ~Fikou
 	name = "Джерри"
@@ -309,7 +309,7 @@
 
 /mob/living/simple_animal/pet/cat/cak //I told you I'd do it, Remie
 	name = "Keeki"
-	desc = "Это кот, который торт."
+	desc = "Кот, который торт."
 	icon_state = "cak"
 	icon_living = "cak"
 	icon_dead = "cak_dead"

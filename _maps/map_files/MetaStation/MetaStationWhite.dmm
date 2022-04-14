@@ -40353,6 +40353,9 @@
 /obj/effect/turf_decal/tile/purple{
 	dir = 1
 	},
+/obj/effect/turf_decal/stripes/corner{
+	dir = 1
+	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/cargo/exploration_dock)
 "bZE" = (
@@ -57780,10 +57783,6 @@
 /area/maintenance/port/aft)
 "eTm" = (
 /obj/structure/table,
-/obj/item/circuitboard/machine/HFR_corner,
-/obj/item/circuitboard/machine/HFR_corner,
-/obj/item/circuitboard/machine/HFR_corner,
-/obj/item/circuitboard/machine/HFR_corner,
 /obj/item/stack/cable_coil{
 	pixel_x = 3;
 	pixel_y = -7
@@ -60037,6 +60036,9 @@
 /obj/effect/turf_decal/tile/brown{
 	dir = 8
 	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
 /turf/open/floor/plasteel/dark,
 /area/cargo/exploration_dock)
 "gzq" = (
@@ -60498,6 +60500,8 @@
 	pixel_x = 32;
 	pixel_y = -32
 	},
+/obj/structure/rack,
+/obj/item/stock_parts/cell/high,
 /turf/open/floor/plasteel/dark,
 /area/cargo/exploration_dock)
 "gPA" = (
@@ -63512,11 +63516,6 @@
 /area/commons/storage/primary)
 "jql" = (
 /obj/structure/table,
-/obj/item/circuitboard/machine/HFR_core,
-/obj/item/circuitboard/machine/HFR_fuel_input,
-/obj/item/circuitboard/machine/HFR_interface,
-/obj/item/circuitboard/machine/HFR_moderator_input,
-/obj/item/circuitboard/machine/HFR_waste_output,
 /obj/item/stack/cable_coil{
 	pixel_x = -3;
 	pixel_y = 3
@@ -70471,6 +70470,9 @@
 /area/science/storage)
 "oJm" = (
 /obj/effect/landmark/start/exploration,
+/obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
+	dir = 1
+	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/cargo/exploration_dock)
 "oJL" = (
@@ -72128,12 +72130,6 @@
 /turf/open/floor/plasteel/white,
 /area/medical/chemistry)
 "pTW" = (
-/obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2{
-	dir = 4
-	},
-/obj/effect/turf_decal/bot,
-/obj/structure/rack,
-/obj/item/stock_parts/cell/high,
 /obj/effect/turf_decal/tile/brown{
 	dir = 4
 	},
@@ -72144,11 +72140,9 @@
 /obj/effect/turf_decal/tile/brown{
 	dir = 8
 	},
-/obj/machinery/light{
-	dir = 1
-	},
+/obj/effect/turf_decal/delivery,
 /turf/open/floor/plasteel/dark,
-/area/cargo/exploration_dock)
+/area/cargo/exploration_mission)
 "pUf" = (
 /obj/machinery/conveyor_switch/oneway{
 	id = "QMLoad2";
@@ -76776,6 +76770,12 @@
 /obj/effect/turf_decal/tile/purple{
 	dir = 8
 	},
+/obj/machinery/light{
+	dir = 8
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
 /turf/open/floor/plasteel/dark,
 /area/cargo/exploration_dock)
 "tpc" = (
@@ -77548,6 +77548,9 @@
 /turf/open/floor/plasteel,
 /area/service/hydroponics)
 "tPH" = (
+/obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2{
+	dir = 4
+	},
 /turf/open/floor/plasteel/monofloor/dark,
 /area/cargo/exploration_dock)
 "tQf" = (
@@ -79133,9 +79136,6 @@
 "vdw" = (
 /obj/machinery/power/apc/auto_name/south,
 /obj/structure/cable,
-/obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
-	dir = 4
-	},
 /obj/effect/turf_decal/bot,
 /obj/structure/rack,
 /obj/item/storage/toolbox/electrical{

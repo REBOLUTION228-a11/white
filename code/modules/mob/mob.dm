@@ -130,7 +130,7 @@
 	t +=	span_danger("Температура: [environment.return_temperature()] \n")
 	for(var/id in environment.get_gases())
 		if(environment.get_moles(id))
-			t+=span_notice("[GLOB.meta_gas_info[id][META_GAS_NAME]]: [environment.get_moles(id)] \n")
+			t+=span_notice("[GLOB.gas_data.names[id]]: [environment.get_moles(id)] \n")
 
 	to_chat(usr, t)
 
@@ -299,7 +299,7 @@
 
 
 ///Is the mob incapacitated
-/mob/proc/incapacitated(ignore_restraints = FALSE, ignore_grab = FALSE, ignore_stasis = FALSE)
+/mob/proc/incapacitated(flags)
 	return
 
 /**
@@ -716,14 +716,18 @@
 	set name = "❗ Переродиться"
 	set category = "OOC"
 
-	if (CONFIG_GET(flag/norespawn) && (!check_rights_for(usr.client, R_ADMIN) || tgui_alert(usr, "Respawn configs disabled. Do you want to use your permissions to circumvent it?", "Respawn", list("Yes", "No")) != "Yes"))
+	var/pd = text2num(GLOB.phoenix_donations?[client?.ckey])
+
+	if(pd <= 0 && (CONFIG_GET(flag/norespawn) && (!check_rights_for(usr.client, R_ADMIN) || tgui_alert(usr, "Хуй сосал?", "Respawn", list("Да", "Нет")) != "Да")))
 		return
 
-	if ((stat != DEAD || !( SSticker )))
+	if((stat != DEAD || !( SSticker )))
 		to_chat(usr, span_boldnotice("Живу!"))
 		return
 
-	client.is_respawned = TRUE
+	if(pd)
+		GLOB.phoenix_donations[client.ckey]--
+		to_chat(usr, span_boldnotice("Использован Феникс! Осталось [GLOB.phoenix_donations[client.ckey]] зарядов."))
 
 	log_game("[key_name(usr)] used abandon mob.")
 

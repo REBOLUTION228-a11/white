@@ -1,6 +1,6 @@
 /obj/machinery/nuclearbomb
-	name = "nuclear fission explosive"
-	desc = "You probably shouldn't stick around to see if this is armed."
+	name = "термоядерная бомба"
+	desc = "Я стал смертью разрушителем миров..."
 	icon = 'icons/obj/machines/nuke.dmi'
 	icon_state = "nuclearbomb_base"
 	anchored = FALSE
@@ -365,7 +365,12 @@
 										req_num += GLOB.dreamer_clues[i]
 									if(numeric_input == num2text(req_num))
 										playsound(src, 'sound/machines/nuke/confirm_beep.ogg', 50, FALSE)
-										// temp logic
+										var/mob/living/carbon/dreamer = usr
+										dreamer.Sleeping(70 SECONDS)
+										var/datum/antagonist/dreamer/D = dreamer?.mind?.has_antag_datum(/datum/antagonist/dreamer)
+										inc_metabalance(usr, 500, reason = "Успех!")
+										spawn(5 SECONDS)
+											D?.awake()
 										safety = FALSE
 										set_active()
 									else

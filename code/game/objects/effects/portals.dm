@@ -45,6 +45,9 @@
 			return FALSE
 	return ..()
 
+/obj/effect/portal/newtonian_move(direction, instant = FALSE) // Prevents portals spawned by jaunter/handtele from floating into space when relocated to an adjacent tile.
+	return TRUE
+
 /obj/effect/portal/attackby(obj/item/W, mob/user, params)
 	if(user && Adjacent(user))
 		user.forceMove(get_turf(src))
@@ -124,8 +127,8 @@
 		return FALSE
 	atmos_source.atmos_adjacent_turfs[atmos_destination] = TRUE
 	atmos_destination.atmos_adjacent_turfs[atmos_source] = TRUE
-	atmos_source.air_update_turf(FALSE, FALSE)
-	atmos_destination.air_update_turf(FALSE, FALSE)
+	atmos_source.air_update_turf()
+	atmos_destination.air_update_turf()
 
 /obj/effect/portal/proc/unlink_atmos()
 	if(istype(atmos_source))

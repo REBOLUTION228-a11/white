@@ -65,7 +65,7 @@
 	return make_plating(force_plating)
 
 /turf/open/floor/wood/cold
-	temperature = 255.37
+	initial_temperature = 255.37
 
 /turf/open/floor/wood/airless
 	initial_gas_mix = AIRLESS_ATMOS
@@ -214,7 +214,7 @@
 
 /turf/open/floor/grass/fakebasalt //Heart is not a real planeteer power
 	name = "эстетическая вулканическая поверхность"
-	desc = "Безопасно воссозданный газон для вашего побега с адской планеты."
+	desc = "Безопасно воссозданный газон для побега с адской планеты."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "basalt"
 	floor_tile = /obj/item/stack/tile/basalt

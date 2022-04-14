@@ -168,7 +168,7 @@
 /obj/structure/bed/dogbed
 	name = "собачья кровать"
 	icon_state = "dogbed"
-	desc = "Удобная на вид кровать для собаки. Вы можете даже пристегнуть своего питомца на случай, если гравитация отключится."
+	desc = "Удобная на вид кровать для собаки. Можно даже пристегнуть своего питомца на случай, если гравитация отключится."
 	anchored = FALSE
 	buildstacktype = /obj/item/stack/sheet/mineral/wood
 	buildstackamount = 10
@@ -180,26 +180,26 @@
 	anchored = TRUE
 
 /obj/structure/bed/dogbed/cayenne
-	desc = "Кажется, немного... подозрительной."
+	desc = "Выглядит как-то... рыбно."
 	name = "кровать Кайенны"
 	anchored = TRUE
 
 /obj/structure/bed/dogbed/lia
-	desc = "Seems kind of... fishy."
-	name = "Lia's bed"
+	desc = "Выглядит как-то... рыбно."
+	name = "кровать Лии"
 	anchored = TRUE
 
 /obj/structure/bed/dogbed/renault
-	desc = "Выглядит удобно, Лисий человек нуждается в лисичке."
+	desc = "Выглядит удобно. Лисий человек нуждается в лисичке."
 	name = "кровать Рено"
 	anchored = TRUE
 
 /obj/structure/bed/dogbed/mcgriff
-	desc = "McGriff's bed, because even crimefighters sometimes need a nap."
-	name = "McGriff's bed"
+	desc = "Кровать МакГрифа, потому что даже борцам с преступностью иногда нужно вздремнуть."
+	name = "кровать МакГрифа"
 
 /obj/structure/bed/dogbed/runtime
-	desc = "Удобная кошачья кровать. Вы можете даже пристегнуть своего питомца на случай, если гравитация отключится."
+	desc = "Удобная кошачья кровать. Можно даже пристегнуть своего питомца на случай, если гравитация отключится."
 	name = "Кровать Рантайма"
 	anchored = TRUE
 
@@ -218,15 +218,36 @@
 
 /obj/structure/bed/alien
 	name = "отдыхалка"
-	desc = "Это похоже на штуки с Земли. Могут ли инопланетяне красть наши технологии?"
+	desc = "Похоже на штуки с Земли. Могут ли инопланетяне красть наши технологии?"
 	icon_state = "abed"
 
 
 /obj/structure/bed/maint
-	name = "dirty mattress"
-	desc = "An old grubby mattress. You try to not think about what could be the cause of those stains."
+	name = "грязный матрас"
+	desc = "Старый потертый матрас. Вы стараетесь не думать о том, что может быть причиной этих пятен."
 	icon_state = "dirty_mattress"
 
 /obj/structure/bed/maint/Initialize()
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MOLD, CELL_VIRUS_TABLE_GENERIC, rand(2,4), 25)
+
+//Double Beds, for luxurious sleeping, i.e. the captain and maybe heads- if people use this for ERP, send them to skyrat
+/obj/structure/bed/double
+	name = "двухспальная кровать"
+	desc = "Роскошная двуспальная кровать для тех, кто слишком важен для маленьких снов."
+	icon_state = "bed_double"
+	buildstackamount = 4
+	max_buckled_mobs = 2
+	///The mob who buckled to this bed second, to avoid other mobs getting pixel-shifted before he unbuckles.
+	var/mob/living/goldilocks
+
+/obj/structure/bed/double/post_buckle_mob(mob/living/target)
+	if(buckled_mobs.len > 1 && !goldilocks) //Push the second buckled mob a bit higher from the normal lying position
+		target.pixel_y = target.base_pixel_y + 6
+		goldilocks = target
+
+/obj/structure/bed/double/post_unbuckle_mob(mob/living/target)
+	target.pixel_y = target.base_pixel_y + target.body_position_pixel_y_offset
+	if(target == goldilocks)
+		goldilocks = null
+

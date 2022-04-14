@@ -9,7 +9,7 @@
  */
 /obj/structure/energy_net
 	name = "Энергетическая сеть"
-	desc = "Это сеть из зеленой энергии."
+	desc = "Сеть из зеленой энергии."
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "energynet"
 
@@ -32,7 +32,7 @@
 
 /obj/structure/energy_net/Destroy()
 	if(!QDELETED(affecting))
-		affecting.visible_message(span_notice("[affecting.name] восстанавливается из энергосети!") , span_notice("Восстанавливаюсь за счёт энергосети!") , span_hear("Вы слышите ворчание."))
+		affecting.visible_message(span_notice("[affecting.name] восстанавливается из энергосети!") , span_notice("Восстанавливаюсь за счёт энергосети!") , span_hear("Слышу ворчание."))
 	affecting = null
 	return ..()
 

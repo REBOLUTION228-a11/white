@@ -37,8 +37,8 @@
 	var/arrest_type = FALSE //If true, don't handcuff
 	var/ranged = FALSE //used for EDs
 
-	var/fair_market_price_arrest = 25 // On arrest, charges the violator this much. If they don't have that much in their account, the securitron will beat them instead
-	var/fair_market_price_detain = 5 // Charged each time the violator is stunned on detain
+	var/fair_market_price_arrest = 250 // On arrest, charges the violator this much. If they don't have that much in their account, the securitron will beat them instead
+	var/fair_market_price_detain = 50 // Charged each time the violator is stunned on detain
 	var/weapon_force = 20 // Only used for NAP violation beatdowns on non-grievous securitrons
 	var/market_verb = "Подозреваемый"
 	var/payment_department = ACCOUNT_SEC
@@ -111,7 +111,7 @@
 	target = null
 	oldtarget_name = null
 	anchored = FALSE
-	walk_to(src,0)
+	SSmove_manager.stop_looping(src)
 	last_found = world.time
 
 /mob/living/simple_animal/bot/secbot/electrocute_act(shock_damage, source, siemens_coeff = 1, flags = NONE)//shocks only make him angry
@@ -327,7 +327,7 @@
 
 		if(BOT_IDLE)		// idle
 
-			walk_to(src,0)
+			SSmove_manager.stop_looping(src)
 			look_for_perp()	// see if any criminals are in range
 			if(!mode && auto_patrol)	// still idle, and set to patrol
 				mode = BOT_START_PATROL	// switch to patrol mode
@@ -336,7 +336,7 @@
 
 			// if can't reach perp for long enough, go idle
 			if(frustration >= 8)
-				walk_to(src,0)
+				SSmove_manager.stop_looping(src)
 				back_to_idle()
 				return
 
@@ -354,7 +354,7 @@
 
 				else								// not next to perp
 					var/turf/olddist = get_dist(src, target)
-					walk_to(src, target,1,4)
+					SSmove_manager.move_to(src, target, 1, 4)
 					if((get_dist(src, target)) >= (olddist))
 						frustration++
 					else
@@ -465,8 +465,6 @@
 	return FALSE
 
 /mob/living/simple_animal/bot/secbot/explode()
-
-	walk_to(src,0)
 	visible_message(span_boldannounce("[capitalize(src.name)] взрывается!"))
 	var/atom/Tsec = drop_location()
 	if(ranged)
@@ -543,7 +541,7 @@
 						nap_violation(target)
 						return FALSE
 					var/datum/bank_account/D = SSeconomy.get_dep_account(payment_department)
-					say("Спасибо за согласие. С вашего аккаунта списано [fair_market_price] кредит[get_num_string(fair_market_price)].")
+					say("Спасибо за согласие. С аккаунта списано [fair_market_price] кредит[get_num_string(fair_market_price)].")
 					if(D)
 						D.adjust_money(fair_market_price)
 			else

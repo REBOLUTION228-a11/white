@@ -171,7 +171,7 @@
 
 /obj/structure/chair/comfy
 	name = "удобный стул"
-	desc = "Это выглядит удобно."
+	desc = "Выглядит удобно."
 	icon = 'icons/obj/chairs.dmi'
 	icon_state = "comfychair"
 	color = rgb(255,255,255)
@@ -526,7 +526,7 @@
 
 /obj/structure/chair/plastic/post_buckle_mob(mob/living/Mob)
 	Mob.pixel_y += 2
-	.=..()
+	. = ..()
 	if(iscarbon(Mob))
 		INVOKE_ASYNC(src, .proc/snap_check, Mob)
 

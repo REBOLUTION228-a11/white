@@ -24,6 +24,7 @@
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 10
 	},
+/obj/tacmap/directional/west,
 /turf/open/floor/plasteel/dark,
 /area/medical/medbay/lobby)
 "ax" = (
@@ -63,9 +64,9 @@
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
 "bn" = (
-/obj/effect/decal/cleanable/cobweb/cobweb2,
-/turf/closed/wall,
-/area/medical/medbay/central)
+/obj/effect/landmark/start/paramedic,
+/turf/open/floor/plasteel/monofloor/white,
+/area/medical/surgery)
 "bp" = (
 /obj/effect/turf_decal/tile/blue{
 	dir = 1
@@ -256,8 +257,20 @@
 /area/medical/storage)
 "dI" = (
 /obj/structure/closet/crate/bin,
-/obj/effect/spawner/lootdrop/armory_contraband,
 /obj/item/reagent_containers/glass/bowl/mushroom_bowl,
+/obj/item/scalpel,
+/obj/effect/spawner/lootdrop/food_packaging{
+	pixel_x = 9
+	},
+/obj/effect/spawner/lootdrop/food_packaging{
+	pixel_y = 6
+	},
+/obj/effect/spawner/lootdrop/food_packaging{
+	pixel_x = -5
+	},
+/obj/effect/spawner/lootdrop/maintenance{
+	pixel_y = -8
+	},
 /turf/open/floor/mineral/titanium,
 /area/medical/medbay/aft)
 "dT" = (
@@ -414,6 +427,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
+/obj/structure/disposalpipe/segment,
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "eH" = (
@@ -585,16 +599,16 @@
 	dir = 1
 	},
 /obj/machinery/light_switch/directional/north,
+/obj/machinery/modular_computer/console/preset/cargochat/medical,
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "gQ" = (
 /obj/machinery/chem_master,
-/obj/effect/turf_decal/trimline/yellow/filled/line{
-	dir = 5
-	},
-/obj/machinery/power/apc/auto_name/east,
 /obj/structure/cable,
 /obj/machinery/light_switch/directional/north,
+/obj/effect/turf_decal/trimline/yellow/filled/line{
+	dir = 1
+	},
 /turf/open/floor/plasteel/white,
 /area/medical/pharmacy)
 "gS" = (
@@ -621,11 +635,11 @@
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/storage)
 "hB" = (
-/obj/effect/turf_decal/trimline/blue/filled/line{
-	dir = 8
+/obj/structure/disposalpipe/junction/flip{
+	dir = 1
 	},
-/obj/structure/disposalpipe/segment{
-	dir = 4
+/obj/effect/turf_decal/trimline/blue/filled/line{
+	dir = 9
 	},
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
@@ -728,31 +742,10 @@
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/aft)
 "iZ" = (
-/obj/structure/table/reinforced,
-/obj/machinery/door/window/eastright{
-	dir = 8;
-	name = "Pharmacy Desk";
-	req_access_txt = "69"
-	},
-/obj/machinery/door/poddoor/preopen{
-	id = "pharmacy_shutters";
-	name = "Pharmacy Shutter"
-	},
-/obj/item/reagent_containers/glass/beaker/large{
-	pixel_x = -2;
-	pixel_y = 8
-	},
-/obj/item/reagent_containers/glass/beaker/large{
-	pixel_x = 6;
-	pixel_y = 1
-	},
-/obj/machinery/door/firedoor/border_only{
-	dir = 8
-	},
-/obj/machinery/door/firedoor/border_only{
+/obj/effect/turf_decal/trimline/yellow/filled/line{
 	dir = 4
 	},
-/turf/open/floor/plasteel/monofloor/white,
+/turf/open/floor/plasteel/white,
 /area/medical/pharmacy)
 "jj" = (
 /obj/machinery/camera/autoname{
@@ -827,6 +820,7 @@
 /obj/machinery/camera/autoname{
 	dir = 1
 	},
+/obj/tacmap/directional/south,
 /turf/open/floor/plasteel/white,
 /area/medical/surgery)
 "jL" = (
@@ -855,6 +849,7 @@
 	pixel_y = 24;
 	req_one_access_txt = "5"
 	},
+/obj/machinery/computer/crew,
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "kd" = (
@@ -894,10 +889,7 @@
 /turf/open/floor/plasteel/white,
 /area/medical/storage)
 "kf" = (
-/obj/structure/disposalpipe/segment{
-	dir = 4
-	},
-/obj/structure/chair/office/light{
+/obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 8
 	},
 /turf/open/floor/plasteel/monofloor/white,
@@ -1007,6 +999,7 @@
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
 	dir = 1
 	},
+/obj/effect/landmark/start/paramedic,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/surgery)
 "mh" = (
@@ -1090,54 +1083,10 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/structure/disposalpipe/segment,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
 "nh" = (
 /obj/structure/table/glass,
-/obj/item/storage/box/syringes{
-	pixel_x = -4;
-	pixel_y = 14
-	},
-/obj/item/assembly/igniter,
-/obj/item/assembly/igniter,
-/obj/item/assembly/igniter,
-/obj/item/assembly/igniter,
-/obj/item/screwdriver{
-	pixel_x = 8;
-	pixel_y = 1
-	},
-/obj/item/stack/cable_coil{
-	pixel_y = -4
-	},
-/obj/item/assembly/timer{
-	pixel_x = 3;
-	pixel_y = -3
-	},
-/obj/item/assembly/timer{
-	pixel_x = 3;
-	pixel_y = -3
-	},
-/obj/item/assembly/timer{
-	pixel_x = 3;
-	pixel_y = -3
-	},
-/obj/item/assembly/timer{
-	pixel_x = 3;
-	pixel_y = -3
-	},
-/obj/item/grenade/chem_grenade{
-	pixel_x = -10
-	},
-/obj/item/grenade/chem_grenade{
-	pixel_x = -10
-	},
-/obj/item/grenade/chem_grenade{
-	pixel_x = -10
-	},
-/obj/item/grenade/chem_grenade{
-	pixel_x = -10
-	},
 /obj/effect/turf_decal/trimline/yellow/filled/line{
 	dir = 8
 	},
@@ -1373,6 +1322,9 @@
 /obj/item/storage/box/beakers{
 	pixel_x = -8;
 	pixel_y = -6
+	},
+/obj/structure/disposalpipe/segment{
+	dir = 4
 	},
 /turf/open/floor/plasteel/white,
 /area/medical/pharmacy)
@@ -1780,14 +1732,14 @@
 /turf/open/floor/plasteel/dark,
 /area/command/heads_quarters/cmo)
 "xd" = (
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
-/obj/structure/cable,
-/obj/structure/disposalpipe/junction/flip{
-	dir = 1
+/obj/machinery/power/apc/auto_name/east,
+/obj/effect/turf_decal/trimline/yellow/filled/line{
+	dir = 5
 	},
-/turf/open/floor/plasteel/monofloor/white,
-/area/medical/medbay/central)
+/obj/structure/cable,
+/obj/machinery/chem_mass_spec,
+/turf/open/floor/plasteel/white,
+/area/medical/pharmacy)
 "xm" = (
 /obj/structure/disposalpipe/segment,
 /obj/structure/lattice,
@@ -1833,6 +1785,10 @@
 	},
 /obj/structure/cable,
 /obj/machinery/power/apc/auto_name/south,
+/obj/structure/table/reinforced,
+/obj/machinery/cell_charger{
+	pixel_y = -7
+	},
 /turf/open/floor/plasteel/white,
 /area/medical/sleeper)
 "xF" = (
@@ -1926,6 +1882,7 @@
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 9
 	},
+/obj/tacmap/directional/west,
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "yT" = (
@@ -2076,14 +2033,55 @@
 /turf/open/floor/plasteel/monofloor/dark,
 /area/medical/medbay/lobby)
 "BG" = (
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
-/obj/structure/cable,
-/obj/structure/disposalpipe/segment{
-	dir = 9
+/obj/structure/table/glass,
+/obj/item/storage/box/syringes{
+	pixel_x = -4;
+	pixel_y = 14
 	},
-/turf/open/floor/plasteel/monofloor/white,
-/area/medical/medbay/central)
+/obj/item/assembly/igniter,
+/obj/item/assembly/igniter,
+/obj/item/assembly/igniter,
+/obj/item/assembly/igniter,
+/obj/item/screwdriver{
+	pixel_x = 8;
+	pixel_y = 1
+	},
+/obj/item/stack/cable_coil{
+	pixel_y = -4
+	},
+/obj/item/assembly/timer{
+	pixel_x = 3;
+	pixel_y = -3
+	},
+/obj/item/assembly/timer{
+	pixel_x = 3;
+	pixel_y = -3
+	},
+/obj/item/assembly/timer{
+	pixel_x = 3;
+	pixel_y = -3
+	},
+/obj/item/assembly/timer{
+	pixel_x = 3;
+	pixel_y = -3
+	},
+/obj/item/grenade/chem_grenade{
+	pixel_x = -10
+	},
+/obj/item/grenade/chem_grenade{
+	pixel_x = -10
+	},
+/obj/item/grenade/chem_grenade{
+	pixel_x = -10
+	},
+/obj/item/grenade/chem_grenade{
+	pixel_x = -10
+	},
+/obj/structure/disposalpipe/segment{
+	dir = 4
+	},
+/turf/open/floor/plasteel/white,
+/area/medical/pharmacy)
 "BM" = (
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 1
@@ -2209,6 +2207,9 @@
 /area/medical/medbay/lobby)
 "Cv" = (
 /obj/structure/cable,
+/obj/structure/chair/office/light{
+	dir = 1
+	},
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
 "Cy" = (
@@ -2536,9 +2537,6 @@
 /turf/closed/wall,
 /area/medical/medbay/central)
 "GN" = (
-/obj/effect/turf_decal/trimline/yellow/filled/line{
-	dir = 4
-	},
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
 	dir = 8
 	},
@@ -2565,17 +2563,14 @@
 /obj/structure/sign/departments/chemistry/pharmacy{
 	pixel_x = -32
 	},
-/obj/effect/turf_decal/trimline/blue/filled/line{
-	dir = 8
+/obj/structure/disposalpipe/segment,
+/obj/effect/spawner/structure/window/reinforced,
+/obj/machinery/door/poddoor/preopen{
+	id = "pharmacy_shutters";
+	name = "Pharmacy Shutter"
 	},
-/obj/structure/disposalpipe/segment{
-	dir = 5
-	},
-/obj/machinery/computer/crew{
-	dir = 4
-	},
-/turf/open/floor/plasteel/white,
-/area/medical/medbay/central)
+/turf/open/floor/plating/airless,
+/area/medical/pharmacy)
 "GU" = (
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 4
@@ -2673,7 +2668,7 @@
 	name = "Gate Shutters"
 	},
 /obj/structure/cable,
-/obj/effect/spawner/structure/window/plasma/reinforced/plastitanium,
+/obj/effect/spawner/structure/window/reinforced,
 /turf/open/floor/plating/airless,
 /area/medical/medbay/lobby)
 "Jk" = (
@@ -2725,14 +2720,34 @@
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/aft)
 "JR" = (
-/obj/effect/turf_decal/trimline/blue/filled/line{
+/obj/structure/disposalpipe/segment{
+	dir = 6
+	},
+/obj/structure/table/reinforced,
+/obj/machinery/door/window/eastright{
+	name = "Pharmacy Desk";
+	req_access_txt = "69"
+	},
+/obj/item/reagent_containers/glass/beaker/large{
+	pixel_x = -2;
+	pixel_y = 8
+	},
+/obj/item/reagent_containers/glass/beaker/large{
+	pixel_x = 6;
+	pixel_y = 1
+	},
+/obj/machinery/door/poddoor/preopen{
+	id = "pharmacy_shutters";
+	name = "Pharmacy Shutter"
+	},
+/obj/machinery/door/firedoor/border_only{
+	dir = 4
+	},
+/obj/machinery/door/firedoor/border_only{
 	dir = 8
 	},
-/obj/structure/disposalpipe/segment{
-	dir = 5
-	},
-/turf/open/floor/plasteel/white,
-/area/medical/medbay/central)
+/turf/open/floor/plasteel/monofloor/white,
+/area/medical/pharmacy)
 "Kc" = (
 /obj/machinery/camera/autoname,
 /obj/structure/table/reinforced,
@@ -2950,17 +2965,17 @@
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "MN" = (
-/obj/effect/turf_decal/trimline/blue/filled/corner{
-	dir = 1
+/obj/effect/turf_decal/trimline/blue/filled/line{
+	dir = 8
 	},
-/obj/structure/disposalpipe/segment{
-	dir = 6
+/obj/machinery/light{
+	dir = 8
 	},
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "MU" = (
-/obj/structure/disposalpipe/segment{
-	dir = 4
+/obj/effect/turf_decal/trimline/blue/filled/corner{
+	dir = 1
 	},
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
@@ -2990,13 +3005,11 @@
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 "NC" = (
-/obj/machinery/chem_mass_spec,
-/obj/effect/turf_decal/trimline/yellow/filled/line{
-	dir = 6
-	},
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
+/obj/effect/turf_decal/trimline/yellow/filled/line,
+/obj/structure/table/glass,
 /turf/open/floor/plasteel/white,
 /area/medical/pharmacy)
 "NL" = (
@@ -3015,17 +3028,6 @@
 /obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/storage)
-"Of" = (
-/obj/effect/turf_decal/trimline/blue/filled/line{
-	dir = 9
-	},
-/obj/machinery/light{
-	dir = 8
-	},
-/obj/structure/disposalpipe/trunk,
-/obj/machinery/disposal/bin,
-/turf/open/floor/plasteel/white,
-/area/medical/medbay/central)
 "Op" = (
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 8
@@ -3051,8 +3053,11 @@
 /turf/open/floor/plasteel/monofloor/dark,
 /area/medical/virology)
 "OD" = (
-/obj/structure/disposalpipe/junction/flip{
+/obj/structure/disposalpipe/segment{
 	dir = 4
+	},
+/obj/effect/turf_decal/trimline/blue/filled/line{
+	dir = 8
 	},
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
@@ -3082,6 +3087,7 @@
 "OL" = (
 /obj/effect/turf_decal/trimline/blue/filled/line,
 /obj/machinery/firealarm/directional/south,
+/obj/machinery/limbgrower,
 /turf/open/floor/plasteel/white,
 /area/medical/sleeper)
 "OO" = (
@@ -3287,21 +3293,12 @@
 	},
 /turf/open/floor/plasteel/dark,
 /area/medical/medbay/lobby)
-"RF" = (
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
-/obj/structure/cable,
-/obj/structure/disposalpipe/segment{
-	dir = 10
-	},
-/turf/open/floor/plasteel/monofloor/white,
-/area/medical/medbay/central)
 "RJ" = (
 /obj/machinery/door/poddoor/preopen{
 	id = "durka_windows"
 	},
 /obj/structure/cable,
-/obj/effect/spawner/structure/window/plasma/reinforced/plastitanium,
+/obj/effect/spawner/structure/window/reinforced,
 /turf/open/floor/plating/airless,
 /area/medical/medbay/central)
 "RN" = (
@@ -3325,16 +3322,16 @@
 /turf/closed/wall/r_wall,
 /area/medical/medbay/aft)
 "Su" = (
-/obj/effect/turf_decal/trimline/blue/filled/line{
-	dir = 8
+/obj/structure/disposalpipe/junction/flip{
+	dir = 1
 	},
-/obj/structure/disposalpipe/segment{
-	dir = 10
+/obj/effect/spawner/structure/window/reinforced,
+/obj/machinery/door/poddoor/preopen{
+	id = "pharmacy_shutters";
+	name = "Pharmacy Shutter"
 	},
-/obj/structure/table/reinforced,
-/obj/machinery/cell_charger,
-/turf/open/floor/plasteel/white,
-/area/medical/medbay/central)
+/turf/open/floor/plating/airless,
+/area/medical/pharmacy)
 "Sw" = (
 /obj/machinery/door/firedoor,
 /turf/open/openspace,
@@ -3834,7 +3831,6 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/structure/cable,
-/obj/structure/disposalpipe/segment,
 /obj/effect/landmark/start/medical_doctor,
 /turf/open/floor/plasteel/monofloor/white,
 /area/medical/medbay/central)
@@ -3885,7 +3881,11 @@
 /turf/open/floor/plasteel/dark,
 /area/medical/medbay/lobby)
 "ZX" = (
-/obj/machinery/limbgrower,
+/obj/structure/disposalpipe/trunk{
+	dir = 1
+	},
+/obj/machinery/disposal/bin,
+/obj/machinery/light,
 /turf/open/floor/plasteel/white,
 /area/medical/medbay/central)
 
@@ -4159,7 +4159,7 @@ gd
 Vy
 YT
 VG
-er
+bn
 jK
 Tn
 di
@@ -4199,9 +4199,9 @@ Cr
 XG
 Tn
 Cy
-er
+jw
 Ax
-er
+bn
 hH
 Tn
 di
@@ -4537,7 +4537,7 @@ nK
 wV
 FE
 Fp
-bN
+Qe
 uj
 oa
 di
@@ -4585,7 +4585,7 @@ oa
 di
 di
 GH
-bn
+GH
 GH
 GH
 GH
@@ -4616,9 +4616,9 @@ Ow
 ry
 Oy
 wh
-wh
+xd
 iZ
-yn
+BG
 wh
 oF
 We
@@ -4655,10 +4655,10 @@ xF
 Cn
 ax
 SU
-JF
-JF
-JF
-Of
+Ow
+Ow
+wh
+wh
 JR
 Su
 GT
@@ -4702,7 +4702,7 @@ wR
 zb
 MN
 OD
-EQ
+kf
 kf
 MU
 YK
@@ -4742,11 +4742,11 @@ wo
 gg
 Vf
 Vf
-RF
+Vf
 mX
 Yz
-xd
-BG
+Vf
+Vf
 mA
 So
 PZ

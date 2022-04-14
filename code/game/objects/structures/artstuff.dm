@@ -55,6 +55,9 @@
 	///boolean that blocks persistence from saving it. enabled from printing copies, because we do not want to save copies.
 	var/no_save = FALSE
 
+	///reference to the last patron's mind datum, used to allow them (and no others) to change the frame before the round ends.
+	var/datum/weakref/last_patron
+
 	var/datum/painting/painting_metadata
 
 	// Painting overlay offset when framed
@@ -114,6 +117,7 @@
 	.["editable"] = !finalized //Ideally you should be able to draw moustaches on existing paintings in the gallery but that's not implemented yet
 	.["show_plaque"] = istype(loc,/obj/structure/sign/painting)
 	.["paint_tool_color"] = get_paint_tool_color(user.get_active_held_item())
+	.["paint_tool_alpha"] = get_paint_tool_alpha(user.get_active_held_item())
 
 /obj/item/canvas/examine(mob/user)
 	. = ..()
@@ -130,14 +134,17 @@
 				return TRUE
 			var/obj/item/I = user.get_active_held_item()
 			var/tool_color = get_paint_tool_color(I)
+			var/tool_alpha = get_paint_tool_alpha(I)
 			if(!tool_color)
+				return FALSE
+			if(!tool_alpha)
 				return FALSE
 			var/list/data = params["data"]
 			//could maybe validate continuity but eh
 			for(var/point in data)
 				var/x = text2num(point["x"])
 				var/y = text2num(point["y"])
-				grid[x][y] = tool_color
+				grid[x][y] = BlendRGB(grid[x][y], tool_color, round(tool_alpha / 255, 0.1))
 			var/medium = get_paint_tool_medium(I)
 			if(medium && painting_metadata.medium && painting_metadata.medium != medium)
 				painting_metadata.medium = "Микс медиум"
@@ -165,8 +172,11 @@
 	try_rename(user)
 
 /obj/item/canvas/proc/patron(mob/user)
-	if(!finalized || !painting_metadata.loaded_from_json || !isliving(user))
+	if(!finalized || !isliving(user))
 		return
+	if(!painting_metadata.loaded_from_json)
+		if(tgui_alert(user, "The painting hasn't been archived yet and will be lost at the end of the shift if not placed in an elegible frame. Continue?","Unarchived Painting",list("Yes","No")) != "Yes")
+			return
 	var/mob/living/living_user = user
 	var/obj/item/card/id/id_card = living_user.get_idcard(TRUE)
 	if(!id_card)
@@ -192,7 +202,39 @@
 	painting_metadata.patron_ckey = user.ckey
 	painting_metadata.patron_name = user.real_name
 	painting_metadata.credit_value = offer_amount
-	to_chat(user,span_notice("NanoTrasen благодарит вас за пожертвование. Теперь вы официальный спонсор данной картины."))
+	last_patron = WEAKREF(user.mind)
+	to_chat(user, span_notice("Nanotrasen Trust Foundation thanks you for your contribution. You're now offical patron of this painting."))
+	var/list/possible_frames = SSpersistent_paintings.get_available_frames(offer_amount)
+	if(possible_frames.len <= 1) // Not much room for choices here.
+		return
+	if(tgui_alert(user, "Do you want to change the frame appearance now? You can do so later this shift with Alt-Click as long as you're a patron.","Patronage Frame",list("Yes","No")) != "Yes")
+		return
+	if(!can_select_frame(user))
+		return
+	SStgui.close_uis(src) // Close the examine ui so that the radial menu doesn't end up covered by it and people don't get confused.
+	select_new_frame(user, possible_frames)
+
+/obj/item/canvas/proc/select_new_frame(mob/user, list/candidates)
+	var/possible_frames = candidates || SSpersistent_paintings.get_available_frames(painting_metadata.credit_value)
+	var/list/radial_options = list()
+	for(var/frame_name in possible_frames)
+		radial_options[frame_name] = image(icon, "[icon_state]frame_[frame_name]")
+	var/result = show_radial_menu(user, loc, radial_options, radius = 60, custom_check = CALLBACK(src, .proc/can_select_frame, user), tooltips = TRUE)
+	if(!result)
+		return
+	painting_metadata.frame_type = result
+	var/obj/structure/sign/painting/our_frame = loc
+	our_frame.balloon_alert(user, "frame set to [result]")
+	our_frame.update_appearance()
+
+/obj/item/canvas/proc/can_select_frame(mob/user)
+	if(!istype(loc, /obj/structure/sign/painting))
+		return FALSE
+	if(!user?.CanReach(loc) || IS_DEAD_OR_INCAP(user))
+		return FALSE
+	if(!last_patron || !IS_WEAKREF_OF(user?.mind, last_patron))
+		return FALSE
+	return TRUE
 
 /obj/item/canvas/update_overlays()
 	. = ..()
@@ -253,6 +295,18 @@
 	else if(istype(painting_implement, /obj/item/soap) || istype(painting_implement, /obj/item/reagent_containers/glass/rag))
 		return canvas_color
 
+/obj/item/canvas/proc/get_paint_tool_alpha(obj/item/painting_implement)
+	if(!painting_implement)
+		return
+	if(istype(painting_implement, /obj/item/paint_palette))
+		var/obj/item/paint_palette/palette = painting_implement
+		return palette.current_alpha
+	if(istype(painting_implement, /obj/item/toy/crayon))
+		var/obj/item/toy/crayon/crayon = painting_implement
+		return crayon.paint_alpha
+	else
+		return 255
+
 /// Generates medium description
 /obj/item/canvas/proc/get_paint_tool_medium(obj/item/painting_implement)
 	if(!painting_implement)
@@ -293,8 +347,8 @@
 	height = 19
 	pixel_x = 6
 	pixel_y = 9
-	framed_offset_x = 8
-	framed_offset_y = 9
+	framed_offset_x = 7
+	framed_offset_y = 7
 
 /obj/item/canvas/twentythree_nineteen
 	name = "холст (23x19)"
@@ -303,8 +357,8 @@
 	height = 19
 	pixel_x = 4
 	pixel_y = 10
-	framed_offset_x = 6
-	framed_offset_y = 8
+	framed_offset_x = 5
+	framed_offset_y = 7
 
 /obj/item/canvas/twentythree_twentythree
 	name = "холст (23x23)"
@@ -314,7 +368,7 @@
 	pixel_x = 5
 	pixel_y = 9
 	framed_offset_x = 5
-	framed_offset_y = 6
+	framed_offset_y = 5
 
 /obj/item/canvas/twentyfour_twentyfour
 	name = "универсальный стандартный холст ИИ"
@@ -324,8 +378,8 @@
 	height = 24
 	pixel_x = 2
 	pixel_y = 1
-	framed_offset_x = 4
-	framed_offset_y = 5
+	framed_offset_x = 2
+	framed_offset_y = 2
 
 /obj/item/wallframe/painting
 	name = "рамка картины"
@@ -415,14 +469,12 @@
 	if(!current_canvas?.generated_icon)
 		return
 
-	var/mutable_appearance/MA = mutable_appearance(current_canvas.generated_icon)
-	MA.pixel_x = current_canvas.framed_offset_x
-	MA.pixel_y = current_canvas.framed_offset_y
-	. += MA
-	var/mutable_appearance/frame = mutable_appearance(current_canvas.icon,"[current_canvas.icon_state]frame")
-	frame.pixel_x = current_canvas.framed_offset_x - 1
-	frame.pixel_y = current_canvas.framed_offset_y - 1
-	. += frame
+	var/mutable_appearance/painting = mutable_appearance(current_canvas.generated_icon)
+	painting.pixel_x = current_canvas.framed_offset_x
+	painting.pixel_y = current_canvas.framed_offset_y
+	. += painting
+	var/frame_type = current_canvas.painting_metadata.frame_type
+	. += mutable_appearance(current_canvas.icon,"[current_canvas.icon_state]frame_[frame_type]") //add the frame
 
 /**
  * Loads a painting from SSpersistence. Called globally by said subsystem when it inits
@@ -520,6 +572,18 @@
 	w_class = WEIGHT_CLASS_TINY
 	///Chosen paint color
 	var/current_color
+	var/current_alpha = 255
+
+/obj/item/paint_palette/examine(mob/user)
+	. = ..()
+	. += "<hr>"
+	. += span_info("ПКМ, чтобы выбрать непрозрачность. Текущая: [current_alpha].")
+
+/obj/item/paint_palette/attack_self_secondary(mob/user, modifiers)
+	. = ..()
+	var/chosen_alpha = input(user, "Выбери прозрачность (0 - 255).", "Палитра") as num|null
+	if(chosen_alpha && ISINRANGE(chosen_alpha, 0, 255))
+		current_alpha = chosen_alpha
 
 /obj/item/paint_palette/attack_self(mob/user, modifiers)
 	. = ..()

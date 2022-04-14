@@ -142,6 +142,7 @@
 		src.data |= data.Copy()
 
 /datum/reagent/vaccine/fungal_tb
+	name = "Вакцина от грибкового туберкулеза"
 
 /datum/reagent/vaccine/fungal_tb/New(data)
 	. = ..()
@@ -220,6 +221,9 @@
 
 /datum/reagent/water/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)//Splashing people with water can help put them out!
 	. = ..()
+	if(isandroid(exposed_mob) || isIPC(exposed_mob))
+		exposed_mob.electrocute_act(rand(10, 15), "Воды на микросхемах", 1, SHOCK_NOGLOVES)
+		playsound(exposed_mob, "sparks", 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	if(methods & TOUCH)
 		exposed_mob.extinguish_mob() // extinguish removes all fire stacks
 
@@ -1651,6 +1655,24 @@
 	L.remove_movespeed_modifier(/datum/movespeed_modifier/reagent/halon)
 	REMOVE_TRAIT(L, TRAIT_RESISTHEAT, type)
 	return ..()
+
+/datum/reagent/zauker
+	name = "Заукер"
+	enname = "Zauker"
+	description = "An unstable gas that is toxic to all living beings."
+	reagent_state = GAS
+	metabolization_rate = REAGENTS_METABOLISM * 0.5
+	color = "90560B"
+	taste_description = "bitter"
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/zauker/on_mob_life(mob/living/breather, delta_time, times_fired)
+	breather.adjustBruteLoss(6 * REM * delta_time, FALSE)
+	breather.adjustOxyLoss(1 * REM * delta_time, FALSE)
+	breather.adjustFireLoss(2 * REM * delta_time, FALSE)
+	breather.adjustToxLoss(2 * REM * delta_time, FALSE)
+	..()
+	return TRUE
 
 /////////////////////////Colorful Powder////////////////////////////
 //For colouring in /proc/mix_color_from_reagents

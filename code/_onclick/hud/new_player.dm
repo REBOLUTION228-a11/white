@@ -78,8 +78,8 @@
 
 ///Prefs menu
 /atom/movable/screen/lobby/button/character_setup
-	screen_loc = "EAST-4:26,TOP:-38"
-	icon = 'icons/hud/lobbyv2/character_setup.dmi'
+	screen_loc = "WEST+9,SOUTH:26"
+	icon = 'icons/hud/lobbyv3/character_setup.dmi'
 	icon_state = "character_setup"
 	base_icon_state = "character_setup"
 
@@ -92,8 +92,8 @@
 
 ///Button that appears before the game has started
 /atom/movable/screen/lobby/button/ready
-	screen_loc = "EAST-4:26,TOP:-2"
-	icon = 'icons/hud/lobbyv2/ready.dmi'
+	screen_loc = "WEST+2,SOUTH:26"
+	icon = 'icons/hud/lobbyv3/ready.dmi'
 	icon_state = "not_ready"
 	base_icon_state = "not_ready"
 	var/ready = FALSE
@@ -138,8 +138,8 @@
 
 ///Shown when the game has started
 /atom/movable/screen/lobby/button/join
-	screen_loc = "EAST-4:26,TOP:-2"
-	icon = 'icons/hud/lobbyv2/join.dmi'
+	screen_loc = "WEST+1,SOUTH:24"
+	icon = 'icons/hud/lobbyv3/join.dmi'
 	icon_state = "" //Default to not visible
 	base_icon_state = "join_game"
 	enabled = FALSE
@@ -186,7 +186,10 @@
 			SSticker.queued_players += new_player
 			to_chat(new_player, span_notice("Тебя добавили в очередь для захода в игру. Твой номер в очереди: [SSticker.queued_players.len]."))
 		return
-	if(!GLOB.is_tournament_rules)
+	if(GLOB.violence_mode_activated)
+		new_player.violence_choices()
+		return
+	else if(!GLOB.is_tournament_rules)
 		new_player.LateChoices()
 	else
 		new_player.make_me_an_observer(TRUE)
@@ -204,8 +207,8 @@
 	RegisterSignal(SSticker, COMSIG_TICKER_ENTER_SETTING_UP, .proc/show_join_button)
 
 /atom/movable/screen/lobby/button/observe
-	screen_loc = "EAST-4:26,TOP:-20"
-	icon = 'icons/hud/lobbyv2/observe.dmi'
+	screen_loc = "WEST+5:24,SOUTH:24"
+	icon = 'icons/hud/lobbyv3/observe.dmi'
 	icon_state = "observe_disabled"
 	base_icon_state = "observe"
 	enabled = FALSE
@@ -248,17 +251,17 @@
 	hud.mymob.client.prefs.ShowChoices(hud.mymob)
 
 /atom/movable/screen/lobby/button/changelog_button
-	icon = 'icons/hud/lobby/bottom_buttons.dmi'
+	icon = 'icons/hud/lobbyv3/bottom_buttons.dmi'
 	icon_state = "changelog"
 	base_icon_state = "changelog"
-	screen_loc = "SOUTH:+2,CENTER:-26"
+	screen_loc = "WEST+11:8,SOUTH:26"
 
 
 /atom/movable/screen/lobby/button/crew_manifest
-	icon = 'icons/hud/lobby/bottom_buttons.dmi'
+	icon = 'icons/hud/lobbyv3/bottom_buttons.dmi'
 	icon_state = "crew_manifest"
 	base_icon_state = "crew_manifest"
-	screen_loc = "SOUTH:+2,CENTER:+26"
+	screen_loc = "WEST+13:16,SOUTH:26"
 
 /atom/movable/screen/lobby/button/crew_manifest/Click(location, control, params)
 	. = ..()
@@ -274,10 +277,10 @@
 		usr << link("https://station13.ru")
 
 /atom/movable/screen/lobby/button/poll
-	icon = 'icons/hud/lobby/bottom_buttons.dmi'
+	icon = 'icons/hud/lobbyv3/bottom_buttons.dmi'
 	icon_state = "poll"
 	base_icon_state = "poll"
-	screen_loc = "SOUTH:+2,CENTER"
+	screen_loc = "WEST+16,SOUTH:26"
 
 	var/new_poll = FALSE
 

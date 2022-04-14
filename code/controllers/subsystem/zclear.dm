@@ -167,7 +167,6 @@ SUBSYSTEM_DEF(zclear)
 		if(i % group_size == 0)
 			divided_turfs += list(current_group)
 			current_group = list()
-		SSair.remove_from_active(T)
 	divided_turfs += list(current_group)
 
 	//Create the wipe data datum
@@ -219,7 +218,7 @@ SUBSYSTEM_DEF(zclear)
 						nullspaced_mob_names += " - [M.name]\n"
 						valid = TRUE
 				if(valid)
-					priority_announce("Сенсоры сообщают о том, что несколько членов вашего экипажа пропало. Скорее всего их раскидало по космосу, их всё ещё можно попробовать найти.\n[nullspaced_mob_names]")
+					priority_announce("Сенсоры сообщают о том, что несколько членов экипажа пропало. Скорее всего их раскидало по космосу, их всё ещё можно попробовать найти.\n[nullspaced_mob_names]")
 	cleardata.process_num ++
 
 /*
@@ -292,7 +291,9 @@ SUBSYSTEM_DEF(zclear)
 	for(var/datum/space_level/D as() in SSmapping.z_list)
 		if (D.linkage == CROSSLINKED)
 			possible_transtitons += D.z_value
-	var/_z = pick(possible_transtitons)
+	var/_z = safepick(possible_transtitons)
+	if(!_z)
+		_z = 2
 
 	//now select coordinates for a border turf
 	var/_x = rand(min,max)
@@ -305,7 +306,6 @@ SUBSYSTEM_DEF(zclear)
 	var/list/new_turfs = list()
 	for(var/turf/T as() in turfs)
 		//TODO: This doesn't update turfs around it.
-		SSair.remove_from_active(T)
 		var/turf/newT
 		if(istype(T, /turf/open/space))
 			newT = T
@@ -314,7 +314,7 @@ SUBSYSTEM_DEF(zclear)
 		if(!istype(newT.loc, /area/space))
 			var/area/newA = GLOB.areas_by_type[/area/space]
 			newA.contents += newT
-			newT.change_area(newT.loc, newA)
+			newT.transfer_area_lighting(newT.loc, newA)
 		newT.turf_flags &= ~NO_RUINS
 		new_turfs += newT
 	return new_turfs

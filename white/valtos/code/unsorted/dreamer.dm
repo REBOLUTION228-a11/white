@@ -1,12 +1,13 @@
 // max value for nuke terminal is 99999, here some crutch applied
-GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet))]" = rand(1, 24995), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(1, 25000), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(1, 25000), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(1, 25000)))
+GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet))]" = rand(3334, 24995), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(3334, 25000), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(3334, 25000), "[uppertext(random_string(4, GLOB.alphabet))]" = rand(3334, 25000)))
+GLOBAL_LIST_INIT(dreamer_current_recipe, get_random_organ_list(5))
 
 /datum/component/dreamer
 	dupe_mode = COMPONENT_DUPE_UNIQUE
 
-	var/prob_variability = 5
+	var/prob_variability = 15
 	var/animation_intensity = 7
-	var/animation_speed = 7
+	var/animation_speed = 20
 	var/turf_plane = FLOOR_PLANE
 	var/fuckscreen_probability = 1
 	var/speak_probability = 7
@@ -66,17 +67,23 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 
 		switch(rand(1, 3))
 			if(1)
-				var/rotation = rand(-30, 30)
-				for(var/key in pm_controller.controlled_planes)
-					animate(pm_controller.controlled_planes[key], transform = matrix(rotation, MATRIX_ROTATE), time = 5, easing = QUAD_EASING)
-					animate(transform = matrix(), time = 5, easing = QUAD_EASING)
+				pm_controller.add_filter("dreamer_displace", 1, displacement_map_filter(icon = 'white/valtos/icons/cfas.png', size = 16))
+
+				for(var/filter in pm_controller.get_filters("dreamer_displace"))
+					animate(filter, size = -16, time = 1 SECONDS, easing = ELASTIC_EASING|EASE_OUT)
+					animate(size = 16, time = 1 SECONDS, easing = ELASTIC_EASING|EASE_OUT)
+					animate(size = 0, time = 1 SECONDS, easing = CIRCULAR_EASING|EASE_IN)
+				spawn(3 SECONDS)
+					pm_controller.remove_filter("dreamer_displace")
 			if(2)
-				pm_controller.add_filter("dreamer_blur", 1, list("type" = "radial_blur", "size" = 0))
+				pm_controller.add_filter("dreamer_blur", 2, list("type" = "radial_blur", "size" = 0))
 
 				for(var/filter in pm_controller.get_filters("dreamer_blur"))
 					animate(filter, size = -0.1, time = 3 SECONDS, easing = ELASTIC_EASING|EASE_OUT)
 					animate(size = 0.1, time = 3 SECONDS, easing = ELASTIC_EASING|EASE_OUT)
 					animate(size = 0, time = 3 SECONDS, easing = CIRCULAR_EASING|EASE_IN)
+				spawn(3 SECONDS)
+					pm_controller.remove_filter("dreamer_blur")
 			if(3)
 				pm_controller.add_filter("dreamer_inline", 5, outline_filter(size=0.5, color="#f00"))
 				pm_controller.add_filter("dreamer_outline", 4, outline_filter(size=0.5, color="#0ff"))
@@ -138,7 +145,7 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		var/matrix/M = matrix()
 		M.Translate(0, rand(-animation_intensity, animation_intensity))
 
-		var/ttd = rand(animation_speed * 2, animation_speed * 4)
+		var/ttd = rand(animation_speed * 4, animation_speed * 8)
 
 		animate(turf_img, transform = M, time = ttd, loop = rand(1, turf_loop_duration), easing = SINE_EASING)
 		animate(transform = null, time = ttd, easing = SINE_EASING)
@@ -146,7 +153,7 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		fuckfloorlist += turf_img
 
 		if(our_dreamer?.client)
-			addtimer(CALLBACK(GLOBAL_PROC, .proc/remove_image_from_client, turf_img, our_dreamer.client), ttd * 2)
+			addtimer(CALLBACK(GLOBAL_PROC, .proc/remove_image_from_client, turf_img, our_dreamer.client), ttd * 2, TIMER_STOPPABLE)
 
 	our_dreamer.setStaminaLoss(0)
 	our_dreamer.setOxyLoss(0)
@@ -197,9 +204,9 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		if(3)
 			bg_sound = 'white/valtos/sounds/rp3.ogg'
 			update_bg_sound()
-			prob_variability = 7
+			prob_variability = 25
 			animation_intensity = 10
-			animation_speed = 7
+			animation_speed = 15
 			speak_probability = 10
 			hall_attack_probability = 2
 			turf_loop_duration = 4
@@ -219,9 +226,9 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		if(2)
 			bg_sound = 'white/valtos/sounds/rp7.ogg'
 			update_bg_sound()
-			prob_variability = 10
+			prob_variability = 50
 			animation_intensity = 15
-			animation_speed = 5
+			animation_speed = 10
 			speak_probability = 15
 			hall_attack_probability = 3
 			turf_loop_duration = 5
@@ -241,9 +248,9 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		if(1)
 			bg_sound = 'white/valtos/sounds/rp8.ogg'
 			update_bg_sound()
-			prob_variability = 15
+			prob_variability = 75
 			animation_intensity = 20
-			animation_speed = 3
+			animation_speed = 3.75
 			speak_probability = 20
 			hall_attack_probability = 4
 			turf_loop_duration = 6
@@ -264,9 +271,9 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		else
 			bg_sound = 'white/valtos/sounds/burgerking.ogg'
 			update_bg_sound()
-			prob_variability = 20
+			prob_variability = 100
 			animation_intensity = 25
-			animation_speed = 1
+			animation_speed = 3.75
 			speak_probability = 25
 			hall_attack_probability = 10
 			turf_loop_duration = 10
@@ -354,7 +361,6 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 	smashes_tables = TRUE
 	block_chance = 0
 
-
 /datum/martial_art/dreamer/harm_act(mob/living/A, mob/living/D)
 	if(block_chance < 75)
 		return FALSE
@@ -431,11 +437,34 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 		qdel(P)
 		return BULLET_ACT_BLOCK
 
+/proc/get_random_organ_list(amt = 3)
+	var/list/organ_list = list()
+	for(var/i in 1 to amt)
+		organ_list += pick(list(
+			/obj/item/organ/brain,
+			/obj/item/organ/appendix,
+			/obj/item/organ/butt,
+			/obj/item/organ/eyes,
+			/obj/item/organ/heart,
+			/obj/item/organ/liver,
+			/obj/item/organ/lungs,
+			/obj/item/organ/tongue,
+			/obj/item/organ/ears,
+			/obj/item/organ/stomach,
+			/obj/item/bodypart/head,
+			/obj/item/bodypart/l_arm,
+			/obj/item/bodypart/r_arm,
+			/obj/item/bodypart/l_leg,
+			/obj/item/bodypart/r_leg
+		))
+	return organ_list
+
 /datum/antagonist/dreamer
 	name = "Dreamer"
 	show_name_in_check_antagonists = TRUE
 	show_to_ghosts = FALSE
 	show_in_antagpanel = TRUE
+	show_in_roundend = FALSE
 	roundend_category = "Dreamer"
 	antagpanel_category = "Dreamer"
 	greentext_reward = 100
@@ -463,3 +492,97 @@ GLOBAL_LIST_INIT(dreamer_clues, list("[uppertext(random_string(4, GLOB.alphabet)
 	to_chat(owner.current, objective_text)
 	antag_memory += objective_text
 	. = ..()
+
+/datum/antagonist/dreamer/proc/awake()
+	var/turf/safeturf = safepick(get_area_turfs(/area/centcom/circus))
+	var/mob/living/carbon/human/S = new(safeturf)
+	var/mob/living/carbon/human/old_mob = owner.current
+	S.equipOutfit(/datum/outfit/dreamer_awakened)
+	var/client/C = old_mob.client
+	DIRECT_OUTPUT(old_mob, sound(null))
+	C?.tgui_panel?.stop_music()
+	var/obj/structure/bed/bed = new(safeturf)
+	bed.buckle_mob(S, TRUE)
+	S.ckey = old_mob.ckey
+	REMOVE_TRAIT(S, TRAIT_STUNRESISTANCE, "dreamer")
+	REMOVE_TRAIT(S, TRAIT_SLEEPIMMUNE,    "dreamer")
+	S.Sleeping(55 SECONDS)
+	var/list/dreamlist = list(
+		"а помнишь как мы",
+		"надеюсь ты меня всё ещё слышишь",
+		"вы правда так думаете",
+		"будет лучше для него",
+		"подпишите здесь и здесь",
+		"у вас есть время попрощаться",
+		"мне жаль, но",
+		"можем приступать",
+		"он просыпается",
+		"тебе показалось"
+	)
+	spawn(-1)
+		for(var/str in dreamlist)
+			to_chat(S, span_notice("<i>... [str] ...</i>"))
+			sleep(5 SECONDS)
+
+		S.reagents.add_reagent(/datum/reagent/toxin/lexorin, 50)
+		var/turf/T1 = get_step(safeturf, WEST)
+		var/turf/T2 = get_step(safeturf, EAST)
+		var/mob/living/carbon/human/D1 = new (T1)
+		var/mob/living/carbon/human/D2 = new (T2)
+		D1.dir = EAST
+		D2.dir = WEST
+		D1.equipOutfit(/datum/outfit/job/doctor)
+		D2.equipOutfit(/datum/outfit/job/doctor)
+		var/obj/item/I
+		spawn(6 SECONDS)
+			D1.say("ОН ЧЕ, ПРОСНУЛСЯ?!")
+			spawn(0.5 SECONDS)
+				D1.emote("scream")
+			spawn(1 SECONDS)
+				D2.say("ДИАЛИЗ, БЛЯТЬ!")
+			spawn(1.5 SECONDS)
+				D2.emote("scream")
+			spawn(2 SECONDS)
+				D1.say("ХУЯЛИЗ, ПИЗДА ЕМУ!")
+			spawn(3 SECONDS)
+				D2.say("СУКА!")
+			spawn(4 SECONDS)
+				D1.say("ВЫРУБАЙ ЕГО НАХУЙ!")
+			spawn(5 SECONDS)
+				I = new /obj/item/storage/toolbox(get_turf(D2))
+				D2.put_in_active_hand(I, TRUE)
+				D2.say("ААА!!!")
+				D2.emote("scream")
+				S.attackby(I, D2)
+			spawn(6 SECONDS)
+				D1.say("ЛУПИ!")
+				S.attackby(I, D2)
+			spawn(6.5 SECONDS)
+				S.attackby(I, D2)
+			spawn(7 SECONDS)
+				S.attackby(I, D2)
+				D2.say("БЛЯ-Я-Я!!!")
+				D2.emote("scream")
+			spawn(7.5 SECONDS)
+				S.attackby(I, D2)
+				S.playsound_local(get_turf(S), 'sound/weapons/flashbang.ogg', 100, TRUE, 8)
+				S.Sleeping(120 SECONDS)
+	spawn(64 SECONDS)
+		to_chat(S, span_boldnotice("<i>... АААААААААААААААААА ...</i>"))
+	spawn(65 SECONDS)
+		if(old_mob)
+			old_mob.ckey = S.ckey
+			ADD_TRAIT(old_mob, TRAIT_STUNRESISTANCE, "dreamer")
+			ADD_TRAIT(old_mob, TRAIT_SLEEPIMMUNE,    "dreamer")
+			qdel(S)
+		else
+			qdel(S.client)
+
+/datum/outfit/dreamer_awakened
+	name = "Спящий пробудился"
+	uniform = /obj/item/clothing/under/color/white
+	shoes = /obj/item/clothing/shoes/sneakers/white
+	suit = /obj/item/clothing/suit/straight_jacket
+	mask = /obj/item/clothing/mask/muzzle
+	glasses = /obj/item/clothing/glasses/blindfold
+	back = null

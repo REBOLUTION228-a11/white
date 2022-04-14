@@ -68,20 +68,26 @@
 	if(!istype(user) || !user.can_interact_with(src) || isobserver(user))
 		return
 	if(can_flip)
-		user.visible_message(span_danger("<b>[user]</b> начинает переворачивать <b>[src.name]</b>!") , span_notice("Начинаю переворачивать <b>[src.name]</b>!"))
-		if(do_after(user, max_integrity/4))
+		user.visible_message(span_danger("<b>[user]</b> начинает переворачивать <b>[src.name]</b>!"), span_notice("Начинаю переворачивать <b>[src.name]</b>!"))
+		if(do_after(user, max_integrity/4, src))
+			var/new_dir = get_dir(user, src)
+			var/turf/TT = get_turf(src)
+			for(var/item in TT)
+				if(!isitem(item) && !ismob(item))
+					continue
+				var/atom/movable/A = item
+				A.throw_at(get_distant_turf(TT, new_dir, 7), A.throw_range, A.throw_speed)
 			var/obj/structure/flippedtable/T = new flipped_table_type(src.loc)
 			T.name = "перевёрнутый [src.name]"
 			T.desc = "[src.desc] Ещё и перевёрнут!"
 			T.icon_state = src.base_icon_state
-			var/new_dir = get_dir(user, T)
 			T.dir = new_dir
 			if(new_dir == NORTH)
 				T.layer = BELOW_MOB_LAYER
 			T.max_integrity = src.max_integrity
 			T.update_integrity(src.get_integrity())
 			T.table_type = src.type
-			user.visible_message(span_danger("<b>[user]</b> переворачивает <b>[src.name]</b>!") , span_notice("Переворачиваю <b>[src.name]</b>!"))
+			user.visible_message(span_danger("<b>[user]</b> переворачивает <b>[src.name]</b>!"), span_notice("Переворачиваю <b>[src.name]</b>!"))
 			playsound(src, 'sound/items/trayhit2.ogg', 100)
 			qdel(src)
 

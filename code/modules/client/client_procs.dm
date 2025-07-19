@@ -330,6 +330,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(SSinput.initialized)
 		set_macros()
 
+	// send statbrowser assets before we show it
+	var/datum/asset/simple/browser_icons = get_asset_datum(/datum/asset/simple/statbrowser)
+	browser_icons.send(src)
+
 	// Initialize tgui panel
 	src << browse(file('html/statbrowser.html'), "window=statbrowser")
 	addtimer(CALLBACK(src, .proc/check_panel_loaded), 30 SECONDS)

@@ -647,3 +647,22 @@
 /datum/asset/spritesheet/mechaarmor/register()
 	InsertAll("", 'icons/ui_icons/mecha/armor.dmi')
 	..()
+
+/datum/asset/simple/statbrowser
+	legacy = TRUE
+	assets = list(
+		"statbrowser-status.png" = 'html/statbrowser/status.png',
+		"statbrowser-ic.png" = 'html/statbrowser/ic.png',
+		"statbrowser-ooc.png" = 'html/statbrowser/ooc.png',
+		"statbrowser-cog.png" = 'html/statbrowser/cog.png',
+		"statbrowser-obj.png" = 'html/statbrowser/obj.png',
+		"statbrowser-other.png" = 'html/statbrowser/other.png',
+		"statbrowser-ghost.png" = 'html/statbrowser/ghost.png',
+		"statbrowser-admin.png" = 'html/statbrowser/admin.png',
+		"statbrowser-debug.png" = 'html/statbrowser/debug.png',
+		"statbrowser-mc.png" = 'html/statbrowser/mc.png',
+		"statbrowser-tickets.png" = 'html/statbrowser/tickets.png',
+		"statbrowser-mc.png" = 'html/statbrowser/mc.png',
+		"statbrowser-mentor.png" = 'html/statbrowser/mentor.png',
+		"statbrowser-other.png" = 'html/statbrowser/other.png',
+	)

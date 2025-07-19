@@ -20,6 +20,8 @@
 
 	var/motd
 	var/policy
+	var/current_version_string
+	var/current_version_less
 
 	/// If the configuration is loaded
 	var/loaded = FALSE
@@ -59,6 +61,8 @@
 	LoadMOTD()
 	LoadPolicy()
 	LoadChatFilter()
+	load_version_info()
+	load_assblast()
 
 	loaded = TRUE
 
@@ -430,3 +434,22 @@ Example config:
 //Message admins when you can.
 /datum/controller/configuration/proc/DelayedMessageAdmins(text)
 	addtimer(CALLBACK(GLOBAL_PROC, /proc/message_admins, text), 0)
+
+/datum/controller/configuration/proc/load_version_info()
+
+	var/list/info_file = world.file2list("data/gitsum.txt")
+	if(!isnull(info_file) && info_file?.len)
+		var/version_text = "[info_file[3][1]].[info_file[3][2]][info_file[3][3]][info_file[3][4]].[info_file[3][5]]"
+		current_version_string = "-- #<b>Версия</b>:> [version_text] (<a href='https://github.com/REBOLUTION228-a11/white/commit/[info_file[1]]'>[uppertext(info_file[2])]</a>) --"
+		current_version_less = info_file[3]
+
+
+/datum/controller/configuration/proc/load_assblast()
+	var/list/templist = world.file2list("[global.config.directory]/assblasted_people.txt")
+	for(var/entry in templist)
+		var/list/entrylist = splittext(entry,"||")
+		if(entrylist.len <2)
+			continue
+		var/ckey = entrylist[1]
+		var/punished_svin = entrylist[2]
+		GLOB.assblasted_people[ckey] = punished_svin

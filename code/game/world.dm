@@ -285,9 +285,6 @@ GLOBAL_VAR(restart_counter)
 
 	TgsReboot()
 	shutdown_logging() // Past this point, no logging procs can be used, at risk of data loss.
-	if(CONFIG_GET(flag/this_shit_is_stable))
-		shelleo("curl -X POST http://localhost:3636/hard-reboot-white")
-		shelleo("python3 /home/ubuntu/tenebrae/prod/server_white/data/parser.py [GLOB.round_id]")
 	AUXTOOLS_SHUTDOWN(AUXMOS)
 	..()
 
@@ -365,34 +362,7 @@ GLOBAL_VAR_INIT(hub_mimic_desc, "GO! GO! GO!")
 
 	var/s = ""
 
-	if(!GLOB.hub_mimic)
-		s += "<big><b>FDev: NeoWhite Dream: RU</b> 18+</big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
-		switch(rand(1, 7))
-			if(1)
-				s += "<img src='https://assets.station13.ru/l/w7.png'>\n\n"
-				s += "\[<big>CLASSIC STATION</big>"
-			if(2)
-				s += "<img src='https://assets.station13.ru/l/w6.png'>\n\n"
-				s += "\[<big>ANIME HENTAI</big>"
-			if(3)
-				s += "<img src='https://assets.station13.ru/l/w5.png'>\n\n"
-				s += "\[<big>GRIMDARK EDITION</big>"
-			if(4)
-				s += "<img src='https://assets.station13.ru/l/w4.png'>\n\n"
-				s += "\[<big>CYBERPUNK EDITION</big>"
-			if(5)
-				s += "<img src='https://assets.station13.ru/l/w8.png'>\n\n"
-				s += "\[<big>REMOVE KEBAB</big>"
-			if(6)
-				s += "<img src='https://assets.station13.ru/l/w9.png'>\n\n"
-				s += "\[<big>PROBABLY NOT HARAM</big>"
-			if(7)
-				s += "<img src='https://assets.station13.ru/l/wz.png'>\n\n"
-				s += "\[<big>ZA POBEDU!</big>"
-	else
-		s += "<big><b>[GLOB.hub_mimic]: RU</b></big>\] <a href=\"http://station13.ru\">SITE</a> | <a href=\"https://discord.gg/2WAsvv5B5v\">DISCORD</a>\n\n"
-		s += "<img src='https://assets.station13.ru/l/w[rand(4, 8)].gif'>\n\n"
-		s += "\[<big>[GLOB.hub_mimic_desc]</big>"
+	s = "<big><b>[ddlc_text("White Dream")]:</b> #[global.config.current_version_less]</big>"
 
 	status = s
 

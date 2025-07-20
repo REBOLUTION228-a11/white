@@ -31,7 +31,7 @@
 #else
 			switch(version.minor)
 				if(2)
-					api_datum = /datum/tgs_api/v3210
+					api_datum = /datum/tgs_api/v4
 #endif
 		if(4)
 			switch(version.minor)

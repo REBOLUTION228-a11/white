@@ -52,7 +52,7 @@
 
 /obj/item/hockeypack/proc/toggle_stick()
 	set name = "Get Stick"
-	set category = "Object"
+	set category = "Объект"
 	if (usr.get_item_by_slot(usr.getHockeypackSlot()) != src)
 		to_chat(usr, "<span class='warning'>Рюкзак надень!</span>")
 		return
@@ -257,7 +257,7 @@
 
 /obj/item/storage/belt/hippie/hockey/proc/make_puck()
 	set name = "Produce Puck"
-	set category = "Object"
+	set category = "Объект"
 	if (usr.get_item_by_slot(usr.getHockeybeltSlot()) != src)
 		to_chat(usr, "<span class='warning'>Пояс надень!</span>")
 		return

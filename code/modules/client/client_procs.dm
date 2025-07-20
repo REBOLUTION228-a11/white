@@ -309,6 +309,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		if (!length(GLOB.stickybanadminexemptions))
 			restore_stickybans()
 
+	if(byond_version >= 516 && !connecting_admin) // deny 516 clients
+		log_access("Failed Login: [key] - Unstable BYOND version")
+		to_chat(src, span_danger("Используйте <a href=\"https://www.byond.com/download/build/515/515.1647_byond.exe\">стабильную</a> версию BYOND."))
+		qdel(src)
+		return
+
 	if (byond_version >= 512)
 		if (!byond_build || byond_build < 1386)
 			message_admins(span_adminnotice("[key_name(src)] has been detected as spoofing their byond version. Connection rejected."))

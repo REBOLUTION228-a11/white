@@ -8,8 +8,10 @@
 	var/url
 
 	var/_raw_response
+	/// If present response body will be saved to this file.
+	var/output_file
 
-/datum/http_request/proc/prepare(method, url, body = "", list/headers)
+/datum/http_request/proc/prepare(method, url, body = "", list/headers, output_file)
 	if (!length(headers))
 		headers = ""
 	else
@@ -19,6 +21,7 @@
 	src.url = url
 	src.body = body
 	src.headers = headers
+	src.output_file = output_file
 
 /datum/http_request/proc/execute_blocking()
 	_raw_response = rustg_http_request_blocking(method, url, body, headers)
@@ -64,6 +67,11 @@
 		R.error = _raw_response
 
 	return R
+
+/datum/http_request/proc/build_options()
+	if(output_file)
+		return json_encode(list("output_filename"=output_file,"body_filename"=null))
+	return null
 
 /datum/http_response
 	var/status_code

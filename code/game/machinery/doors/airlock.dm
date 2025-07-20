@@ -1133,7 +1133,7 @@
 			if(axe && !axe.wielded)
 				to_chat(user, span_warning("Требуется держать [axe] в обеих руках для этого!"))
 				return
-		INVOKE_ASYNC(src, (density ? PROC_REF(open : PROC_REF(close))), 2)
+		INVOKE_ASYNC(src, (density ? PROC_REF(open) : PROC_REF(close)), 2)
 
 
 /obj/machinery/door/airlock/open(forced=0)

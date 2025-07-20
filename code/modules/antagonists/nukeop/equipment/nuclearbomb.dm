@@ -518,7 +518,7 @@
 
 /obj/machinery/nuclearbomb/proc/really_actually_explode(off_station)
 	Cinematic(get_cinematic_type(off_station),world,CALLBACK(SSticker,/datum/controller/subsystem/ticker/proc/station_explosion_detonation,src))
-	TYPE_PROC_REF(//INVOKE_ASYNC(GLOBAL_PROC,, KillEveryoneOnZLevel), z) //Эта хуйня не работает, меняю на свое.
+	//INVOKE_ASYNC(GLOBAL_PROC, KillEveryoneOnZLevel), z) //Эта хуйня не работает, меняю на свое.
 
 /obj/machinery/nuclearbomb/proc/grab_dat_fence(nuked_z_level)
 	for(var/i in GLOB.human_list)

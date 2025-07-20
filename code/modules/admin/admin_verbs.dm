@@ -208,7 +208,7 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/toggle_cdn,
 	/client/proc/load_circuit,
 	)
-GLOBAL_LIST_INIT(admin_verbs_possess, list(/proc/possess, GLOBAL_PROC_REF(possess), /proc/release))
+GLOBAL_LIST_INIT(admin_verbs_possess, list(GLOBAL_PROC_REF(possess), GLOBAL_PROC_REF(possess), GLOBAL_PROC_REF(release)))
 GLOBAL_PROTECT(admin_verbs_possess)
 GLOBAL_LIST_INIT(admin_verbs_permissions, list(/client/proc/edit_admin_permissions, /client/proc/manage_lists, /client/proc/add_bug_down))
 GLOBAL_PROTECT(admin_verbs_permissions)

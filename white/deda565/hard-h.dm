@@ -137,8 +137,8 @@
 
 /obj/item/hockeystick/Initialize()
 	. = ..()
-	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, .proc/on_wield)
-	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, .proc/on_unwield)
+	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, PROC_REF(on_wield))
+	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, PROC_REF(on_unwield))
 
 /obj/item/hockeystick/ComponentInitialize()
 	. = ..()
@@ -271,7 +271,7 @@
 		return
 
 	newpuck = build_puck()
-	addtimer(CALLBACK(src,.proc/reset_puck),recharge_time)
+	addtimer(CALLBACK(src,PROC_REF(reset_puck)),recharge_time)
 	if(!user.put_in_hands(newpuck))
 		to_chat(user, "<span class='warning'>Тебе нужна свободная рука!</span>")
 		return

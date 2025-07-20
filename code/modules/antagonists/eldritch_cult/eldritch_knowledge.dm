@@ -170,11 +170,11 @@
 		to_chat(user, span_warning("На этих предметах нет необходимых отпечатков пальцев или ДНК."))
 		return FALSE
 
-	var/chosen_mob = input("Выберите человека, которого вы хотите проклясть","Ваша цель") as null|anything in sort_list(compiled_list, /proc/cmp_mob_realname_dsc)
+	var/chosen_mob = input("Выберите человека, которого вы хотите проклясть","Ваша цель") as null|anything in sort_list(compiled_list, GLOBAL_PROC_REF(cmp_mob_realname_dsc))
 	if(!chosen_mob)
 		return FALSE
 	curse(compiled_list[chosen_mob])
-	addtimer(CALLBACK(src, .proc/uncurse, compiled_list[chosen_mob]),timer)
+	addtimer(CALLBACK(src, PROC_REF(uncurse), compiled_list[chosen_mob]),timer)
 	return TRUE
 
 /datum/eldritch_knowledge/curse/proc/curse(mob/living/chosen_mob)

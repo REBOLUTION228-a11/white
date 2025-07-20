@@ -441,7 +441,7 @@
 /obj/item/gun/ballistic/automatic/hs010/Initialize()
 	. = ..()
 	AddComponent(/datum/component/automatic_fire_funny, 1)
-	RegisterSignal(src, COMSIG_AUTOFIRE_STOPPED, .proc/play_tail_sound)
+	RegisterSignal(src, COMSIG_AUTOFIRE_STOPPED, PROC_REF(play_tail_sound))
 
 /obj/item/gun/ballistic/automatic/hs010/proc/play_tail_sound()
 	SIGNAL_HANDLER
@@ -778,7 +778,7 @@
 
 /obj/item/ammo_casing/caseless/laser/sar62l/dropped() // yeah.....
 	. = ..()
-	addtimer(CALLBACK(src, .proc/floor_vanish), 1)
+	addtimer(CALLBACK(src, PROC_REF(floor_vanish)), 1)
 
 /obj/item/ammo_casing/caseless/laser/sar62l/proc/floor_vanish()
 	if(isturf(loc))

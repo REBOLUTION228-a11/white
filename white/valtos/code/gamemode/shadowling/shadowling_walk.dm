@@ -7,7 +7,7 @@
 /datum/component/walk/Initialize()
 	if(!istype(parent, /mob/living))
 		return COMPONENT_INCOMPATIBLE
-	RegisterSignal(parent, COMSIG_PROCESS_MOVE, .proc/handle_move)
+	RegisterSignal(parent, COMSIG_PROCESS_MOVE, PROC_REF(handle_move))
 
 /datum/component/walk/proc/handle_move(datum/source, direction)
 	SIGNAL_HANDLER

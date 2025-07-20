@@ -157,7 +157,7 @@
 
 	if(!inbound)
 		// rely on remove_ripples to delete us otherwise
-		addtimer(CALLBACK(src, .proc/on_initialization_end), total_animate_time, TIMER_CLIENT_TIME)
+		addtimer(CALLBACK(src, PROC_REF(on_initialization_end)), total_animate_time, TIMER_CLIENT_TIME)
 
 
 /// Handles the aftermath of initializing, after all the deeds are done.

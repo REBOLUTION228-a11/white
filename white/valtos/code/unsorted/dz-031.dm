@@ -336,7 +336,7 @@
 			if(openclose == null || !sync_doors)
 				openclose = M.density
 			playsound(src, 'white/valtos/sounds/dz/ping.ogg', 30, TRUE)
-			INVOKE_ASYNC(M, openclose ? /obj/machinery/door/veryblastdoor.proc/open : /obj/machinery/door/veryblastdoor.proc/close)
+			INVOKE_ASYNC(M, openclose ? TYPE_PROC_REF(/obj/machinery/door/veryblastdoor, open : /obj/machinery/door/veryblastdoorPROC_REF(close)))
 	addtimer(VARSET_CALLBACK(src, cooldown, FALSE), 30)
 
 /*

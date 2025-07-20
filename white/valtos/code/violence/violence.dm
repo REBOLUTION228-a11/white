@@ -106,7 +106,7 @@ GLOBAL_LIST_EMPTY(violence_bomb_locations)
 	// готовим новый раунд
 	spawn(1 SECONDS)
 		new_round()
-	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, .proc/someone_has_died)
+	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, PROC_REF(someone_has_died))
 
 /datum/game_mode/violence/generate_report()
 	return "В вашем секторе проводится самый кровавый чемпионат, а также мы тестируем нашу новейшую систему удалённого клонирования. Приятной смены!"
@@ -265,7 +265,7 @@ GLOBAL_LIST_EMPTY(violence_bomb_locations)
 	// исправляем свет
 	main_area.update_base_lighting()
 	for(var/obj/machinery/door/poddoor/D in main_area)
-		INVOKE_ASYNC(D, /obj/machinery/door/poddoor.proc/close)
+		INVOKE_ASYNC(D, TYPE_PROC_REF(/obj/machinery/door/poddoor, close))
 
 // новый раунд, отправляет всех в лобби и очищает арену
 /datum/game_mode/violence/proc/new_round()
@@ -340,7 +340,7 @@ GLOBAL_LIST_EMPTY(violence_bomb_locations)
 			last_blues = LAZYLEN(GLOB.violence_blue_team)
 			play_sound_to_everyone('white/valtos/sounds/gong.ogg')
 			for(var/obj/machinery/door/poddoor/D in main_area)
-				INVOKE_ASYNC(D, /obj/machinery/door/poddoor.proc/open)
+				INVOKE_ASYNC(D, TYPE_PROC_REF(/obj/machinery/door/poddoor, open))
 
 // получаем описание текущего раунда
 /datum/game_mode/violence/proc/get_round_desc()

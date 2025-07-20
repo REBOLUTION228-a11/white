@@ -14,9 +14,9 @@ SUBSYSTEM_DEF(killcounter)
 
 /datum/controller/subsystem/killcounter/Initialize()
 	. = ..()
-	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, .proc/on_mob_death)
-	//RegisterSignal(SSdcs, COMSIG_GLOB_EXPLOSION, .proc/on_batrudinov)
-	//RegisterSignal(SSdcs, COMSIG_GLOB_MOB_CREATED, .proc/on_mob_created)
+	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, PROC_REF(on_mob_death))
+	//RegisterSignal(SSdcs, COMSIG_GLOB_EXPLOSION, PROC_REF(on_batrudinov))
+	//RegisterSignal(SSdcs, COMSIG_GLOB_MOB_CREATED, PROC_REF(on_mob_created))
 /*
 /datum/controller/subsystem/killcounter/proc/on_mob_created(datum/source, mob/M)
 	if(isliving(M))

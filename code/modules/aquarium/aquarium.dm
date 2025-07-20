@@ -42,7 +42,7 @@
 /obj/structure/aquarium/Initialize()
 	. = ..()
 	update_icon()
-	RegisterSignal(src,COMSIG_PARENT_ATTACKBY, .proc/feed_feedback)
+	RegisterSignal(src,COMSIG_PARENT_ATTACKBY, PROC_REF(feed_feedback))
 
 
 /obj/structure/aquarium/proc/request_layer(layer_type)

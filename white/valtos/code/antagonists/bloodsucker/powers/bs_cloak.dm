@@ -35,7 +35,7 @@
 	user.mobility_flags &= ~MOBILITY_MOVE
 	while (bloodsuckerdatum && ContinueActive(user))
 
-		//if (!do_mob(user, user, 10, 0, 0, extra_checks=CALLBACK(src, .proc/ContinueActive, user, target)))
+		//if (!do_mob(user, user, 10, 0, 0, extra_checks=CALLBACK(src, PROC_REF(ContinueActive), user, target)))
 		//	return
 
 		// Fade from sight

@@ -54,4 +54,4 @@
 	remove_current_variable()
 	current_variable = variable
 	current_variable.add_listener(src)
-	RegisterSignal(current_variable, COMSIG_PARENT_QDELETING, .proc/remove_current_variable)
+	RegisterSignal(current_variable, COMSIG_PARENT_QDELETING, PROC_REF(remove_current_variable))

@@ -62,7 +62,7 @@
 			threat.title = "Бизнес-предложение"
 			threat.content = "Это [ship_name]. Выплатите [payoff] кредит[get_num_string(payoff)] или вы пройдётесь по доске."
 			threat.possible_answers = list("Мы заплатим.","Нет.")
-	threat.answer_callback = CALLBACK(src,.proc/answered)
+	threat.answer_callback = CALLBACK(src,PROC_REF(answered))
 	SScommunications.send_message(threat,unique = TRUE)
 
 /datum/round_event/pirates/proc/answered()
@@ -399,7 +399,7 @@
 	status_report = "Отправка... "
 	pad.visible_message(span_notice("[capitalize(pad.name)] начинает разогреваться."))
 	pad.icon_state = pad.warmup_state
-	sending_timer = addtimer(CALLBACK(src,.proc/send),warmup_time, TIMER_STOPPABLE)
+	sending_timer = addtimer(CALLBACK(src,PROC_REF(send)),warmup_time, TIMER_STOPPABLE)
 
 /obj/machinery/computer/piratepad_control/proc/stop_sending(custom_report)
 	if(!sending)

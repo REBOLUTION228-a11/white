@@ -71,7 +71,7 @@
 		return FALSE
 	if(action == "search")
 		SStgui.close_uis(src)
-		INVOKE_ASYNC(src, .proc/perform_research, usr, currentName)
+		INVOKE_ASYNC(src, PROC_REF(perform_research), usr, currentName)
 		currentName = ""
 		currentSection = PRE_TITLE
 		return FALSE

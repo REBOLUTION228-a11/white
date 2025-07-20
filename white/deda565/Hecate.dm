@@ -38,7 +38,7 @@
 			var/atom/A = get_edge_target_turf(target, REVERSE_DIR(G))
 			var/funnirecoil = 100
 			to_chat(user, span_warning("ВЫ НЕ МОЖЕТЕ СПРАВИТЬСЯ С ОТДАЧЕЙ И УЛЕТАЕТЕ ОТ НЕЁ!"))
-			user.throw_at(A, 256, funnirecoil, user, gentle = FALSE, callback = CALLBACK(user, /mob/living/carbon/human.proc/adjustBruteLoss, 500))
+			user.throw_at(A, 256, funnirecoil, user, gentle = FALSE, callback = CALLBACK(user, TYPE_PROC_REF(/mob/living/carbon/human, adjustBruteLoss), 500))
 			return
 		else
 			return

@@ -581,7 +581,7 @@ GLOBAL_LIST_EMPTY(disposal_bins)
 /obj/machinery/disposal/mechcomp/proc/activate_for(time)
 	cooldown = TRUE
 	update_icon()
-	addtimer(CALLBACK(src, .proc/_deactivate), time)
+	addtimer(CALLBACK(src, PROC_REF(_deactivate)), time)
 
 /obj/machinery/disposal/mechcomp/proc/_deactivate()
 	cooldown = FALSE

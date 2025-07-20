@@ -20,7 +20,7 @@
 	. = ..()
 
 /datum/component/tts/RegisterWithParent()
-	RegisterSignal(owner, COMSIG_MOB_SAY, .proc/handle_speech)
+	RegisterSignal(owner, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 
 /datum/component/tts/UnregisterFromParent()
 	UnregisterSignal(owner, COMSIG_MOB_SAY)
@@ -28,7 +28,7 @@
 /datum/component/tts/proc/handle_speech(datum/source, list/speech_args)
 	SIGNAL_HANDLER
 	if(GLOB.tts || creation)
-		INVOKE_ASYNC(src, .proc/prikolize, speech_args[SPEECH_MESSAGE])
+		INVOKE_ASYNC(src, PROC_REF(prikolize), speech_args[SPEECH_MESSAGE])
 
 /datum/component/tts/proc/prikolize(msg)
 	if(world.time < next_line_time)

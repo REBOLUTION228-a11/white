@@ -7,11 +7,11 @@
 		return ELEMENT_INCOMPATIBLE
 	if(!connected_organ_underlay)
 		connected_organ_underlay = mutable_appearance(icon = 'white/baldenysh/icons/obj/organs.dmi', icon_state = "connected_organ_underlay")
-	RegisterSignal(target, COMSIG_ATOM_UPDATE_OVERLAYS, .proc/apply_underlays) //похуй тупа паебать
-	RegisterSignal(target, COMSIG_PARENT_EXAMINE, .proc/handle_examine)
-	RegisterSignal(target, COMSIG_ATOM_TOOL_ACT(TOOL_SCALPEL), .proc/scalpel_act)
-	RegisterSignal(target, COMSIG_ATOM_TOOL_ACT(TOOL_HEMOSTAT), .proc/hemostat_act)
-	RegisterSignal(target, COMSIG_ATOM_ATTACK_HAND, .proc/hand_interaction)
+	RegisterSignal(target, COMSIG_ATOM_UPDATE_OVERLAYS, PROC_REF(apply_underlays)) //похуй тупа паебать
+	RegisterSignal(target, COMSIG_PARENT_EXAMINE, PROC_REF(handle_examine))
+	RegisterSignal(target, COMSIG_ATOM_TOOL_ACT(TOOL_SCALPEL), PROC_REF(scalpel_act))
+	RegisterSignal(target, COMSIG_ATOM_TOOL_ACT(TOOL_HEMOSTAT), PROC_REF(hemostat_act))
+	RegisterSignal(target, COMSIG_ATOM_ATTACK_HAND, PROC_REF(hand_interaction))
 	target.update_icon(UPDATE_OVERLAYS)
 
 /datum/element/organ_holder_organ/Detach(atom/source)
@@ -41,19 +41,19 @@
 	var/mob/living/carbon/owner = source.owner
 	if(owner)
 		if(istype(living_user) && living_user.a_intent == INTENT_HARM)
-			INVOKE_ASYNC(src, .proc/rip, source, living_user, owner)
+			INVOKE_ASYNC(src, PROC_REF(rip), source, living_user, owner)
 		return COMPONENT_CANCEL_ATTACK_CHAIN
 
 /datum/element/organ_holder_organ/proc/scalpel_act(obj/item/organ/source, mob/user, obj/item/item)
 	SIGNAL_HANDLER
 	var/mob/living/carbon/owner = source.owner
 	if(owner)
-		INVOKE_ASYNC(src, .proc/cut_off, source, user, owner)
+		INVOKE_ASYNC(src, PROC_REF(cut_off), source, user, owner)
 
 /datum/element/organ_holder_organ/proc/hemostat_act(obj/item/organ/source, mob/user, obj/item/item)
 	SIGNAL_HANDLER
 	if(!source.owner && iscarbon(source.loc.loc))
-		INVOKE_ASYNC(src, .proc/connect, source, user, source.loc.loc)
+		INVOKE_ASYNC(src, PROC_REF(connect), source, user, source.loc.loc)
 
 /datum/element/organ_holder_organ/proc/cut_off(obj/item/organ/source, mob/user, mob/living/carbon/owner)
 	to_chat(user, span_notice("Начинаю отрезать [source]."))

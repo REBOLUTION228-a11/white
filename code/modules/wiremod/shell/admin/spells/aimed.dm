@@ -41,7 +41,7 @@
 
 /obj/effect/proc_holder/spell/aimed/circuit/ready_projectile(obj/projectile/P, atom/target, mob/user, iteration)
 	. = ..()
-	RegisterSignal(P, COMSIG_PROJECTILE_ON_HIT, .proc/on_projectile_impact)
+	RegisterSignal(P, COMSIG_PROJECTILE_ON_HIT, PROC_REF(on_projectile_impact))
 	var/obj/item/circuit_component/spell_handler/aimed/aimed_handler = handler
 	if(!istype(aimed_handler))
 		return

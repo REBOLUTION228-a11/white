@@ -31,7 +31,7 @@
 	for(var/variable in hand_var_overrides)
 		if(variable in attached_hand.vars)
 			attached_hand.vv_edit_var(variable, hand_var_overrides[variable])
-	RegisterSignal(attached_hand, COMSIG_ITEM_AFTERATTACK, .proc/on_afterattack)
+	RegisterSignal(attached_hand, COMSIG_ITEM_AFTERATTACK, PROC_REF(on_afterattack))
 
 /obj/effect/proc_holder/spell/targeted/touch/circuit/proc/on_afterattack(datum/source, atom/target, mob/user, proximity_flag, click_parameters)
 	SIGNAL_HANDLER

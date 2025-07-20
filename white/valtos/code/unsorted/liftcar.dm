@@ -59,7 +59,7 @@
 		flick("pog_lift_anim", src)
 		icon_state = "pog_lift"
 		overlay = mutable_appearance(icon, "pog_lift_overlay", ABOVE_MOB_LAYER)
-		addtimer(CALLBACK(src, .proc/toggle_busy), 20)
+		addtimer(CALLBACK(src, PROC_REF(toggle_busy)), 20)
 		playsound(src, 'sound/vehicles/clowncar_cannonmode2.ogg', 75)
 		visible_message(span_danger("[capitalize(src.name)] поднимает вилку."))
 		fork_on = TRUE
@@ -68,7 +68,7 @@
 		flick("pog_anim", src)
 		icon_state = "pog"
 		overlay = mutable_appearance(src, "pog_overlay", ABOVE_MOB_LAYER)
-		addtimer(CALLBACK(src, .proc/toggle_busy), 20)
+		addtimer(CALLBACK(src, PROC_REF(toggle_busy)), 20)
 		playsound(src, 'sound/vehicles/clowncar_cannonmode1.ogg', 75)
 		visible_message(span_danger("[capitalize(src.name)] опускает вилку."))
 		fork_on = FALSE
@@ -94,7 +94,7 @@
 		THING.forceMove(src)
 		load_overlay = mutable_appearance(THING.icon, THING.icon_state, layer + 0.01)
 		add_overlay(load_overlay)
-		RegisterSignal(src, COMSIG_ATOM_DIR_CHANGE, .proc/update_visuals)
+		RegisterSignal(src, COMSIG_ATOM_DIR_CHANGE, PROC_REF(update_visuals))
 
 /obj/vehicle/ridden/forklift/proc/drop_front()
 	if(THING)

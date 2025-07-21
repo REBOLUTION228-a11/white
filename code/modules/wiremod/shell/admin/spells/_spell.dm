@@ -256,7 +256,7 @@
 		if(spell_var_ports[port_to_enable])
 			input_ports |= spell_var_ports[port_to_enable]
 	if((ports_to_enable.len || ports_to_disable.len) && parent)
-		sortTim(input_ports, /proc/cmp_port_order_asc)
+		sortTim(input_ports, GLOBAL_PROC_REF(cmp_port_order_asc))
 		SStgui.update_uis(parent)
 
 /obj/item/circuit_component/spell_handler/proc/handle_contextual_ports(datum/port/input/port, list/ports_to_disable, list/ports_to_enable)

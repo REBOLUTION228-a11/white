@@ -82,7 +82,7 @@
 	C.underwear = "Nude"
 	C.undershirt = "Nude"
 	C.socks = "Nude"
-	C.verbs += /proc/pisk
+	C.verbs += GLOBAL_PROC_REF(pisk)
 
 	C.create_bodyparts()
 	C.create_internal_organs()

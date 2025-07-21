@@ -52,7 +52,7 @@
 
 /obj/item/hockeypack/proc/toggle_stick()
 	set name = "Get Stick"
-	set category = "Object"
+	set category = "Объект"
 	if (usr.get_item_by_slot(usr.getHockeypackSlot()) != src)
 		to_chat(usr, "<span class='warning'>Рюкзак надень!</span>")
 		return
@@ -137,8 +137,8 @@
 
 /obj/item/hockeystick/Initialize()
 	. = ..()
-	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, .proc/on_wield)
-	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, .proc/on_unwield)
+	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, PROC_REF(on_wield))
+	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, PROC_REF(on_unwield))
 
 /obj/item/hockeystick/ComponentInitialize()
 	. = ..()
@@ -257,7 +257,7 @@
 
 /obj/item/storage/belt/hippie/hockey/proc/make_puck()
 	set name = "Produce Puck"
-	set category = "Object"
+	set category = "Объект"
 	if (usr.get_item_by_slot(usr.getHockeybeltSlot()) != src)
 		to_chat(usr, "<span class='warning'>Пояс надень!</span>")
 		return
@@ -271,7 +271,7 @@
 		return
 
 	newpuck = build_puck()
-	addtimer(CALLBACK(src,.proc/reset_puck),recharge_time)
+	addtimer(CALLBACK(src,PROC_REF(reset_puck)),recharge_time)
 	if(!user.put_in_hands(newpuck))
 		to_chat(user, "<span class='warning'>Тебе нужна свободная рука!</span>")
 		return

@@ -205,7 +205,7 @@
 
 /obj/structure/deployable_barricade/verb/rotate()
 	set name = "Поворот баррикады против часовой стрелки"
-	set category = "Object"
+	set category = "Объект"
 	set src in oview(1)
 
 	if(anchored)
@@ -216,7 +216,7 @@
 
 /obj/structure/deployable_barricade/verb/revrotate()
 	set name = "Поворот баррикады по часовой стрелке"
-	set category = "Object"
+	set category = "Объект"
 	set src in oview(1)
 
 	if(anchored)

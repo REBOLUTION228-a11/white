@@ -383,7 +383,7 @@
 
 	animate(src, transform = M, time = 60 SECONDS)
 
-	addtimer(CALLBACK(src, .proc/stage_growth), 60 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(stage_growth)), 60 SECONDS)
 
 /obj/structure/cerulean_slime_crystal/Destroy()
 	if(stage > 1)
@@ -417,7 +417,7 @@
 	for(var/turf/T in RANGE_TURFS(4,src))
 		T.add_atom_colour(pick(color_list), FIXED_COLOUR_PRIORITY)
 
-	addtimer(CALLBACK(src,.proc/change_colour),rand(0.75 SECONDS,1.25 SECONDS))
+	addtimer(CALLBACK(src,PROC_REF(change_colour)),rand(0.75 SECONDS,1.25 SECONDS))
 
 /obj/structure/slime_crystal/red
 	colour = "red"

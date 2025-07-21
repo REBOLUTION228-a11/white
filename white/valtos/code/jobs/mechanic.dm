@@ -161,7 +161,7 @@
 		active_item = O
 		crystals--
 		siphoned_power = 0
-		timer = addtimer(CALLBACK(src, .proc/finish_work, O), get_replication_speed(tier_rate), TIMER_STOPPABLE)
+		timer = addtimer(CALLBACK(src, PROC_REF(finish_work), O), get_replication_speed(tier_rate), TIMER_STOPPABLE)
 		return TRUE
 
 	if (ispath(current_design, /mob/living))
@@ -178,7 +178,7 @@
 		active_item = M
 		crystals--
 		siphoned_power = 0
-		timer = addtimer(CALLBACK(src, .proc/finish_work, M), get_replication_speed(tier_rate), TIMER_STOPPABLE)
+		timer = addtimer(CALLBACK(src, PROC_REF(finish_work), M), get_replication_speed(tier_rate), TIMER_STOPPABLE)
 		return TRUE
 
 	say("Неизвестная ошибка! Пожалуйста, свяжитесь с инженерным департаментом.")
@@ -250,7 +250,7 @@
 /obj/machinery/copytech_platform/Initialize()
 	. = ..()
 	var/static/list/loc_connections = list(
-		COMSIG_ATOM_ENTERED = .proc/movable_crossed,
+		COMSIG_ATOM_ENTERED = PROC_REF(movable_crossed),
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
 
@@ -392,7 +392,7 @@
 	D.transformation_animation(result, time = get_replication_speed(tier_rate), transform_overlay = scanline, reset_after=TRUE)
 	active_item = D
 	siphoned_power = 0
-	timer = addtimer(CALLBACK(src, .proc/finish_work, D), get_replication_speed(tier_rate), TIMER_STOPPABLE)
+	timer = addtimer(CALLBACK(src, PROC_REF(finish_work), D), get_replication_speed(tier_rate), TIMER_STOPPABLE)
 	return TRUE
 
 /obj/machinery/copytech_platform/proc/finish_work(obj/D)

@@ -68,7 +68,7 @@ GLOBAL_VAR_INIT(violence_bomb_detonated, FALSE)
 	spawn(4 SECONDS)
 		play_sound_to_everyone('white/valtos/sounds/bcountdown.ogg', 100, CHANNEL_NASHEED)
 
-	addtimer(CALLBACK(src, .proc/detonate), det_time SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(detonate)), det_time SECONDS)
 
 /obj/item/terroristsc4/attack_hand(mob/user)
 	if(!GLOB.violence_bomb_planted)

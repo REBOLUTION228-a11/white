@@ -408,7 +408,7 @@
 					//Hold the shuttle in the docking position until ready.
 					mobile_port.setTimer(INFINITY)
 					say("Активирован протокол стыковки, ожидайте...")
-					INVOKE_ASYNC(src, .proc/unfreeze_shuttle, mobile_port, SSmapping.get_level(target_port.z))
+					INVOKE_ASYNC(src, PROC_REF(unfreeze_shuttle), mobile_port, SSmapping.get_level(target_port.z))
 				if(1)
 					to_chat(usr, span_warning("Неправильный шаттл запрошен."))
 				else
@@ -515,7 +515,7 @@
 				//Hold the shuttle in the docking position until ready.
 				shuttle_dock.setTimer(INFINITY)
 				say("Ожидайте...")
-				INVOKE_ASYNC(src, .proc/unfreeze_shuttle, shuttle_dock, target_spacelevel)
+				INVOKE_ASYNC(src, PROC_REF(unfreeze_shuttle), shuttle_dock, target_spacelevel)
 				QDEL_NULL(_shuttleObject)
 				return TRUE
 			if(1)

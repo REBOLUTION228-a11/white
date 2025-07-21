@@ -14,6 +14,7 @@
 
 // BEGIN_INCLUDE
 #include "_maps\_basemap.dm"
+#include "code\__byond_version_compat.dm"
 #include "code\_compile_options.dm"
 #include "code\_debugger.dm"
 #include "code\world.dm"
@@ -234,6 +235,7 @@
 #include "code\__HELPERS\type_processing.dm"
 #include "code\__HELPERS\typelists.dm"
 #include "code\__HELPERS\unsorted.dm"
+#include "code\__HELPERS\varset_calback.dm"
 #include "code\__HELPERS\verbs.dm"
 #include "code\__HELPERS\view.dm"
 #include "code\__HELPERS\virtual_z_level.dm"

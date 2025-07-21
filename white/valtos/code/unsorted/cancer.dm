@@ -402,7 +402,7 @@
 		if(t && get_dist(t, T) == 11)
 			new /obj/effect/temp_visual/sansarena(t, src)
 	if(get_dist(src, T) >= 11)
-		INVOKE_ASYNC(src, .proc/teleport, T)
+		INVOKE_ASYNC(src, PROC_REF(teleport), T)
 
 /obj/effect/temp_visual/sansarena
 	name = "костяная стена"
@@ -465,7 +465,7 @@
 		C.moving_dir = pick_n_take(cardinal_copy)
 		SLEEP_CHECK_DEATH(8)
 	animate(src, color = oldcolor, time = 8)
-	addtimer(CALLBACK(src, /atom/proc/update_atom_colour), 8)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_atom_colour)), 8)
 	SLEEP_CHECK_DEATH(8)
 
 /obj/effect/temp_visual/hierophant/chaser/sans
@@ -500,7 +500,7 @@
 	if(ismineralturf(loc)) //drill mineral turfs
 		var/turf/closed/mineral/M = loc
 		M.gets_drilled(caster)
-	INVOKE_ASYNC(src, .proc/cumblast)
+	INVOKE_ASYNC(src, PROC_REF(cumblast))
 
 /obj/effect/temp_visual/hierophant/blast/sans/proc/cumblast()
 	var/turf/T = get_turf(src)

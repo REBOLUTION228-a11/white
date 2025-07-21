@@ -60,7 +60,7 @@
 		else
 			cell = new preload_cell_type(src)
 	update_icon()
-	RegisterSignal(src, COMSIG_PARENT_ATTACKBY, .proc/convert)
+	RegisterSignal(src, COMSIG_PARENT_ATTACKBY, PROC_REF(convert))
 
 
 /obj/item/melee/baton/Destroy()
@@ -240,7 +240,7 @@
 		L.stuttering = max(8, L.stuttering)
 
 	SEND_SIGNAL(L, COMSIG_LIVING_MINOR_SHOCK)
-	addtimer(CALLBACK(src, .proc/apply_stun_effect_end, L), apply_stun_delay)
+	addtimer(CALLBACK(src, PROC_REF(apply_stun_effect_end), L), apply_stun_delay)
 
 	if(user)
 //		L.lastattacker = user.real_name
@@ -340,7 +340,7 @@
 			baton_effect(hit_atom)
 		var/mob/thrown_by = thrownby?.resolve()
 		if(thrown_by && !caught)
-			addtimer(CALLBACK(src, /atom/movable.proc/throw_at, thrown_by, throw_range+2, throw_speed, null, TRUE), 1)
+			addtimer(CALLBACK(src, TYPE_PROC_REF(/atom/movable, throw_at), thrown_by, throw_range+2, throw_speed, null, TRUE), 1)
 	else
 		return ..()
 

@@ -11,11 +11,11 @@ GLOBAL_LIST_EMPTY(killcounter_counted_kills)
 /datum/component/killcounter/Initialize()
 	if(!isliving(parent))
 		return COMPONENT_INCOMPATIBLE
-	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, .proc/on_mob_death)
+	RegisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, PROC_REF(on_mob_death))
 
 /datum/component/killcounter/Destroy(force, silent)
 	. = ..()
-	UnregisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, .proc/on_mob_death)
+	UnregisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH, PROC_REF(on_mob_death))
 
 /datum/component/killcounter/proc/on_mob_death(datum/source, mob/living/dead, gibbed)
 	SIGNAL_HANDLER

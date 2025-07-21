@@ -133,7 +133,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 		if (picked && is_station_level(picked.z))
 			GLOB.teleportlocs[AR.name] = AR
 
-	sortTim(GLOB.teleportlocs, /proc/cmp_text_asc)
+	sortTim(GLOB.teleportlocs, GLOBAL_PROC_REF(cmp_text_asc))
 
 /**
  * Called when an area loads
@@ -468,7 +468,7 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 					if(found.file == S.file)
 						soundLen = found.len
 
-				addtimer(CALLBACK(src, /area/.proc/reset_ambience_played, C), soundLen * 10)
+				addtimer(CALLBACK(src, TYPE_PROC_REF(/area, reset_ambience_played), C), soundLen * 10)
 
 /area/proc/reset_ambience_played(client/C)
 	C?.played = FALSE

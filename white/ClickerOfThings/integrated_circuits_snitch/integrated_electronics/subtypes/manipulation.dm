@@ -228,7 +228,7 @@
 			dt = clamp(detonation_time.data, 1, 12)*10
 		else
 			dt = 15
-		addtimer(CALLBACK(attached_grenade, /obj/item/grenade.proc/arm_grenade), dt)
+		addtimer(CALLBACK(attached_grenade, TYPE_PROC_REF(/obj/item/grenade, arm_grenade)), dt)
 		var/atom/holder = loc
 		message_admins("activated a grenade assembly. Last touches: Assembly: [holder.fingerprintslast] Circuit: [fingerprintslast] Grenade: [attached_grenade.fingerprintslast]")
 
@@ -495,7 +495,7 @@
 	assembly.visible_message(span_danger("[assembly] has thrown [A]!"))
 	log_attack("[assembly] [REF(assembly)] has thrown [A].")
 	A.forceMove(drop_location())
-	A.throw_at(locate(x_abs, y_abs, T.z), range, 3, , , , CALLBACK(src, .proc/post_throw, A))
+	A.throw_at(locate(x_abs, y_abs, T.z), range, 3, , , , CALLBACK(src, PROC_REF(post_throw), A))
 
 	// If the item came from a grabber now we can update the outputs since we've thrown it.
 	if(istype(G))

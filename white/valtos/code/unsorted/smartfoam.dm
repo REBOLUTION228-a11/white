@@ -34,7 +34,7 @@
 	uses--
 	cooldown_time = world.time + cooldown
 	power_change()
-	addtimer(CALLBACK(src, .proc/power_change), cooldown)
+	addtimer(CALLBACK(src, PROC_REF(power_change)), cooldown)
 
 /obj/machinery/ai_slipper/smartfoam/interact(mob/user)
 	if(!allowed(user))

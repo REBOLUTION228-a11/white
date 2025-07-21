@@ -69,7 +69,7 @@
 	M.client.screen |= compartment_contents
 	M.set_active_storage(src)
 	LAZYOR(is_using, M)
-	RegisterSignal(M, COMSIG_PARENT_QDELETING, .proc/mob_deleted)
+	RegisterSignal(M, COMSIG_PARENT_QDELETING, PROC_REF(mob_deleted))
 	return TRUE
 
 /datum/component/storage/concrete/multicompartment/proc/orient2hud_multi(list/current_compartmnet)

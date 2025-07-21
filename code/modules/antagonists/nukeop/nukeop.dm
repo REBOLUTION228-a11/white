@@ -132,8 +132,8 @@
 
 /datum/antagonist/nukeop/get_admin_commands()
 	. = ..()
-	.["Отправить на базу"] = CALLBACK(src,.proc/admin_send_to_base)
-	.["Сказать код"] = CALLBACK(src,.proc/admin_tell_code)
+	.["Отправить на базу"] = CALLBACK(src,PROC_REF(admin_send_to_base))
+	.["Сказать код"] = CALLBACK(src,PROC_REF(admin_tell_code))
 
 /datum/antagonist/nukeop/proc/admin_send_to_base(mob/admin)
 	owner.current.forceMove(pick(GLOB.nukeop_start))
@@ -179,7 +179,7 @@
 			H.put_in_hands(dukinuki, TRUE)
 		nuke_team.war_button_ref = WEAKREF(dukinuki)
 	owner.announce_objectives()
-	addtimer(CALLBACK(src, .proc/nuketeam_name_assign), 1)
+	addtimer(CALLBACK(src, PROC_REF(nuketeam_name_assign)), 1)
 
 
 /datum/antagonist/nukeop/leader/proc/nuketeam_name_assign()

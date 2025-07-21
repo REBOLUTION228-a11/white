@@ -2,6 +2,7 @@ SUBSYSTEM_DEF(title)
 	name = "Заставки"
 	flags = SS_NO_FIRE
 	init_order = INIT_ORDER_TITLE
+	init_stage = INITSTAGE_EARLY
 
 	var/file_path
 	var/icon/icon
@@ -9,7 +10,7 @@ SUBSYSTEM_DEF(title)
 	var/turf/closed/indestructible/splashscreen/splash_turf
 	var/cached_title
 
-/datum/controller/subsystem/title/Initialize()
+/datum/controller/subsystem/title/Initialize(mapload)
 	if(file_path && icon)
 		return
 
@@ -105,17 +106,13 @@ SUBSYSTEM_DEF(title)
 	tcc += "[english_list(cum)]</td></tr></tbody></table>"
 	cached_title = tcc
 
-/client/proc/show_lobby()
-	usr << browse(file('html/lobby.html'), "window=pdec;display=1;is-visible=false;size=300x550;border=0;can_close=1;can_resize=1;can_minimize=1;titlebar=1;is-disabled=false;")
-	winset(usr, "pdec", "pos=10,60")
+/client/proc/show_lobby(mob/user)
+	user << browse(file('html/lobby.html'), "window=pdec;display=1;is-visible=false;size=300x550;border=0;can_close=1;can_resize=1;can_minimize=1;titlebar=1;is-disabled=false;")
+	winset(user, "pdec", "pos=10,60")
 	update_lobby()
-	spawn(5 SECONDS)
-		if(usr)
-			winset(usr, "pdec", "is-visible=true;pos=10,60")
-		SStitle.update_lobby()
-	spawn(20 SECONDS)
-		if(usr)
-			winset(usr, "pdec", "is-visible=true;pos=10,60")
+	spawn(13 SECONDS)
+		if(user?.client)
+			winset(user, "pdec", "is-visible=true;pos=10,60")
 		SStitle.update_lobby()
 
 /client/proc/kill_lobby()

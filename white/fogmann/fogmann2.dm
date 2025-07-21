@@ -190,7 +190,7 @@
 		if (T && isturf(T))
 			if (!D.stat)
 				D.emote("agony")
-			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, /mob/living/carbon/human.proc/Paralyze, 20))
+			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, TYPE_PROC_REF(/mob/living/carbon/human, Paralyze), 20))
 	log_combat(A, D, "has thrown with progib")
 	return
 
@@ -327,7 +327,7 @@
 			A.setDir(turn(A.dir, 90))
 
 		A.forceMove(D.loc)
-		addtimer(CALLBACK(src, .proc/CheckStrikeTurf, A, T), 4)
+		addtimer(CALLBACK(src, PROC_REF(CheckStrikeTurf), A, T), 4)
 
 
 		D.visible_message(span_danger("[A] дал чапалах [D]!") , \

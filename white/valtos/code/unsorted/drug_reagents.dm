@@ -248,7 +248,7 @@
 						H.visible_message(span_warning("[H] хватается за свою грудь и похоже это конец!"))
 					H.adjustStaminaLoss(80)
 				if(prob(3))
-					addtimer(CALLBACK(src, .proc/end_bad_trip, H), 30)
+					addtimer(CALLBACK(src, PROC_REF(end_bad_trip), H), 30)
 
 	if(prob(5))
 		to_chat(H, "<i>Слышу свои собственные мысли... <b>[high_message]</i></b>")
@@ -274,7 +274,7 @@
 		for(var/atom/movable/screen/plane_master/whole_screen in screens)
 			animate(whole_screen, transform = matrix(), time = 200, easing = ELASTIC_EASING)
 			addtimer(VARSET_CALLBACK(whole_screen, filters, list()), 200) //reset filters
-			addtimer(CALLBACK(whole_screen, /atom/movable/screen/plane_master/.proc/backdrop, C), 201) //reset backdrop filters so they reappear
+			addtimer(CALLBACK(whole_screen, TYPE_PROC_REF(/atom/movable/screen/plane_master, backdrop), C), 201) //reset backdrop filters so they reappear
 			PlaySpook(C, 'white/valtos/sounds/honk_echo_distant.ogg', 0, FALSE)
 
 /obj/effect/hallucination/simple/druggy
@@ -290,7 +290,7 @@
 	I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
 	if(L)
 		L.Hear(message, src, L.get_random_understood_language(), message)
-		INVOKE_ASYNC(GLOBAL_PROC, /.proc/flick_overlay, I, list(L.client), 30)
+		INVOKE_ASYNC(GLOBAL_PROC, TYPE_PROC_REF(/, flick_overlay), I, list(L.client), 30)
 	sleep(10)
 	animate(src, transform = matrix()*0.75, time = 5)
 	QDEL_IN(src, 30)
@@ -336,7 +336,7 @@
 		for(var/atom/movable/screen/plane_master/whole_screen in screens)
 			animate(whole_screen, transform = matrix(), pixel_x = 0, pixel_y = 0, color = "#ffffff", time = 200, easing = ELASTIC_EASING)
 			addtimer(VARSET_CALLBACK(whole_screen, filters, list()), 200) //reset filters
-			addtimer(CALLBACK(whole_screen, /atom/movable/screen/plane_master/.proc/backdrop, C), 201) //reset backdrop filters so they reappear
+			addtimer(CALLBACK(whole_screen, TYPE_PROC_REF(/atom/movable/screen/plane_master, backdrop), C), 201) //reset backdrop filters so they reappear
 		to_chat(C, "<b><big>Неужели отпустило...</big></b>")
 
 		if(C.client && current_cycle > 100)
@@ -504,7 +504,7 @@
 	animate(src, color = color_matrix_rotate_hue(rand(0, 360)), time = 200, easing = CIRCULAR_EASING)
 	QDEL_IN(src, rand(40, 200))
 	var/static/list/loc_connections = list(
-		COMSIG_ATOM_ENTERED = .proc/on_entered,
+		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
 

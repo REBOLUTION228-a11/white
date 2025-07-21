@@ -93,7 +93,7 @@
 	if (istype(target))
 		ADD_TRAIT(target, TRAIT_MUTE, "bloodsucker_mesmerize")
 
-	if (do_mob(user, target, 40, 0, TRUE, extra_checks=CALLBACK(src, .proc/ContinueActive, user, target)))
+	if (do_mob(user, target, 40, 0, TRUE, extra_checks=CALLBACK(src, PROC_REF(ContinueActive), user, target)))
 		PowerActivatedSuccessfully() // PAY COST! BEGIN COOLDOWN!
 		var/power_time = 90 + level_current * 15
 		to_chat(user, span_notice("[target] is fixed in place by your hypnotic gaze."))

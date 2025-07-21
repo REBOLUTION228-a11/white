@@ -273,7 +273,7 @@
 	if(object == src || /*istype(object, /atom/movable/screen) ||*/ (object && (object in user.GetAllContents())) || user != pilot/* || modifiers["shift"] || modifiers["alt"]*/)
 		return
 	if(weapon && modifiers["ctrl"])
-		INVOKE_ASYNC(src, .proc/async_fire_weapons_at, object)
+		INVOKE_ASYNC(src, PROC_REF(async_fire_weapons_at), object)
 		//weapon.fire_weapons(object)
 	else
 		//desired_angle = get_angle(src, object)
@@ -670,7 +670,7 @@
 	if(!pilot && allow_pilot)
 		pilot = M
 		//M.click_intercept = src
-		RegisterSignal(M, COMSIG_MOB_CLIENT_MOUSE_MOVE, .proc/on_mouse_moved)
+		RegisterSignal(M, COMSIG_MOB_CLIENT_MOUSE_MOVE, PROC_REF(on_mouse_moved))
 		addverbs(M)
 		ADD_TRAIT(M, TRAIT_HANDS_BLOCKED, VEHICLE_TRAIT)
 		if(M.client)

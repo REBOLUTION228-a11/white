@@ -20,8 +20,8 @@
 	ST.impaler = impaled_by
 	ST.buckle_mob(C, force=1)
 	set_offsets(impaling_dir)
-	RegisterSignal(parent, COMSIG_MOVABLE_MOVED, .proc/on_moved)
-	RegisterSignal(parent, COMSIG_MOVABLE_UNBUCKLE, .proc/on_unbuckle)
+	RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(on_moved))
+	RegisterSignal(parent, COMSIG_MOVABLE_UNBUCKLE, PROC_REF(on_unbuckle))
 
 /datum/component/impaled/UnregisterFromParent()
 	var/mob/living/carbon/C = parent

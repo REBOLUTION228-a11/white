@@ -28,8 +28,9 @@ SUBSYSTEM_DEF(garbage)
 	flags = SS_POST_FIRE_TIMING|SS_BACKGROUND|SS_NO_INIT
 	runlevels = RUNLEVELS_DEFAULT | RUNLEVEL_LOBBY
 	init_order = INIT_ORDER_GARBAGE
+	init_stage = INITSTAGE_EARLY
 
-	var/list/collection_timeout = list(GC_FILTER_QUEUE, GC_DEL_QUEUE)	// deciseconds to wait before moving something up in the queue to the next level
+	var/list/collection_timeout = list(GC_FILTER_QUEUE, GC_CHECK_QUEUE, GC_DEL_QUEUE)	// deciseconds to wait before moving something up in the queue to the next level
 
 	//Stat tracking
 	var/delslasttick = 0			// number of del()'s we've done this tick
@@ -105,10 +106,13 @@ SUBSYSTEM_DEF(garbage)
 
 /datum/controller/subsystem/garbage/fire()
 	//the fact that this resets its processing each fire (rather then resume where it left off) is intentional.
-	var/queue = GC_QUEUE_CHECK
+	var/queue = GC_QUEUE_FILTER
 
 	while (state == SS_RUNNING)
 		switch (queue)
+			if (GC_QUEUE_FILTER)
+				HandleQueue(GC_QUEUE_FILTER)
+				queue = GC_QUEUE_FILTER+1
 			if (GC_QUEUE_CHECK)
 				HandleQueue(GC_QUEUE_CHECK)
 				queue = GC_QUEUE_CHECK+1
@@ -130,8 +134,8 @@ SUBSYSTEM_DEF(garbage)
 			pass_counts[i] = 0
 			fail_counts[i] = 0
 
-/datum/controller/subsystem/garbage/proc/HandleQueue(level = GC_QUEUE_CHECK)
-	if (level == GC_QUEUE_CHECK)
+/datum/controller/subsystem/garbage/proc/HandleQueue(level = GC_QUEUE_FILTER)
+	if (level == GC_QUEUE_FILTER)
 		delslasttick = 0
 		gcedlasttick = 0
 	var/cut_off_time = world.time - collection_timeout[level] //ignore entries newer then this
@@ -186,11 +190,11 @@ SUBSYSTEM_DEF(garbage)
 			if (GC_QUEUE_CHECK)
 				#ifdef REFERENCE_TRACKING
 				if(reference_find_on_fail[refID])
-					INVOKE_ASYNC(D, /datum/proc/find_references)
+					INVOKE_ASYNC(D, TYPE_PROC_REF(/datum,find_references))
 					ref_searching = TRUE
 				#ifdef GC_FAILURE_HARD_LOOKUP
 				else
-					INVOKE_ASYNC(D, /datum/proc/find_references)
+					INVOKE_ASYNC(D, TYPE_PROC_REF(/datum,find_references))
 					ref_searching = TRUE
 				#endif
 				reference_find_on_fail -= refID
@@ -226,7 +230,7 @@ SUBSYSTEM_DEF(garbage)
 		queue.Cut(1,count+1)
 		count = 0
 
-/datum/controller/subsystem/garbage/proc/Queue(datum/D, level = GC_QUEUE_CHECK)
+/datum/controller/subsystem/garbage/proc/Queue(datum/D, level = GC_QUEUE_FILTER)
 	if (isnull(D))
 		return
 	if (level > GC_QUEUE_COUNT)

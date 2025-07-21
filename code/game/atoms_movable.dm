@@ -87,7 +87,7 @@
 	. = ..()
 	switch(blocks_emissive)
 		if(EMISSIVE_BLOCK_GENERIC)
-			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, plane = EMISSIVE_PLANE)
+			var/mutable_appearance/gen_emissive_blocker = mutable_appearance(icon, icon_state, plane = EMISSIVE_PLANE, alpha = src.alpha)
 			gen_emissive_blocker.color = GLOB.em_block_color
 			gen_emissive_blocker.dir = dir
 			gen_emissive_blocker.appearance_flags |= appearance_flags
@@ -138,9 +138,6 @@
 			qdel(move_packet)
 		move_packet = null
 
-	// no reason not to do this unless you're a turf
-	vis_contents.Cut()
-
 	. = ..()
 
 	for(var/movable_content in contents)
@@ -154,6 +151,7 @@
 	//DO it after moveToNullspace so memes can be had
 	LAZYCLEARLIST(important_recursive_contents)
 
+	vis_locs = null //clears this atom out of all viscontents
 	vis_contents.Cut()
 
 
@@ -280,11 +278,14 @@
 
 
 /atom/movable/vv_edit_var(var_name, var_value)
-	var/static/list/banned_edits = list("step_x" = TRUE, "step_y" = TRUE, "step_size" = TRUE, "bounds" = TRUE)
-	var/static/list/careful_edits = list("bound_x" = TRUE, "bound_y" = TRUE, "bound_width" = TRUE, "bound_height" = TRUE)
+	var/static/list/banned_edits = list(NAMEOF_STATIC(src, step_x) = TRUE, NAMEOF_STATIC(src, step_y) = TRUE, NAMEOF_STATIC(src, step_size) = TRUE, NAMEOF_STATIC(src, bounds) = TRUE)
+	var/static/list/careful_edits = list(NAMEOF_STATIC(src, bound_x) = TRUE, NAMEOF_STATIC(src, bound_y) = TRUE, NAMEOF_STATIC(src, bound_width) = TRUE, NAMEOF_STATIC(src, bound_height) = TRUE)
+	var/static/list/not_falsey_edits = list(NAMEOF_STATIC(src, bound_width) = TRUE, NAMEOF_STATIC(src, bound_height) = TRUE)
 	if(banned_edits[var_name])
-		return FALSE	//PLEASE no.
-	if((careful_edits[var_name]) && (var_value % world.icon_size) != 0)
+		return FALSE //PLEASE no.
+	if(careful_edits[var_name] && (var_value % world.icon_size) != 0)
+		return FALSE
+	if(not_falsey_edits[var_name] && !var_value)
 		return FALSE
 
 	switch(var_name)

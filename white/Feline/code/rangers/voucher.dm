@@ -252,7 +252,7 @@
 
 /obj/item/melee/sabre/proton_cutter/proc/proton_attack(mob/living/M, mob/living/user, var/T)	// 	+ После удара
 	M.add_overlay(stun_overlay)
-	addtimer(CALLBACK(M, /atom/proc/cut_overlay, stun_overlay), T SECONDS)
+	addtimer(CALLBACK(M, TYPE_PROC_REF(/atom, cut_overlay), stun_overlay), T SECONDS)
 	last_activation = world.time
 	if(prob(50))
 		playsound(user, 'white/Feline/sounds/proton_cutter_amp_hit_1.ogg', 100, TRUE)
@@ -268,7 +268,7 @@
 			if(isstunmob(M))
 				var/mob/living/simple_animal/hostile/zombie/Z = M
 				Z.AIStatus = AI_OFF
-				addtimer(CALLBACK(Z, /mob/living/simple_animal/proc/re_ai), 5 SECONDS)
+				addtimer(CALLBACK(Z, TYPE_PROC_REF(/mob/living/simple_animal, re_ai)), 5 SECONDS)
 
 			force = 60
 			M.Paralyze(5 SECONDS, ignore_canstun = TRUE)
@@ -295,7 +295,7 @@
 		if(amplification)
 			force = 25
 			M.add_movespeed_modifier(/datum/movespeed_modifier/proton_cutter)
-			addtimer(CALLBACK(M, /mob/proc/remove_movespeed_modifier, /datum/movespeed_modifier/proton_cutter), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+			addtimer(CALLBACK(M, TYPE_PROC_REF(/mob, remove_movespeed_modifier), /datum/movespeed_modifier/proton_cutter), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
 			proton_off()
 			proton_attack(M, user, 5)
 		else
@@ -310,19 +310,19 @@
 			if(isstunmob(M) && !isalienroyal(M))
 				var/mob/living/simple_animal/hostile/alien/Z = M
 				Z.AIStatus = AI_OFF
-				addtimer(CALLBACK(Z, /mob/living/simple_animal/proc/re_ai), 5 SECONDS)
-				addtimer(CALLBACK(M, /atom/proc/cut_overlay, stun_overlay), 5 SECONDS)
+				addtimer(CALLBACK(Z, TYPE_PROC_REF(/mob/living/simple_animal, re_ai)), 5 SECONDS)
+				addtimer(CALLBACK(M, TYPE_PROC_REF(/atom, cut_overlay), stun_overlay), 5 SECONDS)
 /*			else
 				if(isstunmob(M))
 					var/mob/living/simple_animal/hostile/alien/Z = M
 					Z.AIStatus = AI_OFF
-					addtimer(CALLBACK(Z, /mob/living/simple_animal/proc/re_ai), 2 SECONDS)
+					addtimer(CALLBACK(Z, TYPE_PROC_REF(/mob/living/simple_animal, re_ai)), 2 SECONDS)
 */
 			if(!isalienroyal(M))
 				M.Paralyze(5 SECONDS, ignore_canstun = TRUE)
 			else
 				M.add_movespeed_modifier(/datum/movespeed_modifier/proton_cutter_heavy)
-				addtimer(CALLBACK(M, /mob/proc/remove_movespeed_modifier, /datum/movespeed_modifier/proton_cutter_heavy), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+				addtimer(CALLBACK(M, TYPE_PROC_REF(/mob, remove_movespeed_modifier), /datum/movespeed_modifier/proton_cutter_heavy), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
 
 			proton_off()
 			proton_attack(M, user, 5)

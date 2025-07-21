@@ -1225,6 +1225,7 @@ GLOBAL_VAR_INIT(embedpocalypse, FALSE) // if true, all items will be able to emb
 	else if(used_item)
 		attack_image = image(icon = used_item, loc = attacked_atom, layer = attacked_atom.layer + 0.1)
 		attack_image.plane = attacked_atom.plane
+		attack_image.layer = attacked_atom.layer + 0.1
 
 		// Scale the icon.
 		attack_image.transform *= 0.4

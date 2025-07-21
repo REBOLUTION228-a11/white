@@ -759,7 +759,7 @@
 
 
 			for(var/s=1,s<51,s++)
-				addtimer(CALLBACK(artist, /mob/proc/emote, "poo"), 1+2*log(s) SECONDS)
+				addtimer(CALLBACK(artist, TYPE_PROC_REF(/mob, emote), "poo"), 1+2*log(s) SECONDS)
 			spawn(8.7 SECONDS)
 				artist.visible_message(span_hypnophrase("[artist.name] распидорасило: похоже, за побег из Цирка он был отправлен в бессрочную ссылку на [pick("Цитадель", "Флаффи", "Скайрэт", "Опух", "парашу")]. [pick("Прикольно", "Страшно", "Помянем", "Ужасно", "Кошмар", "Грустно", "Смешно")]."))
 				artist.gib(TRUE)

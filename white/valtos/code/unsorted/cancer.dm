@@ -465,7 +465,7 @@
 		C.moving_dir = pick_n_take(cardinal_copy)
 		SLEEP_CHECK_DEATH(8)
 	animate(src, color = oldcolor, time = 8)
-	addtimer(CALLBACK(src, /atom/proc/update_atom_colour), 8)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_atom_colour)), 8)
 	SLEEP_CHECK_DEATH(8)
 
 /obj/effect/temp_visual/hierophant/chaser/sans

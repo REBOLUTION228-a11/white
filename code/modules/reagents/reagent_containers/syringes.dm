@@ -82,7 +82,7 @@
 					target.visible_message(span_danger("<b>[user]</b> пытается взять кровь у <b>[target]</b>!") , \
 									span_userdanger("<b>[user]</b> пытается взять кровь у меня!"))
 					busy = TRUE
-					if(!do_mob(user, target, extra_checks=CALLBACK(L, /mob/living/proc/can_inject, user, TRUE)))
+					if(!do_mob(user, target = target, extra_checks=CALLBACK(L, TYPE_PROC_REF(/mob/living, can_inject), user, TRUE)))
 						busy = FALSE
 						return
 					if(reagents.total_volume >= reagents.maximum_volume)
@@ -132,7 +132,7 @@
 				if(L != user)
 					L.visible_message(span_danger("<b>[user]</b> пытается ввести что-то в <b>[L]</b>!") , \
 											span_userdanger("<b>[user]</b> пытается ввести что-то в меня!"))
-					if(!do_mob(user, L, extra_checks=CALLBACK(L, /mob/living/proc/can_inject, user, TRUE)))
+					if(!do_mob(user, target = L, extra_checks=CALLBACK(L, TYPE_PROC_REF(/mob/living, can_inject), user, TRUE)))
 						return
 					if(!reagents.total_volume)
 						return

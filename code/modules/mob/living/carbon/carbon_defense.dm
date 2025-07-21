@@ -296,7 +296,7 @@
 		target.visible_message(span_danger("<b>[name]</b> кладет <b>[skloname(target.name, VINITELNI, target.gender)]</b> на лопатки!") ,
 						span_userdanger("<b>[name]</b> кладет меня на лопатки!") , span_hear("Слышу агрессивную потасовку сопровождающуюся громким стуком!") , COMBAT_MESSAGE_RANGE, src)
 		to_chat(src, span_danger("Укладываю <b>[skloname(target.name, VINITELNI, target.gender)]</b> на лопатки!"))
-		addtimer(CALLBACK(target, /mob/living/proc/SetKnockdown, 0), SHOVE_CHAIN_PARALYZE)
+		addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living, SetKnockdown), 0), SHOVE_CHAIN_PARALYZE)
 		log_combat(src, target, "kicks", "onto their side (paralyzing)")
 
 	if(shove_blocked && !target.is_shove_knockdown_blocked() && !target.buckled)
@@ -358,7 +358,7 @@
 			if(target_held_item)
 				target.visible_message(span_danger("Захват <b>[skloname(target.name, VINITELNI, target.gender)]</b> на [target_held_item] слабеет!") ,
 					span_warning("Мой захват [target_held_item] слабеет!") , null, COMBAT_MESSAGE_RANGE)
-			addtimer(CALLBACK(target, /mob/living/carbon/proc/clear_shove_slowdown), SHOVE_SLOWDOWN_LENGTH)
+			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living/carbon/human, clear_shove_slowdown)), SHOVE_SLOWDOWN_LENGTH)
 		else if(target_held_item)
 			target.dropItemToGround(target_held_item)
 			knocked_item = TRUE

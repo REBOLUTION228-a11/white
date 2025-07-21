@@ -203,7 +203,7 @@
 							blinking = TRUE
 							sleep(4 + target_slowness)
 						animate(src, color = oldcolor, time = 8)
-						addtimer(CALLBACK(src, /atom/proc/update_atom_colour), 8)
+						addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_atom_colour)), 8)
 						sleep(8)
 						blinking = FALSE
 					else
@@ -222,7 +222,7 @@
 							INVOKE_ASYNC(src, PROC_REF(diagonal_blasts), target)
 						sleep(6 + target_slowness)
 					animate(src, color = oldcolor, time = 8)
-					addtimer(CALLBACK(src, /atom/proc/update_atom_colour), 8)
+					addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_atom_colour)), 8)
 					sleep(8)
 					blinking = FALSE
 				if("chaser_swarm") //fire four fucking chasers at a target and their friends.
@@ -247,7 +247,7 @@
 						sleep(8 + target_slowness)
 					chaser_cooldown = world.time + initial(chaser_cooldown)
 					animate(src, color = oldcolor, time = 8)
-					addtimer(CALLBACK(src, /atom/proc/update_atom_colour), 8)
+					addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_atom_colour)), 8)
 					sleep(8)
 					blinking = FALSE
 			return

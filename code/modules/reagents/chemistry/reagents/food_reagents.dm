@@ -202,7 +202,7 @@
 			exposed_mob.emote("agony")
 		playsound(exposed_mob, 'sound/machines/fryer/deep_fryer_emerge.ogg', 25, TRUE)
 		ADD_TRAIT(exposed_mob, TRAIT_OIL_FRIED, "cooking_oil_react")
-		addtimer(CALLBACK(exposed_mob, /mob/living/proc/unfry_mob), 3)
+		addtimer(CALLBACK(exposed_mob, TYPE_PROC_REF(/mob/living, unfry_mob)), 3)
 	if(FryLoss)
 		exposed_mob.adjustFireLoss(FryLoss)
 
@@ -390,7 +390,7 @@
 			victim.set_confusion(max(exposed_mob.get_confusion(), 5)) // 10 seconds
 			victim.Knockdown(3 SECONDS)
 			victim.add_movespeed_modifier(/datum/movespeed_modifier/reagent/pepperspray)
-			addtimer(CALLBACK(victim, /mob/proc/remove_movespeed_modifier, /datum/movespeed_modifier/reagent/pepperspray), 10 SECONDS)
+			addtimer(CALLBACK(victim, TYPE_PROC_REF(/mob, remove_movespeed_modifier), /datum/movespeed_modifier/reagent/pepperspray), 10 SECONDS)
 		victim.update_damage_hud()
 	if(methods & INGEST)
 		if(!holder.has_reagent(/datum/reagent/consumable/milk))

@@ -639,7 +639,7 @@
 		reagents.trans_to(W,1)
 
 	//Make em move dat ass, hun
-	addtimer(CALLBACK(src, /obj/item/integrated_circuit_old/reagent/extinguisher/proc/move_particles, water_particles), 2)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/integrated_circuit_old/reagent/extinguisher, move_particles), water_particles), 2)
 
 //This whole proc is a loop
 /obj/item/integrated_circuit_old/reagent/extinguisher/proc/move_particles(var/list/particles, var/repetitions=0)
@@ -661,7 +661,7 @@
 			break
 	if(repetitions < 4)
 		repetitions++	//Can't have math operations in addtimer(CALLBACK())
-		addtimer(CALLBACK(src, /obj/item/integrated_circuit_old/reagent/extinguisher/proc/move_particles, particles, repetitions), 2)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/integrated_circuit_old/reagent/extinguisher, move_particles), particles, repetitions), 2)
 	else
 		push_data()
 		activate_pin(2)

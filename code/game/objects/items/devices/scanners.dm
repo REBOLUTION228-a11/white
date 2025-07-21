@@ -722,7 +722,7 @@ GENE SCANNER
 			else
 				to_chat(user, span_warning("Барометр [src] сообщает, что следующий шторм будет через [butchertime(fixed)]."))
 		cooldown = TRUE
-		addtimer(CALLBACK(src,/obj/item/analyzer/proc/ping), cooldown_time)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/analyzer, ping)), cooldown_time)
 
 /obj/item/analyzer/proc/ping()
 	if(isliving(loc))

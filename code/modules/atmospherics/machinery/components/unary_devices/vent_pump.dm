@@ -114,12 +114,24 @@
 		return
 
 	var/environment_pressure = environment.return_pressure()
-
+	var/environment_moles = environment.total_moles()
+	var/last_moles_real_added = environment_moles - last_moles
 	if(pump_direction & RELEASING) // internal -> external
 		var/pressure_delta = 10000
 
 		if(pressure_checks&EXT_BOUND)
-			pressure_delta = min(pressure_delta, (external_pressure_bound - environment_pressure))
+			var/ext_difference = external_pressure_bound - environment_pressure
+			if(fast_fill && ext_difference <= 100)
+				//exponential
+				pressure_delta = min(pressure_delta, (2 ** ((ext_difference / 30) + 7)) - 128)
+			else if(fast_fill && last_moles_added > 0 && last_moles_real_added > 0)
+				//old scaling
+				pressure_delta = min(pressure_delta, ext_difference * clamp((last_moles_added / last_moles_real_added) * 0.25, 1, 100))
+			else if(fast_fill && last_moles_added > 0 && last_moles_real_added < 0)
+				//old scaling
+				pressure_delta = min(pressure_delta, ext_difference * 10)
+			else
+				pressure_delta = min(pressure_delta, ext_difference)
 		if(pressure_checks&INT_BOUND)
 			pressure_delta = min(pressure_delta, (air_contents.return_pressure() - internal_pressure_bound))
 

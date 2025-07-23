@@ -22,7 +22,6 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 	canSmoothWith = list(SMOOTH_GROUP_OPENSPACE)
 	smoothing_groups = list(SMOOTH_GROUP_OPENSPACE)
 	baseturfs = /turf/open/openspace
-	CanAtmosPassVertical = ATMOS_PASS_YES
 	intact = FALSE //this means wires go on top
 	//mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	var/can_cover_up = TRUE
@@ -39,15 +38,6 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 
 /turf/open/openspace/airless
 	initial_gas_mix = AIRLESS_ATMOS
-	initial_temperature = TCMB
-	thermal_conductivity = OPEN_HEAT_TRANSFER_COEFFICIENT
-	heat_capacity = 700000
-
-/turf/open/openspace/airless/GetHeatCapacity()
-	. = 7000
-
-/turf/open/openspace/airless/GetTemperature()
-	. = 2.7
 
 /turf/open/openspace/fastload
 	plane = OPENSPACE_PLANE
@@ -131,10 +121,10 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 		return TRUE
 	return FALSE
 
-/turf/open/openspace/zAirIn()
+/turf/open/openspace/zAirIn(direction, turf/source)
 	return TRUE
 
-/turf/open/openspace/zAirOut()
+/turf/open/openspace/zAirOut(direction, turf/source)
 	return TRUE
 
 /turf/open/openspace/zPassIn(atom/movable/A, direction, turf/source)

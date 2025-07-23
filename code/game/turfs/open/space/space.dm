@@ -21,23 +21,22 @@
 	bullet_bounce_sound = null
 	vis_flags = VIS_INHERIT_ID	//when this be added to vis_contents of something it be associated with something on clicking, important for visualisation of turf in openspace and interraction with openspace that show you turf.
 
-/turf/open/space/basic/Initialize() // fast enough
+/turf/open/space/basic/New() //Do not convert to Initialize
 	SHOULD_CALL_PARENT(FALSE)
-	icon_state = SPACE_ICON_STATE
-	if(!space_gas)
-		space_gas = new
-	air = space_gas
-	update_air_ref(0)
-	vis_contents.Cut()
-	visibilityChanged()
-	flags_1 |= INITIALIZED_1
-	add_overlay(GLOB.fullbright_overlay)
-	return INITIALIZE_HINT_NORMAL
+	//This is used to optimize the map loader
+	return
 
 /**
  * Space Initialize
  *
  * Doesn't call parent, see [/atom/proc/Initialize]
+ * When adding new stuff to /atom/Initialize, /turf/Initialize, etc
+ * don't just add it here unless space actually needs it.
+ *
+ * There is a lot of work that is intentionally not done because it is not currently used.
+ * This includes stuff like smoothing, blocking camera visibility, etc.
+ * If you are facing some odd bug with specifically space, check if it's something that was
+ * intentionally ommitted from this implementation.
  */
 /turf/open/space/Initialize()
 	SHOULD_CALL_PARENT(FALSE)
@@ -46,6 +45,7 @@
 		space_gas = new
 	air = space_gas
 	update_air_ref(0)
+
 	vis_contents.Cut() //removes inherited overlays
 	visibilityChanged()
 
@@ -117,6 +117,9 @@
 
 //IT SHOULD RETURN NULL YOU MONKEY, WHY IN TARNATION WHAT THE FUCKING FUCK
 /turf/open/space/remove_air(amount)
+	return null
+
+/turf/open/space/remove_air_ratio(amount)
 	return null
 
 /turf/open/space/proc/update_starlight()

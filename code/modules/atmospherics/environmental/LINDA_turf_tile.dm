@@ -184,7 +184,7 @@
 
 /turf/proc/handle_decompression_floor_rip()
 /turf/open/floor/handle_decompression_floor_rip(sum)
-	if(sum > 20 && prob(clamp(sum / 20, 0, 15)))
+	if(!blocks_air && sum > 20 && prob(clamp(sum / 20, 0, 15)))
 		if(floor_tile)
 			new floor_tile(src)
 		make_plating()
@@ -199,7 +199,7 @@
 
 //////////////////////////SPACEWIND/////////////////////////////
 
-/turf/proc/consider_pressure_difference()
+/turf/proc/consider_pressure_difference(turf/T, difference)
 	return
 
 /turf/open/consider_pressure_difference(turf/T, difference)

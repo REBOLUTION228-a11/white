@@ -118,7 +118,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/parallax
 
 	var/ambientocclusion = TRUE
-	var/fullscreen = TRUE
+	var/fullscreen = FALSE
 
 	///Should we automatically fit the viewport?
 	var/auto_fit_viewport = FALSE

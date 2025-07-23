@@ -64,20 +64,10 @@ SUBSYSTEM_DEF(air)
 	var/share_max_steps = 3
 	/// Excited group processing will try to equalize groups with total pressure difference less than this amount.
 	var/excited_group_pressure_goal = 1
+	/// Planet airs will share this ratio with the planet turfs per tick
+	var/planet_share_ratio = 0.25
 
 	var/list/paused_z_levels	//Paused z-levels will not add turfs to active
-
-//hack
-/proc/get_overlays()
-	return GLOB.gas_data.overlays
-
-//hack
-/proc/get_hpds()
-	return SSair.high_pressure_delta
-
-//hack
-/proc/get_reactions()
-	return SSair.gas_reactions
 
 /datum/controller/subsystem/air/stat_entry(msg)
 	msg += "C:{"

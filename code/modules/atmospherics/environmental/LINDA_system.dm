@@ -96,17 +96,10 @@
 
 /turf/proc/clear_adjacencies()
 	block_all_conductivity()
-	for(var/direction in GLOB.cardinals_multiz)
-		var/turf/T = get_step_multiz(src, direction)
-		if(!T)
-			continue
-		if (atmos_adjacent_turfs)
-			atmos_adjacent_turfs -= T
-		if (T.atmos_adjacent_turfs)
-			T.atmos_adjacent_turfs -= src
-		UNSETEMPTY(T.atmos_adjacent_turfs)
+	for(var/turf/current_turf as anything in atmos_adjacent_turfs)
+		LAZYREMOVE(current_turf.atmos_adjacent_turfs, src)
+		current_turf.__update_auxtools_turf_adjacency_info()
 
-		T.__update_auxtools_turf_adjacency_info()
 	LAZYNULL(atmos_adjacent_turfs)
 	__update_auxtools_turf_adjacency_info()
 

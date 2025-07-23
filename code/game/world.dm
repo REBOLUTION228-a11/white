@@ -286,7 +286,6 @@ GLOBAL_VAR(restart_counter)
 
 /world/Del()
 	shutdown_logging() // makes sure the thread is closed before end, else we terminate
-	__auxmos_shutdown()
 	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
 	if (debug_server)
 		LIBCALL(debug_server, "auxtools_shutdown")()
@@ -296,7 +295,7 @@ GLOBAL_VAR(restart_counter)
 :::y+-+oooossoosssysoshyssyo/+``````````+y..++hhhhhdoyhyoosydddodh+/+//.:o//+ddh++oooossyhmdhmmdhsydmmmddmmmNmymmmmmmmmm
 ::yo-+osoosoooosyysoysyoos+:o.``````````+o``++yyhhhmyhdhhddddddydy+s+/:.-///+ddh+++++++++ohdhmhsooosdmmyymmmNmshmmmmmmmm
 :ys./osossoooosyysos:oooss-+:```````````s/``++yyhhhmhyhhhhdddhdhdhyho+/-:s//ohdy++++++++++ohymsooooosddsymmmNmsymdmmmmmm
-yh.:osoosoooooyysoo:.yosy--o````````````s:``/+ysyhhdhyhhhhddhddhdhhdh+/-:s/+shdh+++++++++++sydsoooossyyssmmmNmssdhyhdmmm
+yh.:osoosoooooyysoo:.yosy--o````````````s:``/+ysyhhdhyhhhhddhddhdhhdh+/-:s/+shdh+++++++++++sydsoooossaallmmmhuisdhyhdmmm
 d/-+soosooooohysoo-`+sss+`/:````````````o:``:+ysyyyddshhhyhhhhhhdhhhhy/-/y+oyddh+++++++++++oydsoooosssyssmdmNdssyyyyyhhh
 o`/ssossooooyysos-``yoso.`o.````````````+:``.+yyssyhmsyhhyhhhhhhdhhhdhs:/dyhhddho+++++++osssydyoooossyysyddmNhssyyyyyyyh
 .-osooy++o+shsoo-``.yso+:-s:---..```````:/```+hsysssdyoyysyhhhhhdhhhhhh//hdhhddddhsooosydmhshmhoosssymysymdmNyssyyyyyyyh

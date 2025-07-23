@@ -19,25 +19,21 @@ GLOBAL_LIST_INIT(auxtools_atmos_initialized, FALSE)
 /datum/gas_mixture/New(volume)
 	if (!isnull(volume))
 		initial_volume = volume
-	if(!GLOB.auxtools_atmos_initialized && auxtools_atmos_init())
+	if(!GLOB.auxtools_atmos_initialized && auxtools_atmos_init(GLOB.gas_data))
 		GLOB.auxtools_atmos_initialized = TRUE
 	__gasmixture_register()
 	reaction_results = new
 
-/datum/gas_mixture/Del()
-	__gasmixture_unregister()
-	. = ..()
-
 /datum/gas_mixture/vv_edit_var(var_name, var_value)
-	if(var_name == "_extools_pointer_gasmixture")
+	if(var_name == NAMEOF(src, _extools_pointer_gasmixture))
 		return FALSE // please no. segfaults bad.
-	if(var_name == "gas_list_view_only")
+	if(var_name == NAMEOF(src, gas_list_view_only))
 		return FALSE
 	return ..()
 
 /datum/gas_mixture/vv_get_var(var_name)
 	. = ..()
-	if(var_name == "gas_list_view_only")
+	if(var_name == NAMEOF(src, gas_list_view_only))
 		var/list/dummy = get_gases()
 		for(var/gas in dummy)
 			dummy[gas] = get_moles(gas)
@@ -112,8 +108,6 @@ GLOBAL_LIST_INIT(auxtools_atmos_initialized, FALSE)
 		L[gt] = initial(G.specific_heat)
 	return L
 
-/datum/gas_mixture/proc/get_last_share()
-
 /datum/gas_mixture/proc/archive()
 	//Update archived versions of variables
 	//Returns: 1 in all cases
@@ -177,19 +171,6 @@ GLOBAL_LIST_INIT(auxtools_atmos_initialized, FALSE)
 
 /datum/gas_mixture/parse_gas_string(gas_string)
 	__auxtools_parse_gas_string(gas_string)
-	/*
-	var/list/gas = params2list(gas_string)
-	if(gas["TEMP"])
-		var/temp = text2num(gas["TEMP"])
-		gas -= "TEMP"
-		if(!isnum(temp) || temp < 2.7)
-			temp = 2.7
-		set_temperature(temp)
-	clear()
-	for(var/id in gas)
-		set_moles(id, text2num(gas[id]))
-	return 1
-	*/
 
 /datum/gas_mixture/proc/set_analyzer_results(instability)
 	if(!analyzer_results)

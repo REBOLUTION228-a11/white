@@ -15,6 +15,7 @@ SUBSYSTEM_DEF(air)
 	var/cost_post_process = 0
 	var/cost_superconductivity = 0
 	var/cost_pipenets = 0
+	var/cost_machinery = 0
 	var/cost_rebuilds = 0
 	var/cost_equalize = 0
 
@@ -35,6 +36,7 @@ SUBSYSTEM_DEF(air)
 	var/list/rebuild_queue = list()
 	var/list/expansion_queue = list()
 	var/list/pipe_init_dirs_cache = list()
+	var/list/obj/machinery/atmos_machinery = list()
 
 	//atmos singletons
 	var/list/gas_reactions = list()
@@ -44,7 +46,7 @@ SUBSYSTEM_DEF(air)
 
 
 	var/list/currentrun = list()
-	var/currentpart = SSAIR_FINALIZE_TURFS
+	var/currentpart = SSAIR_PIPENETS
 
 	var/map_loading = TRUE
 
@@ -68,6 +70,11 @@ SUBSYSTEM_DEF(air)
 	var/planet_share_ratio = 0.25
 
 	var/list/paused_z_levels	//Paused z-levels will not add turfs to active
+	var/list/unpausing_z_levels = list()
+	var/list/unpause_processing = list()
+
+	var/list/pausing_z_levels = list()
+	var/list/pause_processing = list()
 
 /datum/controller/subsystem/air/stat_entry(msg)
 	msg += "C:{"
@@ -75,6 +82,7 @@ SUBSYSTEM_DEF(air)
 	msg += "HS:[round(cost_hotspots,1)]|"
 	msg += "SC:[round(cost_superconductivity,1)]|"
 	msg += "PN:[round(cost_pipenets,1)]|"
+	msg += "MC:[round(cost_machinery,1)]|"
 	msg += "RB:[round(cost_rebuilds,1)]|"
 	msg += "} "
 	msg += "TC:{"
@@ -104,6 +112,7 @@ SUBSYSTEM_DEF(air)
 	.["cost_post_process"] = cost_post_process
 	.["cost_superconductivity"] = cost_superconductivity
 	.["cost_pipenets"] = cost_pipenets
+	.["cost_machinery"] = cost_machinery
 	.["cost_rebuilds"] = cost_rebuilds
 	.["cost_equalize"] = cost_equalize
 	.["hotspts"] = hotspots.len
@@ -119,12 +128,11 @@ SUBSYSTEM_DEF(air)
 /datum/controller/subsystem/air/Initialize(timeofday)
 	map_loading = FALSE
 	setup_allturfs()
+	setup_atmos_machinery()
 	setup_pipenets()
 	gas_reactions = init_gas_reactions()
 	auxtools_update_reactions()
 	return ..()
-
-/datum/controller/subsystem/air/proc/extools_update_ssair()
 
 /proc/reset_all_air()
 	SSair.can_fire = FALSE
@@ -145,6 +153,41 @@ SUBSYSTEM_DEF(air)
 /datum/controller/subsystem/air/fire(resumed = 0)
 	var/timer = TICK_USAGE_REAL
 
+	//If we have unpausing z-level, process them first
+	if(length(unpausing_z_levels) && !length(unpause_processing))
+		var/z_value = unpausing_z_levels[1]
+		unpausing_z_levels.Remove(z_value)
+		unpause_processing = block(locate(1, 1, z_value), locate(world.maxx, world.maxy, z_value))
+
+	while(length(unpause_processing))
+		var/turf/T = unpause_processing[length(unpause_processing)]
+		if(!isspaceturf(T))	//Skip space turfs, since they won't have atmos
+			T.Initalize_Atmos()
+		//Goodbye
+		unpause_processing.len --
+		//We overran this tick, stop processing
+		//This may result in a very brief atmos freeze when running unpause_z at high loads
+		//but that is better than freezing the entire MC
+		if(MC_TICK_CHECK)
+			return
+
+	//If we have unpausing z-level, process them first
+	if(length(pausing_z_levels) && !length(pause_processing))
+		var/z_value = pausing_z_levels[1]
+		pausing_z_levels.Remove(z_value)
+		pause_processing = block(locate(1, 1, z_value), locate(world.maxx, world.maxy, z_value))
+
+	while(length(pause_processing))
+		var/turf/T = pause_processing[length(pause_processing)]
+		T.ImmediateDisableAdjacency()
+		//Goodbye
+		pause_processing.len --
+		//We overran this tick, stop processing
+		//This may result in a very brief atmos freeze when running unpause_z at high loads
+		//but that is better than freezing the entire MC
+		if(MC_TICK_CHECK)
+			return
+
 	thread_wait_ticks = MC_AVERAGE(thread_wait_ticks, cur_thread_wait_ticks)
 	cur_thread_wait_ticks = 0
 
@@ -159,16 +202,33 @@ SUBSYSTEM_DEF(air)
 		if(state != SS_RUNNING)
 			return
 
-	if(currentpart == SSAIR_ACTIVETURFS)
+	if(currentpart == SSAIR_PIPENETS || !resumed)
 		timer = TICK_USAGE_REAL
-		process_turfs(resumed)
+		if(!resumed)
+			cached_cost = 0
+		process_pipenets(resumed)
+		cached_cost += TICK_USAGE_REAL - timer
+		if(state != SS_RUNNING)
+			return
+		cost_pipenets = MC_AVERAGE(cost_pipenets, TICK_DELTA_TO_MS(cached_cost))
+		resumed = 0
+		currentpart = SSAIR_ATMOSMACHINERY
+
+	if(currentpart == SSAIR_ATMOSMACHINERY)
+		timer = TICK_USAGE_REAL
+		if(!resumed)
+			cached_cost = 0
+		process_atmos_machinery(resumed)
+		cached_cost += TICK_USAGE_REAL - timer
 		if(state != SS_RUNNING)
 			return
 		resumed = 0
-		currentpart = SSAIR_EXCITEDGROUPS
+		cost_machinery = MC_AVERAGE(cost_machinery, TICK_DELTA_TO_MS(cached_cost))
+		currentpart = SSAIR_ACTIVETURFS
 
-	if(currentpart == SSAIR_EXCITEDGROUPS)
-		process_excited_groups(resumed)
+	if(currentpart == SSAIR_ACTIVETURFS)
+		timer = TICK_USAGE_REAL
+		process_turfs(resumed)
 		if(state != SS_RUNNING)
 			return
 		resumed = 0
@@ -179,24 +239,19 @@ SUBSYSTEM_DEF(air)
 		if(state != SS_RUNNING)
 			return
 		resumed = 0
+		currentpart = SSAIR_EXCITEDGROUPS
+
+	if(currentpart == SSAIR_EXCITEDGROUPS)
+		process_excited_groups(resumed)
+		if(state != SS_RUNNING)
+			return
+		resumed = 0
 		currentpart = SSAIR_FINALIZE_TURFS
 
 	if(currentpart == SSAIR_FINALIZE_TURFS)
 		finish_turf_processing(resumed)
 		if(state != SS_RUNNING)
 			return
-		resumed = 0
-		currentpart = SSAIR_PIPENETS
-
-	if(currentpart == SSAIR_PIPENETS || !resumed)
-		timer = TICK_USAGE_REAL
-		if(!resumed)
-			cached_cost = 0
-		process_pipenets(resumed)
-		cached_cost += TICK_USAGE_REAL - timer
-		if(state != SS_RUNNING)
-			return
-		cost_pipenets = MC_AVERAGE(cost_pipenets, TICK_DELTA_TO_MS(cached_cost))
 		resumed = 0
 		currentpart = SSAIR_HIGHPRESSURE
 
@@ -222,7 +277,7 @@ SUBSYSTEM_DEF(air)
 			return
 		cost_hotspots = MC_AVERAGE(cost_hotspots, TICK_DELTA_TO_MS(cached_cost))
 		resumed = 0
-		currentpart = heat_enabled ? SSAIR_TURF_CONDUCTION : SSAIR_ACTIVETURFS
+		currentpart = heat_enabled ? SSAIR_TURF_CONDUCTION : SSAIR_PIPENETS
 
 	// Heat -- slow and of questionable usefulness. Off by default for this reason. Pretty cool, though.
 	if(currentpart == SSAIR_TURF_CONDUCTION)
@@ -233,7 +288,7 @@ SUBSYSTEM_DEF(air)
 		if(state != SS_RUNNING)
 			return
 		resumed = 0
-		currentpart = SSAIR_ACTIVETURFS
+		currentpart = SSAIR_PIPENETS
 
 /datum/controller/subsystem/air/proc/process_pipenets(resumed = FALSE)
 	if (!resumed)
@@ -361,6 +416,24 @@ SUBSYSTEM_DEF(air)
 		if(MC_TICK_CHECK)
 			return
 
+/datum/controller/subsystem/air/proc/process_atmos_machinery(resumed = 0)
+	if (!resumed)
+		src.currentrun = atmos_machinery.Copy()
+	//cache for sanic speed (lists are references anyways)
+	var/list/currentrun = src.currentrun
+	while(currentrun.len)
+		var/obj/machinery/M = currentrun[currentrun.len]
+		currentrun.len--
+		if(M == null)
+			atmos_machinery.Remove(M)
+		// Prevents uninitalized atmos machinery from processing.
+		if (!(M.flags_1 & INITIALIZED_1))
+			continue
+		if(!M || (M.process_atmos(wait / (1 SECONDS)) == PROCESS_KILL))
+			stop_processing_machine(M)
+		if(MC_TICK_CHECK)
+			return
+
 /datum/controller/subsystem/air/proc/process_turf_equalize(resumed = 0)
 	if(process_turf_equalize_auxtools(MC_TICK_REMAINING_MS))
 		pause()
@@ -377,6 +450,8 @@ SUBSYSTEM_DEF(air)
 	if(finish_turf_processing_auxtools(MC_TICK_REMAINING_MS))
 		pause()
 
+/datum/controller/subsystem/air/proc/equalize_turfs_auxtools()
+
 /datum/controller/subsystem/air/StartLoadingMap()
 	map_loading = TRUE
 
@@ -385,12 +460,12 @@ SUBSYSTEM_DEF(air)
 
 /datum/controller/subsystem/air/proc/pause_z(z_level)
 	LAZYADD(paused_z_levels, z_level)
+	unpausing_z_levels -= z_level
+	pausing_z_levels |= z_level
 
 /datum/controller/subsystem/air/proc/unpause_z(z_level)
-	var/list/turfs_to_reinit = block(locate(1, 1, z_level), locate(world.maxx, world.maxy, z_level))
-	for(var/turf/T as anything in turfs_to_reinit)
-		T.Initalize_Atmos()
-		CHECK_TICK
+	pausing_z_levels -= z_level
+	unpausing_z_levels |= z_level
 	LAZYREMOVE(paused_z_levels, z_level)
 
 /datum/controller/subsystem/air/proc/setup_allturfs()
@@ -406,11 +481,16 @@ SUBSYSTEM_DEF(air)
 		T.Initalize_Atmos(times_fired)
 		CHECK_TICK
 
+/datum/controller/subsystem/air/proc/setup_atmos_machinery()
+	for (var/obj/machinery/atmospherics/AM in atmos_machinery)
+		AM.atmos_init()
+		CHECK_TICK
+
 //this can't be done with setup_atmos_machinery() because
 // all atmos machinery has to initalize before the first
 // pipenet can be built.
 /datum/controller/subsystem/air/proc/setup_pipenets()
-	for (var/obj/machinery/atmospherics/AM in SSair_machinery.atmos_machinery)
+	for (var/obj/machinery/atmospherics/AM in SSair.atmos_machinery)
 		var/list/targets = AM.get_rebuild_targets()
 		for(var/datum/pipeline/build_off as anything in targets)
 			build_off.build_pipeline_blocking(AM)
@@ -440,3 +520,16 @@ SUBSYSTEM_DEF(air)
 		qdel(temp)
 
 	return pipe_init_dirs_cache[type]["[dir]"]
+
+/datum/controller/subsystem/air/proc/start_processing_machine(obj/machinery/machine)
+	if(machine.atmos_processing)
+		return
+	machine.atmos_processing = TRUE
+	atmos_machinery += machine
+
+/datum/controller/subsystem/air/proc/stop_processing_machine(obj/machinery/machine)
+	if(!machine.atmos_processing)
+		return
+	machine.atmos_processing = FALSE
+	atmos_machinery -= machine
+	currentrun -= machine

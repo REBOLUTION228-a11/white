@@ -88,14 +88,14 @@
 
 /obj/machinery/atmospherics/Initialize()
 	if(init_processing)
-		SSair_machinery.start_processing_machine(src)
+		SSair.start_processing_machine(src)
 	return ..()
 
 /obj/machinery/atmospherics/Destroy()
 	for(var/i in 1 to device_type)
 		nullify_node(i)
 
-	SSair_machinery.stop_processing_machine(src)
+	SSair.stop_processing_machine(src)
 	SSair.rebuild_queue -= src
 
 	//dump_inventory_contents()

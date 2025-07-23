@@ -173,9 +173,9 @@
 			usr.visible_message(span_notice("[usr] [on ? "включает" : "выключает"] <b>[src.name]</b>.") , span_notice("[on ? "Включаю" : "Выключаю"] <b>[src.name]</b>."))
 			update_icon()
 			if (on)
-				SSair_machinery.start_processing_machine(src)
+				SSair.start_processing_machine(src)
 			else
-				SSair_machinery.stop_processing_machine(src)
+				SSair.stop_processing_machine(src)
 			. = TRUE
 		if("eject")
 			if(panel_open && cell)

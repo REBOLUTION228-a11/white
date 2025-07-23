@@ -55,12 +55,14 @@
 	var/knock_sound = 'sound/effects/glassknock.ogg'
 	var/bash_sound = 'sound/effects/glassbash.ogg'
 
+	var/emergency_close_timer = 0
+
 
 /obj/machinery/door/firedoor/Initialize(mapload)
 	. = ..()
 	COOLDOWN_START(src, detect_cooldown, DETECT_COOLDOWN_STEP_TIME)
 	soundloop = new(src, FALSE)
-	AddElement(/datum/element/atmos_sensitive, mapload)
+	//AddElement(/datum/element/atmos_sensitive, mapload)
 	CalculateAffectingAreas()
 	my_area = get_area(src)
 	var/static/list/loc_connections = list(
@@ -88,6 +90,7 @@
 /obj/machinery/door/firedoor/Destroy()
 	remove_from_areas()
 	QDEL_NULL(soundloop)
+	air_update_turf()
 	return ..()
 
 /obj/machinery/door/firedoor/examine(mob/user)
@@ -347,6 +350,12 @@
 		RegisterSignal(user, COMSIG_LIVING_SET_BODY_POSITION, PROC_REF(handle_held_open_adjacency))
 		RegisterSignal(user, COMSIG_PARENT_QDELETING, PROC_REF(handle_held_open_adjacency))
 		handle_held_open_adjacency(user)
+		if(is_holding_pressure())
+			if(!do_after(user, 1.5 SECONDS, src)) // give them a few seconds to reconsider their decision.
+				return
+			log_game("[key_name_admin(user)] has opened a firelock with a pressure difference at [AREACOORD(loc)]") // there bibby I made it logged just for you. Enjoy.
+			// since we have high-pressure-ness, close all other firedoors on the tile
+			whack_a_mole()
 	else
 		close()
 
@@ -413,6 +422,7 @@
 /obj/machinery/door/firedoor/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]_[density ? "closed" : "open"]"
+	air_update_turf()
 
 /obj/machinery/door/firedoor/update_overlays()
 	. = ..()
@@ -465,12 +475,65 @@
 	if(alarm != alarm_type) //Something changed while we were sleeping
 		correct_state() //So we should re-evaluate our state
 
-/obj/machinery/door/firedoor/proc/emergency_pressure_stop()
-	set waitfor = 0
+/obj/machinery/door/firedoor/proc/whack_a_mole()
+	for(var/cdir in GLOB.cardinals)
+		if((flags_1 & ON_BORDER_1) && cdir != dir)
+			continue
+		whack_a_mole_part(get_step(src, cdir))
+	if(flags_1 & ON_BORDER_1)
+		whack_a_mole_part(get_turf(src))
+
+/obj/machinery/door/firedoor/proc/whack_a_mole_part(turf/start_point)
+	var/list/doors_to_close = list()
+	var/list/turfs = list()
+	turfs[start_point] = 1
+	for(var/i = 1; (i <= turfs.len && i <= 11); i++) // check up to 11 turfs.
+		var/turf/open/T = turfs[i]
+		if(istype(T, /turf/open/space))
+			return -1
+		for(var/T2 in T.atmos_adjacent_turfs)
+			if(turfs[T2])
+				continue
+			var/is_cut_by_unopen_door = FALSE
+			for(var/obj/machinery/door/firedoor/FD in T2)
+				if((FD.flags_1 & ON_BORDER_1) && get_dir(T2, T) != FD.dir)
+					continue
+				if(FD.operating || FD == src || FD.welded || FD.density)
+					continue
+				doors_to_close += FD
+				is_cut_by_unopen_door = TRUE
+
+			for(var/obj/machinery/door/firedoor/FD in T)
+				if((FD.flags_1 & ON_BORDER_1) && get_dir(T, T2) != FD.dir)
+					continue
+				if(FD.operating || FD == src || FD.welded || FD.density)
+					continue
+				doors_to_close += FD
+				is_cut_by_unopen_door= TRUE
+			if(!is_cut_by_unopen_door)
+				turfs[T2] = 1
+	if(turfs.len > 10)
+		return // too big, don't bother
+	for(var/obj/machinery/door/firedoor/FD in doors_to_close)
+		FD.emergency_pressure_stop(FALSE)
+
+/obj/machinery/door/firedoor/proc/emergency_pressure_stop(consider_timer = TRUE)
 	if(density || operating || welded)
 		return
-	alarm_type = FIRELOCK_ALARM_TYPE_GENERIC
-	close()
+	if(world.time >= emergency_close_timer || !consider_timer)
+		emergency_pressure_close()
+
+//this is here to prevent sleeps from messing with decomp, by closing firedoors instantly
+/obj/machinery/door/firedoor/proc/emergency_pressure_close()
+	density = TRUE
+	air_update_turf()
+	layer = closingLayer
+	update_icon()
+	if(visible && !glass)
+		set_opacity(1)
+	update_freelook_sight()
+	if(!(flags_1 & ON_BORDER_1))
+		crush()
 
 /obj/machinery/door/firedoor/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))
@@ -551,6 +614,11 @@
 	if(get_dir(get_turf(src), T) == dir)
 		return !density
 	return TRUE
+
+/obj/machinery/door/firedoor/border_only/BlockThermalConductivity(opp_dir)
+	if(opp_dir == dir)
+		return density
+	return FALSE
 
 /obj/machinery/door/firedoor/heavy
 	name = "тяжёлый пожарный шлюз"

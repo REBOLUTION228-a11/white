@@ -71,7 +71,7 @@
 	active = TRUE
 
 	var/turf/open/T = get_turf(parent)
-	if(T?.air)
+	if(T.air && isopenturf(T))
 		T.air.adjust_moles(GAS_MIASMA, strength)
 		T.air_update_turf()
 

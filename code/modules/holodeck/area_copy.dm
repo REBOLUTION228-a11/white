@@ -132,7 +132,7 @@ GLOBAL_LIST_INIT(duplicate_forbidden_vars,list(
 			copiedobjs += SM.GetAllContents()
 
 		for(var/V in T.vars - GLOB.duplicate_forbidden_vars)
-			if(V == "air")
+			if(V == "air" && SSair.initialized)
 				var/turf/open/O1 = B
 				var/turf/open/O2 = T
 				O1.air.copy_from(O2.return_air())
@@ -142,6 +142,6 @@ GLOBAL_LIST_INIT(duplicate_forbidden_vars,list(
 
 	if(toupdate.len)
 		for(var/turf/T1 in toupdate)
-			CALCULATE_ADJACENT_TURFS(T1)
+			T1.ImmediateCalculateAdjacentTurfs()
 
 	return copiedobjs

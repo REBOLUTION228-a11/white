@@ -18,7 +18,7 @@
 	// and will crop the head off.
 	icon_state = "mask_bg"
 	layer = ABOVE_MOB_LAYER
-	plane = GRAVITY_PULSE_PLANE
+	plane = GAME_PLANE_UPPER
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	pixel_y = 22
 	appearance_flags = KEEP_TOGETHER
@@ -109,7 +109,7 @@
 	payment_department = ACCOUNT_MED
 
 
-/obj/machinery/atmospherics/components/unary/cryo_cell/Initialize()
+/obj/machinery/atmospherics/components/unary/cryo_cell/Initialize(mapload)
 	. = ..()
 	initialize_directions = dir
 	if(is_operational)
@@ -192,8 +192,8 @@
 	plane = initial(plane)
 	icon_state = (state_open) ? "pod-open" : (on && is_operational) ? "pod-on" : "pod-off"
 
-GLOBAL_VAR_INIT(cryo_overlay_cover_on, mutable_appearance('icons/obj/cryogenics.dmi', "cover-on", layer = MOB_LAYER + 0.02))
-GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics.dmi', "cover-off", layer = MOB_LAYER + 0.02))
+GLOBAL_VAR_INIT(cryo_overlay_cover_on, mutable_appearance('icons/obj/cryogenics.dmi', "cover-on", layer = ABOVE_ALL_MOB_LAYER, plane = ABOVE_GAME_PLANE))
+GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics.dmi', "cover-off", layer = ABOVE_ALL_MOB_LAYER, plane = ABOVE_GAME_PLANE))
 
 /obj/machinery/atmospherics/components/unary/cryo_cell/update_overlays()
 	. = ..()
@@ -284,8 +284,6 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 	return 1
 
 /obj/machinery/atmospherics/components/unary/cryo_cell/process_atmos()
-	..()
-
 	if(!on)
 		return
 
@@ -547,17 +545,17 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 /obj/machinery/atmospherics/components/unary/cryo_cell/default_change_direction_wrench(mob/user, obj/item/wrench/W)
 	. = ..()
 	if(.)
-		SetInitDirections()
+		set_init_directions()
 		var/obj/machinery/atmospherics/node = nodes[1]
 		if(node)
 			node.disconnect(src)
 			nodes[1] = null
-		nullifyPipenet(parents[1])
-		atmosinit()
+		nullify_pipenet(parents[1])
+		atmos_init()
 		node = nodes[1]
 		if(node)
-			node.atmosinit()
-			node.addMember(src)
+			node.atmos_init()
+			node.add_member(src)
 		SSair.add_to_rebuild_queue(src)
 
 #undef MAX_TEMPERATURE

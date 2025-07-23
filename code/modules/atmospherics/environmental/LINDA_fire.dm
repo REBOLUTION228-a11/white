@@ -1,9 +1,5 @@
-
-
 /atom/proc/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
 	return null
-
-
 
 /turf/proc/hotspot_expose(exposed_temperature, exposed_volume, soh = 0)
 	return
@@ -12,9 +8,11 @@
 	if(!air)
 		return
 
-	if (air.get_oxidation_power(exposed_temperature) < 0.5)
+	if (air.get_moles(GAS_O2) < 0.5 || air.get_moles(GAS_HYPERNOB) > REACTION_OPPRESSION_THRESHOLD)
 		return
-	var/has_fuel = air.get_moles(GAS_PLASMA) > 0.5 || air.get_moles(GAS_TRITIUM) > 0.5 || air.get_fuel_amount(exposed_temperature) > 0.5
+
+	var/has_fuel = air.get_moles(GAS_PLASMA) > 0.5 || air.get_moles(GAS_TRITIUM) > 0.5 || air.get_moles(GAS_HYDROGEN) > 0.5
+
 	if(active_hotspot)
 		if(soh)
 			if(has_fuel)
@@ -56,7 +54,6 @@
 		temperature = starting_temperature
 	perform_exposure()
 	setDir(pick(GLOB.cardinals))
-	air_update_turf()
 	var/static/list/loc_connections = list(
 		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
 	)
@@ -149,7 +146,7 @@
 	color = list(LERP(0.3, 1, 1-greyscale_fire) * heat_r,0.3 * heat_g * greyscale_fire,0.3 * heat_b * greyscale_fire, 0.59 * heat_r * greyscale_fire,LERP(0.59, 1, 1-greyscale_fire) * heat_g,0.59 * heat_b * greyscale_fire, 0.11 * heat_r * greyscale_fire,0.11 * heat_g * greyscale_fire,LERP(0.11, 1, 1-greyscale_fire) * heat_b, 0,0,0)
 	alpha = heat_a
 
-#define INSUFFICIENT(path) (location.air.get_moles(path) < 0.5)
+#define INSUFFICIENT(id) (location.air.get_moles(id) < 0.5)
 /obj/effect/hotspot/process()
 	var/turf/open/location = loc
 	if(!istype(location))

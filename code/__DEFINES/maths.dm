@@ -225,3 +225,20 @@
 // )
 
 #define GET_TRUE_DIST(a, b) (a == null || b == null) ? -1 : max(abs(a.x -b.x), abs(a.y-b.y), abs(a.z-b.z))
+
+/// Taxicab distance--gets you the **actual** time it takes to get from one turf to another due to how we calculate diagonal movement
+#define MANHATTAN_DISTANCE(a, b) (abs(a.x - b.x) + abs(a.y - b.y))
+// )
+
+/// A function that exponentially approaches a maximum value of L
+/// k is the rate at which is approaches L, x_0 is the point where the function = 0
+#define LOGISTIC_FUNCTION(L,k,x,x_0) (L/(1+(NUM_E**(-k*(x-x_0)))))
+
+// )
+/// Make sure something is a boolean TRUE/FALSE 1/0 value, since things like bitfield & bitflag doesn't always give 1s and 0s.
+#define FORCE_BOOLEAN(x) ((x)? TRUE : FALSE)
+
+// )
+/// Gives the number of pixels in an orthogonal line of tiles.
+#define TILES_TO_PIXELS(tiles)			(tiles * PIXELS)
+// )

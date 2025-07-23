@@ -236,15 +236,13 @@
 
 /obj/item/clothing/accessory/medal/plasma/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
-/obj/item/clothing/accessory/medal/plasma/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/item/clothing/accessory/medal/plasma/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	atmos_spawn_air("plasma=20;TEMP=[exposed_temperature]")
-	visible_message(span_danger("<b>[src.name]</b> загорается!") , span_userdanger("Моя <b>[src.name]</b> начинает гореть!"))
-	qdel(src)
+/obj/item/clothing/accessory/medal/plasma/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		atmos_spawn_air("plasma=20;TEMP=[exposed_temperature]")
+		visible_message(span_danger("<b>[src.name]</b> загорается!") , span_userdanger("Моя <b>[src.name]</b> начинает гореть!"))
+		qdel(src)
 
 /obj/item/clothing/accessory/medal/plasma/nobel_science
 	name = "премия нобелевских наук"

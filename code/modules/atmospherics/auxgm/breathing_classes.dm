@@ -9,13 +9,20 @@
 #define BREATH_PLASMA	/datum/breathing_class/plasma
 
 /datum/breathing_class
-	var/list/gases = null
-	var/list/products = null
-	var/danger_reagent = null
+	///Gases that we consume and count as respirable
+	var/list/gases
+	///Gases that we breathe out
+	var/list/products
+	///Reagent generated if we breathe in too much of the gases in the gas_max value of gases defined in lungs
+	var/danger_reagent
+	///Catergory of the alert generated if we do not have enough required gases
 	var/low_alert_category = "not_enough_oxy"
-	var/low_alert_datum =  /atom/movable/screen/alert/not_enough_oxy
+	///Type of the alert generated if we do not have enough required gases
+	var/low_alert_datum = /atom/movable/screen/alert/not_enough_oxy
+	///Catergory of the alert generated if we breathe in too much of the gases in the gas_max value of gases defined in lungs
 	var/high_alert_category = "too_much_oxy"
-	var/high_alert_datum =  /atom/movable/screen/alert/too_much_oxy
+	///Type of the alert generated if we breathe in too much of the gases in the gas_max value of gases defined in lungs
+	var/high_alert_datum = /atom/movable/screen/alert/too_much_oxy
 
 /datum/breathing_class/proc/get_effective_pp(datum/gas_mixture/breath)
 	var/mol = 0
@@ -33,6 +40,27 @@
 		GAS_CO2 = 1,
 	)
 
+/datum/breathing_class/oxygen_plas
+	gases = list(
+		GAS_O2 = 1,
+		GAS_PLUOXIUM = 8,
+		GAS_CO2 = -0.7, // CO2 isn't actually toxic, just an asphyxiant
+		GAS_PLASMA = 1
+	)
+	products = list(
+		GAS_CO2 = 1,
+	)
+
+/datum/breathing_class/oxygen_co2
+	gases = list(
+		GAS_O2 = 1,
+		GAS_PLUOXIUM = 8,
+		GAS_CO2 = 1,
+	)
+	products = list(
+		GAS_CO2 = 1,
+	)
+
 /datum/breathing_class/plasma
 	gases = list(
 		GAS_PLASMA = 1
@@ -44,3 +72,24 @@
 	low_alert_datum = /atom/movable/screen/alert/not_enough_tox
 	high_alert_category = "too_much_tox"
 	high_alert_datum = /atom/movable/screen/alert/too_much_tox
+
+/datum/breathing_class/oxygen_vapor
+	gases = list(
+		GAS_O2 = 1,
+		GAS_PLUOXIUM = 8,
+		GAS_CO2 = -0.7, // CO2 isn't actually toxic, just an asphyxiant
+		GAS_H2O = 1,
+	)
+	products = list(
+		GAS_CO2 = 1,
+	)
+
+/datum/breathing_class/oxygen_double
+	gases = list(
+		GAS_O2 = 1 * 2,
+		GAS_PLUOXIUM = 8 * 2,
+		GAS_CO2 = -0.7 * 2, // CO2 isn't actually toxic, just an asphyxiant
+	)
+	products = list(
+		GAS_CO2 = 1,
+	)

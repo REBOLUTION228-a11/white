@@ -130,6 +130,7 @@
 				continue
 			move_mode = moving_atom.beforeShuttleMove(newT, rotation, move_mode, src)						//atoms
 
+		oldT.beforeShuttleMove(newT)
 		move_mode = oldT.fromShuttleMove(newT, move_mode)													//turfs
 		move_mode = newT.toShuttleMove(oldT, move_mode, src)												//turfs
 
@@ -224,3 +225,9 @@
 		var/turf/oldT = moved_atoms[moved_object]
 		moved_object.lateShuttleMove(oldT, movement_force, movement_direction)
 
+/obj/docking_port/mobile/proc/reset_air()
+	var/list/turfs = return_ordered_turfs(x, y, z, dir)
+	for(var/i in 1 to length(turfs))
+		var/turf/open/T = turfs[i]
+		if(istype(T))
+			T.air.copy_from_turf(T)

@@ -127,7 +127,6 @@
 		var/turf/T = get_turf(src)
 		if(T)
 			T.assume_air(air_contents)
-			air_update_turf()
 		playsound(src.loc, 'sound/effects/spray.ogg', 10, TRUE, -3)
 	qdel(src)
 
@@ -224,13 +223,13 @@
 	giver.transfer_to(air_contents, moles)
 
 	check_status()
-	return 1
+	return TRUE
 
 /obj/item/tank/assume_air_ratio(datum/gas_mixture/giver, ratio)
 	giver.transfer_ratio_to(air_contents, ratio)
 
 	check_status()
-	return 1
+	return TRUE
 
 /obj/item/tank/proc/remove_air_volume(volume_to_return)
 	if(!air_contents)

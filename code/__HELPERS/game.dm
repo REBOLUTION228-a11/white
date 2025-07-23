@@ -9,6 +9,10 @@
 	)
 
 #define Z_TURFS(ZLEVEL) block(locate(1,1,ZLEVEL), locate(world.maxx, world.maxy, ZLEVEL))
+
+///Returns all currently loaded turfs
+#define ALL_TURFS(...) block(locate(1, 1, 1), locate(world.maxx, world.maxy, world.maxz))
+
 #define CULT_POLL_WAIT 2400
 
 /proc/get_area_name(atom/X, format_text = FALSE)
@@ -546,7 +550,7 @@
 	if(!istype(T))
 		return
 	var/datum/gas_mixture/environment = T.return_air()
-	if(!istype(environment))
+	if(!environment)
 		return
 	var/pressure = environment.return_pressure()
 	if(pressure <= LAVALAND_EQUIPMENT_EFFECT_PRESSURE)

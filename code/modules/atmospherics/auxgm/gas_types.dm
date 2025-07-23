@@ -2,7 +2,6 @@
 	id = GAS_O2
 	specific_heat = 20
 	name = "Кислород"
-	oxidation_temperature = T0C - 100 // it checks max of this and fire temperature, so rarely will things spontaneously combust
 
 /datum/gas/nitrogen
 	id = GAS_N2
@@ -69,8 +68,6 @@
 	moles_visible = MOLES_GAS_VISIBLE * 2
 	flags = GAS_FLAG_DANGEROUS
 	fire_products = list(GAS_N2 = 1)
-	oxidation_rate = 0.5
-	oxidation_temperature = FIRE_MINIMUM_TEMPERATURE_TO_EXIST + 100
 
 /datum/gas/nitryl
 	id = GAS_NITRYL
@@ -81,7 +78,6 @@
 	flags = GAS_FLAG_DANGEROUS
 	fusion_power = 15
 	fire_products = list(GAS_N2 = 0.5)
-	oxidation_temperature = FIRE_MINIMUM_TEMPERATURE_TO_EXIST - 50
 
 /datum/gas/tritium
 	id = GAS_TRITIUM
@@ -124,8 +120,6 @@
 	specific_heat = 80
 	name = "Плюоксий"
 	fusion_power = 10
-	oxidation_temperature = FIRE_MINIMUM_TEMPERATURE_TO_EXIST * 1000 // it is VERY stable
-	oxidation_rate = 8
 
 /datum/gas/miasma
 	id = GAS_MIASMA

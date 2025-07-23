@@ -109,7 +109,6 @@
 		to_chat(user, span_notice("Увеличиваю температуру термомашины до максимума в размере [target_temperature] K."))
 
 /obj/machinery/atmospherics/components/unary/thermomachine/process_atmos()
-	..()
 	if(!is_operational || !on || !nodes[1])
 		return
 	var/datum/gas_mixture/air_contents = airs[1]
@@ -133,6 +132,7 @@
 /obj/machinery/atmospherics/components/unary/thermomachine/attackby(obj/item/I, mob/user, params)
 	if(!on || (machine_stat & NOPOWER))
 		if(default_deconstruction_screwdriver(user, icon_state_open, icon_state_off, I))
+			change_pipe_connection(panel_open)
 			return
 	if(default_change_direction_wrench(user, I))
 		return
@@ -143,21 +143,8 @@
 /obj/machinery/atmospherics/components/unary/thermomachine/default_change_direction_wrench(mob/user, obj/item/I)
 	if(!..())
 		return FALSE
-	SetInitDirections()
-	var/obj/machinery/atmospherics/node = nodes[1]
-	if(node)
-		if(src in node.nodes) //Only if it's actually connected. On-pipe version would is one-sided.
-			node.disconnect(src)
-		nodes[1] = null
-	if(parents[1])
-		nullifyPipenet(parents[1])
-
-	atmosinit()
-	node = nodes[1]
-	if(node)
-		node.atmosinit()
-		node.addMember(src)
-	build_network()
+	set_init_directions()
+	update_icon(UPDATE_ICON)
 	return TRUE
 
 /obj/machinery/atmospherics/components/unary/thermomachine/ui_status(mob/user)

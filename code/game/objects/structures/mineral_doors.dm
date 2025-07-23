@@ -28,11 +28,11 @@
 
 /obj/structure/mineral_door/Initialize()
 	. = ..()
-	air_update_turf(TRUE)
+	air_update_turf()
 
 /obj/structure/mineral_door/Destroy()
 	if(!door_opened)
-		air_update_turf(TRUE)
+		air_update_turf()
 	. = ..()
 
 /obj/structure/mineral_door/Move()
@@ -97,7 +97,7 @@
 	set_density(FALSE)
 	door_opened = TRUE
 	layer = OPEN_DOOR_LAYER
-	air_update_turf(TRUE)
+	air_update_turf()
 	update_icon()
 	isSwitchingStates = FALSE
 
@@ -118,7 +118,7 @@
 	set_opacity(TRUE)
 	door_opened = FALSE
 	layer = initial(layer)
-	air_update_turf(TRUE)
+	air_update_turf()
 	update_icon()
 	isSwitchingStates = FALSE
 
@@ -249,7 +249,7 @@
 
 /obj/structure/mineral_door/transparent/plasma/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/mineral_door/transparent/plasma/welder_act(mob/living/user, obj/item/I)
 	return
@@ -263,11 +263,9 @@
 	else
 		return ..()
 
-/obj/structure/mineral_door/transparent/plasma/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/structure/mineral_door/transparent/plasma/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	TemperatureAct()
+/obj/structure/mineral_door/transparent/plasma/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		TemperatureAct()
 
 /obj/structure/mineral_door/transparent/plasma/proc/TemperatureAct()
 	atmos_spawn_air("plasma=500;TEMP=1000")

@@ -29,7 +29,7 @@
 
 /obj/structure/falsewall/Initialize()
 	. = ..()
-	air_update_turf(TRUE)
+	air_update_turf()
 
 /obj/structure/falsewall/attack_hand(mob/user)
 	if(opening)
@@ -242,7 +242,7 @@
 
 /obj/structure/falsewall/plasma/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/falsewall/plasma/attackby(obj/item/W, mob/user, params)
 	if(W.get_temperature() > 300)
@@ -253,11 +253,9 @@
 	else
 		return ..()
 
-/obj/structure/falsewall/plasma/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/structure/falsewall/plasma/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	burnbabyburn()
+/obj/structure/falsewall/plasma/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		burnbabyburn()
 
 /obj/structure/falsewall/plasma/proc/burnbabyburn(user)
 	playsound(src, 'sound/items/welder.ogg', 100, TRUE)

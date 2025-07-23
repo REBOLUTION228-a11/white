@@ -10,10 +10,22 @@
 	layer = GAS_FILTER_LAYER
 	hide = TRUE
 	shift_underlay_only = FALSE
+	custom_reconcilation = TRUE
 
 	pipe_flags = PIPING_ONE_PER_TURF
 	pipe_state = "connector"
 	var/obj/machinery/portable_atmospherics/connected_device
+
+/obj/machinery/atmospherics/components/unary/portables_connector/return_airs_for_reconcilation(datum/pipeline/requester)
+	. = ..()
+	if(!connected_device)
+		return
+	if(istype(connected_device, /obj/vehicle/sealed/mecha))
+		var/obj/vehicle/sealed/mecha/connected_mech = connected_device
+		if(connected_mech.internal_tank)
+			. += connected_mech.internal_tank.return_air()
+	else
+		. += connected_device.return_air()
 
 /obj/machinery/atmospherics/components/unary/portables_connector/New()
 	..()

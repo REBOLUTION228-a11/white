@@ -1167,7 +1167,7 @@
 	sleep(4)
 	set_density(FALSE)
 	flags_1 &= ~PREVENT_CLICK_UNDER_1
-	air_update_turf(TRUE)
+	air_update_turf()
 	sleep(1)
 	layer = OPEN_DOOR_LAYER
 	update_icon(AIRLOCK_OPEN, 1)
@@ -1212,12 +1212,12 @@
 	if(air_tight)
 		set_density(TRUE)
 		flags_1 |= PREVENT_CLICK_UNDER_1
-		air_update_turf(TRUE)
+		air_update_turf()
 	sleep(1)
 	if(!air_tight)
 		set_density(TRUE)
 		flags_1 |= PREVENT_CLICK_UNDER_1
-		air_update_turf(TRUE)
+		air_update_turf()
 	sleep(4)
 	if(dangerous_close)
 		crush()

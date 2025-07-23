@@ -12,8 +12,6 @@ GLOBAL_LIST_INIT(nonreactive_gases, typecacheof(list(GAS_O2, GAS_N2, GAS_CO2, GA
 
 // Also allows you to add new gases at runtime
 
-/proc/_auxtools_register_gas(datum/gas/gas) // makes sure auxtools knows stuff about this gas
-
 /datum/auxgm
 	var/list/datums = list()
 	var/list/specific_heats = list()
@@ -32,10 +30,9 @@ GLOBAL_LIST_INIT(nonreactive_gases, typecacheof(list(GAS_O2, GAS_N2, GAS_CO2, GA
 	var/list/oxidation_temperatures = list()
 	var/list/oxidation_rates = list()
 	var/list/fire_temperatures = list()
-	var/list/fire_enthalpies = list()
+	var/list/enthalpies = list()
 	var/list/fire_products = list()
 	var/list/fire_burn_rates = list()
-
 
 /datum/gas
 	var/id = ""
@@ -53,8 +50,9 @@ GLOBAL_LIST_INIT(nonreactive_gases, typecacheof(list(GAS_O2, GAS_N2, GAS_CO2, GA
 	var/oxidation_rate = 1 // how many moles of this can oxidize how many moles of material
 	var/fire_temperature = null // temperature above which gas may catch fire; null for none
 	var/list/fire_products = null // what results when this gas is burned (oxidizer or fuel); null for none
-	var/fire_energy_released = 0 // how much energy is released per mole of fuel burned
+	var/enthalpy = 0 // Standard enthalpy of formation in joules, used for fires
 	var/fire_burn_rate = 1 // how many moles are burned per product released
+	var/fire_radiation_released = 0 // How much radiation is released when this gas burns
 
 /datum/gas/proc/breath(partial_pressure, light_threshold, heavy_threshold, moles, mob/living/carbon/C, obj/item/organ/lungs/lungs)
 	// This is only called on gases with the GAS_FLAG_BREATH_PROC flag. When possible, do NOT use this--
@@ -87,23 +85,19 @@ GLOBAL_LIST_INIT(nonreactive_gases, typecacheof(list(GAS_O2, GAS_N2, GAS_CO2, GA
 			breath_reagents[g] = gas.breath_reagent
 		if(gas.breath_reagent_dangerous)
 			breath_reagents_dangerous[g] = gas.breath_reagent_dangerous
-
 		if(gas.oxidation_temperature)
 			oxidation_temperatures[g] = gas.oxidation_temperature
 			oxidation_rates[g] = gas.oxidation_rate
 			if(gas.fire_products)
 				fire_products[g] = gas.fire_products
-			fire_enthalpies[g] = gas.fire_energy_released
+			enthalpies[g] = gas.enthalpy
 		else if(gas.fire_temperature)
 			fire_temperatures[g] = gas.fire_temperature
 			fire_burn_rates[g] = gas.fire_burn_rate
 			if(gas.fire_products)
 				fire_products[g] = gas.fire_products
-			fire_enthalpies[g] = gas.fire_energy_released
-
+			enthalpies[g] = gas.enthalpy
 		_auxtools_register_gas(gas)
-
-/proc/finalize_gas_refs()
 
 /datum/auxgm/New()
 	for(var/gas_path in subtypesof(/datum/gas))

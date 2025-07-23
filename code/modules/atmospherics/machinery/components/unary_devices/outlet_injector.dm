@@ -54,8 +54,6 @@
 		icon_state = "inje_on"
 
 /obj/machinery/atmospherics/components/unary/outlet_injector/process_atmos()
-	..()
-
 	injecting = 0
 
 	if(!on || !is_operational || !isopenturf(loc))
@@ -64,11 +62,9 @@
 	var/datum/gas_mixture/air_contents = airs[1]
 
 	if(air_contents != null)
-		if(air_contents.return_temperature() > 0)
-			loc.assume_air_ratio(air_contents, volume_rate / air_contents.return_volume())
-			air_update_turf()
+		loc.assume_air_ratio(air_contents, volume_rate / air_contents.return_volume())
 
-			update_parents()
+		update_parents()
 
 /obj/machinery/atmospherics/components/unary/outlet_injector/inject()
 
@@ -81,7 +77,6 @@
 
 	if(air_contents.return_temperature() > 0)
 		loc.assume_air_ratio(air_contents, volume_rate / air_contents.return_volume())
-		update_parents()
 
 	flick("inje_inject", src)
 
@@ -106,7 +101,7 @@
 	))
 	radio_connection.post_signal(src, signal)
 
-/obj/machinery/atmospherics/components/unary/outlet_injector/atmosinit()
+/obj/machinery/atmospherics/components/unary/outlet_injector/atmos_init()
 	set_frequency(frequency)
 	broadcast_status()
 	..()

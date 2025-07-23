@@ -78,11 +78,15 @@
 			on = !on
 		update_icon()
 
+/obj/machinery/portable_atmospherics/scrubber/ui_state(mob/user)
+	return GLOB.physical_state
+
 /obj/machinery/portable_atmospherics/scrubber/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "PortableScrubber", name)
 		ui.open()
+		ui.set_autoupdate(TRUE) // Air pressure, tank pressure
 
 /obj/machinery/portable_atmospherics/scrubber/ui_data()
 	var/data = list()

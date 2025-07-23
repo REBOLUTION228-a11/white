@@ -106,7 +106,7 @@
 
 	return TRUE
 
-/obj/machinery/atmospherics/components/unary/vent_scrubber/atmosinit()
+/obj/machinery/atmospherics/components/unary/vent_scrubber/atmos_init()
 	radio_filter_in = frequency==initial(frequency)?(RADIO_FROM_AIRALARM):null
 	radio_filter_out = frequency==initial(frequency)?(RADIO_TO_AIRALARM):null
 	if(frequency)
@@ -115,8 +115,7 @@
 	check_turfs()
 	..()
 
-/obj/machinery/atmospherics/components/unary/vent_scrubber/process_atmos(delta_time)
-	..()
+/obj/machinery/atmospherics/components/unary/vent_scrubber/process_atmos()
 	if(welded || !is_operational)
 		return FALSE
 	if(!nodes[1] || !on)
@@ -134,16 +133,17 @@
 	var/datum/gas_mixture/environment = tile.return_air()
 	var/datum/gas_mixture/air_contents = airs[1]
 
+	if(!environment)
+		return FALSE
+
 	if(air_contents.return_pressure() >= 50 * ONE_ATMOSPHERE || !islist(filter_types))
 		return FALSE
 
 	if(scrubbing & SCRUBBING)
 		environment.scrub_into(air_contents, volume_rate/environment.return_volume(), filter_types)
-		tile.air_update_turf()
 
 	else //Just siphoning all air
 		environment.transfer_ratio_to(air_contents, volume_rate/environment.return_volume())
-		tile.air_update_turf()
 
 	update_parents()
 

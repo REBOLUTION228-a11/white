@@ -51,7 +51,6 @@
 	icon_state = on && is_operational ? "volpump_on-[set_overlay_offset(piping_layer)]" : "volpump_off-[set_overlay_offset(piping_layer)]"
 
 /obj/machinery/atmospherics/components/binary/volume_pump/process_atmos()
-//	..()
 	if(!on || !is_operational)
 		return
 
@@ -74,7 +73,6 @@
 		if(istype(T))
 			var/datum/gas_mixture/leaked = air1.remove_ratio(VOLUME_PUMP_LEAK_AMOUNT)
 			T.assume_air(leaked)
-			T.air_update_turf()
 
 	var/transfer_ratio = transfer_rate / air1.return_volume()
 	air1.transfer_ratio_to(air2,transfer_ratio)
@@ -118,7 +116,7 @@
 	data["max_rate"] = round(MAX_TRANSFER_RATE)
 	return data
 
-/obj/machinery/atmospherics/components/binary/volume_pump/atmosinit()
+/obj/machinery/atmospherics/components/binary/volume_pump/atmos_init()
 	..()
 
 	set_frequency(frequency)

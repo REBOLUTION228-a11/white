@@ -48,7 +48,7 @@
 	my_area = get_area(src)
 	LAZYADD(my_area.firealarms, src)
 
-	AddElement(/datum/element/atmos_sensitive, mapload)
+	//AddElement(/datum/element/atmos_sensitive, mapload)
 	RegisterSignal(SSsecurity_level, COMSIG_SECURITY_LEVEL_CHANGED, PROC_REF(check_security_level))
 	soundloop = new(src, FALSE)
 

@@ -16,12 +16,12 @@
 
 /obj/machinery/portable_atmospherics/Initialize()
 	. = ..()
+	SSair_machinery.start_processing_machine(src)
 	air_contents = new(volume)
 	air_contents.set_temperature(T20C)
-	SSair.atmos_machinery += src
 
 /obj/machinery/portable_atmospherics/Destroy()
-	SSair.atmos_machinery -= src
+	SSair_machinery.stop_processing_machine(src)
 	disconnect()
 	QDEL_NULL(air_contents)
 	//SSair.stop_processing_machine(src)
@@ -41,7 +41,7 @@
 	return ..()
 
 /obj/machinery/portable_atmospherics/process_atmos()
-	if(!connected_port) // Pipe network handles reactions if connected.
+	if(!connected_port && air_contents != null && src != null) // Pipe network handles reactions if connected.
 		air_contents.react(src)
 
 /obj/machinery/portable_atmospherics/return_air()
@@ -62,8 +62,7 @@
 	//Perform the connection
 	connected_port = new_port
 	connected_port.connected_device = src
-	var/datum/pipeline/connected_port_parent = connected_port.parents[1]
-	connected_port_parent.reconcile_air()
+	connected_port.parents[1].update = PIPENET_UPDATE_STATUS_RECONCILE_NEEDED
 
 	anchored = TRUE //Prevent movement
 	pixel_x = new_port.pixel_x

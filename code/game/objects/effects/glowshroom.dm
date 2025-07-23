@@ -98,7 +98,7 @@ GLOBAL_VAR_INIT(glowshrooms, 0)
 	else //if on the floor, glowshroom on-floor sprite
 		icon_state = base_icon_state
 
-	AddElement(/datum/element/atmos_sensitive, mapload)
+	//AddElement(/datum/element/atmos_sensitive, mapload)
 	COOLDOWN_START(src, spread_cooldown, rand(min_delay_spread, max_delay_spread))
 
 	START_PROCESSING(SSobj, src)
@@ -226,11 +226,10 @@ GLOBAL_VAR_INIT(glowshrooms, 0)
 	if(damage_type == BURN && damage_amount)
 		playsound(src.loc, 'sound/items/welder.ogg', 100, TRUE)
 
-/obj/structure/glowshroom/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/structure/glowshroom/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(5, BURN, 0, 0)
+/obj/structure/glowshroom/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		take_damage(5, BURN, 0, 0)
+	..()
 
 /obj/structure/glowshroom/acid_act(acidpwr, acid_volume)
 	visible_message(span_danger("[src] melts away!"))

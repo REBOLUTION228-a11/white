@@ -174,7 +174,6 @@
 
 /turf/open/proc/TakeTemperature(temp)
 	air.set_temperature(air.return_temperature() + temp)
-	air_update_turf()
 
 /turf/open/proc/freon_gas_act()
 	for(var/obj/I in contents)
@@ -267,4 +266,3 @@
 		air.set_moles(GAS_CO2, max(air.get_moles(GAS_CO2)-(strength * 0.001),0))
 		air.set_moles(GAS_O2, max(air.get_moles(GAS_O2)-(strength * 0.0005),0))
 		air.adjust_moles(GAS_PLUOXIUM, strength * 0.004)
-		air_update_turf()

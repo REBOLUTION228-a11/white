@@ -98,13 +98,8 @@
 		turn_off(user)
 		return
 
-	var/datum/gas_mixture/removed = air_contents.remove(num)
-	if(removed.total_moles() < 0.005)
-		turn_off(user)
-		return
+	assume_air_moles(air_contents, num)
 
-	var/turf/T = get_turf(user)
-	T.assume_air(removed)
 	ion_trail.generate_effect()
 
 	return TRUE

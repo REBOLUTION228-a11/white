@@ -52,7 +52,7 @@
 
 /mob/living/simple_animal/bot/firebot/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /mob/living/simple_animal/bot/firebot/bot_reset()
 	create_extinguisher()
@@ -280,13 +280,12 @@
 
 	return result
 
-/mob/living/simple_animal/bot/firebot/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return (exposed_temperature > T0C + 200 || exposed_temperature < BODYTEMP_COLD_DAMAGE_LIMIT)
-
-/mob/living/simple_animal/bot/firebot/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	if(COOLDOWN_FINISHED(src, foam_cooldown))
-		new /obj/effect/particle_effect/foam/firefighting(loc)
-		COOLDOWN_START(src, foam_cooldown, FOAM_INTERVAL)
+/mob/living/simple_animal/bot/firebot/temperature_expose(datum/gas_mixture/air, exposed_temperature, volume)
+	if(exposed_temperature > T0C + 200 || exposed_temperature < BODYTEMP_COLD_DAMAGE_LIMIT)
+		if(COOLDOWN_FINISHED(src, foam_cooldown))
+			new /obj/effect/particle_effect/foam/firefighting(loc)
+			COOLDOWN_START(src, foam_cooldown, FOAM_INTERVAL)
+	..()
 
 /mob/living/simple_animal/bot/firebot/proc/spray_water(atom/target, mob/user)
 	if(stationary_mode)

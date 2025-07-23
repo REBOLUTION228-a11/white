@@ -84,7 +84,7 @@
 
 	update_parents()
 
-/obj/machinery/atmospherics/components/trinary/filter/atmosinit()
+/obj/machinery/atmospherics/components/trinary/filter/atmos_init()
 	set_frequency(frequency)
 	return ..()
 

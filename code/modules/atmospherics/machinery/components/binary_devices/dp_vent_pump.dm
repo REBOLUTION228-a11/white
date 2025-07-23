@@ -52,7 +52,6 @@
 		icon_state = pump_direction ? "vent_out" : "vent_in"
 
 /obj/machinery/atmospherics/components/binary/dp_vent_pump/process_atmos()
-	..()
 	if(welded || !is_operational || !isopenturf(loc))
 		return FALSE
 	if(!on)
@@ -123,7 +122,7 @@
 	))
 	radio_connection.post_signal(src, signal, filter = RADIO_ATMOSIA)
 
-/obj/machinery/atmospherics/components/binary/dp_vent_pump/atmosinit()
+/obj/machinery/atmospherics/components/binary/dp_vent_pump/atmos_init()
 	..()
 	if(frequency)
 		set_frequency(frequency)

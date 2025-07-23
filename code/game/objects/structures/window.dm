@@ -60,7 +60,7 @@
 		state = RWINDOW_SECURE
 
 	ini_dir = dir
-	air_update_turf(TRUE)
+	air_update_turf()
 
 	if(fulltile)
 		setDir()
@@ -82,7 +82,7 @@
 /obj/structure/window/ComponentInitialize()
 	. = ..()
 	AddComponent(/datum/component/simple_rotation,ROTATION_ALTCLICK | ROTATION_CLOCKWISE | ROTATION_COUNTERCLOCKWISE | ROTATION_VERBS ,null,CALLBACK(src, PROC_REF(can_be_rotated)),CALLBACK(src, PROC_REF(after_rotation)))
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/window/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
 	switch(the_rcd.mode)
@@ -312,7 +312,7 @@
 	return TRUE
 
 /obj/structure/window/proc/after_rotation(mob/user,rotation_type)
-	air_update_turf(TRUE)
+	air_update_turf()
 	ini_dir = dir
 	add_fingerprint(user)
 
@@ -326,7 +326,7 @@
 
 /obj/structure/window/Destroy()
 	set_density(FALSE)
-	air_update_turf(TRUE)
+	air_update_turf()
 	update_nearby_icons()
 	return ..()
 
@@ -369,11 +369,10 @@
 		crack_overlay = mutable_appearance('icons/obj/structures.dmi', "damage[ratio]", -(layer+0.1))
 		. += crack_overlay
 
-/obj/structure/window/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > T0C + heat_resistance
-
-/obj/structure/window/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(round(air.return_volume() / 100), BURN, 0, 0)
+/obj/structure/window/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > (T0C + heat_resistance))
+		take_damage(round(exposed_volume / 100), BURN, 0, 0)
+	..()
 
 /obj/structure/window/get_dumping_location(obj/item/storage/source,mob/user)
 	return null
@@ -510,7 +509,7 @@
 
 /obj/structure/window/plasma/ComponentInitialize()
 	. = ..()
-	RemoveElement(/datum/element/atmos_sensitive)
+	//RemoveElement(/datum/element/atmos_sensitive)
 
 /obj/structure/window/plasma/spawnDebris(location)
 	. = list()
@@ -520,6 +519,11 @@
 		. += new /obj/item/stack/rods(location, (fulltile ? 2 : 1))
 	if (fulltile)
 		. += new /obj/item/shard/plasma(location)
+
+/obj/structure/window/plasma/BlockThermalConductivity(opp_dir)
+	if(!anchored || !density)
+		return FALSE
+	return FULLTILE_WINDOW_DIR == dir || dir == opp_dir
 
 /obj/structure/window/plasma/spawner/east
 	dir = EAST

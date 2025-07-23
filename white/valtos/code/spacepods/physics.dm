@@ -50,7 +50,7 @@
 					var/turf/open/floor/TF = T
 					TF.make_plating() // pull up some floor tiles. Stop going so fast, ree.
 					take_damage(3, BRUTE, "melee", FALSE)
-			var/datum/gas_mixture/env = T.return_air()
+			var/datum/gas_mixture/env = return_air()
 			if(env)
 				var/pressure = env.return_pressure()
 				drag += velocity_mag * pressure * 0.0001 // 1 atmosphere should shave off 1% of velocity per tile

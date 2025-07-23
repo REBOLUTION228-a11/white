@@ -4,6 +4,10 @@ All ShuttleMove procs go here
 
 /************************************Base procs************************************/
 
+/turf/proc/beforeShuttleMove(turf/newT)
+	clear_adjacencies()
+	newT.clear_adjacencies()
+
 // Called on every turf in the shuttle region, returns a bitflag for allowed movements of that turf
 // returns the new move_mode (based on the old)
 /turf/proc/fromShuttleMove(turf/newT, move_mode)
@@ -75,8 +79,8 @@ All ShuttleMove procs go here
 	else
 		update_air_ref(-1)
 
-	newT.air_update_turf(TRUE)
-	air_update_turf(TRUE)
+	newT.air_update_turf()
+	air_update_turf()
 	SEND_SIGNAL(src, COMSIG_TURF_ON_SHUTTLE_MOVE, newT)
 
 	return TRUE
@@ -258,20 +262,20 @@ All ShuttleMove procs go here
 					break
 
 			if(!connected)
-				nullifyNode(i)
+				nullify_node(i)
 
 		if(!nodes[i])
 			missing_nodes = TRUE
 
 	if(missing_nodes)
-		atmosinit()
+		atmos_init()
 		for(var/obj/machinery/atmospherics/A in pipeline_expansion())
-			A.atmosinit()
-			if(A.returnPipenet())
-				A.addMember(src)
+			A.atmos_init()
+			if(A.return_pipenet())
+				A.add_member(src)
 		build_network()
 	else
-		// atmosinit() calls update_icon(), so we don't need to call it
+		// atmos_init() calls update_icon(), so we don't need to call it
 		update_icon()
 
 /obj/machinery/navbeacon/beforeShuttleMove(turf/newT, rotation, move_mode, obj/docking_port/mobile/moving_dock)

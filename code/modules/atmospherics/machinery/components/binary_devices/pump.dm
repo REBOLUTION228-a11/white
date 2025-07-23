@@ -52,7 +52,6 @@
 	icon_state = (on && is_operational) ? "pump_on-[set_overlay_offset(piping_layer)]" : "pump_off-[set_overlay_offset(piping_layer)]"
 
 /obj/machinery/atmospherics/components/binary/pump/process_atmos()
-//	..()
 	if(!on || !is_operational)
 		return
 	var/datum/gas_mixture/air1 = airs[1]
@@ -125,7 +124,7 @@
 				investigate_log("was set to [target_pressure] kPa by [key_name(usr)]", INVESTIGATE_ATMOS)
 	update_icon()
 
-/obj/machinery/atmospherics/components/binary/pump/atmosinit()
+/obj/machinery/atmospherics/components/binary/pump/atmos_init()
 	..()
 	if(frequency)
 		set_frequency(frequency)

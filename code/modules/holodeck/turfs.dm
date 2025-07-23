@@ -106,7 +106,7 @@
 		set_basalt_light(src)
 
 /turf/open/floor/holofloor/space
-	name = "\proper space"
+	name = "космос"
 	icon = 'icons/turf/space.dmi'
 	icon_state = "0"
 
@@ -115,7 +115,7 @@
 	. = ..()
 
 /turf/open/floor/holofloor/hyperspace
-	name = "\proper hyperspace"
+	name = "гипепространство"
 	icon = 'icons/turf/space.dmi'
 	icon_state = "speedspace_ns_1"
 	bullet_bounce_sound = null

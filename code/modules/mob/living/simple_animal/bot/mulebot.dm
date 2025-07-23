@@ -810,6 +810,11 @@
 /mob/living/simple_animal/bot/mulebot/remove_air(amount) //To prevent riders suffocating
 	return loc ? loc.remove_air(amount) : null
 
+/mob/living/simple_animal/bot/mulebot/remove_air_ratio(ratio)
+	if(loc)
+		return loc.remove_air_ratio(ratio)
+	return null
+
 /mob/living/simple_animal/bot/mulebot/resist()
 	..()
 	if(load)

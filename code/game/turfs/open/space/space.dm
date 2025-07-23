@@ -10,7 +10,7 @@
 	intact = 0
 
 	initial_temperature = TCMB
-	thermal_conductivity = OPEN_HEAT_TRANSFER_COEFFICIENT
+	thermal_conductivity = 0
 	heat_capacity = 700000
 
 	var/static/datum/gas_mixture/immutable/space/space_gas
@@ -72,6 +72,13 @@
 	if (opacity)
 		directional_opacity = ALL_CARDINALS
 
+	if(isopenturf(src))
+		var/turf/open/O = src
+		__auxtools_update_turf_temp_info(isspaceturf(get_z_base_turf()) && !O.planetary_atmos)
+	else
+		update_air_ref(-1)
+		__auxtools_update_turf_temp_info(isspaceturf(get_z_base_turf()))
+
 	var/turf/T = SSmapping.get_turf_above(src)
 	if(T)
 		T.multiz_turf_new(src, DOWN)
@@ -82,6 +89,10 @@
 	ComponentInitialize()
 
 	return INITIALIZE_HINT_NORMAL
+
+/turf/proc/__auxtools_update_turf_infos(immediate)
+
+/turf/return_temperature()
 
 //ATTACK GHOST IGNORING PARENT RETURN VALUE
 /turf/open/attack_ghost(mob/dead/observer/user)
@@ -123,6 +134,13 @@
 
 /turf/open/space/proc/CanBuildHere()
 	return TRUE
+
+/turf/open/space/remove_air_ratio(amount)
+	return null
+
+//IT SHOULD RETURN NULL YOU MONKEY, WHY IN TARNATION WHAT THE FUCKING FUCK
+/turf/open/space/remove_air(amount)
+	return null
 
 /turf/open/space/handle_slip()
 	return

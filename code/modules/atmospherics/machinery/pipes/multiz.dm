@@ -29,7 +29,7 @@
 	pipe = mutable_appearance(icon, "pipe-[piping_layer]")
 	return ..()
 
-/obj/machinery/atmospherics/pipe/multiz/SetInitDirections()
+/obj/machinery/atmospherics/pipe/multiz/set_init_directions()
 	initialize_directions = dir
 
 /obj/machinery/atmospherics/pipe/multiz/update_icon()
@@ -44,10 +44,10 @@
 /obj/machinery/atmospherics/pipe/multiz/pipeline_expansion()
 	var/turf/T = get_turf(src)
 	for(var/obj/machinery/atmospherics/pipe/multiz/above in SSmapping.get_turf_above(T))
-		if(isConnectable(above, piping_layer))
+		if(is_connectable(above, piping_layer))
 			nodes += above
 			above.nodes += src //Two way travel :)
 	for(var/obj/machinery/atmospherics/pipe/multiz/below in SSmapping.get_turf_below(T))
-		if(isConnectable(below, piping_layer))
+		if(is_connectable(below, piping_layer))
 			below.pipeline_expansion() //If we've got one below us, force it to add us on facebook
 	return ..()

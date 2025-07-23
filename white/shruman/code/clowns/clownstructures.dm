@@ -42,7 +42,7 @@
 	merger.set_moles(spawn_id, spawn_mol)
 	merger.set_temperature(spawn_temp)
 	O.assume_air(merger)
-	O.air_update_turf(TRUE)
+	O.air_update_turf()
 
 
 
@@ -98,7 +98,7 @@
 
 /obj/structure/fleshbuilding/clownweeds/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/fleshbuilding/clownweeds/proc/expand()
 	var/turf/U = get_turf(src)
@@ -121,11 +121,9 @@
 
 	return TRUE
 
-/obj/structure/fleshbuilding/clownweeds/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/structure/fleshbuilding/clownweeds/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(5, BURN, 0, 0)
+/obj/structure/fleshbuilding/clownweeds/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		take_damage(5, BURN, 0, 0)
 
 //Weed nodes
 /obj/structure/fleshbuilding/clownweeds/node

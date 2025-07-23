@@ -70,14 +70,14 @@
 
 /obj/machinery/power/atmos_synthesizer/proc/remove_gases()
 	var/turf/T = get_turf(src)
-	var/datum/gas_mixture/env = T.return_air()
+	var/datum/gas_mixture/env = return_air()
 	internal = env.remove(moles_removed)
 
 /obj/machinery/power/atmos_synthesizer/proc/release_gases()
 	if(!internal)
 		return
 	var/turf/T = get_turf(src)
-	var/datum/gas_mixture/env = T.return_air()
+	var/datum/gas_mixture/env = return_air()
 	env.merge(internal)
 	air_update_turf()
 	internal = null

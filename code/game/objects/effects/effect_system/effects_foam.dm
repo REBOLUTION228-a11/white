@@ -37,11 +37,11 @@
 	amount = 0 //no spread
 	slippery_foam = FALSE
 	var/absorbed_plasma = 0
-
+/*
 /obj/effect/particle_effect/foam/firefighting/ComponentInitialize()
 	..()
-	RemoveElement(/datum/element/atmos_sensitive)
-
+	//RemoveElement(/datum/element/atmos_sensitive)
+*/
 /obj/effect/particle_effect/foam/firefighting/process()
 	..()
 
@@ -109,7 +109,7 @@
 
 /obj/effect/particle_effect/foam/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/effect/particle_effect/foam/ComponentInitialize()
 	. = ..()
@@ -209,12 +209,12 @@
 		F.add_atom_colour(color, FIXED_COLOUR_PRIORITY)
 		F.metal = metal
 
-/obj/effect/particle_effect/foam/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 475
 
-/obj/effect/particle_effect/foam/atmos_expose(datum/gas_mixture/air, exposed_temperature)
+
+/obj/effect/particle_effect/foam/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
 	if(prob(max(0, exposed_temperature - 475)))   //foam dissolves when heated
 		kill_foam()
+
 
 
 ///////////////////////////////////////////////
@@ -303,7 +303,7 @@
 
 /obj/structure/foamedmetal/Initialize()
 	. = ..()
-	air_update_turf(TRUE)
+	air_update_turf()
 	if(smoothing_flags & SMOOTH_BITMASK)
 		var/matrix/M = new
 		M.Translate(-7, -7)
@@ -312,7 +312,7 @@
 		icon_state = "[base_icon_state]-[smoothing_junction]"
 
 /obj/structure/foamedmetal/Destroy()
-	air_update_turf(TRUE)
+	air_update_turf()
 	. = ..()
 
 /obj/structure/foamedmetal/Move()

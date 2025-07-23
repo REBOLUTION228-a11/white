@@ -14,10 +14,10 @@
 /obj/structure/emergency_shield/Initialize()
 	. = ..()
 	setDir(pick(GLOB.cardinals))
-	air_update_turf(TRUE)
+	air_update_turf()
 
 /obj/structure/emergency_shield/Destroy()
-	air_update_turf(TRUE)
+	air_update_turf()
 	. = ..()
 
 /obj/structure/emergency_shield/Move()

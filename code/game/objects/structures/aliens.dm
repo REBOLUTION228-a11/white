@@ -68,10 +68,10 @@
 
 /obj/structure/alien/resin/Initialize(mapload)
 	. = ..()
-	air_update_turf(TRUE)
+	air_update_turf()
 
 /obj/structure/alien/resin/Destroy()
-	air_update_turf(TRUE)
+	air_update_turf()
 	. = ..()
 
 /obj/structure/alien/resin/Move()
@@ -88,6 +88,9 @@
 	resintype = "wall"
 	smoothing_groups = list(SMOOTH_GROUP_ALIEN_RESIN, SMOOTH_GROUP_ALIEN_WALLS)
 	canSmoothWith = list(SMOOTH_GROUP_ALIEN_WALLS)
+
+/obj/structure/alien/resin/wall/BlockThermalConductivity()
+	return 1
 
 /obj/structure/alien/resin/wall/creature
 	name = "gelatinous wall"
@@ -178,7 +181,7 @@
 
 /obj/structure/alien/weeds/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/alien/weeds/proc/expand()
 	var/turf/U = get_turf(src)
@@ -196,11 +199,9 @@
 		new /obj/structure/alien/weeds(T)
 	return TRUE
 
-/obj/structure/alien/weeds/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 300
-
-/obj/structure/alien/weeds/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(5, BURN, 0, 0)
+/obj/structure/alien/weeds/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		take_damage(5, BURN, 0, 0)
 
 //Weed nodes
 /obj/structure/alien/weeds/node
@@ -286,7 +287,7 @@
 
 /obj/structure/alien/egg/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/alien/egg/update_icon_state()
 	switch(status)
@@ -353,11 +354,9 @@
 						child.Leap(M)
 						break
 
-/obj/structure/alien/egg/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > 500
-
-/obj/structure/alien/egg/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(5, BURN, 0, 0)
+/obj/structure/alien/egg/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 500)
+		take_damage(5, BURN, 0, 0)
 
 /obj/structure/alien/egg/obj_break(damage_flag)
 	if(!(flags_1 & NODECONSTRUCT_1))

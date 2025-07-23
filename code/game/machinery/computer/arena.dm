@@ -284,7 +284,7 @@
 	if(href_list["team_action"])
 		var/team = href_list["team"]
 		switch(href_list["team_action"])
-			if("addmember")
+			if("add_member")
 				add_team_member(user,team)
 			if("loadteam")
 				load_team(user,team)
@@ -348,7 +348,7 @@
 		dat += "</ul>"
 		dat += "<div> Team Outfit : [outfits[team] ? outfits[team] : default_outfit]</div>"
 		dat += "<a href='?src=[REF(src)];team_action=loadteam;team=[team]'>Load team</a>"
-		dat += "<a href='?src=[REF(src)];team_action=addmember;team=[team]'>Add member</a>"
+		dat += "<a href='?src=[REF(src)];team_action=add_member;team=[team]'>Add member</a>"
 		dat += "<a href='?src=[REF(src)];team_action=outfit;team=[team]'>Change Outfit</a>"
 		//Add more per team features here
 

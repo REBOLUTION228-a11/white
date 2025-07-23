@@ -56854,7 +56854,7 @@
 "wmL" = (
 /obj/machinery/atmospherics/components/trinary/filter/flipped/critical{
 	dir = 8;
-	filter_type = list(/datum/gas/nitrogen)
+	filter_type = list("n2")
 	},
 /obj/effect/turf_decal/bot,
 /turf/open/floor/engine,

@@ -80,7 +80,7 @@
 
 /obj/machinery/portable_atmospherics/canister/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
 
 /obj/machinery/portable_atmospherics/canister/interact(mob/user)
 	if(!allowed(user))
@@ -384,11 +384,10 @@
 			. += mutable_appearance(canister_overlay_file, "can-0")
 
 
-/obj/machinery/portable_atmospherics/canister/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return exposed_temperature > temperature_resistance * mode
-
-/obj/machinery/portable_atmospherics/canister/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	take_damage(5, BURN, 0)
+/obj/machinery/portable_atmospherics/canister/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > temperature_resistance * mode)
+		take_damage(5, BURN, 0)
+	..()
 
 /obj/machinery/portable_atmospherics/canister/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))
@@ -439,7 +438,6 @@
 	var/datum/gas_mixture/expelled_gas = air_contents.remove(air_contents.total_moles())
 	var/turf/T = get_turf(src)
 	T.assume_air(expelled_gas)
-	air_update_turf()
 
 	obj_break()
 
@@ -477,8 +475,7 @@
 		var/turf/T = get_turf(src)
 		var/datum/gas_mixture/target_air = holding ? holding.air_contents : T.return_air()
 
-		if(air_contents.release_gas_to(target_air, release_pressure) && !holding)
-			air_update_turf()
+		air_contents.release_gas_to(target_air, release_pressure)
 
 	var/our_pressure = air_contents.return_pressure()
 	var/our_temperature = air_contents.return_temperature()

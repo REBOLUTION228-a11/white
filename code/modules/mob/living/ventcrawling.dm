@@ -46,7 +46,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, typecacheof(list(
 
 	if(vent_found)
 		var/datum/pipeline/vent_found_parent = vent_found.parents[1]
-		if(vent_found_parent && (vent_found_parent.members.len || vent_found_parent.other_atmosmch))
+		if(vent_found_parent && (vent_found_parent.members.len || vent_found_parent.other_atmos_machines))
 			visible_message(span_notice("[capitalize(src.name)] начинает проникать в систему вентиляции...")  ,span_notice("Начинаю проникать в систему вентиляции..."))
 
 			if(!do_after(src, 25, target = vent_found))
@@ -79,7 +79,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, typecacheof(list(
 
 	for(var/datum/pipeline/P in starting_machine.returnPipenets())
 		totalMembers += P.members
-		totalMembers += P.other_atmosmch
+		totalMembers += P.other_atmos_machines
 
 	if(!totalMembers.len)
 		return

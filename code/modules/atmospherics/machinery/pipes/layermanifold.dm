@@ -60,7 +60,7 @@
 	I.layer = layer - 0.01
 	return I
 
-/obj/machinery/atmospherics/pipe/layer_manifold/SetInitDirections()
+/obj/machinery/atmospherics/pipe/layer_manifold/set_init_directions()
 	switch(dir)
 		if(NORTH, SOUTH)
 			initialize_directions = NORTH|SOUTH
@@ -72,8 +72,8 @@
 	back_nodes = list()
 	nodes = list()
 	for(var/iter in PIPING_LAYER_MIN to PIPING_LAYER_MAX)
-		var/obj/machinery/atmospherics/foundfront = findConnecting(dir, iter)
-		var/obj/machinery/atmospherics/foundback = findConnecting(turn(dir, 180), iter)
+		var/obj/machinery/atmospherics/foundfront = find_connecting(dir, iter)
+		var/obj/machinery/atmospherics/foundback = find_connecting(turn(dir, 180), iter)
 		front_nodes += foundfront
 		back_nodes += foundback
 		if(foundfront && !QDELETED(foundfront))
@@ -83,11 +83,11 @@
 	update_icon()
 	return nodes
 
-/obj/machinery/atmospherics/pipe/layer_manifold/atmosinit()
+/obj/machinery/atmospherics/pipe/layer_manifold/atmos_init()
 	normalize_cardinal_directions()
 	findAllConnections()
 
-/obj/machinery/atmospherics/pipe/layer_manifold/setPipingLayer()
+/obj/machinery/atmospherics/pipe/layer_manifold/set_piping_layer()
 	piping_layer = PIPING_LAYER_DEFAULT
 
 /obj/machinery/atmospherics/pipe/layer_manifold/pipeline_expansion()

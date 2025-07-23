@@ -27,9 +27,12 @@
 
 	var/list/atmos_overlay_types //gas IDs of current active gas overlays
 
+/turf/proc/should_conduct_to_space()
+	return get_z_base_turf() == /turf/open/space
+
 /turf/open/Initialize(mapload)
 	if(!blocks_air)
-		air = new(2500,src)
+		air = new(2500, src)
 		air.copy_from_turf(src)
 		update_air_ref(planetary_atmos ? 1 : 2)
 	. = ..()
@@ -39,8 +42,6 @@
 		QDEL_NULL(active_hotspot)
 	return ..()
 
-/turf/proc/update_air_ref()
-
 /////////////////GAS MIXTURE PROCS///////////////////
 
 /turf/open/assume_air(datum/gas_mixture/giver) //use this for machines to adjust air
@@ -49,41 +50,25 @@
 /turf/open/assume_air_moles(datum/gas_mixture/giver, moles)
 	if(!giver)
 		return FALSE
-	if(SSair.thread_running())
-		SSair.deferred_airs += list(list(giver, air, moles / giver.total_moles()))
-	else
-		giver.transfer_to(air, moles)
-		update_visuals()
+	giver.transfer_to(air, moles)
 	return TRUE
 
 /turf/open/assume_air_ratio(datum/gas_mixture/giver, ratio)
 	if(!giver)
 		return FALSE
-	if(SSair.thread_running())
-		SSair.deferred_airs += list(list(giver, air, ratio))
-	else
-		giver.transfer_ratio_to(air, ratio)
-		update_visuals()
+	giver.transfer_ratio_to(air, ratio)
 	return TRUE
 
 /turf/open/transfer_air(datum/gas_mixture/taker, moles)
 	if(!taker || !return_air()) // shouldn't transfer from space
 		return FALSE
-	if(SSair.thread_running())
-		SSair.deferred_airs += list(list(air, taker, moles / air.total_moles()))
-	else
-		air.transfer_to(taker, moles)
-		update_visuals()
+	air.transfer_to(taker, moles)
 	return TRUE
 
 /turf/open/transfer_air_ratio(datum/gas_mixture/taker, ratio)
 	if(!taker || !return_air())
 		return FALSE
-	if(SSair.thread_running())
-		SSair.deferred_airs += list(list(air, taker, ratio))
-	else
-		air.transfer_ratio_to(taker, ratio)
-		update_visuals()
+	air.transfer_ratio_to(taker, ratio)
 	return TRUE
 
 /turf/open/remove_air(amount)
@@ -122,11 +107,6 @@
 /turf/temperature_expose()
 	if(return_temperature() > heat_capacity)
 		to_be_destroyed = TRUE
-
-/turf/open/temperature_expose(datum/gas_mixture/air, exposed_temperature)
-	. = ..()
-	SEND_SIGNAL(src, COMSIG_TURF_EXPOSE, air, exposed_temperature)
-	check_atmos_process(src, air, exposed_temperature) //Manually do this to avoid needing to use elements, don't want 200 second atom init times
 
 /turf/open/proc/eg_reset_cooldowns()
 /turf/open/proc/eg_garbage_collect()
@@ -170,6 +150,7 @@
 	UNSETEMPTY(new_overlay_types)
 	src.atmos_overlay_types = new_overlay_types
 
+//called by auxmos, do not remove
 /turf/open/proc/set_visuals(list/new_overlay_types)
 	if (atmos_overlay_types)
 		for(var/overlay in atmos_overlay_types-new_overlay_types) //doesn't remove overlays that would only be added
@@ -196,19 +177,10 @@
 
 /turf/open/proc/equalize_pressure_in_zone(cyclenum)
 /turf/open/proc/consider_firelocks(turf/T2)
-	var/reconsider_adj = FALSE
 	for(var/obj/machinery/door/firedoor/FD in T2)
-		if((FD.flags_1 & ON_BORDER_1) && get_dir(T2, src) != FD.dir)
-			continue
 		FD.emergency_pressure_stop()
-		reconsider_adj = TRUE
 	for(var/obj/machinery/door/firedoor/FD in src)
-		if((FD.flags_1 & ON_BORDER_1) && get_dir(src, T2) != FD.dir)
-			continue
 		FD.emergency_pressure_stop()
-		reconsider_adj = TRUE
-	if(reconsider_adj)
-		T2.ImmediateCalculateAdjacentTurfs() // We want those firelocks closed yesterday.
 
 /turf/proc/handle_decompression_floor_rip()
 /turf/open/floor/handle_decompression_floor_rip(sum)
@@ -256,9 +228,6 @@
 /atom/movable/var/last_high_pressure_movement_air_cycle = 0
 
 /atom/movable/proc/experience_pressure_difference(pressure_difference, direction, pressure_resistance_prob_delta = 0, throw_target)
-	set waitfor = FALSE
-	if(SEND_SIGNAL(src, COMSIG_ATOM_PRE_PRESSURE_PUSH) & COMSIG_ATOM_BLOCKS_PRESSURE)
-		return
 	var/const/PROBABILITY_OFFSET = 40
 	var/const/PROBABILITY_BASE_PRECENT = 10
 	var/max_force = sqrt(pressure_difference)*(MOVE_FORCE_DEFAULT / 5)

@@ -100,7 +100,6 @@
 		icon_state = "vent_in"
 
 /obj/machinery/atmospherics/components/unary/vent_pump/process_atmos()
-	..()
 	if(!is_operational || !isopenturf(loc))
 		return
 	if(!nodes[1])
@@ -111,7 +110,7 @@
 	var/datum/gas_mixture/air_contents = airs[1]
 	var/datum/gas_mixture/environment = loc.return_air()
 
-	if(environment == null)
+	if(!environment)
 		return
 
 	var/environment_pressure = environment.return_pressure()
@@ -127,9 +126,7 @@
 		if(pressure_delta > 0)
 			if(air_contents.return_temperature() > 0)
 				var/transfer_moles = pressure_delta*environment.return_volume()/(air_contents.return_temperature() * R_IDEAL_GAS_EQUATION)
-
 				loc.assume_air_moles(air_contents, transfer_moles)
-				air_update_turf()
 
 	else // external -> internal
 		if(environment.return_pressure() > 0)
@@ -142,7 +139,6 @@
 
 			if(moles_delta > 0)
 				loc.transfer_air(air_contents, moles_delta)
-				air_update_turf()
 	update_parents()
 
 //Radio remote control
@@ -182,7 +178,7 @@
 	radio_connection.post_signal(src, signal, radio_filter_out)
 
 
-/obj/machinery/atmospherics/components/unary/vent_pump/atmosinit()
+/obj/machinery/atmospherics/components/unary/vent_pump/atmos_init()
 	//some vents work his own spesial way
 	radio_filter_in = frequency==FREQ_ATMOS_CONTROL?(RADIO_FROM_AIRALARM):null
 	radio_filter_out = frequency==FREQ_ATMOS_CONTROL?(RADIO_TO_AIRALARM):null
@@ -504,6 +500,14 @@
 /obj/machinery/atmospherics/components/unary/vent_pump/high_volume/siphon/atmos/air_output
 	name = "вентиляция из камеры микса воздуха"
 	id_tag = ATMOS_GAS_MONITOR_OUTPUT_AIR
+
+/obj/machinery/atmospherics/components/unary/vent_pump/siphon/on/server
+	name = "серверная вентиляция"
+
+/obj/machinery/atmospherics/components/unary/vent_pump/on/server
+	name = "серверная вентиляция"
+	external_pressure_bound = 4000
+	internal_pressure_bound = 0
 
 #undef INT_BOUND
 #undef EXT_BOUND

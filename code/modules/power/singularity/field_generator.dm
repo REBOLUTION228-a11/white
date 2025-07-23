@@ -188,7 +188,7 @@ no power level overlay is currently in the overlays list.
 /obj/machinery/field/generator/proc/turn_off()
 	active = FG_OFFLINE
 	CanAtmosPass = ATMOS_PASS_YES
-	air_update_turf(TRUE)
+	air_update_turf()
 	INVOKE_ASYNC(src, PROC_REF(cleanup))
 	addtimer(CALLBACK(src, PROC_REF(cool_down)), 50)
 
@@ -266,7 +266,7 @@ no power level overlay is currently in the overlays list.
 		return
 	move_resist = INFINITY
 	CanAtmosPass = ATMOS_PASS_NO
-	air_update_turf(TRUE)
+	air_update_turf()
 	addtimer(CALLBACK(src, PROC_REF(setup_field), 1), 1)
 	addtimer(CALLBACK(src, PROC_REF(setup_field), 2), 2)
 	addtimer(CALLBACK(src, PROC_REF(setup_field), 4), 3)

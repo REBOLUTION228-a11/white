@@ -280,17 +280,18 @@
 
 /obj/machinery/door/airlock/plasma/ComponentInitialize()
 	. = ..()
-	AddElement(/datum/element/atmos_sensitive)
+	//AddElement(/datum/element/atmos_sensitive)
+
+/obj/machinery/door/airlock/plasma/BlockThermalConductivity() //we don't stop the heat~
+	return FALSE
 
 /obj/machinery/door/airlock/plasma/proc/ignite(exposed_temperature)
 	if(exposed_temperature > 300)
 		PlasmaBurn(exposed_temperature)
 
-/obj/machinery/door/airlock/plasma/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
-	return (exposed_temperature > 300)
-
-/obj/machinery/door/airlock/plasma/atmos_expose(datum/gas_mixture/air, exposed_temperature)
-	PlasmaBurn()
+/obj/machinery/door/airlock/plasma/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(exposed_temperature > 300)
+		PlasmaBurn(exposed_temperature)
 
 /obj/machinery/door/airlock/plasma/proc/PlasmaBurn()
 	atmos_spawn_air("plasma=500;TEMP=1000")
@@ -682,7 +683,7 @@
 	base_name = "Large Glass Airlock"
 	overlays_file = 'white/rebolution228/icons/unsorted/glass/overlays.dmi'
 	airlock_type = /obj/machinery/door/airlock/multi_tile/glass
-	
+
 
 /obj/machinery/door/airlock/multi_tile/glass
 	name = "Large Glass Airlock"

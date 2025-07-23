@@ -79,3 +79,5 @@
 #define FUSION_MIDDLE_ENERGY_REFERENCE 1e6
 // Increase this to cull unrobust fusions faster
 #define FUSION_BUFFER_DIVISOR 1
+// Snowflake fire product types
+#define FIRE_PRODUCT_PLASMA 0

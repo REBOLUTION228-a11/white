@@ -77,10 +77,10 @@ Buildable meters
 
 /obj/item/pipe/dropped()
 	if(loc)
-		setPipingLayer(piping_layer)
+		set_piping_layer(piping_layer)
 	return ..()
 
-/obj/item/pipe/proc/setPipingLayer(new_layer = PIPING_LAYER_DEFAULT)
+/obj/item/pipe/proc/set_piping_layer(new_layer = PIPING_LAYER_DEFAULT)
 	var/obj/machinery/atmospherics/fakeA = pipe_type
 
 	if(initial(fakeA.pipe_flags) & PIPING_ALL_LAYER)
@@ -183,7 +183,7 @@ Buildable meters
 		if((machine.piping_layer != piping_layer) && !((machine.pipe_flags | flags) & PIPING_ALL_LAYER)) //don't continue if either pipe goes across all layers
 			continue
 
-		if(machine.GetInitDirections() & SSair.get_init_dirs(pipe_type, fixed_dir(), p_init_dir)) // matches at least one direction on either type of pipe
+		if(machine.get_init_directions() & SSair.get_init_dirs(pipe_type, fixed_dir(), p_init_dir)) // matches at least one direction on either type of pipe
 			to_chat(user, span_warning("There is already a pipe at that location!"))
 			return TRUE
 	// no conflicts found
@@ -203,7 +203,7 @@ Buildable meters
 
 /obj/item/pipe/proc/build_pipe(obj/machinery/atmospherics/A)
 	A.setDir(fixed_dir())
-	A.SetInitDirections(p_init_dir)
+	A.set_init_directions(p_init_dir)
 
 	if(pipename)
 		A.name = pipename

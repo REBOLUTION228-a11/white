@@ -72,7 +72,7 @@
 	if(panel_open)
 		. += "sheater-open"
 
-/obj/machinery/space_heater/process(delta_time)
+/obj/machinery/space_heater/process_atmos()
 	if(!on || !is_operational)
 		if (on) // If it's broken, turn it off too
 			on = FALSE
@@ -103,7 +103,7 @@
 
 		var/heat_capacity = env.heat_capacity()
 		var/requiredEnergy = abs(env.return_temperature() - targetTemperature) * heat_capacity
-		requiredEnergy = min(requiredEnergy, heatingPower * delta_time)
+		requiredEnergy = min(requiredEnergy, heatingPower)
 
 		if(requiredEnergy < 1)
 			return
@@ -113,7 +113,6 @@
 			deltaTemperature *= -1
 		if(deltaTemperature)
 			env.set_temperature(env.return_temperature() + deltaTemperature)
-			air_update_turf()
 		cell.use(requiredEnergy / efficiency)
 	else
 		on = FALSE
@@ -191,13 +190,10 @@
 	data["minTemp"] = max(settableTemperatureMedian - settableTemperatureRange - T0C, TCMB)
 	data["maxTemp"] = settableTemperatureMedian + settableTemperatureRange - T0C
 
-	var/turf/L = get_turf(loc)
 	var/curTemp
-	if(istype(L))
-		var/datum/gas_mixture/env = L.return_air()
-		curTemp = env.return_temperature()
-	else if(isturf(L))
-		curTemp = L.return_temperature()
+	if(isopenturf(get_turf(src)))
+		var/datum/gas_mixture/env = return_air()
+		curTemp = env?.return_temperature()
 	if(isnull(curTemp))
 		data["currentTemp"] = "N/A"
 	else
@@ -216,7 +212,9 @@
 			usr.visible_message(span_notice("[usr] [on ? "включает" : "выключает"] <b>[src.name]</b>.") , span_notice("[on ? "Включаю" : "Выключаю"] <b>[src.name]</b>."))
 			update_icon()
 			if (on)
-				START_PROCESSING(SSmachines, src)
+				SSair_machinery.start_processing_machine(src)
+			else
+				SSair_machinery.stop_processing_machine(src)
 			. = TRUE
 		if("mode")
 			setMode = params["mode"]

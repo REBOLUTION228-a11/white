@@ -75,8 +75,7 @@
 		update_icon()
 		return PROCESS_KILL
 
-	var/turf/L = loc
-	if(!istype(L))
+	if(!isopenturf(get_turf(src)))
 		if(mode != ELECTROLYZER_MODE_STANDBY)
 			mode = ELECTROLYZER_MODE_STANDBY
 			update_icon()
@@ -91,7 +90,7 @@
 	if(mode == ELECTROLYZER_MODE_STANDBY)
 		return
 
-	var/datum/gas_mixture/env = L.return_air() //get air from the turf
+	var/datum/gas_mixture/env = return_air() //get air from the turf
 	var/datum/gas_mixture/removed = env.remove(0.1 * env.total_moles())
 
 	if(!removed)
@@ -174,7 +173,9 @@
 			usr.visible_message(span_notice("[usr] [on ? "включает" : "выключает"] <b>[src.name]</b>.") , span_notice("[on ? "Включаю" : "Выключаю"] <b>[src.name]</b>."))
 			update_icon()
 			if (on)
-				START_PROCESSING(SSmachines, src)
+				SSair_machinery.start_processing_machine(src)
+			else
+				SSair_machinery.stop_processing_machine(src)
 			. = TRUE
 		if("eject")
 			if(panel_open && cell)

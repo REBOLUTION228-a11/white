@@ -534,6 +534,8 @@
 	update_freelook_sight()
 	if(!(flags_1 & ON_BORDER_1))
 		crush()
+	alarm_type = FIRELOCK_ALARM_TYPE_GENERIC
+	close()
 
 /obj/machinery/door/firedoor/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))

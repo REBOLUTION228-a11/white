@@ -199,6 +199,14 @@
 /proc/process_atmos_callbacks(remaining)
 	return call_ext(AUXMOS, "byond:atmos_callback_handle_ffi")(remaining)
 
+/// Returns: If this cycle is interrupted by overtiming or not. Starts a katmos equalize cycle, does nothing if process_turfs isn't ran.
+/datum/controller/subsystem/air/proc/process_turf_equalize_auxtools(remaining)
+	return call_ext(AUXMOS, "byond:equalize_hook_ffi")(src, remaining)
+
+/// Returns: If this cycle is interrupted by overtiming or not. Starts a processing excited groups cycle, does nothing if process_turfs isn't ran.
+/datum/controller/subsystem/air/proc/process_excited_groups_auxtools(remaining)
+	return call_ext(AUXMOS, "byond:groups_hook_ffi")(src, remaining)
+
 /// Updates adjacency infos for turfs, only use this in immediateupdateturfs.
 /turf/proc/__update_auxtools_turf_adjacency_info()
 	return call_ext(AUXMOS, "byond:hook_infos_ffi")(src)
@@ -206,10 +214,6 @@
 /// Returns: null. Updates turf air infos, whether the turf is closed, is space or a regular turf, or even a planet turf is decided here.
 /turf/proc/update_air_ref(flag)
 	return call_ext(AUXMOS, "byond:hook_register_turf_ffi")(src, flag)
-
-/// Returns: If this cycle is interrupted by overtiming or not. Starts a katmos equalize cycle, does nothing if process_turfs isn't ran.
-/datum/controller/subsystem/air/proc/process_turf_equalize_auxtools(remaining)
-	return call_ext(AUXMOS, "byond:equalize_hook_ffi")(src, remaining)
 
 /// Returns: If this cycle is interrupted by overtiming or not. Starts a processing turfs cycle.
 /datum/controller/subsystem/air/proc/process_turfs_auxtools(remaining)
@@ -222,10 +226,6 @@
 /// Returns: If a processing thread is running or not.
 /datum/controller/subsystem/air/proc/thread_running()
 	return call_ext(AUXMOS, "byond:thread_running_hook_ffi")()
-
-/// Returns: If this cycle is interrupted by overtiming or not. Starts a processing excited groups cycle, does nothing if process_turfs isn't ran.
-/datum/controller/subsystem/air/proc/process_excited_groups_auxtools(remaining)
-	return call_ext(AUXMOS, "byond:groups_hook_ffi")(src, remaining)
 
 /// For updating reagent gas fire products, do not use for now.
 /proc/finalize_gas_refs()
@@ -242,3 +242,4 @@
 /// For registering gases, do not touch this.
 /proc/_auxtools_register_gas(gas)
 	return call_ext(AUXMOS, "byond:hook_register_gas_ffi")(gas)
+

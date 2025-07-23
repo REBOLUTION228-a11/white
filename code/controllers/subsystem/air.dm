@@ -9,6 +9,7 @@ SUBSYSTEM_DEF(air)
 	var/cached_cost = 0
 
 	var/cost_turfs = 0
+	var/cost_adjacent = 0
 	var/cost_groups = 0
 	var/cost_highpressure = 0
 	var/cost_hotspots = 0
@@ -31,10 +32,14 @@ SUBSYSTEM_DEF(air)
 	var/gas_mixes_count = 0
 	var/gas_mixes_allocated = 0
 
+	var/list/excited_groups = list()
+	var/list/active_turfs = list()
 	var/list/hotspots = list()
 	var/list/networks = list()
 	var/list/rebuild_queue = list()
 	var/list/expansion_queue = list()
+	/// List of turfs to recalculate adjacent turfs on before processing
+	var/list/adjacent_rebuild = list()
 	var/list/pipe_init_dirs_cache = list()
 	var/list/obj/machinery/atmos_machinery = list()
 
@@ -44,11 +49,12 @@ SUBSYSTEM_DEF(air)
 	//Special functions lists
 	var/list/turf/open/high_pressure_delta = list()
 
-
+	/// A cache of objects that perisists between processing runs when resumed == TRUE. Dangerous, qdel'd objects not cleared from this may cause runtimes on processing.
 	var/list/currentrun = list()
 	var/currentpart = SSAIR_PIPENETS
 
 	var/map_loading = TRUE
+	var/list/queued_for_activation
 
 	var/lasttick = 0
 
@@ -152,41 +158,6 @@ SUBSYSTEM_DEF(air)
 
 /datum/controller/subsystem/air/fire(resumed = 0)
 	var/timer = TICK_USAGE_REAL
-
-	//If we have unpausing z-level, process them first
-	if(length(unpausing_z_levels) && !length(unpause_processing))
-		var/z_value = unpausing_z_levels[1]
-		unpausing_z_levels.Remove(z_value)
-		unpause_processing = block(locate(1, 1, z_value), locate(world.maxx, world.maxy, z_value))
-
-	while(length(unpause_processing))
-		var/turf/T = unpause_processing[length(unpause_processing)]
-		if(!isspaceturf(T))	//Skip space turfs, since they won't have atmos
-			T.Initalize_Atmos()
-		//Goodbye
-		unpause_processing.len --
-		//We overran this tick, stop processing
-		//This may result in a very brief atmos freeze when running unpause_z at high loads
-		//but that is better than freezing the entire MC
-		if(MC_TICK_CHECK)
-			return
-
-	//If we have unpausing z-level, process them first
-	if(length(pausing_z_levels) && !length(pause_processing))
-		var/z_value = pausing_z_levels[1]
-		pausing_z_levels.Remove(z_value)
-		pause_processing = block(locate(1, 1, z_value), locate(world.maxx, world.maxy, z_value))
-
-	while(length(pause_processing))
-		var/turf/T = pause_processing[length(pause_processing)]
-		T.ImmediateDisableAdjacency()
-		//Goodbye
-		pause_processing.len --
-		//We overran this tick, stop processing
-		//This may result in a very brief atmos freeze when running unpause_z at high loads
-		//but that is better than freezing the entire MC
-		if(MC_TICK_CHECK)
-			return
 
 	thread_wait_ticks = MC_AVERAGE(thread_wait_ticks, cur_thread_wait_ticks)
 	cur_thread_wait_ticks = 0
@@ -426,9 +397,6 @@ SUBSYSTEM_DEF(air)
 		currentrun.len--
 		if(M == null)
 			atmos_machinery.Remove(M)
-		// Prevents uninitalized atmos machinery from processing.
-		if (!(M.flags_1 & INITIALIZED_1))
-			continue
 		if(!M || (M.process_atmos(wait / (1 SECONDS)) == PROCESS_KILL))
 			stop_processing_machine(M)
 		if(MC_TICK_CHECK)
@@ -460,12 +428,12 @@ SUBSYSTEM_DEF(air)
 
 /datum/controller/subsystem/air/proc/pause_z(z_level)
 	LAZYADD(paused_z_levels, z_level)
-	unpausing_z_levels -= z_level
-	pausing_z_levels |= z_level
 
 /datum/controller/subsystem/air/proc/unpause_z(z_level)
-	pausing_z_levels -= z_level
-	unpausing_z_levels |= z_level
+	var/list/turfs_to_reinit = block(locate(1, 1, z_level), locate(world.maxx, world.maxy, z_level))
+	for(var/turf/T as anything in turfs_to_reinit)
+		T.Initalize_Atmos()
+		CHECK_TICK
 	LAZYREMOVE(paused_z_levels, z_level)
 
 /datum/controller/subsystem/air/proc/setup_allturfs()
@@ -474,11 +442,10 @@ SUBSYSTEM_DEF(air)
 	// Clear active turfs - faster than removing every single turf in the world
 	// one-by-one, and Initalize_Atmos only ever adds `src` back in.
 
-	for(var/thing in ALL_TURFS())
-		var/turf/T = thing
-		if (T.blocks_air)
+	for(var/turf/setup in ALL_TURFS())
+		if (setup.blocks_air)
 			continue
-		T.Initalize_Atmos(times_fired)
+		setup.Initalize_Atmos(times_fired)
 		CHECK_TICK
 
 /datum/controller/subsystem/air/proc/setup_atmos_machinery()

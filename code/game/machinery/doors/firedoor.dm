@@ -525,8 +525,12 @@
 
 //this is here to prevent sleeps from messing with decomp, by closing firedoors instantly
 /obj/machinery/door/firedoor/proc/emergency_pressure_close()
+	set waitfor = FALSE
+	if(density || operating || welded)
+		return
 	density = TRUE
 	air_update_turf()
+	do_animate("closing")
 	layer = closingLayer
 	update_icon()
 	if(visible && !glass)
@@ -534,8 +538,7 @@
 	update_freelook_sight()
 	if(!(flags_1 & ON_BORDER_1))
 		crush()
-	alarm_type = FIRELOCK_ALARM_TYPE_GENERIC
-	close()
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_icon)), 5)
 
 /obj/machinery/door/firedoor/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))

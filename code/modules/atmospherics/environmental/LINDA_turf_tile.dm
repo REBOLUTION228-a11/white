@@ -20,7 +20,7 @@
 	var/pressure_direction = 0
 	var/turf/pressure_specific_target
 
-	var/datum/gas_mixture/turf/air
+	var/datum/gas_mixture/air
 
 	var/obj/effect/hotspot/active_hotspot
 	var/planetary_atmos = FALSE //air will revert to initial_gas_mix over time
@@ -232,6 +232,9 @@
 	var/const/PROBABILITY_BASE_PRECENT = 10
 	var/max_force = sqrt(pressure_difference)*(MOVE_FORCE_DEFAULT / 5)
 	var/move_prob = 100
+	if(direction == UP)
+		last_high_pressure_movement_air_cycle = SSair.times_fired
+		return //By all that is holy STOP deathlooping tiles.
 	if (pressure_resistance > 0)
 		move_prob = (pressure_difference/pressure_resistance*PROBABILITY_BASE_PRECENT)-PROBABILITY_OFFSET
 	move_prob += pressure_resistance_prob_delta

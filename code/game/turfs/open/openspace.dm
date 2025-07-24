@@ -10,17 +10,16 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 	plane = OPENSPACE_BACKDROP_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	vis_flags = VIS_INHERIT_ID
-	alpha = 160
+	alpha = 0
 
 /turf/open/openspace
 	name = "открытое пространство"
 	desc = "Смотри под ноги!"
-	icon = 'white/valtos/icons/openspace.dmi'
-	icon_state = "openspace-0"
-	base_icon_state = "openspace"
-	smoothing_flags = SMOOTH_BITMASK
-	canSmoothWith = list(SMOOTH_GROUP_OPENSPACE)
-	smoothing_groups = list(SMOOTH_GROUP_OPENSPACE)
+	icon_state = "invisible"
+//	base_icon_state = "openspace"
+//	smoothing_flags = SMOOTH_BITMASK
+//	canSmoothWith = list(SMOOTH_GROUP_OPENSPACE)
+//	smoothing_groups = list(SMOOTH_GROUP_OPENSPACE)
 	baseturfs = /turf/open/openspace
 	intact = FALSE //this means wires go on top
 	//mouse_opacity = MOUSE_OPACITY_TRANSPARENT
@@ -38,6 +37,16 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 
 /turf/open/openspace/airless
 	initial_gas_mix = AIRLESS_ATMOS
+	// костыль
+	initial_temperature = TCMB
+	thermal_conductivity = 0
+	heat_capacity = 700000
+
+/turf/open/openspace/airless/GetHeatCapacity()
+	. = 7000
+
+/turf/open/openspace/airless/GetTemperature()
+	. = 2.7
 
 /turf/open/openspace/fastload
 	plane = OPENSPACE_PLANE
